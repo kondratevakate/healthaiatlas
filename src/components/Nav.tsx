@@ -6,8 +6,8 @@ import { usePathname } from 'next/navigation'
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/oncology', label: 'Oncology AI' },
-  { href: '/healthcare-pm', label: 'Healthcare PM' },
-  { href: '/funnel', label: 'Patient Funnel' },
+  { href: '/ai-automation', label: 'AI Automation' },
+  { href: '/medical-tourism', label: 'Medical Tourism' },
   { href: '/contact', label: 'Contact' },
 ]
 

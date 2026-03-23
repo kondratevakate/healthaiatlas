@@ -3,7 +3,7 @@ import Link from 'next/link'
 const maps = [
   {
     href: '/oncology',
-    title: 'Oncology AI Landscape',
+    title: 'Oncology AI',
     description: 'Comprehensive map of AI companies in oncology — drug discovery, diagnostics, treatment planning, and clinical trials.',
     stats: [
       { label: 'Companies', value: '120+' },
@@ -12,9 +12,9 @@ const maps = [
     color: 'var(--pink)',
   },
   {
-    href: '/healthcare-pm',
-    title: 'Healthcare PM & AI Automation',
-    description: 'Deal flow, products, and geographic analysis of healthcare project management and AI automation vendors.',
+    href: '/ai-automation',
+    title: 'AI Automation',
+    description: 'Deal flow, products, and geographic analysis of healthcare AI automation vendors.',
     stats: [
       { label: 'Vendors', value: '35+' },
       { label: 'Countries', value: '18' },
@@ -22,8 +22,8 @@ const maps = [
     color: 'var(--blue)',
   },
   {
-    href: '/funnel',
-    title: 'Patient Funnel Diagnostic',
+    href: '/medical-tourism',
+    title: 'Medical Tourism',
     description: 'Medical tourism corridors and patient flow analysis — source markets, destinations, and specialty matching.',
     stats: [
       { label: 'Corridors', value: '25+' },

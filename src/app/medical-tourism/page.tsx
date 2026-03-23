@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-import FunnelDiagnostic from './FunnelDiagnostic'
+import MedicalTourism from './MedicalTourism'
 
 export const metadata: Metadata = {
-  title: 'Patient Funnel Diagnostic | Health AI Atlas',
+  title: 'Medical Tourism | Health AI Atlas',
   description: 'Medical tourism corridors and patient flow analysis — source markets, destinations, and specialty matching.',
 }
 
-export default function FunnelPage() {
-  return <FunnelDiagnostic />
+export default function MedicalTourismPage() {
+  return <MedicalTourism />
 }

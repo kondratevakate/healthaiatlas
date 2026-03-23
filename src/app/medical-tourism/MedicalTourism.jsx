@@ -149,7 +149,7 @@ const STAGES=[
 const M="'JetBrains Mono',monospace",S="'DM Sans',sans-serif";
 const sc=s=>s>=75?"#22c55e":s>=50?"#eab308":s>=25?"#f97316":"#ef4444";
 
-export default function FunnelDiagnostic(){
+export default function MedicalTourism(){
   const[tab,setTab]=useState("map");
   const[ans,setAns]=useState({});
   const[selSrc,ss1]=useState(null);

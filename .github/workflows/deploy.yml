@@ -1,0 +1,40 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          script: |
+            BRANCH="${{ github.ref_name }}"
+            if [[ "$BRANCH" == "main" ]]; then
+              DIR="/home/ubuntu/healthaiatlas"
+              SERVICE="healthaiatlas-main.service"
+            else
+              DIR="/home/ubuntu/healthaiatlas-dev"
+              SERVICE="healthaiatlas-dev.service"
+            fi
+
+            cd "$DIR"
+            git fetch origin "$BRANCH"
+            git checkout "$BRANCH"
+            git pull --ff-only origin "$BRANCH"
+
+            npm ci
+            npm run build
+
+            sudo systemctl restart "$SERVICE"

@@ -172,19 +172,32 @@ export default function MedicalTourism(){
   const YEARS=[2021,2022,2023,2024,2025];
 
   return(
-  <div style={{minHeight:"100vh",background:"linear-gradient(170deg,#0a0f1c 0%,#111827 40%,#1a1a2e 100%)",color:"#e2e8f0",fontFamily:S}}>
-    <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap');*{box-sizing:border-box;margin:0;padding:0}::selection{background:#3b82f680}@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}a{color:inherit;text-decoration:none}`}</style>
+  <div>
+    {/* Page header */}
+    <div className="px-6 md:px-8 py-4 border-b border-border">
+      <h1 className="text-accent font-bold text-lg">Medical Tourism</h1>
+      <p className="text-muted text-sm">Corridor opportunity map, timeline, and diagnostic tool</p>
+    </div>
 
-    <nav style={{position:"sticky",top:0,zIndex:50,background:"#0a0f1cee",backdropFilter:"blur(12px)",borderBottom:"1px solid #1e293b"}}>
-      <div style={{maxWidth:1200,margin:"0 auto",padding:"0 20px",display:"flex",alignItems:"center",justifyContent:"space-between",height:48}}>
-        <div style={{fontFamily:M,fontSize:10,letterSpacing:3,color:"#64748b"}}>MEDVIEW</div>
-        <div style={{display:"flex",gap:2}}>
-          {[{id:"map",l:"Corridors"},{id:"timeline",l:"Timeline"},{id:"assess",l:"Diagnostic"},{id:"results",l:"Results",dis:!done}].map(t=>(
-            <button key={t.id} onClick={()=>!t.dis&&setTab(t.id)} style={{padding:"6px 14px",borderRadius:6,border:"none",fontSize:11,fontWeight:500,background:tab===t.id?"#1e293b":"transparent",color:t.dis?"#334155":tab===t.id?"#e2e8f0":"#64748b",cursor:t.dis?"default":"pointer",fontFamily:S}}>{t.l}</button>
-          ))}
-        </div>
-      </div>
-    </nav>
+    {/* Sub-nav tab switcher */}
+    <div className="px-6 md:px-8 py-2 border-b border-border flex gap-1">
+      {[{id:"map",l:"Corridors"},{id:"timeline",l:"Timeline"},{id:"assess",l:"Diagnostic"},{id:"results",l:"Results",dis:!done}].map(t=>(
+        <button
+          key={t.id}
+          onClick={()=>!t.dis&&setTab(t.id)}
+          disabled={t.dis}
+          className={`px-3 py-1.5 rounded-md border text-xs font-medium transition-all ${
+            tab===t.id
+              ? 'bg-surface-2 text-foreground border-accent'
+              : t.dis
+              ? 'bg-transparent text-muted/30 border-border cursor-not-allowed'
+              : 'bg-transparent text-muted border-border hover:bg-surface-2 hover:text-foreground hover:border-accent cursor-pointer'
+          }`}
+        >
+          {t.l}
+        </button>
+      ))}
+    </div>
 
     {/* ═══════ MAP ═══════ */}
     {tab==="map"&&(

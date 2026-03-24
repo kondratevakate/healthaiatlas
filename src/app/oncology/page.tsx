@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function OncologyPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-120px)]">
-      <div className="px-5 py-4 border-b border-border">
+      <div className="px-6 md:px-8 py-4 border-b border-border">
         <h1 className="text-accent font-bold text-lg">Oncology AI</h1>
         <p className="text-muted text-sm">
           Pharma benchmark, swimlane timeline, and company analysis

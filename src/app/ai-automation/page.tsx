@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function AIAutomationPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-120px)]">
-      <div className="px-5 py-4 border-b border-border">
+      <div className="px-6 md:px-8 py-4 border-b border-border">
         <h1 className="text-accent font-bold text-lg">AI Automation</h1>
         <p className="text-muted text-sm">
           Deal flow, products, open landscape, geography, and timeline

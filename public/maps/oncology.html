@@ -117,7 +117,7 @@ body.embed .ctx{border-top:none;}
 <div class="psub">Y = decision point (R&amp;D → trials → patient care). X = time. Size = deal value. Color = cancer type. <b>Solid border = source linked (click to open). Dashed = no source yet.</b> Red triangles = reliability gaps.</div>
 
 <div class="search-bar" id="swim-search-bar">
-<input class="search-input" id="swim-search" placeholder="Filter by company, tumor, product..." />
+<input class="search-input" id="swim-search" name="swim-search" aria-label="Filter timeline by company, tumor, or product" placeholder="Filter by company, tumor, product..." />
 <button class="filter-btn active" data-tm="all">All</button>
 </div>
 
@@ -134,7 +134,7 @@ body.embed .ctx{border-top:none;}
 <div class="psub">Columns = pipeline stage. Chips = vendor names (hover for details, click for source). Hatched cells = no known vendor = opportunity. Amgen at bottom.</div>
 
 <div class="search-bar">
-<input class="search-input" id="ph-search" placeholder="Filter by pharma, vendor, product..." />
+<input class="search-input" id="ph-search" name="ph-search" aria-label="Filter pharma benchmark by company, vendor, or product" placeholder="Filter by pharma, vendor, product..." />
 </div>
 
 <div class="pipe-legend" id="pipe-legend"></div>

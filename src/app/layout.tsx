@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import {
   analyticsEnvVar,
   siteDescription,
   siteKeywords,
   siteName,
-} from "@/config/site";
+} from "@/config/site-content";
 
 const GA_MEASUREMENT_ID = process.env[analyticsEnvVar] || "";
 
@@ -34,11 +32,7 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics measurementId={GA_MEASUREMENT_ID} />
       </head>
-      <body className="min-h-full flex flex-col">
-        <Nav />
-        <main className="flex-1">{children}</main>
-        <Footer />
-      </body>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

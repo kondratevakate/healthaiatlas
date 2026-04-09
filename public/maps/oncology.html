@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oncology AI Landscape & Pharma Benchmark</title>
+<title>Oncology Landscape & Pharma Benchmark | Health AI Atlas</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap');
 :root{--bg:#07090f;--s1:#0f1420;--s2:#161d2e;--s3:#1c2540;--tx:#dce4f0;--txd:#7d8da5;--acc:#3ecffc;--line:#1a2540;--grn:#2dd4a8;--pink:#e879a8;--blue:#5b9cf5;--yel:#f5c542;--red:#e84e4e;--pur:#9580f0;--org:#f09030;--teal:#22c9b0;--fn:'DM Sans',system-ui,sans-serif;--mo:'JetBrains Mono',monospace;}
@@ -97,11 +97,14 @@ a{color:var(--acc);text-decoration:none;}a:hover{text-decoration:underline;}
 
 @media(max-width:900px){.search-input{width:100%;}.swim-wrap svg{min-width:800px;}}
 @media(max-width:600px){.nav{padding:10px 14px;}.panel{padding:14px;}.ctx{padding:8px 14px;}.ph-matrix{min-width:600px;}.ctx-item{font-size:.68rem;padding:3px 8px;}}
+body.embed .nav{display:none;}
+body.embed .ctx{border-top:none;}
 </style>
 </head>
 <body>
+<script>if(new URLSearchParams(location.search).has('embed'))document.body.classList.add('embed')</script>
 <div class="nav">
-<div><h1>Oncology AI Opportunity Map<span class="sub">MedVIEW by Atelic</span></h1></div>
+<div><h1>Oncology Opportunity Map<span class="sub">Health AI Atlas</span></h1></div>
 <div class="tabs">
 <button class="tab active" data-p="landscape">Cancer AI Landscape</button>
 <button class="tab" data-p="pharma">Pharma &amp; Product Benchmark</button>

@@ -1,6 +1,5 @@
 'use client'
 // @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState, useMemo } from "react";
 
@@ -175,16 +174,19 @@ export default function MedicalTourism(){
   <div style={{minHeight:"100vh",background:"linear-gradient(170deg,#0a0f1c 0%,#111827 40%,#1a1a2e 100%)",color:"#e2e8f0",fontFamily:S}}>
     <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap');*{box-sizing:border-box;margin:0;padding:0}::selection{background:#3b82f680}@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}a{color:inherit;text-decoration:none}`}</style>
 
-    <nav style={{position:"sticky",top:0,zIndex:50,background:"#0a0f1cee",backdropFilter:"blur(12px)",borderBottom:"1px solid #1e293b"}}>
-      <div style={{maxWidth:1200,margin:"0 auto",padding:"0 20px",display:"flex",alignItems:"center",justifyContent:"space-between",height:48}}>
-        <div style={{fontFamily:M,fontSize:10,letterSpacing:3,color:"#64748b"}}>MEDVIEW</div>
-        <div style={{display:"flex",gap:2}}>
-          {[{id:"map",l:"Corridors"},{id:"timeline",l:"Timeline"},{id:"assess",l:"Diagnostic"},{id:"results",l:"Results",dis:!done}].map(t=>(
-            <button key={t.id} onClick={()=>!t.dis&&setTab(t.id)} style={{padding:"6px 14px",borderRadius:6,border:"none",fontSize:11,fontWeight:500,background:tab===t.id?"#1e293b":"transparent",color:t.dis?"#334155":tab===t.id?"#e2e8f0":"#64748b",cursor:t.dis?"default":"pointer",fontFamily:S}}>{t.l}</button>
+    <div style={{background:"#0f172a",borderBottom:"1px solid #1e293b",padding:"12px 20px"}}>
+      <div style={{maxWidth:1200,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10}}>
+        <div>
+          <h1 style={{fontSize:18,fontWeight:700,color:"#e2e8f0",margin:0}}>Medical Tourism</h1>
+          <p style={{fontSize:11,color:"#64748b",margin:0}}>Corridor analysis and diagnostic tool</p>
+        </div>
+        <div style={{display:"flex",gap:3}}>
+          {[{id:"map",l:"Corridors"},{id:"timeline",l:"Timeline"},{id:"assess",l:"Diagnostic"},{id:"results",l:"Results",dis:!done,tip:"Complete diagnostic first"}].map(t=>(
+            <button key={t.id} onClick={()=>!t.dis&&setTab(t.id)} title={t.dis?t.tip:""} style={{padding:"6px 14px",borderRadius:6,border:"1px solid "+(tab===t.id?"#3b82f6":"#334155"),fontSize:11,fontWeight:500,background:tab===t.id?"#1e3a5f":"transparent",color:t.dis?"#334155":tab===t.id?"#e2e8f0":"#64748b",cursor:t.dis?"not-allowed":"pointer",fontFamily:S,transition:"all 0.15s"}}>{t.l}</button>
           ))}
         </div>
       </div>
-    </nav>
+    </div>
 
     {/* ═══════ MAP ═══════ */}
     {tab==="map"&&(
@@ -394,7 +396,7 @@ export default function MedicalTourism(){
       <div style={{textAlign:"center",padding:"16px 0",borderTop:"1px solid #1e293b"}}>
         <button onClick={()=>setTab("map")} style={{padding:"7px 18px",borderRadius:5,border:"1px solid #334155",background:"transparent",color:"#94a3b8",cursor:"pointer",fontSize:11,marginRight:6}}>← Map</button>
         <button onClick={()=>{setAns({});sos(null);setTab("assess");}} style={{padding:"7px 18px",borderRadius:5,border:"1px solid #334155",background:"transparent",color:"#94a3b8",cursor:"pointer",fontSize:11}}>↻ Reset</button>
-        <div style={{marginTop:12,fontSize:9,color:"#475569",fontFamily:M}}>MedView by Atelic.ai</div>
+        <div style={{marginTop:12,fontSize:9,color:"#475569",fontFamily:M}}>Health AI Atlas · Published by Atelic</div>
       </div>
     </div>);})()}
 

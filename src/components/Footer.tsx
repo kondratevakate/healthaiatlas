@@ -1,10 +1,10 @@
-import Link from 'next/link'
-
-const footerLinks = [
-  { href: '/oncology', label: 'Oncology AI Landscape' },
-  { href: '/healthcare-pm', label: 'Healthcare PM & Automation' },
-  { href: '/funnel', label: 'Patient Funnel Diagnostic' },
-]
+import Link from "next/link";
+import {
+  contactEmail,
+  primarySections,
+  siteDescription,
+  siteName,
+} from "@/config/site";
 
 export default function Footer() {
   return (
@@ -12,22 +12,24 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between gap-8">
           <div>
-            <h3 className="text-accent font-bold text-sm mb-3">Health AI Atlas</h3>
+            <h3 className="text-accent font-bold text-sm mb-3">{siteName}</h3>
             <p className="text-muted text-xs max-w-xs leading-relaxed">
-              Curated maps and analysis of AI in healthcare — oncology, patient management, and medical tourism.
+              {siteDescription}
             </p>
           </div>
 
           <div>
-            <h4 className="text-foreground font-semibold text-xs mb-3 uppercase tracking-wider">Maps</h4>
+            <h4 className="text-foreground font-semibold text-xs mb-3 uppercase tracking-wider">
+              Maps
+            </h4>
             <ul className="space-y-2">
-              {footerLinks.map((link) => (
-                <li key={link.href}>
+              {primarySections.map((section) => (
+                <li key={section.href}>
                   <Link
-                    href={link.href}
+                    href={section.href}
                     className="text-muted text-xs hover:text-accent transition-colors"
                   >
-                    {link.label}
+                    {section.label}
                   </Link>
                 </li>
               ))}
@@ -35,10 +37,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-foreground font-semibold text-xs mb-3 uppercase tracking-wider">Contact</h4>
-            <p className="text-muted text-xs mb-2">
-              Questions or feedback?
-            </p>
+            <h4 className="text-foreground font-semibold text-xs mb-3 uppercase tracking-wider">
+              Contact
+            </h4>
+            <p className="text-muted text-xs mb-2">Questions or feedback?</p>
             <Link
               href="/contact"
               className="text-accent text-xs hover:underline block mb-1"
@@ -46,20 +48,20 @@ export default function Footer() {
               Get in touch
             </Link>
             <a
-              href="mailto:kate@atelic.ai"
+              href={`mailto:${contactEmail}`}
               className="text-muted text-xs hover:text-accent transition-colors"
             >
-              kate@atelic.ai
+              {contactEmail}
             </a>
           </div>
         </div>
 
         <div className="mt-8 pt-4 border-t border-border text-center">
           <p className="text-muted text-xs">
-            &copy; {new Date().getFullYear()} Health AI Atlas. All rights reserved.
+            &copy; {new Date().getFullYear()} {siteName}. All rights reserved.
           </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

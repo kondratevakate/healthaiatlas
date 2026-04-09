@@ -3,18 +3,23 @@ import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import {
+  analyticsEnvVar,
+  siteDescription,
+  siteKeywords,
+  siteName,
+} from "@/config/site";
 
-// Replace with your actual Google Analytics Measurement ID (e.g., G-XXXXXXXXXX)
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID || "";
+const GA_MEASUREMENT_ID = process.env[analyticsEnvVar] || "";
 
 export const metadata: Metadata = {
-  title: "Health AI Atlas",
-  description: "Curated maps and analysis of AI in healthcare — oncology, patient management, and medical tourism.",
-  keywords: ["healthcare AI", "oncology AI", "medical tourism", "healthcare technology", "digital health"],
-  authors: [{ name: "Health AI Atlas" }],
+  title: siteName,
+  description: siteDescription,
+  keywords: siteKeywords,
+  authors: [{ name: siteName }],
   openGraph: {
-    title: "Health AI Atlas",
-    description: "Curated maps and analysis of AI in healthcare",
+    title: siteName,
+    description: siteDescription,
     type: "website",
   },
 };

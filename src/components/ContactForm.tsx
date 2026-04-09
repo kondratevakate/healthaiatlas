@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-
-const CONTACT_EMAIL = 'kate@atelic.ai'
+import { contactEmail, siteName } from '@/config/site'
 
 export default function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
@@ -16,7 +15,7 @@ export default function ContactForm() {
 
     try {
       // FormSubmit.co — no registration needed, sends to email directly
-      const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+      const response = await fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
         method: 'POST',
         body: formData,
         headers: {
@@ -45,12 +44,9 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Honeypot for spam protection */}
       <input type="text" name="_honey" style={{ display: 'none' }} />
-      {/* Disable captcha */}
       <input type="hidden" name="_captcha" value="false" />
-      {/* Subject line */}
-      <input type="hidden" name="_subject" value="Health AI Atlas — New Contact" />
+      <input type="hidden" name="_subject" value={`${siteName} — New Contact`} />
 
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-muted mb-2">
@@ -61,7 +57,7 @@ export default function ContactForm() {
           id="email"
           name="email"
           required
-          className="w-full px-3 py-2 text-sm bg-surface-1 border border-border rounded-md text-foreground focus:outline-none focus:border-accent"
+          className="w-full px-3 py-2 text-sm bg-surface-1 border border-border rounded-lg text-foreground focus:outline-none focus:border-accent"
           placeholder="you@example.com"
         />
       </div>
@@ -74,8 +70,8 @@ export default function ContactForm() {
           id="message"
           name="message"
           required
-          rows={4}
-          className="w-full px-3 py-2 text-sm bg-surface-1 border border-border rounded-md text-foreground focus:outline-none focus:border-accent resize-none"
+          rows={6}
+          className="w-full px-3 py-2 text-sm bg-surface-1 border border-border rounded-lg text-foreground focus:outline-none focus:border-accent resize-none"
           placeholder="Your message..."
         />
       </div>
@@ -87,7 +83,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={status === 'submitting'}
-        className="px-4 py-2 text-sm font-medium bg-accent text-background rounded-md hover:opacity-90 transition-opacity disabled:opacity-50"
+        className="px-5 py-2.5 text-sm font-medium bg-accent text-background rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
       >
         {status === 'submitting' ? 'Sending...' : 'Send Message'}
       </button>

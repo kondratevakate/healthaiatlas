@@ -1,24 +1,21 @@
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
+import EmbeddedMapPage from "@/components/EmbeddedMapPage";
+import { sections, siteName } from "@/config/site";
+
+const section = sections.oncology;
 
 export const metadata: Metadata = {
-  title: 'Oncology AI | Health AI Atlas',
-  description: 'Comprehensive map of AI companies in oncology — drug discovery, diagnostics, treatment planning, and clinical trials.',
-}
+  title: `${section.title} | ${siteName}`,
+  description: section.description,
+};
 
 export default function OncologyPage() {
   return (
-    <div className="flex flex-col h-[calc(100vh-120px)]">
-      <div className="px-5 py-4 border-b border-border">
-        <h1 className="text-accent font-bold text-lg">Oncology AI</h1>
-        <p className="text-muted text-sm">
-          Pharma benchmark, swimlane timeline, and company analysis
-        </p>
-      </div>
-      <iframe
-        src="/maps/oncology.html"
-        className="flex-1 w-full border-0"
-        title="Oncology AI"
-      />
-    </div>
-  )
+    <EmbeddedMapPage
+      title={section.title}
+      subtitle={section.subtitle ?? ""}
+      iframeSrc={section.embedPath ?? ""}
+      iframeTitle={section.title}
+    />
+  );
 }

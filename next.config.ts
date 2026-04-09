@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
+import { legacyRedirects } from "./src/config/site";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return legacyRedirects.map((redirect) => ({ ...redirect }));
+  },
 };
 
 export default nextConfig;

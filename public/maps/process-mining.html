@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Healthcare PM & AI Automation Landscape</title>
+<title>Process Mining Landscape | Health AI Atlas</title>
 <style>
 :root{--bg:#07090f;--s1:#0f1420;--s2:#161d2e;--s3:#1c2540;--tx:#dce4f0;--txd:#6b7a94;--acc:#3ecffc;--line:#1a2540;--grn:#2dd4a8;--pink:#e879a8;--blue:#5b9cf5;--yel:#f5c542;--red:#e84e4e;--pur:#9580f0;--org:#f09030;--teal:#22c9b0;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -72,6 +72,8 @@ body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,'S
 .ev.expanded .ev-d{display:block;}
 .ev .dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:3px;vertical-align:middle;}
 @media(max-width:600px){.uc-grid,.geo-grid{grid-template-columns:1fr;}.nav{padding:10px 12px;}.panel{padding:12px;}.pf-search{width:100%;}}
+body.embed .nav{display:none;}
+body.embed .stats{border-top:none;}
 
 /* ═══ OPEN LANDSCAPE ═══ */
 .ol-filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
@@ -126,7 +128,8 @@ body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,'S
 </style>
 </head>
 <body>
-<div class="nav"><h1>Healthcare PM &amp; AI Automation</h1>
+<script>if(new URLSearchParams(location.search).has('embed'))document.body.classList.add('embed')</script>
+<div class="nav"><h1>Process Mining</h1>
 <div class="tabs">
 <button class="tab active" data-p="swim">Deal Flow</button>
 <button class="tab" data-p="products">Products</button>

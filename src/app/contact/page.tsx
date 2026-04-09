@@ -1,10 +1,16 @@
-import type { Metadata } from 'next'
-import ContactForm from '@/components/ContactForm'
+import type { Metadata } from "next";
+import ContactForm from "@/components/ContactForm";
+import {
+  contactEmail,
+  secondaryAttribution,
+  siteDescription,
+  siteName,
+} from "@/config/site";
 
 export const metadata: Metadata = {
-  title: 'Contact | Health AI Atlas',
-  description: 'Get in touch with Health AI Atlas — questions, feedback, or collaboration.',
-}
+  title: `Contact | ${siteName}`,
+  description: `Get in touch with ${siteName} — questions, feedback, or collaboration.`,
+};
 
 export default function ContactPage() {
   return (
@@ -15,7 +21,6 @@ export default function ContactPage() {
       </p>
 
       <div className="grid md:grid-cols-2 gap-10 items-start">
-        {/* Contact Form */}
         <div>
           <h2 className="text-sm font-semibold text-muted uppercase tracking-wider mb-4">
             Send a Message
@@ -23,32 +28,34 @@ export default function ContactPage() {
           <ContactForm />
         </div>
 
-        {/* Profile & Links */}
         <div>
           <h2 className="text-sm font-semibold text-muted uppercase tracking-wider mb-4">
             Connect
           </h2>
 
           <div className="space-y-4">
-            {/* Profile Card */}
             <div className="p-5 rounded-lg bg-surface-1 border border-border">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-lg">
                   K
                 </div>
                 <div>
-                  <div className="font-semibold text-foreground">Kate Kondrateva</div>
-                  <div className="text-sm text-muted">Founder, Atelic</div>
+                  <div className="font-semibold text-foreground">
+                    Kate Kondrateva
+                  </div>
+                  <div className="text-sm text-muted">
+                    Founder, {secondaryAttribution.name}
+                  </div>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <a
-                  href="mailto:kate@atelic.ai"
+                  href={`mailto:${contactEmail}`}
                   className="flex items-center gap-3 text-sm text-muted hover:text-accent transition-colors"
                 >
                   <span className="w-5 text-center">@</span>
-                  kate@atelic.ai
+                  {contactEmail}
                 </a>
 
                 <a
@@ -69,24 +76,41 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-sm text-muted hover:text-accent transition-colors"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                    />
                   </svg>
                   atelic.ai
                 </a>
               </div>
             </div>
 
-            {/* Additional Info */}
             <div className="p-4 rounded-lg bg-surface-2 border border-border text-sm text-muted">
               <p>
-                Health AI Atlas is a research project by <a href="https://atelic.ai" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Atelic</a> —
-                mapping AI in healthcare across oncology, patient management, and medical tourism.
+                {siteName} is a research project published by{" "}
+                <a
+                  href={secondaryAttribution.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  {secondaryAttribution.name}
+                </a>{" "}
+                — {siteDescription.toLowerCase()}
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

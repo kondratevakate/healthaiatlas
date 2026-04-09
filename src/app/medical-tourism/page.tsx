@@ -1,11 +1,14 @@
-import type { Metadata } from 'next'
-import MedicalTourism from './MedicalTourism'
+import type { Metadata } from "next";
+import MedicalTourism from "./MedicalTourism";
+import { sections, siteName } from "@/config/site";
+
+const section = sections.medicalTourism;
 
 export const metadata: Metadata = {
-  title: 'Medical Tourism | Health AI Atlas',
-  description: 'Medical tourism corridors and patient flow analysis — source markets, destinations, and specialty matching.',
-}
+  title: `${section.title} | ${siteName}`,
+  description: section.description,
+};
 
 export default function MedicalTourismPage() {
-  return <MedicalTourism />
+  return <MedicalTourism />;
 }

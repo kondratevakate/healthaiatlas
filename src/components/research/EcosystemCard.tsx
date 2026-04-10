@@ -1,12 +1,12 @@
 ﻿// Ecosystem Card Component
 // Shows user's place in the ecosystem after completing the test
 
-import { RiskAssessment, PathRole } from '@/civic/types/research';
-import { cn } from '@/civic/lib/utils';
+import { RiskAssessment, PathRole } from '@/types/research';
+import { cn } from '@/lib/utils';
 import { Users, ArrowRight, Calendar, Share2, Compass } from 'lucide-react';
-import { Button } from '@/civic/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/civic/components/ui/card';
-import { Badge } from '@/civic/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface EcosystemCardProps {
   assessment: RiskAssessment;

@@ -1,4 +1,6 @@
-import { createRedirectPage } from "@/app/(civic)/_shared/page-factories";
-import { sections } from "@/config/site-content";
+import { permanentRedirect } from "next/navigation";
+import { sections } from "@/config/sections";
 
-export default createRedirectPage(sections.oncology.canonicalPath);
+export default function OncologyRedirectPage() {
+  permanentRedirect(sections.oncology.canonicalPath);
+}

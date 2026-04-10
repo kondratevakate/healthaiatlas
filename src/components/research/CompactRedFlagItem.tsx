@@ -1,6 +1,6 @@
 ﻿import { AlertTriangle } from 'lucide-react';
-import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { RedFlag } from '@/civic/types/research';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { RedFlag } from '@/types/research';
 
 interface CompactRedFlagItemProps {
   flag: RedFlag;

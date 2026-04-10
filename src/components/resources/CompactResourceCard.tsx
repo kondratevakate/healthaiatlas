@@ -1,10 +1,10 @@
 import Image from 'next/image';
-import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
-import { Badge } from '@/civic/components/ui/badge';
-import { Card, CardContent } from '@/civic/components/ui/card';
-import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { Resource, getCategoryLabel } from '@/civic/data/resources';
+import Link from "next/link";
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Resource, getCategoryLabel } from '@/data/resources';
+import { formatResourceDate } from '@/lib/format';
 
 interface CompactResourceCardProps {
   resource: Resource;
@@ -13,13 +13,8 @@ interface CompactResourceCardProps {
 export function CompactResourceCard({ resource }: CompactResourceCardProps) {
   const { language } = useLanguage();
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return format(date, 'MMM d, yyyy');
-  };
-
   return (
-    <Link to={`/resources/${resource.id}`}>
+    <Link href={`/resources/${resource.id}`}>
       <Card className="group h-full overflow-hidden transition-colors hover:border-primary/50">
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           <Image
@@ -39,7 +34,7 @@ export function CompactResourceCard({ resource }: CompactResourceCardProps) {
             <Badge variant="outline" className="py-0 text-xs">
               {getCategoryLabel(resource.category, language)}
             </Badge>
-            <span>{formatDate(resource.date)}</span>
+            <span>{formatResourceDate(resource.date, language)}</span>
           </div>
         </CardContent>
       </Card>

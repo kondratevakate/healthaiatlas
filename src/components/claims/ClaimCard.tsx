@@ -1,12 +1,12 @@
 ﻿import { useState } from 'react';
-import { Claim } from '@/civic/types/claims';
-import { PREDICATE_EVIDENCE_POLICY } from '@/civic/types/claims';
-import { evidence as allEvidence } from '@/civic/data/evidence';
+import { Claim } from '@/types/claims';
+import { PREDICATE_EVIDENCE_POLICY } from '@/types/claims';
+import { evidence as allEvidence } from '@/data/evidence';
 import { ConfidenceBadge } from './ConfidenceBadge';
 import { EvidenceDetail } from './EvidenceDetail';
-import { Badge } from '@/civic/components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { cn } from '@/civic/lib/utils';
+import { cn } from '@/lib/utils';
 
 const predicateLabels: Record<string, string> = {
   // Platforms & jurisdictions

@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
 import { useState } from "react";
-import { contactEmail, siteName } from "@/config/site-content";
-import styles from "@/components/contact.module.css";
+import { contactEmail, siteName } from "@/config/site";
+import styles from "@/components/contact/contact.module.css";
 
 export default function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">(
-    "idle",
-  );
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -47,7 +47,11 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form} aria-busy={status === "submitting"}>
+    <form
+      onSubmit={handleSubmit}
+      className={styles.form}
+      aria-busy={status === "submitting"}
+    >
       <input type="text" name="_honey" style={{ display: "none" }} />
       <input type="hidden" name="_captcha" value="false" />
       <input type="hidden" name="_subject" value={`${siteName} - New contact`} />
@@ -87,11 +91,7 @@ export default function ContactForm() {
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={status === "submitting"}
-        className={styles.button}
-      >
+      <button type="submit" disabled={status === "submitting"} className={styles.button}>
         {status === "submitting" ? "Sending..." : "Send message"}
       </button>
     </form>

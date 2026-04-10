@@ -1,11 +1,11 @@
 ﻿// Red Flag Card Component
 // Shows a single red flag pattern with verification steps
 
-import { RedFlag } from '@/civic/types/research';
+import { RedFlag } from '@/types/research';
 import { EvidenceLabel } from './EvidenceLabel';
-import { cn } from '@/civic/lib/utils';
+import { cn } from '@/lib/utils';
 import { Flag, CheckCircle2, ExternalLink } from 'lucide-react';
-import { Card, CardContent, CardHeader } from '@/civic/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 interface RedFlagCardProps {
   redFlag: RedFlag;

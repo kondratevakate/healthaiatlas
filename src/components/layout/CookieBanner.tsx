@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
-import { Button } from '@/civic/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Cookie, X } from 'lucide-react';
 
 export function CookieBanner() {

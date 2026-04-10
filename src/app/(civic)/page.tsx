@@ -1,3 +1,8 @@
-import { createCivicPage } from "@/app/(civic)/_shared/page-factories";
+import { buildPageMetadata } from "@/lib/metadata";
+import Index from "@/views/Index";
 
-export default createCivicPage("/");
+export const metadata = buildPageMetadata({});
+
+export default function HomePage() {
+  return <Index />;
+}

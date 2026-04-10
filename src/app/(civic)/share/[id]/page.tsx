@@ -1,3 +1,11 @@
-import { createDynamicCivicPage } from "@/app/(civic)/_shared/page-factories";
+import Share from "@/views/Share";
 
-export default createDynamicCivicPage<{ id: string }>(({ id }) => `/share/${id}`);
+export default async function SharePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  return <Share shareId={id} />;
+}

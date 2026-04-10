@@ -1,3 +1,10 @@
-import { createCivicPage } from "@/app/(civic)/_shared/page-factories";
+import { buildPageMetadata } from "@/lib/metadata";
+import Tools from "@/views/Tools";
 
-export default createCivicPage("/tools");
+export const metadata = buildPageMetadata({
+  title: "Tools",
+});
+
+export default function ToolsPage() {
+  return <Tools />;
+}

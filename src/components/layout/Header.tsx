@@ -1,19 +1,20 @@
-import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@/civic/components/ui/button';
-import { Input } from '@/civic/components/ui/input';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Menu, X, Mail } from 'lucide-react';
 import { useState } from 'react';
-import { cn } from '@/civic/lib/utils';
+import { cn } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/civic/components/ui/dialog';
-import { toast } from '@/civic/hooks/use-toast';
-import { siteName } from '@/config/site-content';
+} from '@/components/ui/dialog';
+import { toast } from '@/hooks/use-toast';
+import { siteName } from "@/config/site";
 
 const navLinks = [
   { key: 'nav.home', path: '/' },
@@ -24,9 +25,56 @@ const navLinks = [
   { key: 'nav.about', path: '/about' },
 ];
 
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") return pathname === href;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+interface NavLinksProps {
+  mobile?: boolean;
+  pathname: string;
+  t: (key: string) => string;
+  onNavigate?: () => void;
+}
+
+function NavLinks({ mobile, pathname, t, onNavigate }: NavLinksProps) {
+  return (
+    <>
+      {navLinks.map((link) => {
+        const isActive = isActivePath(pathname, link.path);
+        return mobile ? (
+          <Link
+            key={link.path}
+            href={link.path}
+            onClick={onNavigate}
+            className={cn(
+              'block px-4 py-3 text-sm font-medium transition-colors',
+              isActive ? 'bg-secondary/60 text-foreground' : 'text-foreground/65 hover:text-foreground',
+            )}
+          >
+            {t(link.key)}
+          </Link>
+        ) : (
+          <Link
+            key={link.path}
+            href={link.path}
+            className={cn(
+              'relative py-1 text-sm font-medium transition-colors',
+              isActive ? 'text-foreground' : 'text-foreground/58 hover:text-foreground',
+            )}
+          >
+            {t(link.key)}
+            {isActive && <span className="absolute bottom-0 left-0 h-0.5 w-full bg-primary" />}
+          </Link>
+        );
+      })}
+    </>
+  );
+}
+
 export function Header() {
   const { t } = useLanguage();
-  const location = useLocation();
+  const pathname = usePathname() ?? '/';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [subscribeOpen, setSubscribeOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -41,10 +89,7 @@ export function Header() {
       localStorage.setItem('subscribe-emails', JSON.stringify(saved));
     }
 
-    toast({
-      title: 'Thanks!',
-      description: "We'll reach out when the newsletter launches.",
-    });
+    toast({ title: t('toast.subscribeTitle'), description: t('toast.subscribeDesc') });
     setEmail('');
     setSubscribeOpen(false);
   };
@@ -53,33 +98,14 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
         <div className="container flex h-16 items-center justify-between gap-6">
-          <Link to="/" className="flex items-center shrink-0">
+          <Link href="/" className="flex items-center shrink-0">
             <span className="text-lg font-bold tracking-tight text-foreground">
               {siteName}
             </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6 lg:gap-8">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={cn(
-                    'relative py-1 text-sm font-medium transition-colors',
-                    isActive
-                      ? 'text-foreground'
-                      : 'text-foreground/58 hover:text-foreground',
-                  )}
-                >
-                  {t(link.key)}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 h-0.5 w-full bg-primary" />
-                  )}
-                </Link>
-              );
-            })}
+            <NavLinks pathname={pathname} t={t} />
           </nav>
 
           <div className="flex items-center gap-1">
@@ -110,24 +136,7 @@ export function Header() {
         {mobileMenuOpen && (
           <nav id="mobile-navigation" className="md:hidden border-t border-border bg-background">
             <div className="container py-4 space-y-1">
-              {navLinks.map((link) => {
-                const isActive = location.pathname === link.path;
-                return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      'block px-4 py-3 text-sm font-medium transition-colors',
-                      isActive
-                        ? 'bg-secondary/60 text-foreground'
-                        : 'text-foreground/65 hover:text-foreground',
-                    )}
-                  >
-                    {t(link.key)}
-                  </Link>
-                );
-              })}
+              <NavLinks mobile pathname={pathname} t={t} onNavigate={() => setMobileMenuOpen(false)} />
               <div className="mt-4 border-t border-border px-4 pt-4">
                 <Button
                   variant="outline"

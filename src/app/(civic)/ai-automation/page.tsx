@@ -1,4 +1,6 @@
-import { createRedirectPage } from "@/app/(civic)/_shared/page-factories";
-import { sections } from "@/config/site-content";
+import { permanentRedirect } from "next/navigation";
+import { sections } from "@/config/sections";
 
-export default createRedirectPage(sections.processMining.canonicalPath);
+export default function AiAutomationRedirectPage() {
+  permanentRedirect(sections.processMining.canonicalPath);
+}

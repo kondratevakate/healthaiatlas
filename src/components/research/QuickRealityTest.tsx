@@ -2,13 +2,13 @@
 // Interactive 5-question test to assess risk and determine best path
 
 import { useState, useCallback } from 'react';
-import { PathRole, RiskAssessment, RiskLevel } from '@/civic/types/research';
-import { testQuestions, bottleneckDescriptions, nextStepRecommendations } from '@/civic/data/tests';
-import { cn } from '@/civic/lib/utils';
-import { Button } from '@/civic/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/civic/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/civic/components/ui/radio-group';
-import { Label } from '@/civic/components/ui/label';
+import { PathRole, RiskAssessment, RiskLevel } from '@/types/research';
+import { testQuestions, bottleneckDescriptions, nextStepRecommendations } from '@/data/tests';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { ArrowRight, RotateCcw } from 'lucide-react';
 
 interface QuickRealityTestProps {

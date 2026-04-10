@@ -94,6 +94,8 @@ const translations: Translations = {
 
   // Header
   'header.subscribe': { en: 'Subscribe', ar: 'اشترك' },
+  'toast.subscribeTitle': { en: 'Thanks!', ar: 'شكراً!' },
+  'toast.subscribeDesc': { en: "We'll reach out when the newsletter launches.", ar: 'سنتواصل معك عند إطلاق النشرة الإخبارية.' },
 
   // Auth Modal
   'auth.signInTo': { en: 'Sign in to', ar: 'تسجيل الدخول إلى' },

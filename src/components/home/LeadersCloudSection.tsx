@@ -1,14 +1,14 @@
-﻿import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { Button } from '@/civic/components/ui/button';
+﻿import { useLanguage } from '@/contexts/LanguageContext';
+import { Button } from '@/components/ui/button';
 import { ArrowRight, Link2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { mentors } from '@/civic/data/mentors';
+import { mentors } from '@/data/mentors';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/civic/components/ui/tooltip';
+} from '@/components/ui/tooltip';
 
 // Generate initials from name
 const getInitials = (name: string) => {

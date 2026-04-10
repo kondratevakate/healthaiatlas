@@ -1,9 +1,9 @@
-﻿import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { Conference } from '@/civic/types';
-import { Badge } from '@/civic/components/ui/badge';
-import { Button } from '@/civic/components/ui/button';
+﻿import { useLanguage } from '@/contexts/LanguageContext';
+import { Conference } from '@/types';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
-import { cn } from '@/civic/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface ConferenceCardProps {
   conference: Conference;

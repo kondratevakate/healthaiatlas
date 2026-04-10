@@ -1,5 +1,5 @@
 ﻿import { motion } from 'framer-motion';
-import { ResearchDomain } from '@/civic/types';
+import { ResearchDomain } from '@/types';
 
 function buildDomainNodes(domains: ResearchDomain[]) {
   const nonOverview = domains.filter(d => d.id !== 'overview');

@@ -1,3 +1,10 @@
-import { createCivicPage } from "@/app/(civic)/_shared/page-factories";
+import { buildPageMetadata } from "@/lib/metadata";
+import Newsfeed from "@/views/Newsfeed";
 
-export default createCivicPage("/newsfeed");
+export const metadata = buildPageMetadata({
+  title: "Newsfeed",
+});
+
+export default function NewsfeedPage() {
+  return <Newsfeed />;
+}

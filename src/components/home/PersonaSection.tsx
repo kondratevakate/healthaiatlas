@@ -1,6 +1,6 @@
-﻿import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { PersonaCard } from '@/civic/components/home/PersonaCard';
-import { UserPersona } from '@/civic/types';
+﻿import { useLanguage } from '@/contexts/LanguageContext';
+import { PersonaCard } from '@/components/home/PersonaCard';
+import { UserPersona } from '@/types';
 
 const personas: UserPersona[] = ['patient', 'doctor', 'business', 'startup', 'leader'];
 

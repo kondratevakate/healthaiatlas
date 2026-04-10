@@ -1,10 +1,12 @@
 import Image from 'next/image';
-import { Link } from 'react-router-dom';
+import Link from "next/link";
 import { ArrowUpRight } from 'lucide-react';
-import { Badge } from '@/civic/components/ui/badge';
-import { Card, CardContent } from '@/civic/components/ui/card';
-import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { Resource, getCategoryLabel, getTagLabel } from '@/civic/data/resources';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Resource, getCategoryLabel, getTagLabel } from '@/data/resources';
+import { cn } from '@/lib/utils';
+import { formatResourceDate } from '@/lib/format';
 
 interface ResourceCardProps {
   resource: Resource;
@@ -15,16 +17,18 @@ export function ResourceCard({ resource, featured = false }: ResourceCardProps) 
   const { language, t } = useLanguage();
 
   return (
-    <Link to={`/resources/${resource.id}`}>
+    <Link href={`/resources/${resource.id}`}>
       <Card
-        className={`group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
-          featured ? 'md:flex md:flex-row' : ''
-        }`}
+        className={cn(
+          'group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg',
+          featured && 'md:flex md:flex-row',
+        )}
       >
         <div
-          className={`relative overflow-hidden bg-muted ${
-            featured ? 'aspect-video md:w-1/2 md:aspect-auto' : 'aspect-video'
-          }`}
+          className={cn(
+            'relative overflow-hidden bg-muted aspect-video',
+            featured && 'md:w-1/2 md:aspect-auto',
+          )}
         >
           <Image
             src={resource.thumbnail}
@@ -50,12 +54,13 @@ export function ResourceCard({ resource, featured = false }: ResourceCardProps) 
         </div>
 
         <CardContent
-          className={`p-6 ${featured ? 'md:flex md:w-1/2 md:flex-col md:justify-center' : ''}`}
+          className={cn('p-6', featured && 'md:flex md:w-1/2 md:flex-col md:justify-center')}
         >
           <h3
-            className={`mb-2 font-bold transition-colors group-hover:text-primary ${
-              featured ? 'heading-md' : 'text-lg'
-            }`}
+            className={cn(
+              'mb-2 font-bold transition-colors group-hover:text-primary',
+              featured ? 'heading-md' : 'text-lg',
+            )}
           >
             {resource.title[language]}
           </h3>
@@ -74,7 +79,7 @@ export function ResourceCard({ resource, featured = false }: ResourceCardProps) 
 
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <span>
-              {new Date(resource.date).toLocaleDateString(language === 'ar' ? 'ar-AE' : 'en-US')}
+              {formatResourceDate(resource.date, language)}
             </span>
             <span className="flex items-center gap-1 font-medium text-primary transition-all group-hover:gap-2">
               {t('library.viewMore')}

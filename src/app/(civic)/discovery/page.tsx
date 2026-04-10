@@ -1,3 +1,10 @@
-import { createCivicPage } from "@/app/(civic)/_shared/page-factories";
+import { buildPageMetadata } from "@/lib/metadata";
+import Discovery from "@/views/Discovery";
 
-export default createCivicPage("/discovery");
+export const metadata = buildPageMetadata({
+  title: "Discovery",
+});
+
+export default function DiscoveryPage() {
+  return <Discovery />;
+}

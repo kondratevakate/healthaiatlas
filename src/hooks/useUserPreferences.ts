@@ -2,7 +2,7 @@
 // Manages localStorage tracking for retention loop
 
 import { useState, useEffect, useCallback } from 'react';
-import { PathRole, UserFollowPreferences } from '@/civic/types/research';
+import { PathRole, UserFollowPreferences } from '@/types/research';
 
 const STORAGE_KEY = 'ai-health-navigator-preferences';
 

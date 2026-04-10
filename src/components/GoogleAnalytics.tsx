@@ -1,11 +1,15 @@
-import Script from 'next/script'
+import Script from "next/script";
 
 interface GoogleAnalyticsProps {
-  measurementId: string
+  measurementId: string;
 }
 
-export default function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps) {
-  if (!measurementId) return null
+export default function GoogleAnalytics({
+  measurementId,
+}: GoogleAnalyticsProps) {
+  if (!measurementId) {
+    return null;
+  }
 
   return (
     <>
@@ -22,5 +26,5 @@ export default function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps)
         `}
       </Script>
     </>
-  )
+  );
 }

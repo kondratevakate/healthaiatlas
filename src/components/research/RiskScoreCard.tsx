@@ -1,11 +1,11 @@
 ﻿// Risk Score Card Component
 // Shareable summary card showing risk assessment result
 
-import { RiskAssessment, PathRole } from '@/civic/types/research';
-import { cn } from '@/civic/lib/utils';
+import { RiskAssessment, PathRole } from '@/types/research';
+import { cn } from '@/lib/utils';
 import { AlertTriangle, CheckCircle, AlertCircle, Calendar, Share2 } from 'lucide-react';
-import { Button } from '@/civic/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/civic/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 interface RiskScoreCardProps {
   assessment: RiskAssessment;

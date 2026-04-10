@@ -1,9 +1,9 @@
 ﻿import { useState, useEffect } from 'react';
-import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { Button } from '@/civic/components/ui/button';
-import { Input } from '@/civic/components/ui/input';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ArrowRight, Bell } from 'lucide-react';
-import { toast } from '@/civic/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 export function SubscribeSection() {
   const { t, language } = useLanguage();

@@ -1,3 +1,16 @@
-import { createDynamicCivicPage } from "@/app/(civic)/_shared/page-factories";
+import Resources from "@/views/Resources";
+import { resources } from "@/data/resources";
 
-export default createDynamicCivicPage<{ id: string }>(({ id }) => `/resources/${id}`);
+export function generateStaticParams() {
+  return resources.map((resource) => ({ id: resource.id }));
+}
+
+export default async function ResourceDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  return <Resources resourceId={id} />;
+}

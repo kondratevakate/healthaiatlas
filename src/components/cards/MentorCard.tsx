@@ -1,10 +1,10 @@
-﻿import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { ThoughtLeaderProfile } from '@/civic/types';
-import { Badge } from '@/civic/components/ui/badge';
-import { Button } from '@/civic/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/civic/components/ui/avatar';
+﻿import { useLanguage } from '@/contexts/LanguageContext';
+import { ThoughtLeaderProfile } from '@/types';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Link2, MessageCircle } from 'lucide-react';
-import { cn } from '@/civic/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface MentorCardProps {
   mentor: ThoughtLeaderProfile;

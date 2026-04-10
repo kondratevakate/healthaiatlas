@@ -1,7 +1,7 @@
-﻿import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { players } from '@/civic/data/players';
-import { timelineEvents } from '@/civic/data/timeline';
-import { analysisTools } from '@/civic/data/tools';
+﻿import { useLanguage } from '@/contexts/LanguageContext';
+import { players } from '@/data/players';
+import { timelineEvents } from '@/data/timeline';
+import { analysisTools } from '@/data/tools';
 
 export function StatsSection() {
   const { t } = useLanguage();

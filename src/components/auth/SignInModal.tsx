@@ -1,18 +1,18 @@
 ﻿import { useState } from 'react';
-import { useLanguage } from '@/civic/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from './AuthContext';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/civic/components/ui/dialog';
-import { Button } from '@/civic/components/ui/button';
-import { Input } from '@/civic/components/ui/input';
-import { Label } from '@/civic/components/ui/label';
-import { Separator } from '@/civic/components/ui/separator';
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { Mail, ArrowRight } from 'lucide-react';
-import { toast } from '@/civic/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 // LinkedIn and Google icons as inline SVGs
 const LinkedInIcon = () => (

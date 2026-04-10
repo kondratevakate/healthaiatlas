@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { createCivicPage } from "@/app/(civic)/_shared/page-factories";
-import { siteName } from "@/config/site-content";
+import Contact from "@/views/Contact";
+import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: `Contact | ${siteName}`,
-  description: `Get in touch with ${siteName} - questions, feedback, or collaboration.`,
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Contact",
+  description: "Get in touch with AI Health Directory - questions, feedback, or collaboration.",
+});
 
-export default createCivicPage("/contact");
+export default function ContactPage() {
+  return <Contact />;
+}

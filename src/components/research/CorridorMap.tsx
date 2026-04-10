@@ -1,7 +1,7 @@
 ﻿import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Badge } from '@/civic/components/ui/badge';
-import { cn } from '@/civic/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 const filters = ['All', 'Oncology', 'Cosmetic', 'Fertility', 'Cardiac', 'Orthopedic'] as const;
 

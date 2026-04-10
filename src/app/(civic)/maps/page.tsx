@@ -1,3 +1,10 @@
-import { createCivicPage } from "@/app/(civic)/_shared/page-factories";
+import { buildPageMetadata } from "@/lib/metadata";
+import Maps from "@/views/Maps";
 
-export default createCivicPage("/maps");
+export const metadata = buildPageMetadata({
+  title: "Maps",
+});
+
+export default function MapsPage() {
+  return <Maps />;
+}

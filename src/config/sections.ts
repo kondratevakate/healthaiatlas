@@ -1,21 +1,3 @@
-export const siteName = "AI Health Directory";
-export const siteDescription =
-  "Civic-style directory, research paths, and curated signals for AI in the UAE healthcare ecosystem.";
-export const siteKeywords = [
-  "healthcare AI",
-  "oncology",
-  "process mining",
-  "medical tourism",
-  "digital health",
-];
-export const contactEmail = "kate@atelic.ai";
-export const analyticsEnvVar = "NEXT_PUBLIC_GA_ID";
-export const secondaryAttribution = {
-  name: "Atelic",
-  url: "https://atelic.ai",
-  label: "Published by Atelic",
-};
-
 export const primarySectionKeys = [
   "oncology",
   "processMining",
@@ -45,12 +27,6 @@ export type DirectorySection = {
   artifactType: "embedded-map" | "react-canvas";
   embedPath?: string;
   artifactPath?: string;
-};
-
-type RedirectConfig = {
-  source: string;
-  destination: string;
-  permanent: boolean;
 };
 
 export const sections = {
@@ -119,41 +95,3 @@ export const sections = {
     artifactType: "react-canvas",
   },
 } satisfies Record<PrimarySectionKey, DirectorySection>;
-
-export const legacyRedirects = [
-  {
-    source: sections.oncology.topLevelPath,
-    destination: sections.oncology.canonicalPath,
-    permanent: true,
-  },
-  {
-    source: sections.processMining.topLevelPath,
-    destination: sections.processMining.canonicalPath,
-    permanent: true,
-  },
-  {
-    source: sections.medicalTourism.topLevelPath,
-    destination: sections.medicalTourism.canonicalPath,
-    permanent: true,
-  },
-  {
-    source: "/healthcare-pm",
-    destination: sections.processMining.canonicalPath,
-    permanent: true,
-  },
-  {
-    source: "/ai-automation",
-    destination: sections.processMining.canonicalPath,
-    permanent: true,
-  },
-  {
-    source: "/funnel",
-    destination: sections.medicalTourism.canonicalPath,
-    permanent: true,
-  },
-  {
-    source: "/maps/ai-automation.html",
-    destination: "/maps/process-mining.html",
-    permanent: true,
-  },
-] as const satisfies readonly RedirectConfig[];

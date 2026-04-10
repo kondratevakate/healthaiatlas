@@ -1,11 +1,11 @@
 ﻿// Follow Button Component
 // Allows users to follow/unfollow paths for dashboard updates
 
-import { Button } from '@/civic/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Bell, BellOff, Check } from 'lucide-react';
-import { PathRole } from '@/civic/types/research';
-import { useUserPreferences } from '@/civic/hooks/useUserPreferences';
-import { cn } from '@/civic/lib/utils';
+import { PathRole } from '@/types/research';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
+import { cn } from '@/lib/utils';
 
 interface FollowButtonProps {
   role: PathRole;

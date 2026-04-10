@@ -1,5 +1,5 @@
 ﻿import { ExternalLink, PenLine, Plus } from 'lucide-react';
-import { SUGGEST_ENTRY_URL, SUGGEST_CORRECTION_URL, LAST_UPDATED } from '@/civic/data/constants';
+import { SUGGEST_ENTRY_URL, SUGGEST_CORRECTION_URL, LAST_UPDATED } from '@/data/constants';
 import { format, parseISO } from 'date-fns';
 
 interface LastUpdatedProps {

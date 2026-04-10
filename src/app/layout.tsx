@@ -1,26 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
-import {
-  analyticsEnvVar,
-  siteDescription,
-  siteKeywords,
-  siteName,
-} from "@/config/site-content";
+import { analyticsEnvVar } from "@/config/site";
+import { buildSiteMetadata } from "@/lib/metadata";
 
 const GA_MEASUREMENT_ID = process.env[analyticsEnvVar] || "";
 
-export const metadata: Metadata = {
-  title: siteName,
-  description: siteDescription,
-  keywords: siteKeywords,
-  authors: [{ name: siteName }],
-  openGraph: {
-    title: siteName,
-    description: siteDescription,
-    type: "website",
-  },
-};
+export const metadata: Metadata = buildSiteMetadata();
 
 export default function RootLayout({
   children,
@@ -29,10 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <head>
+      <body className="min-h-full">
+        {children}
         <GoogleAnalytics measurementId={GA_MEASUREMENT_ID} />
-      </head>
-      <body className="min-h-full">{children}</body>
+      </body>
     </html>
   );
 }

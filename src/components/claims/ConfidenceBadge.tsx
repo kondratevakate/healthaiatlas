@@ -1,8 +1,8 @@
-﻿import { Claim, Evidence, EvidencePolicy, PREDICATE_EVIDENCE_POLICY } from '@/civic/types/claims';
-import { Badge } from '@/civic/components/ui/badge';
+﻿import { Claim, Evidence, EvidencePolicy, PREDICATE_EVIDENCE_POLICY } from '@/types/claims';
+import { Badge } from '@/components/ui/badge';
 import { ShieldCheck, ShieldAlert, Shield } from 'lucide-react';
-import { cn } from '@/civic/lib/utils';
-import { evidence as allEvidence } from '@/civic/data/evidence';
+import { cn } from '@/lib/utils';
+import { evidence as allEvidence } from '@/data/evidence';
 
 type Level = 'high' | 'medium' | 'low';
 

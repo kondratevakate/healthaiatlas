@@ -1,3 +1,10 @@
-import { createCivicPage } from "@/app/(civic)/_shared/page-factories";
+import { buildPageMetadata } from "@/lib/metadata";
+import Context from "@/views/Context";
 
-export default createCivicPage("/context");
+export const metadata = buildPageMetadata({
+  title: "Context",
+});
+
+export default function ContextPage() {
+  return <Context />;
+}

@@ -1,3 +1,16 @@
-import { createDynamicCivicPage } from "@/app/(civic)/_shared/page-factories";
+import { analysisTools } from "@/data/tools";
+import Tools from "@/views/Tools";
 
-export default createDynamicCivicPage<{ id: string }>(({ id }) => `/tools/${id}`);
+export function generateStaticParams() {
+  return analysisTools.map((tool) => ({ id: tool.id }));
+}
+
+export default async function ToolDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  return <Tools toolId={id} />;
+}

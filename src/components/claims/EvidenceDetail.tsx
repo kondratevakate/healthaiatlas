@@ -1,7 +1,7 @@
-﻿import { Evidence } from '@/civic/types/claims';
-import { Badge } from '@/civic/components/ui/badge';
+﻿import { Evidence } from '@/types/claims';
+import { Badge } from '@/components/ui/badge';
 import { ExternalLink, Calendar, Lock, Globe } from 'lucide-react';
-import { cn } from '@/civic/lib/utils';
+import { cn } from '@/lib/utils';
 
 const sourceLabels: Record<string, string> = {
   official_registry: 'Official Registry',

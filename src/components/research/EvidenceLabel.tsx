@@ -1,8 +1,8 @@
 ﻿// Evidence Level Label Component
 // Shows the ladder of evidence: Official > Observed > Anecdotal > Inference
 
-import { EvidenceLevel } from '@/civic/types/research';
-import { cn } from '@/civic/lib/utils';
+import { EvidenceLevel } from '@/types/research';
+import { cn } from '@/lib/utils';
 import { FileText, Eye, MessageCircle, Lightbulb } from 'lucide-react';
 
 interface EvidenceLabelProps {

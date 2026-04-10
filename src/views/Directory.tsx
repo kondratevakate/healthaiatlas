@@ -1,5 +1,7 @@
+'use client';
+
 import { useEffect, useState, type ElementType } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
   Building2,
@@ -14,29 +16,30 @@ import {
   ShieldCheck,
   Users,
 } from 'lucide-react';
-import { sections, type DirectorySection as MaterialSection } from '@/config/site-content';
-import { ClaimCard } from '@/civic/components/claims';
-import { SystemDiagram } from '@/civic/components/home/SystemDiagram';
-import { Layout } from '@/civic/components/layout';
-import { CorridorMap } from '@/civic/components/research/CorridorMap';
-import { LastUpdated } from '@/civic/components/shared/LastUpdated';
-import { Badge } from '@/civic/components/ui/badge';
-import { Button } from '@/civic/components/ui/button';
+import { sections, type DirectorySection as MaterialSection } from '@/config/sections';
+import { normalizeDomainId } from '@/lib/directory';
+import { EmbeddedMapFrame } from '@/components/EmbeddedMapFrame';
+import { ClaimCard } from '@/components/claims';
+import { SystemDiagram } from '@/components/home/SystemDiagram';
+import { CorridorMap } from '@/components/research/CorridorMap';
+import { LastUpdated } from '@/components/shared/LastUpdated';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@/civic/components/ui/sheet';
-import { Tabs, TabsList, TabsTrigger } from '@/civic/components/ui/tabs';
-import { useLanguage } from '@/civic/contexts/LanguageContext';
-import { claims } from '@/civic/data/claims';
-import { SUGGEST_ENTRY_URL } from '@/civic/data/constants';
-import { domains } from '@/civic/data/domains';
-import { players } from '@/civic/data/players';
-import { cn } from '@/civic/lib/utils';
-import { Player } from '@/civic/types';
+} from '@/components/ui/sheet';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { claims } from '@/data/claims';
+import { SUGGEST_ENTRY_URL } from '@/data/constants';
+import { domains } from '@/data/domains';
+import { players } from '@/data/players';
+import { cn } from '@/lib/utils';
+import { Player } from '@/types';
 
 type DomainMaterialId = 'oncology' | 'process-mining' | 'medical-tourism';
 
@@ -68,10 +71,6 @@ const domainMaterials: Record<DomainMaterialId, MaterialSection> = {
   'process-mining': sections.processMining,
   'medical-tourism': sections.medicalTourism,
 };
-
-function normalizeDomainId(id?: string) {
-  return id && domains.some((domain) => domain.id === id) ? id : 'overview';
-}
 
 function getMaterialSection(domainId: string) {
   return domainMaterials[domainId as DomainMaterialId] ?? null;
@@ -157,7 +156,8 @@ function DomainMaterialSection({
   playerCount: number;
   section: MaterialSection;
 }) {
-  const isEmbeddedMap = section.artifactType === 'embedded-map' && section.embedPath;
+  const embeddedMapPath =
+    section.artifactType === 'embedded-map' ? section.embedPath : undefined;
 
   return (
     <section className="mt-20 border-t border-border pt-16" id="material">
@@ -204,14 +204,14 @@ function DomainMaterialSection({
         </div>
 
         <div className="border border-border bg-secondary/20 p-4 md:p-6">
-          {isEmbeddedMap ? (
+          {embeddedMapPath ? (
             <>
               <div className="mb-4 flex items-center justify-between gap-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   Embedded research map
                 </p>
                 <a
-                  href={section.embedPath}
+                  href={embeddedMapPath}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
@@ -220,14 +220,10 @@ function DomainMaterialSection({
                   <ExternalLink className="h-4 w-4" />
                 </a>
               </div>
-              <div className="artifact-viewport overflow-hidden border border-border bg-white">
-                <iframe
-                  className="h-[58rem] w-full border-0 bg-white"
-                  loading="lazy"
-                  src={section.embedPath}
-                  title={`${section.title} material`}
-                />
-              </div>
+              <EmbeddedMapFrame
+                src={embeddedMapPath}
+                title={`${section.title} material`}
+              />
             </>
           ) : (
             <>
@@ -372,16 +368,19 @@ function EntityDetail({
   );
 }
 
-const Directory = () => {
+interface DirectoryProps {
+  domainId: string;
+}
+
+const Directory = ({ domainId }: DirectoryProps) => {
   const { t, language } = useLanguage();
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const [activeDomainId, setActiveDomainId] = useState<string>(() => normalizeDomainId(id));
+  const router = useRouter();
+  const [activeDomainId, setActiveDomainId] = useState<string>(() => normalizeDomainId(domainId));
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
   useEffect(() => {
-    setActiveDomainId(normalizeDomainId(id));
-  }, [id]);
+    setActiveDomainId(normalizeDomainId(domainId));
+  }, [domainId]);
 
   const activeDomain = domains.find((domain) => domain.id === activeDomainId);
   const activeMaterial = getMaterialSection(activeDomainId);
@@ -400,7 +399,7 @@ const Directory = () => {
 
   const handleDomainChange = (domainId: string) => {
     setActiveDomainId(domainId);
-    navigate(domainId === 'overview' ? '/directory' : `/directory/${domainId}`);
+    router.push(domainId === 'overview' ? '/directory' : `/directory/${domainId}`);
   };
 
   const renderDomainDiagram = () => {
@@ -418,7 +417,7 @@ const Directory = () => {
   };
 
   return (
-    <Layout>
+    <>
       <div className="container py-16 md:py-24">
         <Tabs value={activeDomainId} onValueChange={handleDomainChange} className="mb-10">
           <TabsList className="h-auto flex-wrap gap-1 border border-border bg-secondary/50 p-1.5">
@@ -608,7 +607,7 @@ const Directory = () => {
           ) : null}
         </SheetContent>
       </Sheet>
-    </Layout>
+    </>
   );
 };
 

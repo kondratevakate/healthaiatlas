@@ -1,5 +1,5 @@
-import CivicRouteBridge from "@/components/CivicRouteBridge";
-import { domains } from "@/civic/data/domains";
+import Directory from "@/views/Directory";
+import { directoryDetailDomainIds, normalizeDomainId } from "@/lib/directory";
 
 type CivicDirectoryPageProps = {
   params: Promise<{
@@ -7,14 +7,10 @@ type CivicDirectoryPageProps = {
   }>;
 };
 
-const detailDomainIds = new Set(
-  domains.filter((domain) => domain.id !== "overview").map((domain) => domain.id),
-);
-
 export function generateStaticParams() {
   return [
     {},
-    ...Array.from(detailDomainIds).map((id) => ({
+    ...Array.from(directoryDetailDomainIds).map((id) => ({
       slug: [id],
     })),
   ];
@@ -25,8 +21,7 @@ export default async function CivicDirectoryPage({
 }: CivicDirectoryPageProps) {
   const { slug } = await params;
   const requestedId = slug?.[0];
-  const isKnownDetail = requestedId ? detailDomainIds.has(requestedId) : false;
-  const initialPath = isKnownDetail ? `/directory/${requestedId}` : "/directory";
+  const domainId = normalizeDomainId(requestedId);
 
-  return <CivicRouteBridge initialPath={initialPath} />;
+  return <Directory domainId={domainId} />;
 }

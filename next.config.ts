@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { legacyRedirects } from "./src/config/site-content";
+import { legacyRedirects } from "./src/config/routes";
 
 const nextConfig: NextConfig = {
   async redirects() {

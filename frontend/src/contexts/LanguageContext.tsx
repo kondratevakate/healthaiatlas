@@ -1,0 +1,167 @@
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+type Language = 'en' | 'ar';
+
+interface Translations {
+  [key: string]: {
+    en: string;
+    ar: string;
+  };
+}
+
+const translations: Translations = {
+  // Navigation
+  'nav.home': { en: 'Home', ar: 'الرئيسية' },
+  'nav.directory': { en: 'Directory', ar: 'الدليل' },
+  'nav.systemMaps': { en: 'System Maps', ar: 'خرائط النظام' },
+  'nav.tools': { en: 'Tools', ar: 'الأدوات' },
+  'nav.about': { en: 'About', ar: 'حول' },
+  'nav.discovery': { en: 'Discovery', ar: 'اكتشاف' },
+  'nav.newsfeed': { en: 'Newsfeed', ar: 'آخر الأخبار' },
+  'nav.context': { en: 'Context', ar: 'السياق' },
+  
+  // Hero
+  'hero.subtitle': { 
+    en: 'A knowledge bank exploring the ecosystem of AI in healthcare—mapping players, analyzing systems, and understanding the structures shaping the future of medicine.', 
+    ar: 'بنك معرفي يستكشف منظومة الذكاء الاصطناعي في الرعاية الصحية — رسم خريطة اللاعبين، تحليل الأنظمة، وفهم الهياكل التي تشكل مستقبل الطب.' 
+  },
+  'hero.exploreDirectory': { en: 'Explore Directory', ar: 'استكشف الدليل' },
+  'hero.viewMaps': { en: 'View System Maps', ar: 'عرض خرائط النظام' },
+  
+  // Persona Section
+  'persona.sectionTitle': { en: 'How can we help you?', ar: 'كيف يمكننا مساعدتك؟' },
+  'persona.sectionSubtitle': { 
+    en: 'Select your role to get personalized guidance, resources, and AI-powered assistance tailored to your needs.', 
+    ar: 'اختر دورك للحصول على إرشادات مخصصة وموارد ومساعدة مدعومة بالذكاء الاصطناعي مصممة لاحتياجاتك.' 
+  },
+
+  // Mentor Card
+  'mentor.openForMentorship': { en: 'Open for Mentorship', ar: 'متاح للإرشاد' },
+  'mentor.contact': { en: 'Contact', ar: 'تواصل' },
+
+  // Sections
+  'section.entryPoints': { en: 'Entry Points', ar: 'نقاط الدخول' },
+  'section.featuredPlayers': { en: 'Featured Players', ar: 'اللاعبون المميزون' },
+  'section.analysisMethods': { en: 'Analysis Methods', ar: 'طرق التحليل' },
+  
+  // Entry Points
+  'entry.directory.desc': { en: 'Explore organizations in the AI health ecosystem', ar: 'استكشف المنظمات في منظومة الذكاء الاصطناعي الصحي' },
+  'entry.tools.title': { en: 'Tools & Frameworks', ar: 'الأدوات والأطر' },
+  'entry.tools.desc': { en: 'Methodologies for systems analysis', ar: 'منهجيات لتحليل الأنظمة' },
+  
+  // Stats
+  'stats.countries': { en: 'Countries', ar: 'الدول' },
+  
+  // Player Types
+  'type.startup': { en: 'Startup', ar: 'شركة ناشئة' },
+  'type.hospital': { en: 'Hospital', ar: 'مستشفى' },
+  'type.government': { en: 'Government', ar: 'حكومة' },
+  'type.research': { en: 'Research', ar: 'بحث' },
+  'type.enterprise': { en: 'Enterprise', ar: 'مؤسسة' },
+  'type.accelerator': { en: 'Accelerator', ar: 'مسرعة أعمال' },
+  'type.investor': { en: 'Investor', ar: 'مستثمر' },
+  
+  // System Roles
+  'role.goal': { en: 'Goal', ar: 'هدف' },
+  'role.impact': { en: 'Impact', ar: 'تأثير' },
+  'role.affordance': { en: 'Affordance', ar: 'إمكانية' },
+  'role.feature': { en: 'Feature', ar: 'ميزة' },
+  
+  // Actions
+  'action.viewAll': { en: 'View All', ar: 'عرض الكل' },
+  'action.explore': { en: 'Explore', ar: 'استكشف' },
+  
+  // About
+  'about.mission': { en: 'Our Mission', ar: 'مهمتنا' },
+  'about.missionText': { 
+    en: 'To map and analyze the AI healthcare ecosystem, making complex systems accessible through interactive tools and visualizations.', 
+    ar: 'رسم خريطة وتحليل منظومة الذكاء الاصطناعي في الرعاية الصحية، وجعل الأنظمة المعقدة متاحة من خلال أدوات وتصورات تفاعلية.' 
+  },
+  'about.methodology': { en: 'Methodology', ar: 'المنهجية' },
+  'about.contact': { en: 'Contact Us', ar: 'اتصل بنا' },
+  
+  // Footer
+  'footer.rights': { en: 'All rights reserved', ar: 'جميع الحقوق محفوظة' },
+  'footer.tagline': { en: 'A Knowledge Bank for AI in Healthcare', ar: 'بنك معرفي للذكاء الاصطناعي في الرعاية الصحية' },
+  'footer.privacy': { en: 'Privacy Policy', ar: 'سياسة الخصوصية' },
+  'footer.terms': { en: 'Terms of Use', ar: 'شروط الاستخدام' },
+
+  // Header
+  'header.subscribe': { en: 'Subscribe', ar: 'اشترك' },
+
+  // Auth Modal
+  'auth.signInTo': { en: 'Sign in to', ar: 'تسجيل الدخول إلى' },
+  'auth.createAccount': { en: 'Create your account', ar: 'إنشاء حسابك' },
+  'auth.name': { en: 'Full Name', ar: 'الاسم الكامل' },
+  'auth.namePlaceholder': { en: 'Enter your name', ar: 'أدخل اسمك' },
+  'auth.email': { en: 'Email address', ar: 'البريد الإلكتروني' },
+  'auth.emailPlaceholder': { en: 'you@example.com', ar: 'you@example.com' },
+  'auth.continueWithEmail': { en: 'Continue with Email', ar: 'المتابعة بالبريد الإلكتروني' },
+  'auth.continueWithLinkedIn': { en: 'Continue with LinkedIn', ar: 'المتابعة عبر LinkedIn' },
+  'auth.continueWithGoogle': { en: 'Continue with Google', ar: 'المتابعة عبر Google' },
+  'auth.or': { en: 'or', ar: 'أو' },
+  'auth.noAccount': { en: "Don't have an account?", ar: 'ليس لديك حساب؟' },
+  'auth.signUp': { en: 'Sign up', ar: 'إنشاء حساب' },
+  'auth.haveAccount': { en: 'Already have an account?', ar: 'لديك حساب بالفعل؟' },
+  'auth.signIn': { en: 'Sign in', ar: 'تسجيل الدخول' },
+  'auth.welcomeBack': { en: 'Welcome back!', ar: 'مرحباً بعودتك!' },
+  'auth.signedInSuccessfully': { en: 'You have signed in successfully.', ar: 'تم تسجيل دخولك بنجاح.' },
+  'auth.welcome': { en: 'Welcome!', ar: 'مرحباً!' },
+  'auth.accountCreated': { en: 'Your account has been created.', ar: 'تم إنشاء حسابك.' },
+  'auth.signedInWith': { en: 'Signed in with', ar: 'تم تسجيل الدخول عبر' },
+
+  // Subscribe Section
+  'subscribe.title': { en: 'Get weekly insights on AI healthcare in the UAE', ar: 'احصل على رؤى أسبوعية حول الذكاء الاصطناعي في الرعاية الصحية بالإمارات' },
+  'subscribe.emailPlaceholder': { en: 'Enter your email', ar: 'أدخل بريدك الإلكتروني' },
+
+  // Leaders Cloud Section
+  'leaders.badge': { en: 'Thought Leaders', ar: 'قادة الفكر' },
+  'leaders.title': { en: 'Connect with the minds shaping AI healthcare', ar: 'تواصل مع العقول التي تشكّل الذكاء الاصطناعي في الرعاية الصحية' },
+  'leaders.subtitle': { en: 'Our network of mentors, investors, and experts are here to help you succeed.', ar: 'شبكتنا من المرشدين والمستثمرين والخبراء هنا لمساعدتك على النجاح.' },
+  'leaders.findMentor': { en: 'Find a Mentor', ar: 'ابحث عن مرشد' },
+  'leaders.becomeMentor': { en: 'Become a Mentor', ar: 'كن مرشداً' },
+  'leaders.openForMentorship': { en: 'Open for Mentorship', ar: 'متاح للإرشاد' },
+};
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+  isRTL: boolean;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>('en');
+
+  const isRTL = language === 'ar';
+
+  useEffect(() => {
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language, isRTL]);
+
+  const t = (key: string): string => {
+    const translation = translations[key];
+    if (!translation) {
+      console.warn(`Missing translation for key: ${key}`);
+      return key;
+    }
+    return translation[language];
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t, isRTL }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+}

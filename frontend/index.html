@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Health AI Atlas — UAE Healthcare AI Navigator</title>
+    <meta name="description" content="Research-driven navigator for the UAE healthcare AI ecosystem. Paths for founders, job seekers, businesses, and clinicians." />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Health AI Atlas — UAE Healthcare AI Navigator" />
+    <meta property="og:description" content="Research-driven navigator for the UAE healthcare AI ecosystem." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Health AI Atlas — UAE Healthcare AI Navigator" />
+    <meta name="twitter:description" content="Research-driven navigator for the UAE healthcare AI ecosystem." />
+    <meta name="twitter:image" content="/og-image.svg" />
+
+    <!-- Google Analytics -->
+    <script>
+      (function () {
+        var gaId = "%VITE_GA_ID%";
+        if (!gaId || gaId.indexOf("VITE_GA_ID") !== -1) return;
+        var s = document.createElement("script");
+        s.async = true;
+        s.src = "https://www.googletagmanager.com/gtag/js?id=" + gaId;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ window.dataLayer.push(arguments); }
+        gtag("js", new Date());
+        gtag("config", gaId);
+        window.gtag = gtag;
+      })();
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,66 +1,56 @@
 # Health AI Atlas
 
-Curated maps and analysis of AI in healthcare — oncology, process mining, and medical tourism.
+Research-driven navigator for the UAE healthcare AI ecosystem. Paths for founders, job seekers, businesses, and clinicians; directory of players, claims, and domains (oncology, process mining, medical tourism, clinical AI).
 
-## Tech Stack
+## Monorepo layout
 
-- Next.js 16 (App Router)
-- Tailwind CSS v4
-- TypeScript
-
-## Development
-
-```bash
-npm install
-npm run dev
+```
+healthaiatlas/
+├── frontend/     # Vite + React 18 SPA (mirror of civic-design-compass)
+├── backend/      # TBD — not yet implemented
+├── ansible/      # one-shot EC2 provisioning for nginx static hosting
+├── scripts/      # sync-from-civic.sh and friends
+└── .github/workflows/deploy.yml
 ```
 
-Open http://localhost:3000
+## Working on the frontend
 
-## Routes
-
-- `/` — Landing page
-- `/oncology` — Oncology
-- `/process-mining` — Process Mining
-- `/medical-tourism` — Medical Tourism
-- `/contact` — Contact
-
-Legacy routes kept as redirects:
-
-- `/ai-automation` → `/process-mining`
-- `/healthcare-pm` → `/process-mining`
-- `/funnel` → `/medical-tourism`
-
-## Embedded Maps
-
-The oncology and process-mining sections are currently static HTML artifacts embedded by thin page shells:
-
-- `public/maps/oncology.html`
-- `public/maps/process-mining.html`
-
-Those assets are rendered through:
-
-- `src/app/oncology/page.tsx`
-- `src/app/process-mining/page.tsx`
-
-`/medical-tourism` remains a React page and is intentionally outside the embedded-map migration boundary for now.
-
-## Environment
-
-The only documented runtime environment variable at the moment is:
+Frontend changes are made in the sister repo [`civic-design-compass`](../civic-design-compass) (Lovable-backed, designer-friendly) and pulled into this repo via:
 
 ```bash
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+./scripts/sync-from-civic.sh
+git diff frontend/
+git add frontend/
+git commit -m "Sync frontend from civic-design-compass"
 ```
 
-If `NEXT_PUBLIC_GA_ID` is unset, Google Analytics stays disabled.
+See [`frontend/README.md`](frontend/README.md) for local dev.
 
 ## Deploy
 
-Deployment is handled by GitHub Actions in `.github/workflows/deploy.yml`.
+- Push to `main` → production (`/var/www/healthaiatlas/`)
+- Push to `dev` → staging (`/var/www/healthaiatlas-dev/`)
 
-- Pushes to `main` deploy to `/home/ubuntu/healthaiatlas`
-- Pushes to `dev` deploy to `/home/ubuntu/healthaiatlas-dev`
-- The workflow runs `npm ci`, `npm run build`, and restarts the matching `systemd` service over SSH
+CI builds `frontend/dist/` and rsyncs to the EC2 host. Nginx (configured via `ansible/playbook.yml`) serves the static files with SPA fallback.
 
-The old PM2-based flow is no longer the source of truth for deployment.
+First-time server setup:
+
+```bash
+export DEPLOY_HOST=... DEPLOY_USER=ubuntu DEPLOY_SSH_KEY_PATH=~/.ssh/deploy.key
+ansible-playbook -i ansible/inventory.yml ansible/playbook.yml \
+  -e prod_domain=<prod-domain> -e dev_domain=<dev-domain>
+# Then, manually: sudo certbot --nginx -d <prod-domain> -d <dev-domain>
+```
+
+See [`ansible/README.md`](ansible/README.md) for details.
+
+## Environment variables
+
+Build-time (pass via CI secret or `frontend/.env.local`):
+
+- `VITE_GA_ID` — Google Analytics measurement ID. Optional; GA is silently disabled if unset.
+
+GitHub Actions secrets required:
+
+- `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_PORT`, `DEPLOY_SSH_KEY`
+- `VITE_GA_ID`

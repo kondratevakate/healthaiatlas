@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    .fg { fill: #000; stroke: #000; }
+    @media (prefers-color-scheme: dark) {
+      .fg { fill: #fff; stroke: #fff; }
+    }
+  </style>
+
+  <!-- Concentric rings (simplified from HeroDiagram) -->
+  <circle cx="50" cy="50" r="40" fill="none" class="fg" stroke-width="3" opacity="0.15"/>
+  <circle cx="50" cy="50" r="28" fill="none" class="fg" stroke-width="3.5" opacity="0.35"/>
+  <circle cx="50" cy="50" r="16" fill="none" class="fg" stroke-width="4" opacity="0.65"/>
+
+  <!-- Central node -->
+  <circle cx="50" cy="50" r="4.5" class="fg"/>
+
+  <!-- Three satellite nodes -->
+  <circle cx="50" cy="10" r="5" class="fg"/>
+  <circle cx="86" cy="64" r="5" class="fg"/>
+  <circle cx="18" cy="68" r="5" class="fg"/>
+</svg>

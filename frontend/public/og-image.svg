@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+
+  <!-- Diagram: concentric rings on the left side.
+       SVG group translated so the diagram is centered at (320, 315) and scales from a 100x100 HeroDiagram viewBox. -->
+  <g transform="translate(320 315) scale(4.2)">
+    <g transform="translate(-50 -50)">
+      <!-- Rings -->
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#000" stroke-width="0.6" opacity="0.08"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#000" stroke-width="0.7" opacity="0.11"/>
+      <circle cx="50" cy="50" r="27" fill="none" stroke="#000" stroke-width="0.85" opacity="0.16"/>
+      <circle cx="50" cy="50" r="20" fill="none" stroke="#000" stroke-width="1.0" opacity="0.24"/>
+      <circle cx="50" cy="50" r="12" fill="none" stroke="#000" stroke-width="1.2" opacity="0.38"/>
+
+      <!-- Center -->
+      <circle cx="50" cy="50" r="1.6" fill="#000"/>
+
+      <!-- Satellite nodes (matching HeroDiagram positions) -->
+      <!-- regulators: r=20, angle=-60 -> (50 + 20*cos(-150°), 50 + 20*sin(-150°)) -->
+      <circle cx="32.68" cy="40" r="1.6" fill="#000"/>
+      <!-- hospitals: r=27, angle=10 -> (50 + 27*cos(-80°), 50 + 27*sin(-80°)) -->
+      <circle cx="54.69" cy="23.41" r="1.6" fill="#000"/>
+      <!-- startups: r=34, angle=70 -> (50 + 34*cos(-20°), 50 + 34*sin(-20°)) -->
+      <circle cx="81.95" cy="38.37" r="1.6" fill="#000"/>
+      <!-- research: r=27, angle=150 -> (50 + 27*cos(60°), 50 + 27*sin(60°)) -->
+      <circle cx="63.5" cy="73.38" r="1.6" fill="#000"/>
+      <!-- data: r=40, angle=210 -> (50 + 40*cos(120°), 50 + 40*sin(120°)) -->
+      <circle cx="30" cy="84.64" r="1.6" fill="#000"/>
+      <!-- investors: r=34, angle=-30 -> (50 + 34*cos(-120°), 50 + 34*sin(-120°)) -->
+      <circle cx="33" cy="20.56" r="1.6" fill="#000"/>
+    </g>
+  </g>
+
+  <!-- Right-side text column -->
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" fill="#000">
+    <!-- Small kicker -->
+    <text x="640" y="240" font-size="18" font-weight="500" letter-spacing="3" fill="#555">
+      RESEARCH NAVIGATOR
+    </text>
+
+    <!-- Main title -->
+    <text x="640" y="310" font-size="72" font-weight="600" letter-spacing="-1">
+      Health AI Atlas
+    </text>
+
+    <!-- Subtitle -->
+    <text x="640" y="370" font-size="28" font-weight="400" fill="#444">
+      UAE Healthcare AI Navigator
+    </text>
+
+    <!-- Bottom: divider + url -->
+    <line x1="640" y1="430" x2="740" y2="430" stroke="#000" stroke-width="1.2"/>
+    <text x="640" y="475" font-size="18" font-weight="400" fill="#666">
+      Founders · Job Seekers · Businesses · Clinicians
+    </text>
+    <text x="640" y="560" font-size="16" font-weight="500" letter-spacing="1" fill="#888">
+      healthaiatlas
+    </text>
+  </g>
+</svg>

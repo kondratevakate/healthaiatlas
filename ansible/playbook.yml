@@ -1,0 +1,101 @@
+---
+# Bootstrap EC2 host for healthaiatlas static deployment.
+#
+# Env vars required:
+#   DEPLOY_HOST, DEPLOY_USER, DEPLOY_PORT, DEPLOY_SSH_KEY_PATH
+#
+# Override domain defaults on the command line:
+#   ansible-playbook -i ansible/inventory.yml ansible/playbook.yml \
+#     -e prod_domain=healthaiatlas.ae -e dev_domain=dev.healthaiatlas.ae
+
+- hosts: healthaiatlas
+  become: true
+
+  vars:
+    prod_domain: healthaiatlas.example.com
+    dev_domain: dev.healthaiatlas.example.com
+    prod_root: /var/www/healthaiatlas
+    dev_root: /var/www/healthaiatlas-dev
+    deploy_user: "{{ ansible_user }}"
+
+  tasks:
+    - name: Ensure nginx is installed
+      apt:
+        name: nginx
+        state: present
+        update_cache: true
+
+    - name: Stop and disable legacy Next.js services
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+      loop:
+        - healthaiatlas-main.service
+        - healthaiatlas-dev.service
+      register: legacy_services
+      failed_when:
+        - legacy_services.failed is defined
+        - legacy_services.failed
+        - "'Could not find the requested service' not in (legacy_services.msg | default(''))"
+
+    - name: Ensure static document roots exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ deploy_user }}"
+        group: "{{ deploy_user }}"
+        mode: "0755"
+      loop:
+        - "{{ prod_root }}"
+        - "{{ dev_root }}"
+
+    - name: Install nginx vhost for production
+      template:
+        src: templates/healthaiatlas.nginx.j2
+        dest: /etc/nginx/sites-available/healthaiatlas
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        server_name: "{{ prod_domain }}"
+        doc_root: "{{ prod_root }}"
+      notify: reload nginx
+
+    - name: Install nginx vhost for staging
+      template:
+        src: templates/healthaiatlas.nginx.j2
+        dest: /etc/nginx/sites-available/healthaiatlas-dev
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        server_name: "{{ dev_domain }}"
+        doc_root: "{{ dev_root }}"
+      notify: reload nginx
+
+    - name: Enable vhosts
+      file:
+        src: "/etc/nginx/sites-available/{{ item }}"
+        dest: "/etc/nginx/sites-enabled/{{ item }}"
+        state: link
+      loop:
+        - healthaiatlas
+        - healthaiatlas-dev
+      notify: reload nginx
+
+    - name: Remove default nginx vhost
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: reload nginx
+
+    - name: Validate nginx config
+      command: nginx -t
+      changed_when: false
+
+  handlers:
+    - name: reload nginx
+      systemd:
+        name: nginx
+        state: reloaded

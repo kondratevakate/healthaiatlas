@@ -56,19 +56,11 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link 
-                    to="/directory" 
+                  <Link
+                    to="/directory"
                     className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
                   >
                     {t('nav.directory')}
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    to="/maps" 
-                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
-                  >
-                    {t('nav.systemMaps')}
                   </Link>
                 </li>
               </ul>
@@ -102,14 +94,6 @@ export function Footer() {
                     className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
                   >
                     {language === 'en' ? 'Context' : 'السياق'}
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    to="/tools" 
-                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
-                  >
-                    {t('nav.tools')}
                   </Link>
                 </li>
               </ul>

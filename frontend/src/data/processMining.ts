@@ -2,6 +2,7 @@
 
 export interface PMEvent {
   d: string; v: string; t: string; h: string; x: string; a: number; dead?: boolean;
+  src?: string; // optional verification source URL
 }
 
 export interface PMEvidence {
@@ -85,7 +86,7 @@ export const PM_EVENTS: PMEvent[] = [
   {d:'2021-01',v:'Skan.ai',t:'Funding',h:'Series A $14M',x:'Cathay Innovation',a:14},
   {d:'2021-04',v:'IBM',t:'Acquisition',h:'← myInvenio',x:'Italian PM→watsonx',a:50},
   {d:'2021-05',v:'Hyro',t:'Funding',h:'Series A $10.5M',x:'Spero+Twilio',a:10.5},
-  {d:'2021-06',v:'Celonis',t:'Funding',h:'Series D $1B',x:'$11B val. Durable Capital',a:1000},
+  {d:'2021-06',v:'Celonis',t:'Funding',h:'Series D $1B',x:'$11B val. Durable Capital + T. Rowe Price co-led',a:1000,src:'https://techcrunch.com/2021/06/02/celonis-snares-1b-series-d-on-11b-valuation/'},
   {d:'2021-06',v:'KYP.ai',t:'Funding',h:'Pre-seed ~€2M',x:'42CAP',a:2},
   {d:'2021-06',v:'Thoughtful AI',t:'Funding',h:'Seed 1',x:'Drive Capital. RCM agents',a:5},
   {d:'2021-08',v:'Appian',t:'Acquisition',h:'← LANA Labs',x:'Berlin PM',a:50},
@@ -107,18 +108,18 @@ export const PM_EVENTS: PMEvent[] = [
   {d:'2023-06',v:'Apromore',t:'Customer_Case',h:'Melbourne ACS',x:'Variant analysis',a:0},
   {d:'2023-09',v:'KYP.ai',t:'Funding',h:'Series A €17.5M',x:'OTB Ventures',a:17.5},
   {d:'2023-10',v:'Waystar',t:'Acquisition',h:'← Olive assets',x:'Fire sale from $4B',a:50},
-  {d:'2023-10',v:'Olive AI',t:'Shutdown',h:'SHUTDOWN $902M→0',x:'All investors lost',a:0},
+  {d:'2023-10',v:'Olive AI',t:'Shutdown',h:'SHUTDOWN $902M→0',x:'All investors lost. Clearinghouse sold to Waystar, PA to Humata',a:0,src:'https://www.healthcaredive.com/news/olive-ai-shuts-down/698455/'},
   {d:'2023-12',v:'Celonis',t:'Customer_Case',h:'UHCW NHS -5300',x:'£2.8M/yr',a:0},
   {d:'2024-02',v:'AgentAI',t:'Funding',h:'Seed $1.8M',x:'Oceans Ventures',a:1.8},
   {d:'2024-04',v:'IBM+Celonis',t:'Customer_Case',h:'UHCW +700 pts/wk',x:'IBM Garage+watsonx',a:0},
   {d:'2024-04',v:'SAP Signavio',t:'Customer_Case',h:'Hirslanden 1700 BPMN',x:'Swiss hospitals',a:0},
   {d:'2024-06',v:'Celonis',t:'Partnership',h:'BARMER insurer',x:'German insurer',a:0},
-  {d:'2024-06',v:'Waystar',t:'IPO',h:'IPO $968M',x:'$3.8B mkt cap',a:968},
+  {d:'2024-06',v:'Waystar',t:'IPO',h:'IPO $968M',x:'$3.69B fully diluted val. EQT+CPPIB+Bain backers',a:968,src:'https://www.fiercehealthcare.com/health-tech/healthcare-payments-tech-company-waystar-hits-public-market-raising-968m'},
   {d:'2024-07',v:'AgentAI',t:'Funding',h:'Seed Ext $4M',x:'Slow Ventures',a:4},
   {d:'2024-07',v:'Thoughtful AI',t:'Funding',h:'Series A $20M',x:'350% YoY',a:20},
   {d:'2024-07',v:'UiPath',t:'Layoffs',h:'420 jobs (10%)',x:'Restructure→AI',a:0},
   {d:'2024-08',v:'Apromore',t:'Funding',h:'B-1 $15M',x:'Bridge to SF acq',a:15},
-  {d:'2024-11',v:'R1 RCM',t:'Acquisition',h:'Take-priv $8.9B',x:'TowerBrook+CD&R',a:8900},
+  {d:'2024-11',v:'R1 RCM',t:'Acquisition',h:'Take-priv $8.9B',x:'TowerBrook+CD&R. $14.30/share, closed Nov 2024',a:8900,src:'https://www.towerbrook.com/r1-rcm-to-be-acquired-by-towerbrook-and-cdr-for-8-9-billion/'},
   {d:'2024-12',v:'Hyro',t:'Funding',h:'B ext $15M',x:'Healthier Capital',a:15},
   {d:'2025-01',v:'Celonis',t:'Customer_Case',h:'Pfizer O2C 200+',x:'Target 95% auto',a:0},
   {d:'2025-01',v:'UiPath',t:'Customer_Case',h:'Max HC -50% TAT',x:'India 14 hosp',a:0},
@@ -126,7 +127,7 @@ export const PM_EVENTS: PMEvent[] = [
   {d:'2025-04',v:'Thoughtful AI',t:'Strategic_Investment',h:'New Mountain PE',x:'$55B AUM',a:50},
   {d:'2025-05',v:'Thoughtful AI',t:'Acquisition',h:'→Smarter Tech',x:'SmarterDx+Access',a:50},
   {d:'2025-08',v:'Facere AI',t:'Funding',h:'Pre-seed',x:'IMPA Ventures',a:2},
-  {d:'2025-10',v:'Waystar',t:'Acquisition',h:'← Iodine $1.25B',x:'Clinical AI. 1K hosp',a:1250},
+  {d:'2025-10',v:'Waystar',t:'Acquisition',h:'← Iodine $1.25B',x:'Clinical AI. 1K hosp. Closed Oct 1, 2025 (announced Jul 2025)',a:1250,src:'https://www.waystar.com/news/waystar-closes-acquisition-of-iodine-software-extending-ai-leadership-in-healthcare-software/'},
   {d:'2025-10',v:'Skan.ai',t:'Acquisition',h:'← Metaculars',x:'Agentic AI',a:10},
   {d:'2025-10',v:'Hyro',t:'Funding',h:'Growth $45M',x:'$95M tot. Val doubled',a:45},
   {d:'2025-11',v:'Apromore',t:'Acquisition',h:'→ Salesforce',x:'Full acquisition',a:50},
@@ -145,10 +146,10 @@ export const PM_EVENTS: PMEvent[] = [
   {d:'2023-06',v:'Proxverse',t:'Funding',h:'A1 ~$1.4M',x:'Only Chinese PM in Gartner MQ',a:1.4},
   // Dead startups
   {d:'2023-08',v:'Babylon Health',t:'Shutdown',h:'DEAD $4.2B→£500K',x:'Chapter 7. AI was glorified decision tree',a:0,dead:true},
-  {d:'2024-11',v:'Forward Health',t:'Shutdown',h:'DEAD $1B→$0',x:'$650M burned. Only 3 CarePods built',a:0,dead:true},
+  {d:'2024-11',v:'Forward Health',t:'Shutdown',h:'DEAD $1B→$0',x:'$650M raised. Planned 3,200 CarePods in 12mo; shipped ~3-5 before collapse',a:0,dead:true,src:'https://www.fiercehealthcare.com/health-tech/primary-care-player-forward-shutters-after-raising-400m-rolling-out-carepods'},
   {d:'2023-04',v:'Pear Therapeutics',t:'Shutdown',h:'DEAD $1.6B→$6M',x:'FDA approval ≠ reimbursement',a:0,dead:true},
   {d:'2024-04',v:'Cerebral',t:'Event',h:'FTC fine $7M',x:'$4.8B peak. Shared 3.2M patients data',a:0,dead:true},
-  {d:'2025-02',v:'23andMe',t:'Shutdown',h:'DEAD $6B→Ch.11',x:'6.9M user data breach',a:0,dead:true},
+  {d:'2025-02',v:'23andMe',t:'Shutdown',h:'DEAD $6B→Ch.11',x:'6.9M user data breach. Ch.11 Mar 2025; $305M sale to TTAM Research',a:0,dead:true,src:'https://www.npr.org/2025/03/24/nx-s1-5338622/23andme-bankruptcy-genetic-data-privacy'},
   {d:'2024-03',v:'Bright Health',t:'Event',h:'$12B→$1.5B (-87%)',x:'SPAC insurtech',a:0,dead:true},
   {d:'2023-06',v:'Carbon Health',t:'Layoffs',h:'4 rounds, 500+ cut',x:'$3.3B peak',a:0,dead:true},
   {d:'2023-05',v:'Noom',t:'Layoffs',h:'500+ laid off',x:'$3.7B peak. GLP-1 drugs disrupted',a:0,dead:true},

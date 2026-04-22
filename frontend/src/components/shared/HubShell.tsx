@@ -41,7 +41,7 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
 
   return (
     <div className="border border-border bg-background">
-      <div className="border-b border-border p-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-b border-border p-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -55,7 +55,6 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <LastUpdated section={domainId} />
       </div>
 
       {children && <div className="border-b border-border p-4">{children}</div>}
@@ -80,22 +79,27 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
         ))}
       </Tabs>
 
-      {neighbors.length > 0 && (
-        <div className="border-t border-border px-4 py-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
-          <span className="uppercase tracking-widest font-mono text-[10px]">See also</span>
-          {neighbors.map((d, i) => (
-            <span key={d.id} className="inline-flex items-center gap-3">
-              {i > 0 && <span className="text-border">·</span>}
-              <Link
-                to={`/directory?domain=${d.id}`}
-                className="hover:text-foreground transition-colors"
-              >
-                {d.name[language]}
-              </Link>
-            </span>
-          ))}
-        </div>
-      )}
+      <div className="border-t border-border px-4 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-muted-foreground">
+        {neighbors.length > 0 ? (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="uppercase tracking-widest font-mono text-[10px]">See also</span>
+            {neighbors.map((d, i) => (
+              <span key={d.id} className="inline-flex items-center gap-3">
+                {i > 0 && <span className="text-border">·</span>}
+                <Link
+                  to={`/directory?domain=${d.id}`}
+                  className="hover:text-foreground transition-colors"
+                >
+                  {d.name[language]}
+                </Link>
+              </span>
+            ))}
+          </div>
+        ) : (
+          <span />
+        )}
+        <LastUpdated section={domainId} />
+      </div>
     </div>
   );
 }

@@ -60,7 +60,7 @@ const links: ContactLink[] = [
 const Contact = () => {
   return (
     <Layout>
-      <div className="container py-12 md:py-20 max-w-2xl">
+      <div className="container py-12 md:py-16 max-w-2xl">
         <PageHeader
           title="Contact"
           subtitle="Research and code by Kate Kondratieva. Health AI Atlas is an independent research project mapping the UAE healthcare AI ecosystem."

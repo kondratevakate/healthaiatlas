@@ -7,7 +7,7 @@ const LAST_UPDATED = 'April 22, 2026';
 const Privacy = () => {
   return (
     <Layout>
-      <div className="container py-12 md:py-20 max-w-3xl">
+      <div className="container py-12 md:py-16 max-w-3xl">
         <PageHeader
           title="Privacy Policy"
           subtitle={<span className="text-sm">Last updated: {LAST_UPDATED}</span>}

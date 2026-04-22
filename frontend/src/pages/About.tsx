@@ -3,8 +3,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { analysisTools } from '@/data/tools';
 import { Link } from 'react-router-dom';
-import { Mail, Globe } from 'lucide-react';
+import { Mail, Globe, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
+
+const RETHINKING_SYSTEMS_URL = 'https://www.rethinkingsystems.design/';
 
 const LinkedInMark = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
@@ -23,65 +25,17 @@ const About = () => {
 
   return (
     <Layout>
-      <div className="container py-12 md:py-20">
-        <PageHeader title={t('nav.about')} subtitle={t('about.missionText')} className="max-w-2xl" />
+      <div className="container py-12 md:py-16">
+        <PageHeader
+          title={t('nav.about')}
+          subtitle="Research and code by Kate Kondratieva — an independent mapping of the UAE healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
+        />
 
-        {/* Mission Section */}
-        <section className="mb-16">
-          <h2 className="heading-lg mb-6">{t('about.mission')}</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="border-border/50 bg-card/50">
-              <CardHeader>
-                <CardTitle className="text-lg">Knowledge Bank</CardTitle>
-                <CardDescription>
-                  We map the ecosystem of AI in healthcare, documenting players, relationships, and the
-                  evolution of the industry across regions.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card className="border-border/50 bg-card/50">
-              <CardHeader>
-                <CardTitle className="text-lg">Systems Analysis</CardTitle>
-                <CardDescription>
-                  We apply design research methodologies from the IIT Institute of Design to understand and
-                  visualize complex healthcare infrastructure.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </section>
-
-        {/* Methodology Section */}
-        <section id="methodology" className="mb-16">
-          <h2 className="heading-lg mb-6">{t('about.methodology')}</h2>
-          <p className="text-body text-muted-foreground mb-8 max-w-2xl">
-            Our analysis is grounded in frameworks developed by the ReThinking Systems initiative at IIT
-            Institute of Design, adapted for the AI health ecosystem.
-          </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {analysisTools.slice(0, 3).map((tool) => (
-              <Link key={tool.id} to={`/tools/${tool.id}`}>
-                <Card className="card-hover h-full border-border/50 bg-card/50">
-                  <CardHeader>
-                    <CardTitle className="text-base">{tool.name[language]}</CardTitle>
-                    <CardDescription className="text-sm">{tool.shortDescription[language]}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Author / Contact */}
-        <section id="contact" className="max-w-2xl">
+        {/* 1. Contacts first */}
+        <section id="contact" className="mb-16 max-w-2xl">
           <h2 className="heading-lg mb-6">{t('about.contact')}</h2>
           <Card className="border-border/50 bg-card/50">
             <CardContent className="pt-6 space-y-5">
-              <p className="text-muted-foreground">
-                Research and code by <span className="text-foreground">Kate Kondratieva</span>. Health AI
-                Atlas is an independent research project.
-              </p>
-
               <div className="flex flex-wrap gap-3">
                 <a
                   href="mailto:kondratevakate@gmail.com"
@@ -135,6 +89,71 @@ const About = () => {
               </p>
             </CardContent>
           </Card>
+        </section>
+
+        {/* 2. Tools used — frameworks from rethinkingsystems.design */}
+        <section className="mb-16">
+          <h2 className="heading-lg mb-3">Tools & frameworks used</h2>
+          <p className="text-body text-muted-foreground mb-8 max-w-2xl">
+            The Atlas is built on the{' '}
+            <a
+              href={RETHINKING_SYSTEMS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline inline-flex items-center gap-1"
+            >
+              ReThinking Systems
+              <ExternalLink className="w-3 h-3" />
+            </a>{' '}
+            frameworks (IIT Institute of Design), adapted for the AI-in-healthcare ecosystem. Each card
+            links to the original source.
+          </p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {analysisTools.slice(0, 6).map((tool) => (
+              <a
+                key={tool.id}
+                href={RETHINKING_SYSTEMS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group"
+              >
+                <Card className="card-hover h-full border-border/50 bg-card/50 group-hover:border-primary/60 transition-colors">
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-start justify-between gap-2">
+                      <span>{tool.name[language]}</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5 group-hover:text-primary transition-colors" />
+                    </CardTitle>
+                    <CardDescription className="text-sm">{tool.shortDescription[language]}</CardDescription>
+                  </CardHeader>
+                </Card>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* 3. Mission — kept at bottom as background */}
+        <section className="max-w-3xl">
+          <h2 className="heading-lg mb-6">{t('about.mission')}</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="border-border/50 bg-card/50">
+              <CardHeader>
+                <CardTitle className="text-lg">Knowledge bank</CardTitle>
+                <CardDescription>
+                  Map the ecosystem of AI in healthcare — players, relationships, and the evolution of the
+                  industry across regions.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            <Card className="border-border/50 bg-card/50">
+              <CardHeader>
+                <CardTitle className="text-lg">Systems analysis</CardTitle>
+                <CardDescription>
+                  Apply design-research methods from the IIT Institute of Design to understand and
+                  visualize complex healthcare infrastructure.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
         </section>
       </div>
     </Layout>

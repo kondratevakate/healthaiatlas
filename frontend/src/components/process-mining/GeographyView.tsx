@@ -2,7 +2,7 @@ import { PM_GEO } from '@/data/processMining';
 
 export function GeographyView() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3">
       {PM_GEO.map(g => (
         <div key={g.n} className="border border-border bg-background p-4 hover:border-primary/50 transition-colors">
           <h3 className="flex items-center gap-2 text-sm font-bold mb-2">

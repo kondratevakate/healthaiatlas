@@ -5,14 +5,14 @@ export const SUGGEST_CORRECTION_URL = 'https://forms.gle/placeholder-suggest-cor
 
 // Per-section "last updated" dates (ISO format)
 export const LAST_UPDATED: Record<string, string> = {
-  directory: '2026-02-24',
-  newsfeed: '2026-02-24',
-  discovery: '2026-02-24',
-  context: '2026-02-24',
-  claims: '2026-02-24',
-  oncology: '2026-02-24',
-  'process-mining': '2026-02-24',
-  'medical-tourism': '2026-02-24',
+  directory: '2026-04-22',
+  newsfeed: '2026-04-22',
+  discovery: '2026-04-22',
+  context: '2026-04-22',
+  claims: '2026-04-22',
+  oncology: '2026-04-22',
+  'process-mining': '2026-04-22',
+  'medical-tourism': '2026-04-22',
 };
 
 // Fixed ordering for cross-hub navigation ("See also" strips).

@@ -61,50 +61,41 @@ function Diagram({ nodes, activeCategories, onNodeHover, hoveredNode }: DiagramP
         );
       })}
 
-      {/* Nodes */}
-      <AnimatePresence>
-        {nodes.map((node) => {
-          const layerRadius = layerConfig[node.layer].radius * maxRadius;
-          const { x, y } = getNodePosition(node.angle, layerRadius, center, center);
-          const isActive = activeCategories.size === 0 || activeCategories.has(node.category);
-          const isHovered = hoveredNode?.id === node.id;
-          const isFiltered = activeCategories.has(node.category);
-          const nodeColor = isHovered || isFiltered ? CORAL_ACCENT : categoryConfig[node.category].color;
-          const nodeRadius = node.layer === 'purpose' ? 12 : node.layer === 'impacts' ? 10 : 8;
-          const showLabel = node.layer === 'purpose' || node.layer === 'impacts' || isHovered;
+      {/* Nodes — static render; no scroll-induced re-animation */}
+      {nodes.map((node) => {
+        const layerRadius = layerConfig[node.layer].radius * maxRadius;
+        const { x, y } = getNodePosition(node.angle, layerRadius, center, center);
+        const isActive = activeCategories.size === 0 || activeCategories.has(node.category);
+        const isHovered = hoveredNode?.id === node.id;
+        const isFiltered = activeCategories.has(node.category);
+        const nodeColor = isHovered || isFiltered ? CORAL_ACCENT : categoryConfig[node.category].color;
+        const nodeRadius = node.layer === 'purpose' ? 12 : node.layer === 'impacts' ? 10 : 8;
+        const showLabel = node.layer === 'purpose' || node.layer === 'impacts' || isHovered;
 
-          return (
-            <motion.g
-              key={node.id}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{
-                opacity: isActive ? 1 : 0.15,
-                scale: isHovered ? 1.3 : 1,
-              }}
-              exit={{ opacity: 0, scale: 0 }}
-              transition={{ duration: 0.3 }}
-              onMouseEnter={() => onNodeHover(node)}
-              onMouseLeave={() => onNodeHover(null)}
-              className="cursor-pointer"
-            >
-              <circle cx={x} cy={y} r={nodeRadius} fill={nodeColor} stroke="white" strokeWidth="2" />
-
-              {showLabel && (
-                <text
-                  x={x}
-                  y={y + (node.layer === 'purpose' ? 24 : 20)}
-                  textAnchor="middle"
-                  fontSize={node.layer === 'purpose' ? 12 : 10}
-                  fontWeight="500"
-                  fill="hsl(0, 0%, 20%)"
-                >
-                  {node.label[language]}
-                </text>
-              )}
-            </motion.g>
-          );
-        })}
-      </AnimatePresence>
+        return (
+          <g
+            key={node.id}
+            onMouseEnter={() => onNodeHover(node)}
+            onMouseLeave={() => onNodeHover(null)}
+            className="cursor-pointer"
+            style={{ opacity: isActive ? 1 : 0.15, transition: 'opacity 200ms ease' }}
+          >
+            <circle cx={x} cy={y} r={nodeRadius} fill={nodeColor} stroke="white" strokeWidth="2" />
+            {showLabel && (
+              <text
+                x={x}
+                y={y + (node.layer === 'purpose' ? 24 : 20)}
+                textAnchor="middle"
+                fontSize={node.layer === 'purpose' ? 12 : 10}
+                fontWeight="500"
+                fill="hsl(0, 0%, 20%)"
+              >
+                {node.label[language]}
+              </text>
+            )}
+          </g>
+        );
+      })}
 
       {/* Center emblem */}
       <circle cx={center} cy={center} r={16} fill={CORAL_ACCENT} stroke="white" strokeWidth="3" />
@@ -246,13 +237,8 @@ export function SystemMapOverview() {
 
   return (
     <div>
-      <motion.div
-        className="grid lg:grid-cols-[1fr_280px] gap-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
-      >
-        <div className="border border-border bg-background p-8 lg:p-12 min-h-[600px] flex items-center justify-center">
+      <div className="grid lg:grid-cols-[1fr_280px] gap-8 items-start">
+        <div className="border border-border bg-background p-8 lg:p-12 flex justify-center">
           <Diagram
             nodes={systemNodes}
             activeCategories={activeCategories}
@@ -261,21 +247,16 @@ export function SystemMapOverview() {
           />
         </div>
 
-        <div className="border border-border bg-background p-6 lg:sticky lg:top-24 h-fit">
+        <div className="border border-border bg-background p-6 lg:sticky lg:top-24">
           <Legend
             activeCategories={activeCategories}
             onCategoryToggle={toggleCategory}
             hoveredNode={hoveredNode}
           />
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
+      <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
         {(Object.entries(layerConfig) as [SystemLayer, (typeof layerConfig)[SystemLayer]][]).map(
           ([layer, config]) => {
             const count = systemNodes.filter((n) => n.layer === layer).length;
@@ -289,7 +270,7 @@ export function SystemMapOverview() {
             );
           },
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

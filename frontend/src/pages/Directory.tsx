@@ -7,13 +7,14 @@ import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { MapPin, Users, Calendar, ExternalLink, Building2, Rocket, FlaskConical, Landmark, Briefcase, ShieldCheck, Plus } from 'lucide-react';
+import { MapPin, Users, Calendar, ExternalLink, Building2, Rocket, FlaskConical, Landmark, Briefcase, ShieldCheck } from 'lucide-react';
 import { SystemDiagram } from '@/components/home/SystemDiagram';
 import { SystemMapOverview } from '@/components/home/SystemMapOverview';
 import { MedicalTourismHub } from '@/components/medical-tourism';
 import { ProcessMiningHub } from '@/components/process-mining';
 import { OncologyHub } from '@/components/oncology';
-import { LastUpdated } from '@/components/shared/LastUpdated';
+import { SuggestActions } from '@/components/shared/SuggestActions';
+import { PageHeader } from '@/components/shared/PageHeader';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { ClaimCard } from '@/components/claims';
 import { SUGGEST_ENTRY_URL, HUB_DOMAIN_IDS } from '@/data/constants';
@@ -60,10 +61,6 @@ const Directory = () => {
     ? players
     : players.filter(p => activeDomain?.playerIds.includes(p.id));
 
-  const domainClaimCount = isOverview
-    ? claims.length
-    : claims.filter(c => activeDomain?.playerIds.includes(c.subject_id)).length;
-
   const getPlayerClaims = (playerId: string) =>
     claims.filter(c => c.subject_id === playerId);
 
@@ -80,54 +77,30 @@ const Directory = () => {
 
   return (
     <Layout>
-      <div className="container py-16 md:py-24">
-        {/* Domain Tabs */}
-        <Tabs value={activeDomainId} onValueChange={setActiveDomainId} className="mb-10">
-          <TabsList className="h-auto flex-wrap gap-1 bg-secondary/50 border border-border rounded-none p-1.5">
-            {domains.map((domain) => (
-              <TabsTrigger
-                key={domain.id}
-                value={domain.id}
-                className="rounded-none px-4 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                {domain.name[language]}
-              </TabsTrigger>
-            ))}
-            <a
-              href={SUGGEST_ENTRY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              {language === 'en' ? 'Suggest' : 'اقتراح'}
-            </a>
-          </TabsList>
-        </Tabs>
+      <div className="container py-12 md:py-16">
+        <PageHeader
+          title={isOverview ? t('nav.directory') : activeDomain?.name[language]}
+          subtitle={isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}
+        />
 
-        {/* Header */}
-        <div className="max-w-3xl mb-12">
-          <h1 className="heading-display section-marker mb-4">
-            {isOverview ? t('nav.directory') : activeDomain?.name[language]}
-          </h1>
-          <p className="text-body text-muted-foreground mb-2">
-            {isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}
-          </p>
-
-          {/* Stats strip + LastUpdated — hide on hub tabs (hubs have their own breadcrumb + LastUpdated) */}
-          {!hasCustomHub && (
-            <>
-              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
-                <span>{filteredPlayers.length} {language === 'en' ? 'organizations' : 'منظمات'}</span>
-                <span>·</span>
-                <span>{domainClaimCount} {language === 'en' ? 'verified claims' : 'ادعاءات موثقة'}</span>
-                {!isOverview && activeDomain?.stats?.map((stat) => (
-                  <span key={stat.label}>· {stat.value}</span>
-                ))}
-              </div>
-              <LastUpdated section="directory" />
-            </>
-          )}
+        {/* Domain Tabs — inviting strip */}
+        <div className="mb-10">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-3">
+            {language === 'en' ? 'Tab through domains →' : 'تنقل بين المجالات →'}
+          </div>
+          <Tabs value={activeDomainId} onValueChange={setActiveDomainId}>
+            <TabsList className="h-auto flex-wrap gap-1 bg-secondary/50 border border-border rounded-none p-1.5">
+              {domains.map((domain) => (
+                <TabsTrigger
+                  key={domain.id}
+                  value={domain.id}
+                  className="rounded-none px-4 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  {domain.name[language]}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
 
         {/* System map as the Overview centrepiece */}
@@ -259,6 +232,10 @@ const Directory = () => {
             </a>
           </div>
         )}
+
+        <div className="mt-16 pt-8 border-t border-border">
+          <SuggestActions />
+        </div>
       </div>
 
       {/* Entity Detail Sheet */}

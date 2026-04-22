@@ -23,6 +23,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { LastUpdated } from '@/components/shared/LastUpdated';
+import { SuggestActions } from '@/components/shared/SuggestActions';
+import { PageHeader } from '@/components/shared/PageHeader';
 import { SUGGEST_ENTRY_URL } from '@/data/constants';
 import { isToday, isThisMonth, isThisWeek } from 'date-fns';
 
@@ -166,29 +168,22 @@ export default function Discovery() {
     <Layout>
       <div className="min-h-screen">
         {/* Header */}
-        <section className="py-12 md:py-16 border-b border-border">
-          <div className="container">
-            <Button 
-              variant="ghost" 
-              className="mb-6 -ml-2"
-              onClick={() => navigate('/')}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Navigator
-            </Button>
+        <div className="container py-12 md:py-16">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden mb-4 -ml-2"
+            onClick={() => navigate('/')}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
 
-            <div className="max-w-2xl">
-              <h1 className="font-serif text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-4">
-                Discovery
-              </h1>
-              <div className="h-1 w-16 bg-primary mb-6" />
-              <p className="text-lg text-muted-foreground leading-relaxed mb-4">
-                Explore events, connect with leaders, and verify claims in the UAE healthcare AI ecosystem.
-              </p>
-              <LastUpdated section="discovery" />
-            </div>
-          </div>
-        </section>
+          <PageHeader
+            title="Discovery"
+            subtitle="Events, launches, leaders, and verification prompts for the UAE healthcare AI ecosystem."
+          />
+        </div>
 
         {/* Main content with sidebar */}
         <section className="py-8">
@@ -533,22 +528,11 @@ export default function Discovery() {
           </div>
         </section>
 
-        {/* Footer CTA */}
-        <section className="py-12 border-t border-border">
-          <div className="container">
-            <div className="max-w-xl">
-              <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
-                Have a tip?
-              </p>
-              <div className="h-0.5 w-8 bg-primary mb-4" />
-              <p className="text-muted-foreground mb-4">
-                If you've encountered a pattern not listed here, we'd like to hear about it.
-                All submissions are verified before publishing.
-              </p>
-              <Button variant="outline">
-                Submit a Red Flag
-              </Button>
-            </div>
+        {/* Page-bottom meta + contribute strip */}
+        <section className="py-10 border-t border-border">
+          <div className="container flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <LastUpdated section="discovery" />
+            <SuggestActions />
           </div>
         </section>
       </div>

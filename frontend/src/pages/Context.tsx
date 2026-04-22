@@ -4,6 +4,8 @@ import { timelineEvents, stageConfig } from '@/data/timeline';
 import { visionTargets, budgetAllocations, strategicPillars, visionStats } from '@/data/vision2030';
 import { cn } from '@/lib/utils';
 import { LastUpdated } from '@/components/shared/LastUpdated';
+import { SuggestActions } from '@/components/shared/SuggestActions';
+import { PageHeader } from '@/components/shared/PageHeader';
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, useScroll } from 'framer-motion';
@@ -294,10 +296,10 @@ function VisionSidebar() {
 
 type ContextRegion = 'uae' | 'us' | 'eu';
 
-const REGION_OPTIONS: { id: ContextRegion; label: string; available: boolean }[] = [
-  { id: 'uae', label: 'UAE', available: true },
-  { id: 'us', label: 'US', available: false },
-  { id: 'eu', label: 'EU', available: false },
+const REGION_OPTIONS: { id: ContextRegion; label: string; flag: string; available: boolean }[] = [
+  { id: 'uae', label: 'UAE', flag: '🇦🇪', available: true },
+  { id: 'us', label: 'US', flag: '🇺🇸', available: false },
+  { id: 'eu', label: 'EU', flag: '🇪🇺', available: false },
 ];
 
 export default function Context() {
@@ -319,54 +321,45 @@ export default function Context() {
       <ScrollProgress />
       
       <div className="min-h-screen">
-        {/* Header */}
-        <section className="py-12 md:py-16 border-b border-border">
-          <div className="container">
-            <div className="max-w-3xl">
-              <div className="text-sm uppercase tracking-wider text-muted-foreground mb-4">
-                Problem Space · Region
-              </div>
-              <h1 className="heading-display section-marker mb-6">
-                {language === 'en' ? 'Context' : 'السياق'}
-              </h1>
+        <div className="container py-12 md:py-16">
+          <PageHeader
+            title={language === 'en' ? 'Context' : 'السياق'}
+            subtitle={
+              region === 'uae'
+                ? language === 'en'
+                  ? 'Explore the UAE healthcare AI journey alongside Vision 2030 targets, investment data, and strategic priorities.'
+                  : 'استكشف رحلة الذكاء الاصطناعي الصحي في الإمارات إلى جانب أهداف رؤية 2030 وبيانات الاستثمار والأولويات الاستراتيجية.'
+                : `The ${region.toUpperCase()} context is not yet available. Coverage starts with the UAE; other regions land as the data is curated.`
+            }
+          />
 
-              {/* Region selector */}
-              <div className="flex flex-wrap gap-1 mb-5">
-                {REGION_OPTIONS.map((opt) => {
-                  const isActive = region === opt.id;
-                  const disabled = !opt.available;
-                  return (
-                    <button
-                      key={opt.id}
-                      onClick={() => opt.available && setRegion(opt.id)}
-                      disabled={disabled}
-                      className={cn(
-                        'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
-                        isActive
-                          ? 'bg-foreground text-background border-foreground'
-                          : disabled
-                          ? 'border-border text-muted-foreground/50 cursor-not-allowed'
-                          : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
-                      )}
-                    >
-                      {opt.label}
-                      {disabled && <span className="ml-2 text-[9px] uppercase tracking-widest">soon</span>}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <p className="text-body text-muted-foreground max-w-2xl mb-4">
-                {region === 'uae'
-                  ? language === 'en'
-                    ? 'Explore the UAE healthcare AI journey alongside Vision 2030 targets, investment data, and strategic priorities.'
-                    : 'استكشف رحلة الذكاء الاصطناعي الصحي في الإمارات إلى جانب أهداف رؤية 2030 وبيانات الاستثمار والأولويات الاستراتيجية.'
-                  : `The ${region.toUpperCase()} context is not yet available. Coverage starts with the UAE; other regions land as the data is curated.`}
-              </p>
-              <LastUpdated section="context" />
-            </div>
+          {/* Region selector (flags) */}
+          <div className="flex flex-wrap gap-1">
+            {REGION_OPTIONS.map((opt) => {
+              const isActive = region === opt.id;
+              const disabled = !opt.available;
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => opt.available && setRegion(opt.id)}
+                  disabled={disabled}
+                  className={cn(
+                    'inline-flex items-center gap-2 px-3 py-1.5 text-xs font-mono border transition-colors',
+                    isActive
+                      ? 'bg-foreground text-background border-foreground'
+                      : disabled
+                      ? 'border-border text-muted-foreground/50 cursor-not-allowed'
+                      : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                  )}
+                >
+                  <span className="text-base leading-none">{opt.flag}</span>
+                  {opt.label}
+                  {disabled && <span className="text-[9px] uppercase tracking-widest opacity-80">soon</span>}
+                </button>
+              );
+            })}
           </div>
-        </section>
+        </div>
 
         {/* Non-UAE placeholder */}
         {region !== 'uae' && (
@@ -455,6 +448,13 @@ export default function Context() {
           </div>
         </section>
         )}
+
+        <section className="py-10 border-t border-border">
+          <div className="container flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <LastUpdated section="context" />
+            <SuggestActions />
+          </div>
+        </section>
       </div>
     </Layout>
   );

@@ -77,7 +77,7 @@ export function ProductsView() {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
             {cat.items.map(item => (
               <div
                 key={item.uc}

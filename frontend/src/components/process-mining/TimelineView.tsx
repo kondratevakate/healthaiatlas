@@ -62,11 +62,11 @@ export function TimelineView() {
         ))}
       </div>
 
-      {/* Year columns */}
+      {/* Year columns — flex-1 on desktop fills width; horizontal scroll if narrower than min */}
       <div className="overflow-x-auto">
-        <div className="flex items-start min-w-max gap-0">
+        <div className="flex items-start gap-0">
           {byYear.map(([yr, events]) => (
-            <div key={yr} className="min-w-[120px] flex-shrink-0 border-l border-border px-1">
+            <div key={yr} className="flex-1 min-w-[120px] border-l border-border px-1">
               <div className="text-sm font-bold text-primary px-1.5 py-1 sticky top-[50px] bg-background z-[5]">
                 {yr}
               </div>

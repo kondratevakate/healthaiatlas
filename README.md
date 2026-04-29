@@ -88,6 +88,86 @@ See [`ansible/README.md`](ansible/README.md) for details.
 Build-time (pass via CI secret or `frontend/.env.local`):
 
 - `VITE_GA_ID` — Google Analytics measurement ID. Optional; GA is silently disabled if unset.
+- `VITE_AI_INSIGHTS_URL` — chat completion endpoint for the Discovery copilot (Sparkles panel on `/discovery`).
+- `VITE_AI_INSIGHTS_MODEL` — model name passed in the request body.
+- `VITE_AI_INSIGHTS_API_KEY` — bearer token for the URL above. Optional.
+- `VITE_NEWSLETTER_SIGNUP_URL` — POST endpoint that captures newsletter signups from the Get Notified form (header) and the Subscribe section. Defaults to localStorage-only. To enable real capture, deploy [`00_infra/email-collect`](../../00_infra/email-collect/README.md) and put its URL here.
+- `VITE_HUG_API_KEY` — HuggingFace Inference API token. Optional but **strongly recommended**: with it, the copilot can race 6 HuggingFace models in parallel (including gated Llama / Phi / Qwen), and the anonymous rate-limit cap is removed. Without it the HF attempts still run but only against non-gated models with anonymous quotas. Token: `https://huggingface.co/settings/tokens` → "Read" role is enough. **Note the `VITE_` prefix is required** — Vite hides non-prefixed env vars from the client bundle.
+
+### Recommended setup — HuggingFace token (simplest)
+
+HuggingFace's Inference Providers API gives every account a generous free tier and a unified OpenAI-compatible endpoint that auto-routes to the fastest available inference provider per model. One env var, one HF account.
+
+1. Sign in at `https://huggingface.co`. Free, no card.
+2. Create a **fine-grained** token at `Account → Settings → Access Tokens → Create new token`. Required permission: **"Make calls to Inference Providers"**.
+3. Put the token in `frontend/.env.local` (this file goes inside `frontend/`, **not** the repo root — Vite reads env from where `vite.config.ts` lives):
+
+   ```bash
+   VITE_HUG_API_KEY=hf_...
+   ```
+
+4. **Verify the token before relying on the React app** — run the smoke test:
+
+   ```bash
+   cd frontend
+   node --env-file=.env.local scripts/test-hf-token.mjs
+   ```
+
+   This pings 5 free models on the HF router directly. If it prints `✓` for at least one, the token is valid. If everything is `✗`, fix the token (most common: missing "Make calls to Inference Providers" permission).
+
+5. Restart the dev server (`npm run dev`). The Discovery copilot's parallel race now hits the HF router with your token, alongside the anonymous fallbacks.
+
+If the copilot still fails after all this, the on-screen error now lists every endpoint that failed and how (HTTP code, "notice", "fetch error", etc.) — share that diagnostic to debug.
+
+### Alternative — OpenRouter free tier
+
+OpenRouter hosts free models from Llama, Gemini-Flash and others. Free tier is rate-limited per account (≈ 200 req/day on free models, configurable per-account). To wire it up:
+
+1. Sign up at `https://openrouter.ai`. Verify email; no card needed.
+2. Create an API key in `Account → Keys`.
+3. **In OpenRouter settings, set a low daily / monthly spend cap** (e.g. `$0.00`) so even paid models can't accidentally bill — free models don't bill anyway, but the cap is a belt-and-braces guard.
+4. Add to `frontend/.env.local` (do NOT commit this file — it's gitignored):
+
+   ```bash
+   VITE_AI_INSIGHTS_URL=https://openrouter.ai/api/v1/chat/completions
+   VITE_AI_INSIGHTS_MODEL=meta-llama/llama-3.3-70b-instruct:free
+   VITE_AI_INSIGHTS_API_KEY=sk-or-v1-...
+   ```
+
+5. Restart the dev server. The authenticated endpoint runs first in the parallel race; it reliably returns answers when the anonymous endpoints don't.
+
+Other working OpenAI-compatible providers (same env-var shape, different URL/model):
+- **Groq free tier** — `https://api.groq.com/openai/v1/chat/completions` + e.g. `llama-3.3-70b-versatile`.
+- **Together AI free tier** — `https://api.together.xyz/v1/chat/completions` + e.g. `meta-llama/Llama-3.3-70B-Instruct-Turbo-Free`.
+
+### Copilot guard rails (already in code)
+
+- **Hard 400-token cap per response** (`max_tokens` in every request).
+- **3 free questions per anonymous browser** (localStorage counter), then a sign-in gate.
+- **30 questions per day per signed-in user** (localStorage counter, resets at midnight local).
+- **One-time privacy disclosure** before the first message.
+- **Parallel race across endpoints** (authenticated first if a key is set, then 4 anonymous fallbacks) — first non-null reply wins, siblings aborted to save bandwidth.
+- System prompt + few-shot set tuned for a senior-colleague register; see `frontend/src/data/aiInsightsPrompt.ts`.
+
+The on-screen disclaimer always says: "responses can be wrong; do not paste personal info; verify before acting."
+
+> **Bundle exposure note**: Vite's `import.meta.env.VITE_*` values are inlined into the client bundle at build time. The `VITE_AI_INSIGHTS_API_KEY` value will be readable by anyone who downloads the page. This is acceptable for a free-tier key with a strict per-account cap, but for any key you'd be unhappy to see published, use the Worker proxy described below.
+
+### Production deploy — keep the token off the client
+
+For production, point the copilot at the [`insights-proxy` Cloudflare Worker](../../00_infra/insights-proxy/README.md). The Worker holds the HuggingFace token server-side and enforces a CORS allowlist; the client bundle ships zero secrets.
+
+1. Deploy the Worker once (see its README) — get a URL like `https://insights-proxy.<account>.workers.dev`.
+2. In healthaiatlas's GitHub Actions secrets (or `frontend/.env.production`):
+   ```bash
+   VITE_AI_INSIGHTS_URL=https://insights-proxy.<account>.workers.dev
+   VITE_AI_INSIGHTS_MODEL=meta-llama/Llama-3.3-70B-Instruct:fastest
+   # No VITE_AI_INSIGHTS_API_KEY — Worker handles auth.
+   # No VITE_HUG_API_KEY — same reason.
+   ```
+3. CI build picks the Worker URL; the deployed bundle calls `/v1/chat/completions` on that URL with no Authorization header. The Worker validates the Origin, attaches the Bearer token, and forwards to HuggingFace.
+
+The frontend code already supports both modes (key + direct provider URL, or no-key + Worker URL) — see `tryAuthenticatedOpenAI` in [`frontend/src/components/research/EventInsights.tsx`](frontend/src/components/research/EventInsights.tsx).
 
 GitHub Actions secrets:
 

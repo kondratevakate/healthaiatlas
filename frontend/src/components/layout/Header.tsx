@@ -42,10 +42,22 @@ export function Header() {
     setLanguage(language === 'en' ? 'ar' : 'en');
   };
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    // Save to localStorage for future use
+    // Try the backend Worker if configured; always also keep a local copy.
+    const url = import.meta.env.VITE_NEWSLETTER_SIGNUP_URL as string | undefined;
+    if (url) {
+      try {
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: 'healthaiatlas/header' }),
+        });
+      } catch {
+        /* fall through to local-only */
+      }
+    }
     const saved = JSON.parse(localStorage.getItem('subscribe-emails') || '[]');
     if (!saved.includes(email)) {
       saved.push(email);

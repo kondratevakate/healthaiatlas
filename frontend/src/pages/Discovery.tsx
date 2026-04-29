@@ -1,23 +1,20 @@
 // Discovery Page
-// Research hub with scrollable tabs + sidebar for Red Flags
+// Research hub with scrollable tabs + sidebar with AI Discovery copilot
 
 import { Layout } from '@/components/layout';
-import { CompactRedFlagItem } from '@/components/research/CompactRedFlagItem';
-import { RedFlag } from '@/types/research';
-import { redFlags } from '@/data/redflags';
 import { mentors, ExtendedLeaderProfile } from '@/data/mentors';
 import { conferences } from '@/data/conferences';
 import { launches } from '@/data/launches';
 import { MentorCard } from '@/components/cards/MentorCard';
 import { ConferenceCard } from '@/components/cards';
+import { EventInsights } from '@/components/research/EventInsights';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { ArrowLeft, Search, MessageSquare, Users, CalendarDays, AlertTriangle, UserPlus, TrendingUp, ExternalLink, LinkIcon } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { ArrowLeft, MessageSquare, Users, CalendarDays, UserPlus, TrendingUp, ExternalLink, LinkIcon, Sparkles } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -62,55 +59,12 @@ const verificationPrompts = [
   }
 ];
 
-// Sidebar content component — Red Flags only
-function SidebarContent({ searchQuery, setSearchQuery, filteredFlags }: {
-  searchQuery: string;
-  setSearchQuery: (v: string) => void;
-  filteredFlags: RedFlag[];
-}) {
-  return (
-    <div className="space-y-6">
-      <Card className="border-2">
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <AlertTriangle className="h-4 w-4 text-destructive" />
-            Red Flags
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search flags..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-9 text-sm"
-            />
-          </div>
-          <ScrollArea className="h-[400px]">
-            {filteredFlags.length > 0 ? (
-              filteredFlags.map((flag) => (
-                <CompactRedFlagItem key={flag.id} flag={flag} />
-              ))
-            ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                No red flags match your search.
-              </p>
-            )}
-          </ScrollArea>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
 type LaunchPeriod = 'today' | 'week' | 'month' | 'all';
 
 export default function Discovery() {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState('');
   const activeTab = searchParams.get('tab') ?? 'calendar';
   const setActiveTab = (t: string) => {
     const next = new URLSearchParams(searchParams);
@@ -137,13 +91,7 @@ export default function Discovery() {
     }
   }, [launchPeriod]);
 
-  const filteredFlags = redFlags.filter(flag => 
-    flag.title.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    flag.pattern.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    flag.reality.en.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const filteredLeaders = mentors.filter((leader: ExtendedLeaderProfile) => 
+  const filteredLeaders = mentors.filter((leader: ExtendedLeaderProfile) =>
     leaderCategory === 'all' || leader.category === leaderCategory
   );
 
@@ -167,12 +115,12 @@ export default function Discovery() {
   return (
     <Layout>
       <div className="min-h-screen">
-        {/* Header */}
-        <div className="container py-12 md:py-16">
+        {/* Header + content in one container — minimal gap */}
+        <div className="container pt-8 md:pt-10 pb-12">
           <Button
             variant="ghost"
             size="sm"
-            className="md:hidden mb-4 -ml-2"
+            className="md:hidden mb-3 -ml-2"
             onClick={() => navigate('/')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -182,32 +130,30 @@ export default function Discovery() {
           <PageHeader
             title="Discovery"
             subtitle="Events, launches, leaders, and verification prompts for the UAE healthcare AI ecosystem."
+            className="mb-6"
           />
-        </div>
 
-        {/* Main content with sidebar */}
-        <section className="py-8">
-          <div className="container">
-            {/* Mobile: Sheet trigger for sidebar */}
+          {/* Main content with sidebar */}
+          <div>
+            {/* Mobile: Sheet trigger for AI copilot */}
             <div className="lg:hidden mb-6">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" className="w-full gap-2">
-                    <AlertTriangle className="h-4 w-4" />
-                    Red Flags
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    Discovery copilot
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="bottom" className="h-[80vh]">
-                  <SheetHeader className="mb-4">
-                    <SheetTitle>Red Flags</SheetTitle>
+                <SheetContent side="bottom" className="h-[85vh] flex flex-col">
+                  <SheetHeader className="mb-3 shrink-0">
+                    <SheetTitle className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      Discovery copilot
+                    </SheetTitle>
                   </SheetHeader>
-                  <ScrollArea className="h-[calc(100%-60px)]">
-                    <SidebarContent 
-                      searchQuery={searchQuery}
-                      setSearchQuery={setSearchQuery}
-                      filteredFlags={filteredFlags}
-                    />
-                  </ScrollArea>
+                  <div className="flex-1 min-h-0 overflow-y-auto">
+                    <EventInsights variant="flat" />
+                  </div>
                 </SheetContent>
               </Sheet>
             </div>
@@ -514,19 +460,15 @@ export default function Discovery() {
                 </Tabs>
               </div>
 
-              {/* Desktop: Sidebar */}
+              {/* Desktop: Sidebar — AI Discovery copilot */}
               <aside className="hidden lg:block">
                 <div className="sticky top-24">
-                  <SidebarContent 
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                    filteredFlags={filteredFlags}
-                  />
+                  <EventInsights />
                 </div>
               </aside>
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Page-bottom meta + contribute strip */}
         <section className="py-10 border-t border-border">

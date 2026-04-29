@@ -2,7 +2,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Globe, Menu, X, Mail } from 'lucide-react';
+import { Globe, Menu, X, Mail, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import {
@@ -12,12 +12,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { toast } from '@/hooks/use-toast';
+import { domains } from '@/data/domains';
 
-const navLinks = [
+type NavLink = { key: string; path: string; dropdown?: boolean };
+
+const navLinks: NavLink[] = [
   { key: 'nav.home', path: '/' },
   { key: 'nav.discovery', path: '/discovery' },
-  { key: 'nav.directory', path: '/directory' },
+  { key: 'nav.directory', path: '/directory', dropdown: true },
   { key: 'nav.context', path: '/context' },
   { key: 'nav.about', path: '/about' },
 ];
@@ -60,6 +69,61 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
+
+              if (link.dropdown && link.path === '/directory') {
+                const subDomains = domains.filter((d) => d.id !== 'overview');
+                return (
+                  <div key={link.path} className="relative inline-flex items-center">
+                    {/* Main label — clickable, navigates to Overview */}
+                    <Link
+                      to="/directory"
+                      className={cn(
+                        "text-sm font-medium transition-colors relative py-1",
+                        isActive
+                          ? "text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {t(link.key)}
+                      {isActive && (
+                        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+                      )}
+                    </Link>
+                    {/* Chevron — opens sub-domain dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        className={cn(
+                          "ml-1 p-1 outline-none transition-colors",
+                          isActive
+                            ? "text-foreground"
+                            : "text-muted-foreground hover:text-foreground"
+                        )}
+                        aria-label="Open directory sub-domains"
+                      >
+                        <ChevronDown className="h-3 w-3" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="min-w-[220px] rounded-none">
+                        {subDomains.map((domain) => (
+                          <DropdownMenuItem key={domain.id} asChild className="rounded-none">
+                            <Link
+                              to={`/directory?domain=${domain.id}`}
+                              className="cursor-pointer flex flex-col items-start gap-0.5 py-1.5"
+                            >
+                              <span className="text-xs font-medium">{domain.name[language]}</span>
+                              {domain.subtitle && (
+                                <span className="text-[10px] text-muted-foreground line-clamp-1">
+                                  {domain.subtitle[language]}
+                                </span>
+                              )}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={link.path}
@@ -116,6 +180,39 @@ export function Header() {
             <div className="container py-4 space-y-1">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path;
+
+                if (link.dropdown && link.path === '/directory') {
+                  const subDomains = domains.filter((d) => d.id !== 'overview');
+                  return (
+                    <div key={link.path} className="space-y-0.5">
+                      <Link
+                        to={link.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={cn(
+                          "block px-4 py-3 text-sm font-medium transition-colors",
+                          isActive
+                            ? "text-primary bg-primary/5"
+                            : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        {t(link.key)}
+                      </Link>
+                      <div className="pl-4 border-l-2 border-border ml-4 space-y-0.5">
+                        {subDomains.map((domain) => (
+                          <Link
+                            key={domain.id}
+                            to={`/directory?domain=${domain.id}`}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            {domain.name[language]}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
                   <Link
                     key={link.path}

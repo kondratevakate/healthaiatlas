@@ -29,8 +29,8 @@ export function SubscribeSection() {
 
   return (
     <section id="subscribe-section" className="py-20 bg-muted/30">
-      <div className="container max-w-2xl text-center space-y-6">
-        <div className="flex items-center justify-center gap-2">
+      <div className="container max-w-2xl space-y-6">
+        <div className="flex items-center gap-2">
           <Bell className="h-5 w-5 text-muted-foreground" />
           <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {language === 'en' ? 'Coming Soon' : 'قريباً'}
@@ -41,8 +41,8 @@ export function SubscribeSection() {
           {t('subscribe.title')}
         </h2>
 
-        <p className="text-lg text-muted-foreground max-w-md mx-auto">
-          {language === 'en' 
+        <p className="text-lg text-muted-foreground max-w-md">
+          {language === 'en'
             ? 'Newsletter is not live yet. Leave your email and we\'ll let you know when it launches.'
             : 'النشرة البريدية لم تنطلق بعد. اترك بريدك وسنُعلمك عند الإطلاق.'}
         </p>
@@ -52,7 +52,7 @@ export function SubscribeSection() {
             ✓ {language === 'en' ? 'Your email is saved. We\'ll be in touch.' : 'تم حفظ بريدك. سنتواصل معك.'}
           </p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex gap-2 max-w-md mx-auto">
+          <form onSubmit={handleSubmit} className="flex gap-2 max-w-md">
             <Input
               type="email"
               placeholder={t('subscribe.emailPlaceholder')}

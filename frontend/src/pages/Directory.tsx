@@ -19,7 +19,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { ClaimCard } from '@/components/claims';
 import { SUGGEST_ENTRY_URL, HUB_DOMAIN_IDS } from '@/data/constants';
 import { Player } from '@/types';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const typeIcons: Record<string, React.ElementType> = {
   startup: Rocket,
@@ -82,26 +81,6 @@ const Directory = () => {
           title={isOverview ? t('nav.directory') : activeDomain?.name[language]}
           subtitle={isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}
         />
-
-        {/* Domain Tabs — inviting strip */}
-        <div className="mb-10">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-3">
-            {language === 'en' ? 'Tab through domains →' : 'تنقل بين المجالات →'}
-          </div>
-          <Tabs value={activeDomainId} onValueChange={setActiveDomainId}>
-            <TabsList className="h-auto flex-wrap gap-1 bg-secondary/50 border border-border rounded-none p-1.5">
-              {domains.map((domain) => (
-                <TabsTrigger
-                  key={domain.id}
-                  value={domain.id}
-                  className="rounded-none px-4 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  {domain.name[language]}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-        </div>
 
         {/* System map as the Overview centrepiece */}
         {isOverview && (

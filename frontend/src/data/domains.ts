@@ -31,7 +31,7 @@ export const domains: ResearchDomain[] = [
   {
     id: 'medical-tourism',
     name: { en: 'Medical Tourism', ar: 'السياحة العلاجية' },
-    subtitle: { en: 'Corridor opportunity mapping', ar: 'رسم خريطة فرص الممرات العلاجية' },
+    subtitle: { en: 'Patient migration routes — sources, destinations, growth', ar: 'مسارات هجرة المرضى — المصادر والوجهات والنمو' },
     color: '200 40% 45%',
     stats: [
       { label: 'Focus Areas', value: 'Telemedicine, Diagnostics, Robotics' },

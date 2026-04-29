@@ -115,18 +115,18 @@ export default function Index() {
                 </Button>
               </div>
             ) : showTest ? (
-              <div className="flex justify-center">
+              <div>
                 <QuickRealityTest onComplete={handleTestComplete} />
               </div>
             ) : (
-              <div className="max-w-2xl mx-auto text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="max-w-2xl">
+                <div className="flex items-center gap-2 mb-2">
                   <Compass className="h-5 w-5 text-primary" />
                   <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                     Find Yourself
                   </p>
                 </div>
-                <div className="h-0.5 w-12 bg-primary mx-auto mb-4" />
+                <div className="h-0.5 w-12 bg-primary mb-4" />
                 <h2 className="text-2xl md:text-3xl font-semibold mb-4">
                   Answer 5 questions to find your place in the ecosystem
                 </h2>

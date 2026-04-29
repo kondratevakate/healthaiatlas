@@ -18,7 +18,7 @@ export function StatsSection() {
       <div className="container">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           {stats.map((stat) => (
-            <div key={stat.key} className="text-center md:text-left">
+            <div key={stat.key} className="text-left">
               <div className="font-serif text-5xl md:text-6xl font-bold text-primary mb-2">
                 {stat.value}
               </div>

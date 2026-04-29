@@ -1,18 +1,11 @@
 import { ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import { LastUpdated } from '@/components/shared/LastUpdated';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { HUB_DOMAIN_IDS } from '@/data/constants';
 import { getDomainById } from '@/data/domains';
+import { cn } from '@/lib/utils';
 
 export type HubDomainId = (typeof HUB_DOMAIN_IDS)[number];
 
@@ -33,7 +26,6 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
   const { language } = useLanguage();
   const [active, setActive] = useState<string>(defaultView ?? views[0]?.id ?? '');
 
-  const currentDomain = getDomainById(domainId);
   const neighbors = HUB_DOMAIN_IDS
     .filter((id) => id !== domainId)
     .map((id) => getDomainById(id))
@@ -41,31 +33,22 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
 
   return (
     <div className="border border-border bg-background">
-      <div className="border-b border-border p-4">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/directory">Directory</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{currentDomain?.name[language]}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-
       {children && <div className="border-b border-border p-4">{children}</div>}
 
       <Tabs value={active} onValueChange={setActive} className="p-4">
-        <TabsList className="h-auto bg-secondary/30 border border-border rounded-none p-1 mb-4">
-          {views.map((v) => (
+        <TabsList className="h-auto bg-transparent border-b border-border rounded-none p-0 mb-6 w-full justify-start gap-0 flex-wrap">
+          {views.map((v, idx) => (
             <TabsTrigger
               key={v.id}
               value={v.id}
-              className="rounded-none px-4 py-1.5 text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className={cn(
+                "rounded-none border-b-2 border-transparent bg-transparent px-5 py-3 -mb-px",
+                "text-sm font-semibold tracking-tight",
+                "text-muted-foreground hover:text-foreground transition-colors",
+                "data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent",
+                "data-[state=active]:shadow-none",
+                idx === 0 && "data-[state=active]:font-bold"
+              )}
             >
               {v.label}
             </TabsTrigger>

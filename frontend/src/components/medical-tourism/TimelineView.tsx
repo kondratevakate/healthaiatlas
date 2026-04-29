@@ -21,7 +21,27 @@ export function TimelineView({ specialty }: Props) {
     [specialty]
   );
 
-  const years = [2021, 2022, 2023, 2024, 2025];
+  const years = useMemo(() => {
+    if (events.length === 0) return [];
+    const min = Math.min(...events.map(e => e.y));
+    const max = Math.max(...events.map(e => e.y));
+    const result: number[] = [];
+    for (let y = min; y <= max; y++) result.push(y);
+    return result;
+  }, [events]);
+
+  if (events.length === 0) {
+    return (
+      <div className="border border-dashed border-border p-12 text-center">
+        <p className="text-sm text-muted-foreground mb-2">
+          No timeline events for this specialty yet.
+        </p>
+        <p className="text-xs text-muted-foreground/70">
+          Pick another specialty in the sidebar, or contribute one — see CONTRIBUTING.md.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -34,7 +54,10 @@ export function TimelineView({ specialty }: Props) {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div
+        className="grid gap-3"
+        style={{ gridTemplateColumns: `repeat(${Math.min(years.length, 5)}, minmax(0, 1fr))` }}
+      >
         {years.map(y => {
           const yearEvents = events.filter(e => e.y === y).sort((a, b) => a.q - b.q);
           return (

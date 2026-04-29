@@ -23,10 +23,21 @@ interface HubShellProps {
   domainId: HubDomainId;
   views: HubShellView[];
   defaultView?: string;
+  /** Top child slot — rendered above the tabs in a separate band. */
   children?: ReactNode;
+  /** Optional right-rail panel rendered INSIDE the bordered frame, to the right
+   *  of the tabs / view content on `lg+` screens, and stacked below on smaller
+   *  ones. Used by MedicalTourismHub for the specialty filter. */
+  rightSidebar?: ReactNode;
 }
 
-export function HubShell({ domainId, views, defaultView, children }: HubShellProps) {
+export function HubShell({
+  domainId,
+  views,
+  defaultView,
+  children,
+  rightSidebar,
+}: HubShellProps) {
   const { language } = useLanguage();
   const [active, setActive] = useState<string>(defaultView ?? views[0]?.id ?? '');
 
@@ -35,41 +46,52 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
     .map((id) => getDomainById(id))
     .filter((d): d is NonNullable<typeof d> => Boolean(d));
 
+  const tabsBlock = (
+    <Tabs value={active} onValueChange={setActive} className="p-4">
+      <TabsList className="h-auto bg-transparent border-b border-border rounded-none p-0 mb-6 w-full justify-start gap-0 flex-wrap">
+        {views.map((v, idx) => (
+          <TabsTrigger
+            key={v.id}
+            value={v.id}
+            className={cn(
+              'rounded-none border-b-2 border-transparent bg-transparent px-5 py-3 -mb-px',
+              'text-sm font-semibold tracking-tight',
+              'text-muted-foreground hover:text-foreground transition-colors',
+              'data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent',
+              'data-[state=active]:shadow-none',
+              idx === 0 && 'data-[state=active]:font-bold',
+            )}
+          >
+            {v.label}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+
+      {views.map((v) => (
+        <TabsContent key={v.id} value={v.id} className="mt-0">
+          {v.description && (
+            <p className="text-xs text-muted-foreground mb-4 max-w-3xl">{v.description}</p>
+          )}
+          {v.render()}
+        </TabsContent>
+      ))}
+    </Tabs>
+  );
+
   return (
     <div className="border border-border bg-background">
       {children && <div className="border-b border-border p-4">{children}</div>}
 
-      <Tabs value={active} onValueChange={setActive} className="p-4">
-        <TabsList className="h-auto bg-transparent border-b border-border rounded-none p-0 mb-6 w-full justify-start gap-0 flex-wrap">
-          {views.map((v, idx) => (
-            <TabsTrigger
-              key={v.id}
-              value={v.id}
-              className={cn(
-                "rounded-none border-b-2 border-transparent bg-transparent px-5 py-3 -mb-px",
-                "text-sm font-semibold tracking-tight",
-                "text-muted-foreground hover:text-foreground transition-colors",
-                "data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent",
-                "data-[state=active]:shadow-none",
-                idx === 0 && "data-[state=active]:font-bold"
-              )}
-            >
-              {v.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {views.map((v) => (
-          <TabsContent key={v.id} value={v.id} className="mt-0">
-            {v.description && (
-              <p className="text-xs text-muted-foreground mb-4 max-w-3xl">
-                {v.description}
-              </p>
-            )}
-            {v.render()}
-          </TabsContent>
-        ))}
-      </Tabs>
+      {rightSidebar ? (
+        <div className="grid lg:grid-cols-[1fr_200px]">
+          {tabsBlock}
+          <aside className="border-t lg:border-t-0 lg:border-l border-border p-4">
+            {rightSidebar}
+          </aside>
+        </div>
+      ) : (
+        tabsBlock
+      )}
 
       <div className="border-t border-border px-4 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-muted-foreground">
         {neighbors.length > 0 ? (

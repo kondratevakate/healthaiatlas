@@ -19,7 +19,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { ClaimCard } from '@/components/claims';
 import { SUGGEST_ENTRY_URL, HUB_DOMAIN_IDS } from '@/data/constants';
 import { Player } from '@/types';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const typeIcons: Record<string, React.ElementType> = {
   startup: Rocket,
@@ -78,34 +77,48 @@ const Directory = () => {
   return (
     <Layout>
       <div className="container py-12 md:py-16">
+        {!isOverview && (
+          <button
+            type="button"
+            onClick={() => setActiveDomainId('overview')}
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group border border-border bg-background px-3 py-1.5 hover:border-foreground/40"
+          >
+            <span className="text-base transition-transform group-hover:-translate-x-0.5">←</span>
+            <span className="font-medium">Back to Directory</span>
+          </button>
+        )}
+
         <PageHeader
           title={isOverview ? t('nav.directory') : activeDomain?.name[language]}
           subtitle={isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}
         />
 
-        {/* Domain Tabs — inviting strip */}
-        <div className="mb-10">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-3">
-            {language === 'en' ? 'Tab through domains →' : 'تنقل بين المجالات →'}
-          </div>
-          <Tabs value={activeDomainId} onValueChange={setActiveDomainId}>
-            <TabsList className="h-auto flex-wrap gap-1 bg-secondary/50 border border-border rounded-none p-1.5">
-              {domains.map((domain) => (
-                <TabsTrigger
-                  key={domain.id}
-                  value={domain.id}
-                  className="rounded-none px-4 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+        {/* Domain entry chips — primary navigation, sits right under PageHeader */}
+        {isOverview && (
+          <div className="mb-8 flex flex-wrap gap-2">
+            {domains
+              .filter((d) => d.id !== 'overview')
+              .map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setActiveDomainId(d.id)}
+                  className="group inline-flex items-baseline gap-2 border border-border bg-background hover:border-primary hover:bg-primary/5 px-3 py-2 transition-all"
                 >
-                  {domain.name[language]}
-                </TabsTrigger>
+                  <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                    {d.name[language]}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground font-mono">
+                    →
+                  </span>
+                </button>
               ))}
-            </TabsList>
-          </Tabs>
-        </div>
+          </div>
+        )}
 
         {/* System map as the Overview centrepiece */}
         {isOverview && (
-          <div className="mb-16">
+          <div className="mb-12">
             <SystemMapOverview />
           </div>
         )}

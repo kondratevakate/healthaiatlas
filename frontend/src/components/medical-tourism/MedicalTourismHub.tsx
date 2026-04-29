@@ -10,6 +10,32 @@ import { DiagnosticView } from './DiagnosticView';
 export function MedicalTourismHub() {
   const [specialty, setSpecialty] = useState<string>('all');
 
+  // Specialty filter as a horizontal chip strip — same pattern as the tumor
+  // filter on Oncology Cancer AI Landscape. Sits inside the HubShell frame
+  // (top child slot) so it stays close to the views it filters.
+  const specialtyStrip = (
+    <div className="flex flex-wrap gap-1 items-center">
+      <span className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mr-1">
+        Specialty:
+      </span>
+      {SPECIALTIES.map((sp) => (
+        <button
+          key={sp.id}
+          onClick={() => setSpecialty(sp.id)}
+          className={cn(
+            'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
+            specialty === sp.id
+              ? 'bg-foreground text-background border-foreground'
+              : 'border-border text-muted-foreground hover:text-foreground',
+          )}
+        >
+          <span aria-hidden="true">{sp.icon}</span>
+          <span>{sp.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <HubShell
       domainId="medical-tourism"
@@ -17,26 +43,10 @@ export function MedicalTourismHub() {
         { id: 'corridors', label: 'Corridors', render: () => <CorridorsView specialty={specialty} /> },
         { id: 'timeline', label: 'Timeline', render: () => <TimelineView specialty={specialty} /> },
         { id: 'vendors', label: 'Vendors', render: () => <VendorsView /> },
-        { id: 'diagnostic', label: 'Diagnostic', render: () => <DiagnosticView /> },
+        { id: 'diagnostic', label: 'Self-Assessment ↗', render: () => <DiagnosticView /> },
       ]}
     >
-      {/* Specialty filter (was part of the old header, now a child slot above tabs) */}
-      <div className="flex flex-wrap gap-1">
-        {SPECIALTIES.map((sp) => (
-          <button
-            key={sp.id}
-            onClick={() => setSpecialty(sp.id)}
-            className={cn(
-              'inline-flex items-center px-2.5 py-1 text-[11px] font-mono border transition-colors',
-              specialty === sp.id
-                ? 'bg-foreground text-background border-foreground'
-                : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
-            )}
-          >
-            {sp.label}
-          </button>
-        ))}
-      </div>
+      {specialtyStrip}
     </HubShell>
   );
 }

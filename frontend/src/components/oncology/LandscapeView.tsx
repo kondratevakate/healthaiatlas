@@ -1,45 +1,56 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { ONCO_BUBBLES, ONCO_TUMOR_COLORS, ONCO_DP_ORDER, ONCO_DP_LABELS, ONCO_ET_LABELS, ONCO_RELIABILITY } from '@/data/oncology';
 import { cn } from '@/lib/utils';
 import { ExternalLink } from 'lucide-react';
 
+// Per-tumour emoji, mirrors the medical-tourism specialty rail style.
+// Pan-cancer = generic ribbon; rest are anatomy-suggesting hints.
+const TUMOR_EMOJI: Record<string, string> = {
+  'pan-cancer': '🎗️',
+  lung: '🫁',
+  breast: '🌸',
+  prostate: '🔵',
+  colorectal: '🟫',
+};
+
 export function LandscapeView() {
-  const [search, setSearch] = useState('');
   const [tumorFilter, setTumorFilter] = useState('all');
   const [hovered, setHovered] = useState<number | null>(null);
 
   const tumors = useMemo(() => [...new Set(ONCO_BUBBLES.map(b => b.tm))], []);
 
   const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return ONCO_BUBBLES.filter(b => {
-      if (tumorFilter !== 'all' && b.tm !== tumorFilter) return false;
-      if (!q) return true;
-      return (b.c + ' ' + b.p + ' ' + b.desc + ' ' + b.tm).toLowerCase().includes(q);
-    });
-  }, [search, tumorFilter]);
+    return ONCO_BUBBLES.filter(b => tumorFilter === 'all' || b.tm === tumorFilter);
+  }, [tumorFilter]);
 
-  // SVG layout
+  // Responsive width — chart fills the frame instead of cutting off at 800px.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerW, setContainerW] = useState(900);
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const obs = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerW(entry.contentRect.width);
+      }
+    });
+    obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  // SVG layout — chartW now derived from container, with a sensible floor.
   const rowH = 32;
   const leftW = 130;
-  const chartW = 800;
   const minYear = 2013;
   const maxYear = 2026;
   const yearRange = maxYear - minYear;
+  const chartW = Math.max(600, containerW - leftW - 24);
   const svgW = leftW + chartW + 20;
   const svgH = ONCO_DP_ORDER.length * rowH + 40;
 
   return (
     <div>
-      {/* Search + tumor filter */}
+      {/* Tumor filter */}
       <div className="flex flex-wrap gap-1 mb-4 items-center">
-        <input
-          type="text"
-          placeholder="Filter by company, tumor, product…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="bg-secondary border border-border px-3 py-1.5 text-xs w-56 max-w-full focus:outline-none focus:border-primary"
-        />
         <button
           onClick={() => setTumorFilter('all')}
           className={cn(
@@ -54,19 +65,19 @@ export function LandscapeView() {
             key={tm}
             onClick={() => setTumorFilter(tm)}
             className={cn(
-              'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1',
+              'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
               tumorFilter === tm ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground hover:text-foreground'
             )}
           >
-            <span className="w-2 h-2 rounded-full" style={{ background: ONCO_TUMOR_COLORS[tm] || 'hsl(var(--foreground) / 0.5)' }} />
+            <span aria-hidden="true">{TUMOR_EMOJI[tm] ?? '●'}</span>
             {tm}
           </button>
         ))}
       </div>
 
-      {/* Swimlane chart */}
-      <div className="overflow-x-auto border border-border mb-6">
-        <svg width={svgW} height={svgH} className="block min-w-[900px]">
+      {/* Swimlane chart — width fills the frame */}
+      <div ref={containerRef} className="border border-border mb-6">
+        <svg width={svgW} height={svgH} className="block w-full">
           {/* Year grid */}
           {Array.from({ length: yearRange + 1 }, (_, i) => minYear + i).map(yr => {
             const x = leftW + ((yr - minYear) / yearRange) * chartW;

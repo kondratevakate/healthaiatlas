@@ -2,24 +2,6 @@ import { Conference } from '@/types';
 
 export const conferences: Conference[] = [
   {
-    id: 'whx-dubai-2026',
-    name: {
-      en: 'WHX Dubai 2026 (formerly Arab Health)',
-      ar: 'WHX دبي 2026 (سابقاً الصحة العربية)'
-    },
-    date: '2026-02-09',
-    endDate: '2026-02-12',
-    location: 'Dubai World Trade Centre, UAE',
-    type: 'conference',
-    topics: ['medical-imaging', 'telemedicine', 'health-records'],
-    website: 'https://www.arabhealthonline.com',
-    registrationUrl: 'https://www.arabhealthonline.com/register',
-    description: {
-      en: 'The largest healthcare exhibition and congress in the MENA region',
-      ar: 'أكبر معرض ومؤتمر للرعاية الصحية في منطقة الشرق الأوسط وشمال أفريقيا'
-    }
-  },
-  {
     id: 'gitex-global-2026',
     name: {
       en: 'GITEX Global 2026',
@@ -49,21 +31,6 @@ export const conferences: Conference[] = [
     description: {
       en: 'Focused summit on AI applications in clinical medicine',
       ar: 'قمة مركزة على تطبيقات الذكاء الاصطناعي في الطب السريري'
-    }
-  },
-  {
-    id: 'health-founders-meetup-2026',
-    name: {
-      en: 'HealthTech Founders Meetup',
-      ar: 'لقاء مؤسسي التكنولوجيا الصحية'
-    },
-    date: '2026-04-15',
-    location: 'Hub71, Abu Dhabi',
-    type: 'meetup',
-    topics: ['telemedicine', 'patient-monitoring'],
-    description: {
-      en: 'Monthly networking event for health-tech startup founders',
-      ar: 'حدث تواصل شهري لمؤسسي الشركات الناشئة في التكنولوجيا الصحية'
     }
   },
   {

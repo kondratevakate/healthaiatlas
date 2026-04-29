@@ -3,7 +3,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { analysisTools } from '@/data/tools';
 import { Link } from 'react-router-dom';
-import { Mail, Globe, ExternalLink } from 'lucide-react';
+import { Mail, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
 
 const RETHINKING_SYSTEMS_URL = 'https://www.rethinkingsystems.design/';
@@ -52,15 +52,6 @@ const About = () => {
                 >
                   <LinkedInMark className="w-4 h-4" />
                   LinkedIn
-                </a>
-                <a
-                  href="https://atelic.ai"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
-                >
-                  <Globe className="w-4 h-4" />
-                  atelic.ai
                 </a>
               </div>
 
@@ -131,29 +122,44 @@ const About = () => {
           </div>
         </section>
 
-        {/* 3. Mission — kept at bottom as background */}
-        <section className="max-w-3xl">
+        {/* 3. Mission — canonical About copy (independent project statement) */}
+        <section className="max-w-3xl space-y-5 text-body text-foreground/90">
           <h2 className="heading-lg mb-6">{t('about.mission')}</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="border-border/50 bg-card/50">
-              <CardHeader>
-                <CardTitle className="text-lg">Knowledge bank</CardTitle>
-                <CardDescription>
-                  Map the ecosystem of AI in healthcare — players, relationships, and the evolution of the
-                  industry across regions.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card className="border-border/50 bg-card/50">
-              <CardHeader>
-                <CardTitle className="text-lg">Systems analysis</CardTitle>
-                <CardDescription>
-                  Apply design-research methods from the IIT Institute of Design to understand and
-                  visualize complex healthcare infrastructure.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
+
+          <p>
+            HealthAI Atlas is an independent project founded by Dr. Ekaterina Kondrateva to provide open,
+            structured knowledge about the global healthcare AI ecosystem. The project exists to make
+            ecosystem intelligence accessible to those who need it most: practicing clinicians integrating
+            AI tools into care, students learning to evaluate medical AI critically, researchers seeking
+            collaborators and context, and founders navigating an increasingly complex landscape.
+          </p>
+
+          <p>
+            The Atlas operates as a personal research and educational initiative, separate from any other
+            professional affiliations or commercial ventures the founder is associated with. All
+            public-facing content is freely accessible under an open-knowledge license, and the project
+            welcomes contributions, corrections, and feedback from the global community.
+          </p>
+
+          <p>
+            To sustain ongoing development — including continuous data verification, geographic
+            expansion, and methodology refinement — HealthAI Atlas offers professional tooling for
+            institutional users: structured data exports, programmatic access via API, and custom
+            analytical services. These commercial offerings serve enterprise users (investment firms,
+            healthcare organizations, consultancies, government bodies) whose work benefits from
+            decision-ready data infrastructure.
+          </p>
+
+          <p className="border-l-4 border-primary/60 pl-4 italic text-foreground">
+            The principle guiding HealthAI Atlas: the knowledge stays open; the tooling for professional
+            use sustains the work.
+          </p>
+
+          <p className="text-sm text-muted-foreground pt-4">
+            See also: <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link>
+            {' · '}
+            <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
+          </p>
         </section>
       </div>
     </Layout>

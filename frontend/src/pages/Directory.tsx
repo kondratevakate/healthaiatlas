@@ -77,6 +77,19 @@ const Directory = () => {
   return (
     <Layout>
       <div className="container py-12 md:py-16">
+        {!isOverview && (
+          <button
+            type="button"
+            onClick={() => setActiveDomainId('overview')}
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-4 group"
+          >
+            <span className="transition-transform group-hover:-translate-x-0.5">←</span>
+            <span className="font-mono uppercase tracking-widest text-[10px]">
+              Back to Directory
+            </span>
+          </button>
+        )}
+
         <PageHeader
           title={isOverview ? t('nav.directory') : activeDomain?.name[language]}
           subtitle={isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}

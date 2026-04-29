@@ -81,12 +81,10 @@ const Directory = () => {
           <button
             type="button"
             onClick={() => setActiveDomainId('overview')}
-            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-4 group"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group border border-border bg-background px-3 py-1.5 hover:border-foreground/40"
           >
-            <span className="transition-transform group-hover:-translate-x-0.5">←</span>
-            <span className="font-mono uppercase tracking-widest text-[10px]">
-              Back to Directory
-            </span>
+            <span className="text-base transition-transform group-hover:-translate-x-0.5">←</span>
+            <span className="font-medium">Back to Directory</span>
           </button>
         )}
 

@@ -70,7 +70,6 @@ export function LandscapeView() {
             )}
           >
             <span aria-hidden="true">{TUMOR_EMOJI[tm] ?? '●'}</span>
-            <span className="w-2 h-2 rounded-full" style={{ background: ONCO_TUMOR_COLORS[tm] || 'hsl(var(--foreground) / 0.5)' }} />
             {tm}
           </button>
         ))}

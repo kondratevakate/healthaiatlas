@@ -2,31 +2,75 @@
 
 Pending work pulled out of the UX audits run on 2026-04-29. Filed here so it doesn't get lost between branches. Each item is shippable independently.
 
-## 🟦 Big redesign — Context / system framework page
+## 🟦 Big redesign — Context / system framework page (value-stream model)
 
-**Goal:** keep the existing circular framework (PURPOSE → ACTIVITIES → IMPACTS → COMPONENTS) as the spine of the page, add domains as interactive bubbles inside it, and let the user pick a country to swap abstract labels for concrete companies — instead of having three separate tabs that show the same shape three times.
+**Goal:** one explorable surface that replaces the three near-duplicate domain tabs. Keep the systems-thinking shape (Purpose → Components → Activities → Impacts) as the analytical frame; render the domains as **value streams** running through it.
 
-**Three states:**
+**Why value streams, not categories.** The right systems-thinking framing isn't "Oncology lives inside Activities" or "inside Components" — it's that every domain is a vertical pathway through the same shared infrastructure. Components are shared. Purpose is shared. Activities and Impacts are domain-specific subsets. Each value stream pulls from the same Components, organises its own Activities, produces its own Impacts, all rolling up to the shared Purpose.
+
+```
+                      SHARED PURPOSE
+            (improve health, economic growth, …)
+                            ▲
+                            │
+                  ┌─────────┴─────────┐
+                  │ SHARED COMPONENTS │
+                  │ (data, AI tools,  │
+                  │  hospitals,       │
+                  │  research, govt,  │
+                  │  capital)         │
+                  └────┬────┬────┬────┘
+                       │    │    │
+                       ▼    ▼    ▼
+        ┌──────────┬──────────┬──────────┐
+        │ ONCOLOGY │ MED TOUR │ PROC MIN │   ← value streams
+        │ activs + │ activs + │ activs + │
+        │ impacts  │ impacts  │ impacts  │
+        └─────┬────┴─────┬────┴─────┬────┘
+              │          │          │
+              └──────────┴──────────┘
+                         │
+                         ▼
+                  SYSTEM OUTCOMES
+```
+
+**Three states (state machine):**
 
 | State | Trigger | What changes |
 |---|---|---|
-| 1. Global abstract | Default load | Circular diagram with abstract labels ("Drug Discovery", "Diagnostics"). Three domain bubbles (Oncology / Medical Tourism / Process Mining) sit inside the diagram as small coloured chips. |
-| 2. Country selected | User picks 🇺🇸 / 🇪🇺 / 🇨🇳 / 🇦🇪 / 🇮🇳 from a top selector | Same diagram. Abstract labels are replaced with concrete orgs for that country. Domain bubbles show market size / org count / global lead % for that country. |
-| 3. Domain expanded | User clicks one domain bubble | Modal or right-rail with that domain's full breakdown for the selected country: activities with $ figures, key players, gate (e.g. "FDA Approval, 18–24 mo"), power %, blockers. Diagram stays visible behind / next to. |
+| 1. Global abstract | Default | Diagram with generic labels. Value-stream lanes show domain names + abstract sub-activities. |
+| 2. Country instantiation | Country selector (🇺🇸 / 🇪🇺 / 🇨🇳 / 🇦🇪 / 🇮🇳) | Labels swap to concrete orgs. Each value-stream lane shows market size, # orgs, key players for that country. |
+| 3. Domain deep-dive | Click a value-stream lane | Modal or right-rail: full domain breakdown for the selected country — activities with $ figures, key players, controlling gate (e.g. "FDA Approval 12–24 mo"), blockers, opportunities. Diagram stays visible. |
 
-**Why this is worth doing:**
-- Replaces three near-duplicate tabs with one explorable surface.
-- Makes country comparison trivial — user changes one selector and the diagram updates in place rather than re-navigating.
-- Systems-thinking shape (Activities / Impacts / Components) is preserved as the analytical frame, not buried.
+**Data shape:**
+
+```ts
+frameworkAbstract = { purpose, components, valueStreams: { oncology: {…}, medicalTourism: {…}, processMining: {…} } }
+frameworkByCountry = {
+  usa: { ...same shape, every leaf populated with concrete orgs + $ figures + gates + blockers },
+  uae: { … },
+  …
+}
+```
+
+Renderer is a single switch on `selectedCountry`. Adding a country = one new key in `frameworkByCountry`; no UI changes needed.
 
 **Where in the codebase:**
-- `frontend/src/components/home/HeroDiagram.tsx` and `SystemDiagram.tsx` already render a flavor of the circular shape — start here.
-- `frontend/src/data/players.ts`, `domains.ts` already have the per-country / per-domain data shape.
-- `/context` page (`frontend/src/pages/Context.tsx`) is the natural target page; could replace its current layout entirely.
+- `frontend/src/pages/Context.tsx` is the natural target page — current layout can be replaced entirely.
+- `frontend/src/components/home/HeroDiagram.tsx` and `SystemDiagram.tsx` already render a flavour of the circular shape — start here for the abstract layer.
+- `frontend/src/data/players.ts` and `domains.ts` already carry the per-country / per-domain data hooks.
+
+**Implementation phases (≈ 6 weeks):**
+1. Lock the abstract framework (Purpose / Components / 3 value streams / Impacts) — 1 wk
+2. Country selector + per-country data structure scaffold — 1 wk
+3. Dynamic text-replacement on country select — 1 wk
+4. Domain deep-dive panel (state 3) — 2 wk
+5. Comparative analysis (compare same domain across countries) — 1 wk
 
 **Out of scope for this pass:**
-- Animation when transitioning between states.
-- Mobile interactions — desktop first.
+- Animations between states (later, polish)
+- Mobile interactions (desktop-first; mobile gets a stripped one-domain-at-a-time view eventually)
+- Feedback-loop visualisation between domains (advanced systems-thinking layer; v2 of this page)
 
 ---
 

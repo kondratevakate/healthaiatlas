@@ -38,6 +38,7 @@ pnpm-debug.log*
 
 # local tooling
 .claude/settings.local.json
+.claude/risk-reports/
 
 # typescript
 *.tsbuildinfo
@@ -47,3 +48,4 @@ pnpm-debug.log*
 *.xls
 /data/
 /backup/
+__pycache__/

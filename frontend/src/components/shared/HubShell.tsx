@@ -13,6 +13,10 @@ export interface HubShellView {
   id: string;
   label: string;
   render: () => ReactNode;
+  /** One-sentence description of what this view shows. Rendered above the
+   *  view content as a small subtitle so users know what to expect before
+   *  switching tabs. */
+  description?: string;
 }
 
 interface HubShellProps {
@@ -57,6 +61,11 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
 
         {views.map((v) => (
           <TabsContent key={v.id} value={v.id} className="mt-0">
+            {v.description && (
+              <p className="text-xs text-muted-foreground mb-4 max-w-3xl">
+                {v.description}
+              </p>
+            )}
             {v.render()}
           </TabsContent>
         ))}

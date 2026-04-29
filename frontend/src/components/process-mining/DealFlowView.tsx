@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ExternalLink, X, Search } from 'lucide-react';
+import { ExternalLink, X } from 'lucide-react';
 import { PM_EVENTS, PM_TYPE_COLORS, PM_TYPE_LABELS, PMEvent } from '@/data/processMining';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 // Log10-based radius so $1M -> ~5px and $10B -> ~23px remain distinguishable.
@@ -294,7 +293,6 @@ function DealDetail({ ev, allCompanyEvents, onSelectOther }: DealDetailProps) {
 
 export function DealFlowView() {
   const [activeTypes, setActiveTypes] = useState<Set<string>>(new Set());
-  const [searchQuery, setSearchQuery] = useState('');
   const [hovered, setHovered] = useState<number | null>(null);
   const [selected, setSelected] = useState<PMEvent | null>(null);
   const isMobile = useIsMobile();
@@ -316,24 +314,19 @@ export function DealFlowView() {
       .map(([v]) => v);
   }, []);
 
-  const matchesSearch = (v: string) => {
-    if (!searchQuery.trim()) return true;
-    return v.toLowerCase().includes(searchQuery.toLowerCase());
-  };
-
   const matchesTypeFilter = (t: string) => activeTypes.size === 0 || activeTypes.has(t);
 
   const filtered = useMemo(
-    () => PM_EVENTS.filter((e) => matchesTypeFilter(e.t) && matchesSearch(e.v)),
-    [activeTypes, searchQuery],
+    () => PM_EVENTS.filter((e) => matchesTypeFilter(e.t)),
+    [activeTypes],
   );
 
   const visibleVendors = useMemo(
-    () => vendors.filter((v) => matchesSearch(v) && filtered.some((e) => e.v === v)),
-    [vendors, filtered, searchQuery],
+    () => vendors.filter((v) => filtered.some((e) => e.v === v)),
+    [vendors, filtered],
   );
 
-  const filtersActive = activeTypes.size > 0 || searchQuery.trim().length > 0;
+  const filtersActive = activeTypes.size > 0;
 
   const toggleType = (t: string) => {
     setActiveTypes((prev) => {
@@ -346,7 +339,6 @@ export function DealFlowView() {
 
   const resetFilters = () => {
     setActiveTypes(new Set());
-    setSearchQuery('');
   };
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -370,22 +362,11 @@ export function DealFlowView() {
   const svgW = leftW + years.length * yearW + 20;
   const svgH = visibleVendors.length * rowH + 40;
 
-  // ── Toolbar (search + count + filter) ──
+  // ── Toolbar (event count + filter) ──
   const Toolbar = (
     <div className="space-y-3">
-      <div className="grid sm:grid-cols-[1fr_auto] gap-2 items-center">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Find a company…"
-            className="pl-9 h-9 text-sm"
-          />
-        </div>
-        <div className="text-[11px] text-muted-foreground font-mono whitespace-nowrap">
-          {filtered.length} of {PM_EVENTS.length} events · {visibleVendors.length} companies
-        </div>
+      <div className="text-[11px] text-muted-foreground font-mono">
+        {filtered.length} of {PM_EVENTS.length} events · {visibleVendors.length} companies
       </div>
       <FilterBar
         types={types}

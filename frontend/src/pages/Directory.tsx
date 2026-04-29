@@ -82,9 +82,32 @@ const Directory = () => {
           subtitle={isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}
         />
 
+        {/* Domain entry chips — primary navigation, sits right under PageHeader */}
+        {isOverview && (
+          <div className="mb-8 flex flex-wrap gap-2">
+            {domains
+              .filter((d) => d.id !== 'overview')
+              .map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setActiveDomainId(d.id)}
+                  className="group inline-flex items-baseline gap-2 border border-border bg-background hover:border-primary hover:bg-primary/5 px-3 py-2 transition-all"
+                >
+                  <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                    {d.name[language]}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground font-mono">
+                    →
+                  </span>
+                </button>
+              ))}
+          </div>
+        )}
+
         {/* System map as the Overview centrepiece */}
         {isOverview && (
-          <div className="mb-16">
+          <div className="mb-12">
             <SystemMapOverview />
           </div>
         )}

@@ -4,11 +4,11 @@ import {
   ONCO_BV_GROUPS, ONCO_GRP_COLORS, ONCO_OPP_COLS,
 } from '@/data/oncology';
 import { cn } from '@/lib/utils';
-import { ExternalLink, Search, X, Info } from 'lucide-react';
+import { ExternalLink, X, Info } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { LAST_UPDATED } from '@/data/constants';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface PharmaCellItem {
   v: string; // vendor
@@ -33,9 +33,9 @@ function getVendorOpacity(v: string): number {
 const CATEGORIES = Array.from(new Set(ONCO_BV_ORDER.map((b) => ONCO_BV_GROUPS[b])));
 
 export function PharmaMatrixView() {
-  const [search, setSearch] = useState('');
   const [activeCategories, setActiveCategories] = useState<Set<string>>(new Set());
   const [onlyGaps, setOnlyGaps] = useState(false);
+  const isMobile = useIsMobile();
   const [hoveredChip, setHoveredChip] = useState<{
     v: string; p: string; d: string; src?: string; x: number; y: number;
   } | null>(null);
@@ -67,18 +67,7 @@ export function PharmaMatrixView() {
   }, [visibleBv]);
 
   const filteredCos = useMemo(() => {
-    const q = search.toLowerCase();
     return ONCO_PHARMA_COS.filter((co) => {
-      // Text search across pharma name, vendor, product, description
-      if (q) {
-        const matchesText =
-          co.toLowerCase().includes(q) ||
-          visibleBv.some((bv) => {
-            const items = (ONCO_PHARMA[`${co}|${bv}`] ?? []) as PharmaCellItem[];
-            return items.some((it) => (it.v + ' ' + it.p + ' ' + it.d).toLowerCase().includes(q));
-          });
-        if (!matchesText) return false;
-      }
       // "Show only gaps" filter — pharma must have at least one empty opportunity cell
       if (onlyGaps) {
         const hasGap = visibleBv.some((bv) => {
@@ -89,7 +78,7 @@ export function PharmaMatrixView() {
       }
       return true;
     });
-  }, [search, visibleBv, onlyGaps]);
+  }, [visibleBv, onlyGaps]);
 
   // Aggregate vendor → which pharmas use them, and across how many use cases.
   const vendorPenetration = useMemo(() => {
@@ -121,8 +110,7 @@ export function PharmaMatrixView() {
   }, []);
 
   const totalPharmas = ONCO_PHARMA_COS.length;
-  const filtersActive =
-    search.trim().length > 0 || activeCategories.size > 0 || onlyGaps;
+  const filtersActive = activeCategories.size > 0 || onlyGaps;
 
   const toggleCategory = (g: string) => {
     setActiveCategories((prev) => {
@@ -134,7 +122,6 @@ export function PharmaMatrixView() {
   };
 
   const resetFilters = () => {
-    setSearch('');
     setActiveCategories(new Set());
     setOnlyGaps(false);
   };
@@ -158,24 +145,12 @@ export function PharmaMatrixView() {
 
   return (
     <div>
-      {/* ── Toolbar: search + category filter + only-gaps + last updated ── */}
+      {/* ── Toolbar: category filter + only-gaps + last updated ── */}
       <div className="space-y-3 mb-4">
-        <div className="grid sm:grid-cols-[1fr_auto] gap-2 items-center">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Find a pharma, vendor or product…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 h-9 text-sm"
-            />
-          </div>
-          <div className="text-[11px] text-muted-foreground font-mono whitespace-nowrap flex items-center gap-3">
-            <span>{filteredCos.length} of {totalPharmas} pharmas</span>
-            <span className="opacity-60">·</span>
-            <span title="Last data refresh">Updated {LAST_UPDATED.oncology ?? '—'}</span>
-          </div>
+        <div className="text-[11px] text-muted-foreground font-mono flex items-center gap-3 flex-wrap">
+          <span>{filteredCos.length} of {totalPharmas} pharmas</span>
+          <span className="opacity-60">·</span>
+          <span title="Last data refresh">Updated {LAST_UPDATED.oncology ?? '—'}</span>
         </div>
 
         <div className="flex flex-wrap gap-2 items-center">
@@ -247,9 +222,17 @@ export function PharmaMatrixView() {
         </div>
       </div>
 
-      {/* ── Matrix ── */}
+      {/* ── Matrix (desktop) / Card list (mobile) ── */}
+      {isMobile ? (
+        <PharmaCardList
+          pharmas={filteredCos}
+          visibleBv={visibleBv}
+          onCellClick={(co, bv, items, isGap) => setCellSelection({ co, bv, items, isGap })}
+          onVendorClick={setVendorSelection}
+        />
+      ) : (
       <div className="overflow-x-auto">
-        <table className="border-collapse w-full min-w-[780px]">
+        <table className="border-collapse w-full">
           <thead>
             <tr>
               <td className="p-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-background sticky left-0 z-10" />
@@ -370,6 +353,7 @@ export function PharmaMatrixView() {
           </tbody>
         </table>
       </div>
+      )}
 
       {filteredCos.length === 0 && (
         <div className="border border-dashed border-border p-8 mt-3 text-center text-sm text-muted-foreground space-y-2">
@@ -683,5 +667,122 @@ function VendorDetail({ vendor, totalPharmas }: { vendor: string; totalPharmas: 
         ))}
       </div>
     </>
+  );
+}
+
+// ── Mobile fallback: one card per pharma, value chain stacked vertically ──
+interface PharmaCardListProps {
+  pharmas: string[];
+  visibleBv: readonly string[];
+  onCellClick: (co: string, bv: string, items: PharmaCellItem[], isGap: boolean) => void;
+  onVendorClick: (v: string) => void;
+}
+
+function PharmaCardList({ pharmas, visibleBv, onCellClick, onVendorClick }: PharmaCardListProps) {
+  return (
+    <div className="space-y-3">
+      {pharmas.map((co) => {
+        // Group use cases by category for clean stacking inside the card.
+        const groupedBv = new Map<string, string[]>();
+        visibleBv.forEach((bv) => {
+          const g = ONCO_BV_GROUPS[bv];
+          if (!groupedBv.has(g)) groupedBv.set(g, []);
+          groupedBv.get(g)!.push(bv);
+        });
+
+        const isAmgen = co === 'Amgen';
+
+        return (
+          <div
+            key={co}
+            className={cn(
+              'border bg-background',
+              isAmgen ? 'border-primary' : 'border-border',
+            )}
+          >
+            <div
+              className={cn(
+                'p-3 border-b border-border',
+                isAmgen ? 'text-primary' : 'text-foreground',
+              )}
+            >
+              <div className="text-base font-semibold">{co}</div>
+            </div>
+            <div className="divide-y divide-border">
+              {Array.from(groupedBv.entries()).map(([groupName, bvs]) => {
+                const groupColor = ONCO_GRP_COLORS[groupName];
+                return (
+                  <div key={groupName} className="p-3">
+                    <div
+                      className="text-[10px] uppercase tracking-widest font-mono mb-2 flex items-center gap-1.5"
+                      style={{ color: groupColor }}
+                    >
+                      <span className="w-2 h-2 rounded-full" style={{ background: groupColor }} />
+                      {groupName}
+                    </div>
+                    <div className="space-y-2">
+                      {bvs.map((bv) => {
+                        const items = (ONCO_PHARMA[`${co}|${bv}`] ?? []) as PharmaCellItem[];
+                        const isOpp = ONCO_OPP_COLS.includes(bv);
+                        const isEmpty = items.length === 0;
+
+                        return (
+                          <button
+                            key={bv}
+                            type="button"
+                            onClick={() =>
+                              (!isEmpty || isOpp) && onCellClick(co, bv, items, isEmpty && isOpp)
+                            }
+                            disabled={isEmpty && !isOpp}
+                            className={cn(
+                              'w-full text-left grid grid-cols-[1fr_auto] gap-2 items-center py-1.5 px-2 transition-colors text-xs',
+                              !isEmpty && 'border border-border/60 bg-primary/5 hover:bg-primary/10',
+                              isEmpty && isOpp && 'border border-dashed border-muted-foreground/30 hover:border-primary/40',
+                              isEmpty && !isOpp && 'opacity-40',
+                            )}
+                          >
+                            <div className="min-w-0">
+                              <div className="font-medium text-foreground">
+                                {ONCO_BV_LABELS[bv] ?? bv}
+                              </div>
+                              {!isEmpty && (
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {items.map((it, idx) => (
+                                    <span
+                                      key={idx}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        onVendorClick(it.v);
+                                      }}
+                                      className="text-[10px] px-1.5 py-0.5 border border-foreground/10 bg-foreground/5"
+                                    >
+                                      {it.v}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                              {isEmpty && isOpp && (
+                                <div className="text-[10px] text-muted-foreground italic mt-1">
+                                  Market gap — tap to see candidate vendors
+                                </div>
+                              )}
+                              {isEmpty && !isOpp && (
+                                <div className="text-[10px] text-muted-foreground/70 italic mt-1">
+                                  No data
+                                </div>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }

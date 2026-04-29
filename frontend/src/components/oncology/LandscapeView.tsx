@@ -4,20 +4,14 @@ import { cn } from '@/lib/utils';
 import { ExternalLink } from 'lucide-react';
 
 export function LandscapeView() {
-  const [search, setSearch] = useState('');
   const [tumorFilter, setTumorFilter] = useState('all');
   const [hovered, setHovered] = useState<number | null>(null);
 
   const tumors = useMemo(() => [...new Set(ONCO_BUBBLES.map(b => b.tm))], []);
 
   const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return ONCO_BUBBLES.filter(b => {
-      if (tumorFilter !== 'all' && b.tm !== tumorFilter) return false;
-      if (!q) return true;
-      return (b.c + ' ' + b.p + ' ' + b.desc + ' ' + b.tm).toLowerCase().includes(q);
-    });
-  }, [search, tumorFilter]);
+    return ONCO_BUBBLES.filter(b => tumorFilter === 'all' || b.tm === tumorFilter);
+  }, [tumorFilter]);
 
   // SVG layout
   const rowH = 32;
@@ -31,15 +25,8 @@ export function LandscapeView() {
 
   return (
     <div>
-      {/* Search + tumor filter */}
+      {/* Tumor filter */}
       <div className="flex flex-wrap gap-1 mb-4 items-center">
-        <input
-          type="text"
-          placeholder="Filter by company, tumor, product…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="bg-secondary border border-border px-3 py-1.5 text-xs w-56 max-w-full focus:outline-none focus:border-primary"
-        />
         <button
           onClick={() => setTumorFilter('all')}
           className={cn(

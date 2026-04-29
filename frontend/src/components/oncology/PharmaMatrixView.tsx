@@ -318,10 +318,11 @@ export function PharmaMatrixView() {
                             return (
                               <span
                                 key={idx}
-                                className="text-[10px] font-semibold px-1.5 py-0.5 cursor-pointer border border-foreground/10 hover:border-primary/40 transition-colors max-w-[90px] truncate"
+                                className="text-[10px] font-semibold px-1.5 py-0.5 cursor-pointer border border-foreground/10 hover:border-primary/40 transition-colors leading-tight"
                                 style={{
                                   background: `hsl(var(--foreground) / ${op * 0.1})`,
                                   color: `hsl(var(--foreground) / ${op})`,
+                                  wordBreak: 'break-word',
                                 }}
                                 onMouseEnter={(e) =>
                                   setHoveredChip({

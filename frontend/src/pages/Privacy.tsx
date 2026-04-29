@@ -17,12 +17,15 @@ const Privacy = () => {
           <section>
             <h2 className="heading-lg mb-3">Who we are</h2>
             <p className="text-muted-foreground">
-              Health AI Atlas is an independent research project run by Kate Kondratieva
-              (<a href="https://atelic.ai" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">atelic.ai</a>).
-              Contact for any data or privacy inquiry: {' '}
+              HealthAI Atlas is an independent research and educational project owned and operated
+              by Dr. Ekaterina Kondrateva in personal capacity. The project is not affiliated with,
+              owned by, or operated under the authority of any other organisation, employer, or
+              commercial entity. Contact for any data or privacy inquiry:{' '}
               <a href="mailto:kondratevakate@gmail.com" className="text-primary hover:underline">
                 kondratevakate@gmail.com
-              </a>.
+              </a>
+              . See also <Link to="/about" className="text-primary hover:underline">About</Link> and{' '}
+              <Link to="/terms" className="text-primary hover:underline">Terms</Link>.
             </p>
           </section>
 

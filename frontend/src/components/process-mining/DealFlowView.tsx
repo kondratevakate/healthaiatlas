@@ -326,6 +326,43 @@ export function DealFlowView() {
     [vendors, filtered],
   );
 
+  // Pre-compute a vertical-offset index for each event so bubbles stacked
+  // on the same (vendor, year) cell don't fully overlap. Within each bucket
+  // we sort by month then by amount desc so larger deals end up at the
+  // visual centre, smaller ones jitter outwards.
+  const eventOffset = useMemo(() => {
+    const offset = new Map<PMEvent, number>();
+    const buckets = new Map<string, PMEvent[]>();
+    filtered.forEach((ev) => {
+      const yr = ev.d.substring(0, 4);
+      const key = `${ev.v}|${yr}`;
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key)!.push(ev);
+    });
+    buckets.forEach((arr) => {
+      const sorted = arr
+        .slice()
+        .sort((a, b) => {
+          const ma = parseInt(a.d.substring(5) ?? '6', 10);
+          const mb = parseInt(b.d.substring(5) ?? '6', 10);
+          if (ma !== mb) return ma - mb;
+          return b.a - a.a;
+        });
+      // Centre the largest one, alternate the rest above and below.
+      const n = sorted.length;
+      sorted.forEach((ev, i) => {
+        if (n === 1) {
+          offset.set(ev, 0);
+          return;
+        }
+        const dir = i % 2 === 0 ? 1 : -1;
+        const step = Math.ceil((i + 1) / 2);
+        offset.set(ev, dir * step * 5);
+      });
+    });
+    return offset;
+  }, [filtered]);
+
   const filtersActive = activeTypes.size > 0;
 
   const toggleType = (t: string) => {
@@ -454,7 +491,8 @@ export function DealFlowView() {
             {filtered.map((ev, ei) => {
               const vi = visibleVendors.indexOf(ev.v);
               if (vi === -1) return null;
-              const y = vi * rowH + 36;
+              const yJitter = eventOffset.get(ev) ?? 0;
+              const y = vi * rowH + 36 + yJitter;
 
               const yr = ev.d.substring(0, 4);
               const mo = parseInt(ev.d.substring(5) ?? '6', 10);

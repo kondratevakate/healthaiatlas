@@ -1013,7 +1013,7 @@ const ROLE_OPTIONS: Array<{ value: UserContext['role']; label: string }> = [
   { value: 'founder', label: 'Founder' },
   { value: 'business', label: 'BD / Strategy' },
   { value: 'investor', label: 'Investor' },
-  { value: 'clinician', label: 'Clinician' },
+  { value: 'student', label: 'Student / Researcher' },
   { value: 'researcher', label: 'Researcher' },
   { value: 'jobseeker', label: 'Job seeker' },
   { value: 'other', label: 'Other' },

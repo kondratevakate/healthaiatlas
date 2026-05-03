@@ -7,7 +7,7 @@ import { launches } from '@/data/launches';
 import { grants } from '@/data/grants';
 import { programs } from '@/data/programs';
 import { openCalls } from '@/data/openCalls';
-import { talentPosts } from '@/data/talentHub';
+import { talentProfiles, tierConfig, availabilityConfig, ProfileTier } from '@/data/talentProfiles';
 import { conferenceRoles, launchRoles, matchesRole } from '@/data/roleRelevance';
 import { PathRole } from '@/types/research';
 import { ConferenceCard } from '@/components/cards';
@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { ArrowLeft, MessageSquare, Users, CalendarDays, UserPlus, TrendingUp, ExternalLink, LinkIcon, Sparkles, Award, GraduationCap, FileText, Briefcase } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Users, CalendarDays, UserPlus, TrendingUp, ExternalLink, LinkIcon, Sparkles, Award, GraduationCap, FileText, Briefcase, Lock, Star, Shield } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -130,10 +130,16 @@ export default function Discovery() {
     () => openCalls.filter((c) => roleFilter === 'all' || c.roles.includes(roleFilter)),
     [roleFilter],
   );
-  const filteredTalentPosts = useMemo(
-    () => talentPosts.filter((p) => roleFilter === 'all' || p.forRoles.includes(roleFilter) || p.postedByRoles.includes(roleFilter)),
-    [roleFilter],
-  );
+  const [tierFilter, setTierFilter] = useState<ProfileTier | 'all'>('all');
+  const [availabilityOnly, setAvailabilityOnly] = useState<boolean>(false);
+
+  const filteredProfiles = useMemo(() => {
+    return talentProfiles
+      .filter((p) => roleFilter === 'all' || p.forRoles.includes(roleFilter))
+      .filter((p) => tierFilter === 'all' || p.tier === tierFilter)
+      .filter((p) => !availabilityOnly || p.availability === 'open-to-offers' || p.availability === 'open-to-collab')
+      .sort((a, b) => b.rating - a.rating);
+  }, [roleFilter, tierFilter, availabilityOnly]);
 
   const copyPrompt = (prompt: string) => {
     navigator.clipboard.writeText(prompt);
@@ -616,10 +622,12 @@ export default function Discovery() {
                     </div>
                   </TabsContent>
 
-                  {/* Talent Hub Tab — full-width 3-column board, distinct from list-style tabs */}
+                  {/* Talent Hub — hirer-facing rated-people directory.
+                      Public fields visible by default; gated fields visibly locked behind a
+                      "Request access" CTA. */}
                   <TabsContent value="talent">
-                    {/* Hero strip: bold framing + prominent submit CTA */}
-                    <div className="border border-border bg-secondary/40 p-6 md:p-8 mb-8">
+                    {/* Hero strip — frames the hub for hirers */}
+                    <div className="border border-border bg-secondary/40 p-6 md:p-8 mb-6">
                       <div className="grid md:grid-cols-[1fr_auto] gap-6 items-start">
                         <div>
                           <div className="flex items-center gap-2 mb-2">
@@ -630,112 +638,208 @@ export default function Discovery() {
                           </div>
                           <div className="h-0.5 w-12 bg-primary mb-3" />
                           <h2 className="text-xl md:text-2xl font-semibold mb-2">
-                            People-shaped opportunities, in one place
+                            A curated directory of healthcare-AI talent — for hirers
                           </h2>
-                          <p className="text-sm text-muted-foreground max-w-xl">
-                            Hiring needs from founders and businesses, availability from job seekers and
-                            researchers, and open collaboration calls between labs and vendors. Filter by
-                            role above to see what's relevant to you.
+                          <p className="text-sm text-muted-foreground max-w-2xl">
+                            Profiles ranked by verifiable public signals — Kaggle medals, Grand
+                            Challenge wins, MICCAI / NeurIPS papers, peer-reviewed deployments,
+                            named fellowships. Public fields are visible to everyone; full
+                            identities, contacts, and references are gated until access is granted.
                           </p>
                         </div>
-                        <a
-                          href={SUGGEST_ENTRY_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="shrink-0"
-                        >
-                          <Button size="lg" className="gap-2">
-                            <UserPlus className="h-4 w-4" />
-                            Submit a post
-                          </Button>
-                        </a>
+                        <div className="shrink-0 flex flex-col gap-2">
+                          <a href={SUGGEST_ENTRY_URL} target="_blank" rel="noopener noreferrer">
+                            <Button size="lg" className="gap-2 w-full">
+                              <Shield className="h-4 w-4" />
+                              Request hirer access
+                            </Button>
+                          </a>
+                          <a href={SUGGEST_ENTRY_URL} target="_blank" rel="noopener noreferrer">
+                            <Button size="sm" variant="outline" className="gap-2 w-full">
+                              <UserPlus className="h-4 w-4" />
+                              Submit your profile
+                            </Button>
+                          </a>
+                        </div>
                       </div>
                       <p className="text-[11px] text-muted-foreground mt-4 font-mono">
-                        Submissions land via GitHub PR until the intake form ships. Placeholder
-                        seed posts are clearly marked.
+                        Today the gate is GitHub-PR-based; full auth-gated reveal lands when
+                        the intake form ships. Placeholder profiles are clearly marked.
                       </p>
                     </div>
 
-                    {/* 3-column board: Hiring / Available / Collaboration */}
-                    <div className="grid md:grid-cols-3 gap-6">
-                      {[
-                        {
-                          type: 'hiring' as const,
-                          title: 'Hiring',
-                          subtitle: 'Founders & businesses looking for talent',
-                          accent: 'border-primary/40',
-                        },
-                        {
-                          type: 'available' as const,
-                          title: 'Available',
-                          subtitle: 'Researchers & professionals open to work',
-                          accent: 'border-blue-500/40',
-                        },
-                        {
-                          type: 'collaboration' as const,
-                          title: 'Collaboration',
-                          subtitle: 'Co-authorship, pilots, joint research',
-                          accent: 'border-amber-500/40',
-                        },
-                      ].map((col) => {
-                        const posts = filteredTalentPosts.filter((p) => p.type === col.type);
-                        return (
-                          <div key={col.type} className={cn('border-t-2 pt-4', col.accent)}>
-                            <div className="mb-4">
-                              <h3 className="font-semibold text-base">{col.title}</h3>
-                              <p className="text-xs text-muted-foreground">{col.subtitle}</p>
-                              <p className="text-[10px] text-muted-foreground/70 font-mono mt-1">
-                                {posts.length} {posts.length === 1 ? 'post' : 'posts'}
-                              </p>
-                            </div>
+                    {/* Hub-local filter row: tier + availability */}
+                    <div className="flex flex-wrap items-center gap-3 mb-6">
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+                        Tier
+                      </span>
+                      {(['all', 'core', 'strong', 'emerging'] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setTierFilter(t)}
+                          className={cn(
+                            'inline-flex items-center px-3 py-1 text-xs font-mono border transition-colors',
+                            tierFilter === t
+                              ? 'bg-foreground text-background border-foreground'
+                              : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                          )}
+                        >
+                          {t === 'all' ? 'All tiers' : tierConfig[t].label}
+                        </button>
+                      ))}
+                      <div className="h-4 w-px bg-border mx-1" />
+                      <button
+                        type="button"
+                        onClick={() => setAvailabilityOnly((v) => !v)}
+                        className={cn(
+                          'inline-flex items-center px-3 py-1 text-xs font-mono border transition-colors',
+                          availabilityOnly
+                            ? 'bg-foreground text-background border-foreground'
+                            : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                        )}
+                      >
+                        Open to work only
+                      </button>
+                      <span className="ml-auto text-[10px] text-muted-foreground font-mono">
+                        {filteredProfiles.length} {filteredProfiles.length === 1 ? 'profile' : 'profiles'}
+                      </span>
+                    </div>
 
-                            {posts.length > 0 ? (
-                              <div className="space-y-4">
-                                {posts.map((p) => (
-                                  <Card key={p.id} className="border hover:border-foreground/30 transition-colors">
-                                    <CardContent className="p-4">
-                                      <h4 className="font-semibold mb-2 leading-snug">{p.title}</h4>
-                                      <div className="flex flex-wrap gap-1.5 mb-2">
-                                        <Badge variant="outline" className="text-[10px] rounded-none">
-                                          {p.region}
+                    {/* Profile grid */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {filteredProfiles.length > 0 ? (
+                        filteredProfiles.map((p) => {
+                          const tier = tierConfig[p.tier];
+                          const avail = availabilityConfig[p.availability];
+                          return (
+                            <Card key={p.id} className="border-2 hover:border-foreground/40 transition-colors">
+                              <CardContent className="p-5">
+                                {/* Header: name + tier + rating */}
+                                <div className="flex items-start justify-between gap-3 mb-3">
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <h3 className="font-semibold text-base leading-tight truncate">
+                                        {p.publicName}
+                                      </h3>
+                                      {p.isPlaceholder && (
+                                        <Badge variant="outline" className="text-[9px] rounded-none">
+                                          PLACEHOLDER
                                         </Badge>
-                                      </div>
-                                      {p.org && (
-                                        <p className="text-xs text-muted-foreground mb-2">{p.org}</p>
                                       )}
-                                      <p className="text-sm mb-3 text-foreground/90">{p.audience}</p>
-                                      {p.notes && (
-                                        <p className="text-xs text-muted-foreground italic mb-3">
-                                          → {p.notes}
-                                        </p>
-                                      )}
-                                      <div className="flex items-center justify-between pt-2 border-t border-border text-[11px] text-muted-foreground">
-                                        <span className="font-mono">{p.postedAt}</span>
-                                        {p.src && (
+                                    </div>
+                                    {p.handle && (
+                                      <p className="text-xs text-muted-foreground font-mono">@{p.handle}</p>
+                                    )}
+                                  </div>
+                                  <div className="text-right shrink-0">
+                                    <div className={cn('inline-flex items-center gap-1 px-2 py-0.5 border text-[10px] uppercase tracking-widest font-mono', tier.accent)}>
+                                      <Star className="h-3 w-3" />
+                                      {tier.label}
+                                    </div>
+                                    <div className="text-xl font-semibold font-mono mt-1">{p.rating}</div>
+                                  </div>
+                                </div>
+
+                                {/* Specialization + region + availability */}
+                                <div className="flex flex-wrap gap-1.5 mb-3">
+                                  <Badge variant="outline" className="text-[10px] rounded-none">{p.region}</Badge>
+                                  {p.specialization.slice(0, 3).map((s) => (
+                                    <Badge key={s} variant="secondary" className="text-[10px] rounded-none">{s}</Badge>
+                                  ))}
+                                  <Badge
+                                    variant={avail.tone === 'positive' ? 'default' : 'outline'}
+                                    className="text-[10px] rounded-none"
+                                  >
+                                    {avail.label}
+                                  </Badge>
+                                </div>
+
+                                {/* Public signals — verifiable */}
+                                <div className="space-y-2 mb-4">
+                                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+                                    Public signals
+                                  </p>
+                                  {p.publicSignals.map((sig, i) => (
+                                    <div key={i} className="text-sm border-l-2 border-primary/40 pl-3">
+                                      <div className="font-medium">
+                                        {sig.label}
+                                        {sig.src && (
                                           <a
-                                            href={p.src}
+                                            href={sig.src}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 text-primary hover:underline"
+                                            className="ml-2 inline-flex items-center text-primary hover:underline text-[11px]"
                                           >
-                                            <LinkIcon className="h-3 w-3" /> Source
+                                            <ExternalLink className="h-3 w-3" />
                                           </a>
                                         )}
                                       </div>
-                                    </CardContent>
-                                  </Card>
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="border border-dashed border-border p-6 text-center">
-                                <p className="text-xs text-muted-foreground">
-                                  No {col.title.toLowerCase()} posts for this role yet.
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                                      <div className="text-xs text-muted-foreground">{sig.detail}</div>
+                                    </div>
+                                  ))}
+                                </div>
+
+                                {/* Gated section — visibly locked */}
+                                <div className="border border-dashed border-border bg-muted/30 p-3">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+                                      Gated for verified hirers
+                                    </p>
+                                  </div>
+                                  <ul className="space-y-1 text-xs text-muted-foreground">
+                                    <li className={cn('flex items-center gap-2', !p.gated.fullProfileAvailable && 'opacity-50')}>
+                                      <span className={cn('inline-block h-1.5 w-1.5 rounded-full', p.gated.fullProfileAvailable ? 'bg-primary' : 'bg-muted-foreground/30')} />
+                                      Full identity & detailed track record
+                                    </li>
+                                    <li className={cn('flex items-center gap-2', !p.gated.contactsAvailable && 'opacity-50')}>
+                                      <span className={cn('inline-block h-1.5 w-1.5 rounded-full', p.gated.contactsAvailable ? 'bg-primary' : 'bg-muted-foreground/30')} />
+                                      Direct contact channel
+                                    </li>
+                                    <li className={cn('flex items-center gap-2', p.gated.referencesCount === 0 && 'opacity-50')}>
+                                      <span className={cn('inline-block h-1.5 w-1.5 rounded-full', p.gated.referencesCount > 0 ? 'bg-primary' : 'bg-muted-foreground/30')} />
+                                      {p.gated.referencesCount > 0 ? `${p.gated.referencesCount} reference${p.gated.referencesCount > 1 ? 's' : ''}` : 'No references on file'}
+                                    </li>
+                                    <li className={cn('flex items-center gap-2', !p.gated.resumeAvailable && 'opacity-50')}>
+                                      <span className={cn('inline-block h-1.5 w-1.5 rounded-full', p.gated.resumeAvailable ? 'bg-primary' : 'bg-muted-foreground/30')} />
+                                      Resume / CV on file
+                                    </li>
+                                  </ul>
+                                  <a href={SUGGEST_ENTRY_URL} target="_blank" rel="noopener noreferrer" className="block mt-3">
+                                    <Button size="sm" variant="outline" className="w-full gap-2">
+                                      <Lock className="h-3 w-3" />
+                                      Request access
+                                    </Button>
+                                  </a>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          );
+                        })
+                      ) : (
+                        <div className="md:col-span-2 border border-dashed border-border p-12 text-center">
+                          <p className="text-muted-foreground">
+                            No profiles match the current filters. Try widening the role or tier.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Methodology footer — sets expectations */}
+                    <div className="mt-8 border-t border-border pt-6 text-xs text-muted-foreground space-y-1.5">
+                      <p>
+                        <strong className="text-foreground">How ratings work:</strong> calibrated, not crowdsourced.
+                        Tier is determined by editorial review of verifiable public signals
+                        (peer-reviewed publications, ranked competitions, named fellowships,
+                        deployed-product evidence). No self-reported metric counts toward tier.
+                      </p>
+                      <p>
+                        <strong className="text-foreground">Consent:</strong> only profiles with explicit consent
+                        to be listed are included. Placeholder profiles are anonymized composites
+                        for layout demonstration; they are clearly marked and replaced as real
+                        consented profiles arrive via PR.
+                      </p>
                     </div>
                   </TabsContent>
 

@@ -616,72 +616,127 @@ export default function Discovery() {
                     </div>
                   </TabsContent>
 
-                  {/* Talent Hub Tab — skeleton */}
+                  {/* Talent Hub Tab — full-width 3-column board, distinct from list-style tabs */}
                   <TabsContent value="talent">
-                    <div className="mb-6">
-                      <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
-                        Talent hub
-                      </p>
-                      <div className="h-0.5 w-12 bg-primary mb-4" />
-                      <p className="text-muted-foreground">
-                        Hiring needs, available people, and collaboration calls. Submissions accepted via PR until the intake form ships.
-                      </p>
-                    </div>
-
-                    <div className="border border-border bg-card divide-y divide-border mb-6">
-                      {filteredTalentPosts.length > 0 ? (
-                        filteredTalentPosts.map((p) => (
-                          <div key={p.id} className="p-4 flex items-start gap-4">
-                            <div className="w-10 h-10 flex items-center justify-center bg-muted shrink-0">
-                              <Briefcase className="w-5 h-5 text-muted-foreground" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex flex-wrap items-baseline gap-2 mb-1">
-                                <h3 className="font-semibold">{p.title}</h3>
-                                <Badge variant="outline" className="text-[10px] rounded-none">{p.region}</Badge>
-                                <Badge variant="secondary" className="text-[10px] rounded-none capitalize">{p.type}</Badge>
-                              </div>
-                              {p.org && <p className="text-sm text-muted-foreground mb-1">{p.org}</p>}
-                              <p className="text-sm mb-2">{p.audience}</p>
-                              {p.notes && <p className="text-xs text-foreground/70 italic mb-2">→ {p.notes}</p>}
-                              <div className="flex flex-wrap items-center gap-3 text-xs">
-                                <span className="text-muted-foreground font-mono">Posted: {p.postedAt}</span>
-                                {p.src && (
-                                  <a
-                                    href={p.src}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 text-primary hover:underline"
-                                  >
-                                    <LinkIcon className="h-3 w-3" /> Source
-                                  </a>
-                                )}
-                              </div>
-                            </div>
+                    {/* Hero strip: bold framing + prominent submit CTA */}
+                    <div className="border border-border bg-secondary/40 p-6 md:p-8 mb-8">
+                      <div className="grid md:grid-cols-[1fr_auto] gap-6 items-start">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Briefcase className="h-5 w-5 text-primary" />
+                            <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
+                              Talent hub
+                            </p>
                           </div>
-                        ))
-                      ) : (
-                        <div className="text-center py-12">
-                          <p className="text-muted-foreground">No posts for this role yet.</p>
+                          <div className="h-0.5 w-12 bg-primary mb-3" />
+                          <h2 className="text-xl md:text-2xl font-semibold mb-2">
+                            People-shaped opportunities, in one place
+                          </h2>
+                          <p className="text-sm text-muted-foreground max-w-xl">
+                            Hiring needs from founders and businesses, availability from job seekers and
+                            researchers, and open collaboration calls between labs and vendors. Filter by
+                            role above to see what's relevant to you.
+                          </p>
                         </div>
-                      )}
-                    </div>
-
-                    <Card className="border-2 border-dashed">
-                      <CardContent className="p-6 text-center">
-                        <UserPlus className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-                        <h3 className="font-semibold mb-1">Submit a post</h3>
-                        <p className="text-sm text-muted-foreground mb-3 max-w-md mx-auto">
-                          Hiring, looking for work, or seeking a collaborator? Open a PR with your post until the intake form ships.
-                        </p>
-                        <a href={SUGGEST_ENTRY_URL} target="_blank" rel="noopener noreferrer">
-                          <Button variant="outline" size="sm" className="gap-2">
+                        <a
+                          href={SUGGEST_ENTRY_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="shrink-0"
+                        >
+                          <Button size="lg" className="gap-2">
                             <UserPlus className="h-4 w-4" />
-                            Submit via GitHub
+                            Submit a post
                           </Button>
                         </a>
-                      </CardContent>
-                    </Card>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground mt-4 font-mono">
+                        Submissions land via GitHub PR until the intake form ships. Placeholder
+                        seed posts are clearly marked.
+                      </p>
+                    </div>
+
+                    {/* 3-column board: Hiring / Available / Collaboration */}
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {[
+                        {
+                          type: 'hiring' as const,
+                          title: 'Hiring',
+                          subtitle: 'Founders & businesses looking for talent',
+                          accent: 'border-primary/40',
+                        },
+                        {
+                          type: 'available' as const,
+                          title: 'Available',
+                          subtitle: 'Researchers & professionals open to work',
+                          accent: 'border-blue-500/40',
+                        },
+                        {
+                          type: 'collaboration' as const,
+                          title: 'Collaboration',
+                          subtitle: 'Co-authorship, pilots, joint research',
+                          accent: 'border-amber-500/40',
+                        },
+                      ].map((col) => {
+                        const posts = filteredTalentPosts.filter((p) => p.type === col.type);
+                        return (
+                          <div key={col.type} className={cn('border-t-2 pt-4', col.accent)}>
+                            <div className="mb-4">
+                              <h3 className="font-semibold text-base">{col.title}</h3>
+                              <p className="text-xs text-muted-foreground">{col.subtitle}</p>
+                              <p className="text-[10px] text-muted-foreground/70 font-mono mt-1">
+                                {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+                              </p>
+                            </div>
+
+                            {posts.length > 0 ? (
+                              <div className="space-y-4">
+                                {posts.map((p) => (
+                                  <Card key={p.id} className="border hover:border-foreground/30 transition-colors">
+                                    <CardContent className="p-4">
+                                      <h4 className="font-semibold mb-2 leading-snug">{p.title}</h4>
+                                      <div className="flex flex-wrap gap-1.5 mb-2">
+                                        <Badge variant="outline" className="text-[10px] rounded-none">
+                                          {p.region}
+                                        </Badge>
+                                      </div>
+                                      {p.org && (
+                                        <p className="text-xs text-muted-foreground mb-2">{p.org}</p>
+                                      )}
+                                      <p className="text-sm mb-3 text-foreground/90">{p.audience}</p>
+                                      {p.notes && (
+                                        <p className="text-xs text-muted-foreground italic mb-3">
+                                          → {p.notes}
+                                        </p>
+                                      )}
+                                      <div className="flex items-center justify-between pt-2 border-t border-border text-[11px] text-muted-foreground">
+                                        <span className="font-mono">{p.postedAt}</span>
+                                        {p.src && (
+                                          <a
+                                            href={p.src}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1 text-primary hover:underline"
+                                          >
+                                            <LinkIcon className="h-3 w-3" /> Source
+                                          </a>
+                                        )}
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="border border-dashed border-border p-6 text-center">
+                                <p className="text-xs text-muted-foreground">
+                                  No {col.title.toLowerCase()} posts for this role yet.
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </TabsContent>
 
                   {/* Verification Prompts Tab */}

@@ -1,0 +1,1 @@
+export { ComparativeMatrix } from './ComparativeMatrix';

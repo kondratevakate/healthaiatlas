@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { UsTimeline, UsSidebar, FounderMatrix } from '@/components/context-us';
 import { MarketReality } from '@/components/context-uae';
 import { EuFounderMap, EuSidebar } from '@/components/context-eu';
+import { ComparativeMatrix } from '@/components/context-compare';
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -281,12 +282,13 @@ function VisionSidebar() {
   );
 }
 
-type ContextRegion = 'us' | 'uae' | 'eu';
+type ContextRegion = 'us' | 'uae' | 'eu' | 'compare';
 
 const REGION_OPTIONS: { id: ContextRegion; label: string; flag: string; available: boolean }[] = [
   { id: 'us', label: 'US', flag: '🇺🇸', available: true },
   { id: 'eu', label: 'EU + CH', flag: '🇪🇺', available: true },
   { id: 'uae', label: 'UAE', flag: '🇦🇪', available: true },
+  { id: 'compare', label: 'Compare', flag: '📊', available: true },
 ];
 
 const REGION_SUBTITLES: Record<ContextRegion, { en: string; ar: string }> = {
@@ -301,6 +303,10 @@ const REGION_SUBTITLES: Record<ContextRegion, { en: string; ar: string }> = {
   eu: {
     en: 'How the AI Act + EHDS + HTAR + MDR/IVDR rulebook stacks for healthcare-AI founders — and why Switzerland is a separate institutional animal even though it sits in the middle of Europe.',
     ar: 'كيف تتكدس قواعد قانون الذكاء الاصطناعي + EHDS + HTAR + MDR/IVDR لمؤسسي الذكاء الاصطناعي الصحي — ولماذا تعد سويسرا حيواناً مؤسسياً منفصلاً رغم موقعها في وسط أوروبا.',
+  },
+  compare: {
+    en: 'Same questions, different answers per market. US · EU · Switzerland · UAE side-by-side — eight rows that make the order-of-magnitude differences visible at a glance.',
+    ar: 'نفس الأسئلة، إجابات مختلفة لكل سوق. الولايات المتحدة · الاتحاد الأوروبي · سويسرا · الإمارات جنباً إلى جنب — ثمانية صفوف تكشف الفروق بترتيب الحجم في لمحة.',
   },
 };
 
@@ -387,6 +393,15 @@ export default function Context() {
                   </div>
                 </ResizablePanel>
               </ResizablePanelGroup>
+            </div>
+          </section>
+        )}
+
+        {/* Compare — 4-region side-by-side matrix */}
+        {region === 'compare' && (
+          <section className="py-8">
+            <div className="container max-w-6xl">
+              <ComparativeMatrix />
             </div>
           </section>
         )}

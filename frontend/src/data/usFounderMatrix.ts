@@ -13,6 +13,28 @@
 
 export type StartupOutcome = 'live' | 'acquired' | 'shutdown' | 'fraud';
 
+// Which CMS coverage / billing pathway the case actually used.
+// - 'NCD'      = National Coverage Determination (positive)
+// - 'NCD-CED'  = NCD with Coverage with Evidence Development restriction
+//                (the kill switch — covered, but only inside CMS-approved trial)
+// - 'LCD'      = Local Coverage Determination (per MAC region)
+// - 'NTAP'     = New Technology Add-on Payment (hospital DRG add-on)
+// - 'TCET'     = Transitional Coverage for Emerging Technologies (breakthrough)
+// - 'Cat I CPT'= billing flows from a Cat I CPT code; no special CMS pathway
+// - 'bundled'  = billed bundled into existing imaging / E&M codes
+// - 'none'     = no CMS pathway pursued / not applicable to product
+// - 'n/a'      = not a CMS-relevant product (back-office, data, services)
+export type CmsPathway =
+  | 'NCD'
+  | 'NCD-CED'
+  | 'LCD'
+  | 'NTAP'
+  | 'TCET'
+  | 'Cat I CPT'
+  | 'bundled'
+  | 'none'
+  | 'n/a';
+
 export interface DecisionScore {
   fda: number;        // regulatory path cleared
   ama: number;        // CPT code (Cat I = 1, Cat III = 0.5, none = 0)
@@ -30,6 +52,7 @@ export interface FounderCase {
   outcome: StartupOutcome;
   outcomeDate: string;        // human-readable, e.g. "Apr 2023"
   scores: DecisionScore;
+  cmsPathway?: CmsPathway;    // which CMS pathway the case actually used
   policyAnchor?: string;      // which US Policy Horizon, if any
   oneLiner: string;           // diagnostic — which spoke killed/saved it
   src: string;                // primary source
@@ -78,6 +101,7 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'live',
     outcomeDate: 'live since 2018',
     scores: { fda: 1.0, ama: 1.0, cms: 0.85, payer: 0.75, pharma: 0.2, capital: 0.7, policy: 0.55 },
+    cmsPathway: 'Cat I CPT',
     policyAnchor: 'Healthy People 2030 (diabetes complications)',
     oneLiner: 'First fully autonomous AI device. Cat I CPT 92229. Medicare and most major payers cover. The textbook full polygon.',
     src: 'https://www.accessdata.fda.gov/cdrh_docs/reviews/DEN180001.pdf',
@@ -89,6 +113,7 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'live',
     outcomeDate: 'live, IPO 2024',
     scores: { fda: 1.0, ama: 1.0, cms: 0.9, payer: 0.85, pharma: 0.3, capital: 0.85, policy: 0.6 },
+    cmsPathway: 'Cat I CPT',
     policyAnchor: 'CMS Accountable Care (cardiovascular value-based care)',
     oneLiner: 'Multiple FDA 510(k) clearances. Cat I CPT 75580 effective Jan 2024 with bumped reimbursement. The strongest CPT-anchored cardiology AI story.',
     src: 'https://www.heartflow.com/newsroom/heartflow-announces-new-category-i-cpt-code/',
@@ -100,6 +125,7 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'live',
     outcomeDate: 'NASDAQ IPO Jun 2024',
     scores: { fda: 0.6, ama: 0.3, cms: 0.4, payer: 0.5, pharma: 1.0, capital: 0.95, policy: 0.85 },
+    cmsPathway: 'bundled',
     policyAnchor: 'Cancer Moonshot 2047',
     oneLiner: 'Pharma-pull is the carrying axis (AstraZeneca, Pfizer, GSK, Merck, BMS contracts). $410M raised at $6.1B valuation. Patient revenue still small share.',
     src: 'https://www.fiercehealthcare.com/health-tech/tempus-ai-shares-jump-15-stock-market-debut-ipo-priced-over-6b-valuation',
@@ -111,6 +137,7 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'live',
     outcomeDate: 'live since 2018',
     scores: { fda: 1.0, ama: 0.2, cms: 0.3, payer: 0.4, pharma: 0.5, capital: 0.7, policy: 0.85 },
+    cmsPathway: 'bundled',
     policyAnchor: 'Cancer Moonshot 2047',
     oneLiner: 'First AI pathology tool with FDA De Novo (2021). Strong mission fit. No dedicated CPT — uptake bottlenecked by reimbursement, not technology.',
     src: 'https://www.paige.ai/press-releases',
@@ -124,6 +151,7 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'acquired',
     outcomeDate: 'Sep 2025',
     scores: { fda: 1.0, ama: 0.4, cms: 0.5, payer: 0.5, pharma: 0.95, capital: 0.7, policy: 0.65 },
+    cmsPathway: 'bundled',
     policyAnchor: 'MAHA chronic-disease umbrella (Alzheimer / aging)',
     oneLiner: 'icobrain aria FDA-cleared Nov 2024. GE acquisition Sep 2025 — 10 months. The new Alzheimer drugs created the niche; pharma-pull pulled the exit.',
     src: 'https://investor.gehealthcare.com/news-releases/news-release-details/ge-healthcare-announces-intent-acquire-icometrix-strengthen',
@@ -137,6 +165,7 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'shutdown',
     outcomeDate: 'Apr 2023, Ch.11',
     scores: { fda: 1.0, ama: 0.0, cms: 0.0, payer: 0.05, pharma: 0.1, capital: 0.6, policy: 0.4 },
+    cmsPathway: 'none',
     policyAnchor: 'Healthy People 2030 (mental health, substance use) — soft fit',
     oneLiner: 'FDA cleared three PDTs. Payers refused to reimburse. $6M asset sale vs $32M debt. The PAYER spoke at zero killed it.',
     src: 'https://www.sec.gov/Archives/edgar/data/1835567/000183556723000020/peartherapeuticsfilesforch.htm',
@@ -148,6 +177,7 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'shutdown',
     outcomeDate: 'Oct 2023',
     scores: { fda: 0.0, ama: 0.0, cms: 0.0, payer: 0.1, pharma: 0.0, capital: 0.95, policy: 0.15 },
+    cmsPathway: 'n/a',
     oneLiner: '$902M raised, $4B peak valuation. CAPITAL-ONLY polygon. No clinical evidence path, no mission anchor, "AI" was largely manual workers.',
     src: 'https://www.fiercehealthcare.com/health-tech/once-high-flying-unicorn-olive-ai-sells-two-key-businesses-winds-down-operations',
   },
@@ -158,6 +188,7 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'shutdown',
     outcomeDate: 'Aug-Sep 2023, Ch.7',
     scores: { fda: 0.2, ama: 0.0, cms: 0.0, payer: 0.15, pharma: 0.0, capital: 0.85, policy: 0.15 },
+    cmsPathway: 'none',
     oneLiner: 'SPAC at $4.2B, UK assets sold for £500K. Capital-heavy, mission-orphan, payer model never closed. AI safety claims discredited by UK regulators.',
     src: 'https://www.healthcaredive.com/news/Babylon-Chapter-7-bankruptcy/691218/',
   },
@@ -168,7 +199,8 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'shutdown',
     outcomeDate: 'Nov 2024',
     scores: { fda: 0.1, ama: 0.0, cms: 0.0, payer: 0.1, pharma: 0.0, capital: 0.8, policy: 0.1 },
-    oneLiner: '$657M raised, only 3 CarePods deployed. Patients literally got stuck inside. No reimbursement path for unsupervised AI primary care.',
+    cmsPathway: 'none',
+    oneLiner: '$657M raised, only 3 CarePods deployed. Same lesson as Babylon, Pear, Walmart: no reimbursement pathway for autonomous primary care = no revenue, regardless of capital. The "AI doctor" regulatory pathway does not exist.',
     src: 'https://www.fiercehealthcare.com/health-tech/primary-care-player-forward-shutters-after-raising-400m-rolling-out-carepods',
   },
   {
@@ -178,6 +210,7 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'shutdown',
     outcomeDate: 'Sep 2025',
     scores: { fda: 0.5, ama: 0.2, cms: 0.2, payer: 0.2, pharma: 0.5, capital: 0.85, policy: 0.15 },
+    cmsPathway: 'bundled',
     oneLiner: '150+ third-party AI apps on the platform. Bayer cited "narrow reimbursement, slow adoption, IT integration friction." The marketplace layer cannot pay for itself yet.',
     src: 'https://hitconsultant.net/2025/09/09/bayer-exits-radiology-ai-market-discontinuing-calantic-and-blackford/',
   },
@@ -188,7 +221,8 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'shutdown',
     outcomeDate: 'Withdrawn Jan 2024',
     scores: { fda: 1.0, ama: 0.6, cms: 0.05, payer: 0.1, pharma: 1.0, capital: 1.0, policy: 0.5 },
-    oneLiner: 'FDA approved over advisory-committee No vote. CMS National Coverage Determination effectively blocked reimbursement. The CMS spoke at zero killed a "blockbuster."',
+    cmsPathway: 'NCD-CED',
+    oneLiner: 'FDA approved over advisory-committee No vote. CMS NCD 200.3 (April 2022) restricted coverage to clinical-trial enrolees via Coverage with Evidence Development. The NCD-CED kill switch — covered only inside CMS-approved trial.',
     src: 'https://investors.biogen.com/news-releases/news-release-details/biogen-realign-resources-alzheimers-disease-franchise',
   },
 
@@ -200,7 +234,111 @@ export const FOUNDER_CASES: FounderCase[] = [
     outcome: 'fraud',
     outcomeDate: 'Dissolved Sep 2018',
     scores: { fda: 0.05, ama: 0.0, cms: 0.0, payer: 0.0, pharma: 0.0, capital: 1.0, policy: 0.0 },
-    oneLiner: '~$700M raised, $9B peak valuation, ONE FDA-cleared test (HSV-1 IgG). Capital-only polygon collapsed into criminal conviction. The doom signal.',
+    cmsPathway: 'n/a',
+    oneLiner: '~$700M raised, $9B peak valuation, ONE FDA-cleared test (HSV-1 IgG). Capital-only polygon collapsed into criminal conviction. The doom signal — and the LDT loophole the May 2024 FDA Final Rule tried to close (then was vacated 2025).',
     src: 'https://www.fda.gov/about-fda/regulatory-news-stories-and-features/patient-advocacy-lies-heart-fda-agents-theranos-case',
+  },
+
+  // ─── Section 8 critique additions ────────────────────────────────────────
+
+  // Acquired — the strategic-acquisition channel that actually exists
+  {
+    id: 'nuance-microsoft',
+    name: 'Nuance → Microsoft',
+    niche: 'Ambient clinical AI (Dragon → DAX Copilot)',
+    outcome: 'acquired',
+    outcomeDate: 'Mar 2022 — $19.7bn',
+    scores: { fda: 0.7, ama: 0.5, cms: 0.85, payer: 0.85, pharma: 0.0, capital: 1.0, policy: 0.55 },
+    cmsPathway: 'bundled',
+    policyAnchor: 'CMS Accountable Care (clinician documentation efficiency)',
+    oneLiner: 'Largest healthcare AI deal ever — all-cash $19.7bn. At time of acquisition: 77% of US hospitals, 55% of US physicians, 75% of US radiologists. Set the strategic-acquisition exit template (vs. Tempus IPO model).',
+    src: 'https://news.microsoft.com/source/2022/03/04/microsoft-completes-acquisition-of-nuance-ushering-in-new-era-of-outcomes-based-ai/',
+  },
+  {
+    id: 'caption-health-ge',
+    name: 'Caption Health → GE',
+    niche: 'POCUS AI for echocardiography',
+    outcome: 'acquired',
+    outcomeDate: '2023',
+    scores: { fda: 1.0, ama: 0.4, cms: 0.6, payer: 0.55, pharma: 0.4, capital: 0.7, policy: 0.5 },
+    cmsPathway: 'bundled',
+    policyAnchor: 'CMS Accountable Care (cardiology workflow)',
+    oneLiner: 'POCUS AI template that GE → icometrix (2025) followed. Strategic-medtech-buyer channel for FDA-cleared imaging AI without its own CPT.',
+    src: 'https://www.gehealthcare.com/about/newsroom/press-releases',
+  },
+
+  // Live — the public market + private-mega-round signals
+  {
+    id: 'abridge',
+    name: 'Abridge',
+    niche: 'Ambient-scribe AI (Epic-integrated)',
+    outcome: 'live',
+    outcomeDate: '$5.3bn valuation, Series E Jun 2025',
+    scores: { fda: 0.4, ama: 0.5, cms: 0.7, payer: 0.7, pharma: 0.0, capital: 1.0, policy: 0.7 },
+    cmsPathway: 'bundled',
+    policyAnchor: 'CMS Accountable Care (clinician productivity / MIPS Promoting Interoperability)',
+    oneLiner: '$300m Series E at $5.3bn (a16z + Khosla) — largest AI-healthcare raise of 2024–2025. Doubled valuation in 4 months. 150+ health systems, $117m contracted ARR Q1 2025. Direct competitor to Microsoft DAX in the Nuance slot.',
+    src: 'https://www.abridge.com/blog/series-e',
+  },
+  {
+    id: 'cleerly',
+    name: 'Cleerly',
+    niche: 'AI-augmented coronary CT analysis',
+    outcome: 'live',
+    outcomeDate: 'live; Cat I CPT 75580 from Jan 2024',
+    scores: { fda: 1.0, ama: 1.0, cms: 0.9, payer: 0.8, pharma: 0.3, capital: 0.85, policy: 0.6 },
+    cmsPathway: 'Cat I CPT',
+    policyAnchor: 'CMS Accountable Care (cardiovascular value-based care)',
+    oneLiner: 'The rare reimbursement victory — Cat I CPT 75580 effective January 2024. Years to convert from Cat III. Co-occupies same code as HeartFlow.',
+    src: 'https://www.heartflow.com/newsroom/heartflow-announces-new-category-i-cpt-code/',
+  },
+  {
+    id: 'viz-ai',
+    name: 'Viz.ai',
+    niche: 'Stroke (LVO) detection + workflow AI',
+    outcome: 'live',
+    outcomeDate: 'live since 2018',
+    scores: { fda: 1.0, ama: 0.4, cms: 0.85, payer: 0.7, pharma: 0.2, capital: 0.85, policy: 0.7 },
+    cmsPathway: 'NTAP',
+    policyAnchor: 'CMS Accountable Care (acute stroke time-to-treatment)',
+    oneLiner: 'NTAP pioneer. Hospital DRG add-on for AI-detected large vessel occlusion. The production-scale autonomous-prioritisation case that proved the NTAP path works.',
+    src: 'https://www.viz.ai/',
+  },
+
+  // Shutdowns — the failures the page hadn't caught up to
+  {
+    id: '23andme-bankruptcy',
+    name: '23andMe',
+    niche: 'Direct-to-consumer genomics + research data platform',
+    outcome: 'shutdown',
+    outcomeDate: 'Mar 2025, Ch.11',
+    scores: { fda: 0.4, ama: 0.0, cms: 0.0, payer: 0.05, pharma: 0.4, capital: 0.7, policy: 0.2 },
+    cmsPathway: 'n/a',
+    oneLiner: '15m+ customer DNA samples sold via Section 363 process. Regeneron acquired diagnostic + research arms (May 2025). The genomics-data sovereignty test case — what happens to consumer-genomic data when the company folds is no longer hypothetical.',
+    src: 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001804591',
+  },
+  {
+    id: 'walmart-health',
+    name: 'Walmart Health',
+    niche: 'Retail-clinic + AI-adjacent primary care',
+    outcome: 'shutdown',
+    outcomeDate: 'Apr 2024 — all 51 clinics closed',
+    scores: { fda: 0.3, ama: 0.4, cms: 0.4, payer: 0.4, pharma: 0.0, capital: 1.0, policy: 0.2 },
+    cmsPathway: 'none',
+    oneLiner: 'Walmart cited "challenging reimbursement environment and rising operating costs." Same lesson as Forward and Babylon — primary-care unit economics under existing reimbursement do not work, even for the wealthiest retail-clinic operator in America.',
+    src: 'https://corporate.walmart.com/news/2024/04/30/an-update-on-walmart-health',
+  },
+
+  // Fraud — Outcome Health (the second major US healthcare-AI-adjacent fraud)
+  {
+    id: 'outcome-health',
+    name: 'Outcome Health',
+    niche: 'Ad-tech-in-clinics platform (data fraud)',
+    outcome: 'fraud',
+    outcomeDate: 'Founders convicted Apr 2023',
+    scores: { fda: 0.0, ama: 0.0, cms: 0.0, payer: 0.0, pharma: 0.0, capital: 1.0, policy: 0.0 },
+    cmsPathway: 'n/a',
+    oneLiner: 'Shah + Agarwal convicted on wire/securities/bank fraud. ~$487m investor losses (Goldman Sachs, Pritzker, Alphabet\'s CapitalG). Different from Theranos in mechanism (data fraud vs. clinical fraud) but same capital-only collapse signal.',
+    src: 'https://www.justice.gov/usao-ndil/pr/founders-and-former-executive-outcome-health-convicted-15-billion-corporate-fraud',
   },
 ];

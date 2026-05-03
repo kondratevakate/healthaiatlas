@@ -236,6 +236,31 @@ export function RadarChart({ cases, highlightId, onHover, height = 520 }: Props)
 
               <p className="text-xs text-foreground/85 leading-relaxed mb-2">{c.oneLiner}</p>
 
+              {c.cmsPathway && (
+                <p className="text-[11px] text-muted-foreground mb-1">
+                  <span className="font-mono uppercase tracking-widest text-[9px]">CMS pathway: </span>
+                  <span
+                    className="font-mono text-[10px] uppercase tracking-widest px-1.5 py-0.5 border ml-1"
+                    style={{
+                      borderColor:
+                        c.cmsPathway === 'NCD-CED'
+                          ? 'hsl(0 65% 50%)'
+                          : c.cmsPathway === 'none' || c.cmsPathway === 'n/a'
+                          ? 'hsl(var(--muted-foreground))'
+                          : 'hsl(155 60% 38%)',
+                      color:
+                        c.cmsPathway === 'NCD-CED'
+                          ? 'hsl(0 65% 50%)'
+                          : c.cmsPathway === 'none' || c.cmsPathway === 'n/a'
+                          ? 'hsl(var(--muted-foreground))'
+                          : 'hsl(155 60% 38%)',
+                    }}
+                  >
+                    {c.cmsPathway}
+                  </span>
+                </p>
+              )}
+
               {c.policyAnchor && (
                 <p className="text-[11px] text-muted-foreground mb-2">
                   <span className="font-mono uppercase tracking-widest text-[9px]">Policy anchor: </span>

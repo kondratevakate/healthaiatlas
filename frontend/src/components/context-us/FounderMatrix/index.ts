@@ -1,0 +1,1 @@
+export { FounderMatrix } from './FounderMatrix';

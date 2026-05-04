@@ -107,7 +107,7 @@ export interface AIMessage {
 // browser unless the user sends a chat message (then it's prepended to the
 // system prompt sent to the model).
 export interface UserContext {
-  role: 'founder' | 'jobseeker' | 'business' | 'clinician' | 'investor' | 'researcher' | 'other';
+  role: 'founder' | 'jobseeker' | 'business' | 'student' | 'investor' | 'researcher' | 'other';
   goal: 'attend' | 'partners' | 'hire' | 'sell' | 'learn' | 'invest' | 'other';
   domain: string; // free text — e.g. "AI radiology", "IVF", "process mining"
   notes?: string; // optional, e.g. "early-stage, no UAE pilots yet"
@@ -117,7 +117,7 @@ const ROLE_LABELS: Record<UserContext['role'], string> = {
   founder: 'a healthcare AI founder',
   jobseeker: 'a job seeker in healthcare AI',
   business: 'a business decision-maker (BD / strategy / partnerships)',
-  clinician: 'a clinician',
+  student: 'a student or researcher',
   investor: 'an investor',
   researcher: 'a researcher',
   other: 'someone in healthcare AI',

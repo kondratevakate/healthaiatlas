@@ -7,33 +7,9 @@ import { Layout } from '@/components/layout';
 import { QuickRealityTest } from '@/components/research';
 import { EcosystemCard } from '@/components/research/EcosystemCard';
 import { HeroDiagram } from '@/components/home/HeroDiagram';
-import { RiskAssessment, PathRole } from '@/types/research';
+import { RiskAssessment } from '@/types/research';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Compass, Calendar, FileText } from 'lucide-react';
-
-const roleCards: { role: PathRole; title: string; description: string }[] = [
-  {
-    role: 'founder',
-    title: 'AI Founder',
-    description: 'Building a healthcare AI startup, seeking pilots and partnerships'
-  },
-  {
-    role: 'jobseeker',
-    title: 'Job Seeker',
-    description: 'Student or professional seeking opportunities in UAE healthcare AI'
-  },
-  {
-    role: 'business',
-    title: 'Business',
-    description: 'Company seeking licensing, market entry, or expansion in UAE'
-  },
-  {
-    role: 'clinician',
-    title: 'Clinician',
-    description: 'Healthcare professional exploring AI tools for practice'
-  }
-];
 
 export default function Index() {
   const navigate = useNavigate();
@@ -42,16 +18,9 @@ export default function Index() {
 
   const handleTestComplete = (result: RiskAssessment) => {
     setAssessment(result);
-    // Store assessment in localStorage
     const assessments = JSON.parse(localStorage.getItem('assessments') || '{}');
     assessments[result.shareId] = result;
     localStorage.setItem('assessments', JSON.stringify(assessments));
-  };
-
-  const handleViewPath = () => {
-    if (assessment) {
-      navigate(`/path/${assessment.role}`);
-    }
   };
 
   const handleShare = async () => {
@@ -59,10 +28,6 @@ export default function Index() {
       const url = `${window.location.origin}/share/${assessment.shareId}`;
       await navigator.clipboard.writeText(url);
     }
-  };
-
-  const handleRoleClick = (role: PathRole) => {
-    navigate(`/path/${role}`);
   };
 
   return (
@@ -81,7 +46,7 @@ export default function Index() {
                 </h1>
                 <div className="h-1 w-16 bg-primary mb-6" />
                 <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-lg">
-                  A research-based guide to entering the UAE healthcare AI ecosystem.
+                  A research-based guide to navigating the healthcare AI ecosystem.
                 </p>
               </div>
 
@@ -101,10 +66,9 @@ export default function Index() {
                 <EcosystemCard
                   assessment={assessment}
                   onShare={handleShare}
-                  onViewPath={handleViewPath}
                 />
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="mt-4"
                   onClick={() => {
                     setAssessment(null);
@@ -142,44 +106,6 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Role Cards */}
-        <section className="py-12 md:py-16 border-b border-border">
-          <div className="container">
-            <div className="mb-8">
-              <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
-                Choose Your Path
-              </p>
-              <div className="h-0.5 w-12 bg-primary mb-4" />
-              <p className="text-muted-foreground">
-                Or dive directly into the path that matches your situation.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {roleCards.map((card) => (
-                <Card 
-                  key={card.role}
-                  className="border-2 hover:border-primary/50 transition-colors cursor-pointer group"
-                  onClick={() => handleRoleClick(card.role)}
-                >
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                      {card.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {card.description}
-                    </p>
-                    <span className="text-sm font-medium text-primary inline-flex items-center">
-                      View path
-                      <ArrowRight className="h-4 w-4 ml-1" />
-                    </span>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Quick Links */}
         <section className="py-12 md:py-16">
           <div className="container">
@@ -190,21 +116,12 @@ export default function Index() {
               </Button>
               <Button variant="outline" onClick={() => navigate('/context')}>
                 <Calendar className="h-4 w-4 mr-2" />
-                Context & Vision 2030
+                Context
               </Button>
-              <Button variant="outline" onClick={() => navigate('/newsfeed')}>
+              <Button variant="outline" onClick={() => navigate('/discovery?tab=launches')}>
                 <FileText className="h-4 w-4 mr-2" />
-                Newsfeed
+                Launches
               </Button>
-            </div>
-
-            <div className="mt-8 pt-6 border-t border-border">
-              <p className="text-sm text-muted-foreground">
-                Last updated: February 2, 2026 · 
-                <Button variant="link" className="px-1 h-auto" onClick={() => navigate('/newsfeed')}>
-                  View updates
-                </Button>
-              </p>
             </div>
           </div>
         </section>

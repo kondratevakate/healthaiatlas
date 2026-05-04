@@ -19,29 +19,29 @@ export const testQuestions: TestQuestion[] = [
       },
       {
         value: 'jobseeker',
-        label: { en: 'Student / Job seeker', ar: 'طالب / باحث عن عمل' },
+        label: { en: 'Job seeker', ar: 'باحث عن عمل' },
         riskWeight: 1,
         affectsBottlenecks: ['visa', 'network']
       },
       {
         value: 'business',
-        label: { en: 'Business (licensing / market entry)', ar: 'أعمال (ترخيص / دخول السوق)' },
+        label: { en: 'Business (talent search / partnerships)', ar: 'أعمال (البحث عن المواهب / الشراكات)' },
         riskWeight: 2,
         affectsBottlenecks: ['licensing', 'compliance']
       },
       {
-        value: 'clinician',
-        label: { en: 'Clinician', ar: 'طبيب / ممارس صحي' },
+        value: 'student',
+        label: { en: 'Student / Researcher', ar: 'طالب / باحث' },
         riskWeight: 1,
-        affectsBottlenecks: ['licensing', 'ai-usage']
+        affectsBottlenecks: ['network', 'lab-affiliation']
       }
     ]
   },
   {
     id: 'q2-entity',
     question: {
-      en: 'Do you have a local UAE entity or partner?',
-      ar: 'هل لديك كيان أو شريك محلي في الإمارات؟'
+      en: 'Do you have a local entity or partner in your target market?',
+      ar: 'هل لديك كيان أو شريك محلي في السوق المستهدف؟'
     },
     options: [
       {
@@ -72,8 +72,8 @@ export const testQuestions: TestQuestion[] = [
   {
     id: 'q3-network',
     question: {
-      en: 'Do you have existing connections in UAE healthcare?',
-      ar: 'هل لديك علاقات قائمة في قطاع الرعاية الصحية الإماراتي؟'
+      en: 'Do you have existing connections in healthcare?',
+      ar: 'هل لديك علاقات قائمة في قطاع الرعاية الصحية؟'
     },
     options: [
       {
@@ -178,8 +178,8 @@ export const bottleneckDescriptions: Record<string, { en: string; ar: string }> 
     ar: 'الوصول للتجارب يتطلب وجود محلي ومراجع'
   },
   'data-residency': {
-    en: 'Data residency → requires UAE infrastructure for health data',
-    ar: 'إقامة البيانات → تتطلب بنية تحتية إماراتية للبيانات الصحية'
+    en: 'Data residency → requires local infrastructure for health data',
+    ar: 'إقامة البيانات → تتطلب بنية تحتية محلية للبيانات الصحية'
   },
   'cold-outreach': {
     en: 'Cold outreach → <2% response rate for decision-makers',
@@ -202,8 +202,8 @@ export const bottleneckDescriptions: Record<string, { en: string; ar: string }> 
     ar: 'المراجع مطلوبة → عادة ما تكون 2+ مراجع إقليمية مطلوبة'
   },
   'licensing': {
-    en: 'Licensing complexity → multiple authorities depending on emirate',
-    ar: 'تعقيد الترخيص → سلطات متعددة حسب الإمارة'
+    en: 'Licensing complexity → multiple authorities depending on jurisdiction',
+    ar: 'تعقيد الترخيص → سلطات متعددة حسب الاختصاص'
   },
   'compliance': {
     en: 'Compliance requirements → health data regulations evolving',
@@ -217,9 +217,9 @@ export const bottleneckDescriptions: Record<string, { en: string; ar: string }> 
     en: 'Network building → relationships critical for opportunities',
     ar: 'بناء الشبكة → العلاقات حاسمة للفرص'
   },
-  'ai-usage': {
-    en: 'AI usage policies → hospital policies on AI tools vary',
-    ar: 'سياسات استخدام الذكاء الاصطناعي → سياسات المستشفيات تتباين'
+  'lab-affiliation': {
+    en: 'Lab / advisor affiliation → access to data, supervisors, and grant programs',
+    ar: 'الانتماء للمختبر / المشرف → الوصول إلى البيانات والمشرفين وبرامج المنح'
   }
 };
 
@@ -227,58 +227,58 @@ export const bottleneckDescriptions: Record<string, { en: string; ar: string }> 
 export const nextStepRecommendations: Record<string, Record<string, { en: string; ar: string }>> = {
   founder: {
     low: {
-      en: 'Leverage your established presence. Focus on expanding network through industry events and accelerator demo days.',
-      ar: 'استفد من وجودك المؤسس. ركز على توسيع الشبكة من خلال فعاليات الصناعة وأيام عروض المسرّعات.'
+      en: 'Leverage your established presence. Focus on expanding network through industry conferences and accelerator demo days.',
+      ar: 'استفد من وجودك المؤسس. ركز على توسيع الشبكة من خلال المؤتمرات الصناعية وأيام عروض المسرّعات.'
     },
     medium: {
-      en: 'Apply to Hub71 or DIFC Innovation Hub for free zone setup + intros. Build 2-3 reference cases before approaching hospitals.',
-      ar: 'تقدم لـ Hub71 أو DIFC Innovation Hub لإعداد المنطقة الحرة + المقدمات. ابنِ 2-3 حالات مرجعية قبل التواصل مع المستشفيات.'
+      en: 'Apply to a healthcare-focused accelerator program for entity setup, mentorship, and warm intros. Build 2-3 reference cases before approaching hospital systems.',
+      ar: 'تقدم لبرنامج مسرّعة متخصص في الرعاية الصحية لإعداد الكيان والإرشاد والمقدمات الدافئة. ابنِ 2-3 حالات مرجعية قبل التواصل مع أنظمة المستشفيات.'
     },
     high: {
-      en: 'Start with accelerator program (Hub71, Flat6Labs) for entity setup, network, and credibility. Expect 12-18 months to first hospital pilot.',
-      ar: 'ابدأ ببرنامج مسرّعة (Hub71، Flat6Labs) لإعداد الكيان والشبكة والمصداقية. توقع 12-18 شهراً للتجربة الأولى في المستشفى.'
+      en: 'Start with an accelerator program for entity setup, network, and credibility. Expect 12-18 months to first hospital pilot in any major market.',
+      ar: 'ابدأ ببرنامج مسرّعة لإعداد الكيان والشبكة والمصداقية. توقع 12-18 شهراً للتجربة الأولى في المستشفى في أي سوق رئيسي.'
     }
   },
   jobseeker: {
     low: {
-      en: 'Your network is your strength. Attend key events like Arab Health, leverage LinkedIn for warm intros to target companies.',
-      ar: 'شبكتك هي قوتك. احضر الفعاليات الرئيسية مثل Arab Health، استفد من LinkedIn للمقدمات الدافئة للشركات المستهدفة.'
+      en: 'Your network is your strength. Attend key healthcare AI conferences and use LinkedIn for warm intros to target companies.',
+      ar: 'شبكتك هي قوتك. احضر مؤتمرات الذكاء الاصطناعي الصحي الرئيسية واستخدم LinkedIn للمقدمات الدافئة للشركات المستهدفة.'
     },
     medium: {
-      en: 'Research visa sponsorship options. Many startups in Hub71/DIFC can sponsor. Target healthcare AI companies with open roles.',
-      ar: 'ابحث عن خيارات كفالة التأشيرة. العديد من الشركات الناشئة في Hub71/DIFC يمكنها الكفالة. استهدف شركات الذكاء الاصطناعي الصحي ذات الوظائف الشاغرة.'
+      en: 'Research visa sponsorship options in your target markets. Target healthcare AI companies with open roles and a track record of sponsoring.',
+      ar: 'ابحث عن خيارات كفالة التأشيرة في الأسواق المستهدفة. استهدف شركات الذكاء الاصطناعي الصحي ذات الوظائف الشاغرة وسجل في كفالة المرشحين.'
     },
     high: {
-      en: 'Build online presence first. Contribute to healthcare AI discussions. Consider remote roles with UAE companies as stepping stone.',
-      ar: 'ابنِ الحضور الإلكتروني أولاً. ساهم في نقاشات الذكاء الاصطناعي الصحي. فكر في الأدوار عن بُعد مع شركات إماراتية كنقطة انطلاق.'
+      en: 'Build an online presence first. Contribute to healthcare AI discussions on LinkedIn / X. Consider remote roles as a stepping stone before relocation.',
+      ar: 'ابنِ حضوراً إلكترونياً أولاً. ساهم في نقاشات الذكاء الاصطناعي الصحي على LinkedIn / X. فكر في الأدوار عن بُعد كنقطة انطلاق قبل الانتقال.'
     }
   },
   business: {
     low: {
-      en: 'Focus on regulatory pathway. Engage directly with DHA/MOHAP for medical device classification. Timeline: 3-6 months for standard licensing.',
-      ar: 'ركز على المسار التنظيمي. تواصل مباشرة مع DHA/MOHAP لتصنيف الأجهزة الطبية. الجدول الزمني: 3-6 أشهر للترخيص القياسي.'
+      en: 'Focus on the regulatory pathway. Engage directly with the relevant authority in each target market for medical device classification. Timeline: 3-6 months for standard licensing.',
+      ar: 'ركز على المسار التنظيمي. تواصل مباشرة مع السلطة المعنية في كل سوق مستهدف لتصنيف الأجهزة الطبية. الجدول الزمني: 3-6 أشهر للترخيص القياسي.'
     },
     medium: {
-      en: 'Consider free zone setup (DHCC, ADGM) for simpler licensing. Engage regulatory consultant for medical AI classification clarity.',
-      ar: 'فكر في إعداد المنطقة الحرة (DHCC، ADGM) لترخيص أبسط. تعامل مع مستشار تنظيمي لوضوح تصنيف الذكاء الاصطناعي الطبي.'
+      en: 'Consider a free-zone or innovation-hub setup for simpler licensing. Engage a regulatory consultant for medical AI classification clarity.',
+      ar: 'فكر في الإعداد ضمن منطقة حرة أو مركز ابتكار لترخيص أبسط. تعامل مع مستشار تنظيمي لوضوح تصنيف الذكاء الاصطناعي الطبي.'
     },
     high: {
-      en: 'Start with market research and local partner identification. Regulatory pathway depends heavily on product classification. Budget 6-12 months.',
+      en: 'Start with market research and local partner identification. The regulatory pathway depends heavily on product classification. Budget 6-12 months.',
       ar: 'ابدأ بأبحاث السوق وتحديد الشريك المحلي. المسار التنظيمي يعتمد بشكل كبير على تصنيف المنتج. ميزانية 6-12 شهراً.'
     }
   },
-  clinician: {
+  student: {
     low: {
-      en: 'Stay informed on hospital AI policies. Engage with innovation departments. Your clinical perspective is valuable for AI companies.',
-      ar: 'ابقَ مطلعاً على سياسات الذكاء الاصطناعي في المستشفيات. تواصل مع أقسام الابتكار. منظورك السريري قيّم لشركات الذكاء الاصطناعي.'
+      en: 'You have a lab and a clear research line — focus on output. Co-author with clinicians, target peer-reviewed venues, and curate a public reading list to build a citable presence.',
+      ar: 'لديك مختبر وخط بحثي واضح — ركز على الإنتاج. شارك في تأليف الأبحاث مع الأطباء، استهدف المؤتمرات المحكّمة، ونسّق قائمة قراءة عامة لبناء حضور قابل للاستشهاد.'
     },
     medium: {
-      en: 'Document AI tool usage policies at your institution. Connect with clinical innovation leads. Consider advisory roles with healthtech startups.',
-      ar: 'وثّق سياسات استخدام أدوات الذكاء الاصطناعي في مؤسستك. تواصل مع قادة الابتكار السريري. فكر في أدوار استشارية مع شركات التكنولوجيا الصحية الناشئة.'
+      en: 'Identify two or three labs whose work overlaps with yours and reach out to PIs with a specific question, not a generic CV. Look for postdoc / collaboration calls in healthcare-AI grant programs.',
+      ar: 'حدد مختبرين أو ثلاثة يتقاطع عملها مع عملك وتواصل مع الباحثين الرئيسيين بسؤال محدد، لا بسيرة ذاتية عامة. ابحث عن دعوات ما بعد الدكتوراه / التعاون في برامج منح الذكاء الاصطناعي الصحي.'
     },
     high: {
-      en: 'Familiarize with UAE healthcare AI regulations. Build relationships with innovation teams. Document clear use cases for AI tools in your practice.',
-      ar: 'تعرف على لوائح الذكاء الاصطناعي الصحي الإماراتية. ابنِ علاقات مع فرق الابتكار. وثّق حالات استخدام واضحة لأدوات الذكاء الاصطناعي في ممارستك.'
+      en: 'Start by anchoring an advisor or lab affiliation — that unlocks data access and grant eligibility. Audit a healthcare-AI MOOC, write one strong literature review on a niche topic, and use that as your calling card.',
+      ar: 'ابدأ بترسيخ ارتباط بمشرف أو مختبر — فهذا يفتح الوصول إلى البيانات وأهلية المنح. احضر دورة مفتوحة في الذكاء الاصطناعي الصحي، اكتب مراجعة أدبية قوية في موضوع متخصص، واستخدمها كبطاقة تعريف.'
     }
   }
 };

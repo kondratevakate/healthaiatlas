@@ -7,7 +7,7 @@ import { LocalizedString } from './index';
 export type EvidenceLevel = 'official' | 'observed' | 'anecdotal' | 'inference';
 
 // User roles for path navigation
-export type PathRole = 'founder' | 'jobseeker' | 'business' | 'clinician';
+export type PathRole = 'founder' | 'jobseeker' | 'business' | 'student';
 
 // Risk levels for assessment
 export type RiskLevel = 'low' | 'medium' | 'high';

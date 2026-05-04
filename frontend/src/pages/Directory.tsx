@@ -7,12 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { MapPin, Users, Calendar, ExternalLink, Building2, Rocket, FlaskConical, Landmark, Briefcase, ShieldCheck } from 'lucide-react';
+import { MapPin, Users, Calendar, ExternalLink, Building2, Rocket, FlaskConical, Landmark, Briefcase, ShieldCheck, Network } from 'lucide-react';
 import { SystemDiagram } from '@/components/home/SystemDiagram';
 import { SystemMapOverview } from '@/components/home/SystemMapOverview';
 import { MedicalTourismHub } from '@/components/medical-tourism';
 import { ProcessMiningHub } from '@/components/process-mining';
 import { OncologyHub } from '@/components/oncology';
+import { AiLifeSciencesHub } from '@/components/ai-life-sciences';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
@@ -116,11 +117,27 @@ const Directory = () => {
           </div>
         )}
 
-        {/* System map as the Overview centrepiece */}
+        {/* Overview: cross-context system map (replaces the legacy player grid) */}
         {isOverview && (
-          <div className="mb-12">
+          <section className="mb-16">
+            <div className="max-w-2xl mb-10">
+              <div className="flex items-center gap-2 mb-2">
+                <Network className="h-5 w-5 text-primary" />
+                <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                  System Map
+                </p>
+              </div>
+              <div className="h-0.5 w-12 bg-primary mb-4" />
+              <h2 className="text-2xl md:text-3xl font-semibold mb-3">
+                Healthcare AI as a system, not a list
+              </h2>
+              <p className="text-muted-foreground">
+                A four-layer view of the global healthcare AI ecosystem — purpose, impacts, activities,
+                components — with multi-region actors. Click a category to filter; hover a node for context.
+              </p>
+            </div>
             <SystemMapOverview />
-          </div>
+          </section>
         )}
 
         {/* Per-domain diagram for non-hub, non-overview tabs (placeholder domains) */}
@@ -139,9 +156,12 @@ const Directory = () => {
         {activeDomainId === 'oncology' && (
           <div className="mb-16"><OncologyHub /></div>
         )}
+        {activeDomainId === 'ai-life-sciences' && (
+          <div className="mb-16"><AiLifeSciencesHub /></div>
+        )}
 
-        {/* Players Grid — hidden on custom hub tabs */}
-        {!hasCustomHub && (
+        {/* Players Grid — hidden on overview (replaced by System Map) and on custom hub tabs */}
+        {!hasCustomHub && !isOverview && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {filteredPlayers.map((player) => {

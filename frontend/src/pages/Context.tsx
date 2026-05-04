@@ -6,10 +6,14 @@ import { cn } from '@/lib/utils';
 import { LastUpdated } from '@/components/shared/LastUpdated';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { PageHeader } from '@/components/shared/PageHeader';
-import { useState, useMemo } from 'react';
+import { UsTimeline, UsSidebar, FounderMatrix } from '@/components/context-us';
+import { MarketReality } from '@/components/context-uae';
+import { EuFounderMap, EuSidebar } from '@/components/context-eu';
+import { ComparativeMatrix } from '@/components/context-compare';
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { motion, useScroll } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { motion } from 'framer-motion';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
@@ -17,16 +21,17 @@ import {
   ResizablePanel, 
   ResizableHandle 
 } from '@/components/ui/resizable';
-import { 
-  Target, 
-  TrendingUp, 
-  DollarSign, 
-  Building2, 
-  Brain, 
-  Monitor, 
-  Dna, 
+import {
+  Target,
+  TrendingUp,
+  DollarSign,
+  Building2,
+  Brain,
+  Monitor,
+  Dna,
   Users,
-  ChevronRight
+  ChevronRight,
+  ShieldAlert,
 } from 'lucide-react';
 
 // Import timeline images
@@ -65,18 +70,7 @@ const pillarIcons: Record<string, React.ReactNode> = {
   'users': <Users className="h-5 w-5" />,
 };
 
-function ScrollProgress() {
-  const { scrollYProgress } = useScroll();
-  
-  return (
-    <motion.div 
-      className="fixed left-0 top-0 h-1 bg-primary z-50 origin-left"
-      style={{ scaleX: scrollYProgress }}
-    />
-  );
-}
-
-function TimelineEventCard({ 
+function TimelineEventCard({
   event, 
   index,
 }: { 
@@ -117,12 +111,6 @@ function TimelineEventCard({
             />
             <div className="absolute top-3 left-3 bg-background/90 backdrop-blur-sm px-2 py-1">
               <span className="font-mono text-xs font-semibold">{event.year}</span>
-            </div>
-            <div 
-              className="absolute bottom-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
-              style={{ backgroundColor: CORAL_ACCENT }}
-            >
-              {event.hotspotNumber}
             </div>
           </motion.div>
         )}
@@ -294,20 +282,40 @@ function VisionSidebar() {
   );
 }
 
-type ContextRegion = 'uae' | 'us' | 'eu';
+type ContextRegion = 'us' | 'uae' | 'eu' | 'compare';
 
 const REGION_OPTIONS: { id: ContextRegion; label: string; flag: string; available: boolean }[] = [
+  { id: 'us', label: 'US', flag: '🇺🇸', available: true },
+  { id: 'eu', label: 'EU + CH', flag: '🇪🇺', available: true },
   { id: 'uae', label: 'UAE', flag: '🇦🇪', available: true },
-  { id: 'us', label: 'US', flag: '🇺🇸', available: false },
-  { id: 'eu', label: 'EU', flag: '🇪🇺', available: false },
+  { id: 'compare', label: 'Compare', flag: '📊', available: true },
 ];
+
+const REGION_SUBTITLES: Record<ContextRegion, { en: string; ar: string }> = {
+  us: {
+    en: 'How the FDA → AMA → CMS → payer chain decides whether a healthcare AI tool reaches a patient — and what it costs when it does. Every event in the timeline links to a primary source.',
+    ar: 'كيف تحدد سلسلة FDA → AMA → CMS → شركات التأمين ما إذا كانت أداة الذكاء الاصطناعي الصحي تصل إلى المريض — وكم تكلف عندما تصل. كل حدث في الجدول الزمني مرتبط بمصدر أولي.',
+  },
+  uae: {
+    en: 'Where a UAE healthcare-AI founder actually stands — market scale, procurement reality, accelerator outcomes — anchored in primary sources. The Vision 2030 narrative below sits underneath this floor.',
+    ar: 'أين يقف مؤسس الذكاء الاصطناعي الصحي في الإمارات فعلياً — حجم السوق، واقع المشتريات، نتائج المسرّعات — مستندة إلى مصادر أولية. سرد رؤية 2030 أدناه يقع تحت هذه الأرضية.',
+  },
+  eu: {
+    en: 'How the AI Act + EHDS + HTAR + MDR/IVDR rulebook stacks for healthcare-AI founders — and why Switzerland is a separate institutional animal even though it sits in the middle of Europe.',
+    ar: 'كيف تتكدس قواعد قانون الذكاء الاصطناعي + EHDS + HTAR + MDR/IVDR لمؤسسي الذكاء الاصطناعي الصحي — ولماذا تعد سويسرا حيواناً مؤسسياً منفصلاً رغم موقعها في وسط أوروبا.',
+  },
+  compare: {
+    en: 'Same questions, different answers per market. US · EU · Switzerland · UAE side-by-side — eight rows that make the order-of-magnitude differences visible at a glance.',
+    ar: 'نفس الأسئلة، إجابات مختلفة لكل سوق. الولايات المتحدة · الاتحاد الأوروبي · سويسرا · الإمارات جنباً إلى جنب — ثمانية صفوف تكشف الفروق بترتيب الحجم في لمحة.',
+  },
+};
 
 export default function Context() {
   const { language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
-  const region = (searchParams.get('region') as ContextRegion) ?? 'uae';
+  const region = (searchParams.get('region') as ContextRegion) ?? 'us';
   const setRegion = (r: ContextRegion) => {
-    if (r === 'uae') setSearchParams({});
+    if (r === 'us') setSearchParams({});
     else setSearchParams({ region: r });
   };
 
@@ -318,19 +326,11 @@ export default function Context() {
 
   return (
     <Layout>
-      <ScrollProgress />
-      
       <div className="min-h-screen">
         <div className="container py-12 md:py-16">
           <PageHeader
             title={language === 'en' ? 'Context' : 'السياق'}
-            subtitle={
-              region === 'uae'
-                ? language === 'en'
-                  ? 'Explore the UAE healthcare AI journey alongside Vision 2030 targets, investment data, and strategic priorities.'
-                  : 'استكشف رحلة الذكاء الاصطناعي الصحي في الإمارات إلى جانب أهداف رؤية 2030 وبيانات الاستثمار والأولويات الاستراتيجية.'
-                : `The ${region.toUpperCase()} context is not yet available. Coverage starts with the UAE; other regions land as the data is curated.`
-            }
+            subtitle={REGION_SUBTITLES[region][language]}
           />
 
           {/* Region selector (flags) */}
@@ -361,44 +361,98 @@ export default function Context() {
           </div>
         </div>
 
-        {/* Non-UAE placeholder */}
-        {region !== 'uae' && (
-          <section className="py-16">
-            <div className="container max-w-3xl">
-              <div className="border border-dashed border-border p-10 text-center">
-                <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
-                  Coming soon
-                </div>
-                <h2 className="heading-lg mb-3">{region.toUpperCase()} healthcare AI context</h2>
-                <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-                  We are scoping what a {region === 'us' ? 'US (CMS · FDA · ONC)' : 'EU (EHDS · MDR · AI Act)'} view
-                  of the ecosystem looks like. If you want to help shape it, open an issue on{' '}
-                  <a
-                    href="https://github.com/kondratevakate"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    github.com/kondratevakate
-                  </a>
-                  .
-                </p>
-              </div>
+        {/* US healthcare AI decision-making — default tab */}
+        {region === 'us' && (
+          <section className="py-8">
+            <div className="container">
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="min-h-[800px] rounded-lg border"
+              >
+                <ResizablePanel defaultSize={65} minSize={50}>
+                  <div className="p-6 md:p-8 overflow-y-auto h-full">
+                    <FounderMatrix />
+
+                    <hr className="my-12 border-border" />
+
+                    <UsTimeline />
+                  </div>
+                </ResizablePanel>
+
+                <ResizableHandle withHandle />
+
+                <ResizablePanel defaultSize={35} minSize={25} maxSize={45}>
+                  <div className="h-full overflow-y-auto bg-secondary/20">
+                    <div className="sticky top-0 bg-secondary/80 backdrop-blur-sm p-4 border-b z-10">
+                      <h2 className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                        <ShieldAlert className="h-3.5 w-3.5" />
+                        Founder reference
+                      </h2>
+                    </div>
+                    <UsSidebar />
+                  </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
             </div>
           </section>
         )}
 
-        {/* Main Content with Sidebar — UAE only for now */}
+        {/* Compare — 4-region side-by-side matrix */}
+        {region === 'compare' && (
+          <section className="py-8">
+            <div className="container max-w-6xl">
+              <ComparativeMatrix />
+            </div>
+          </section>
+        )}
+
+        {/* EU + Switzerland tab */}
+        {region === 'eu' && (
+          <section className="py-8">
+            <div className="container">
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="min-h-[800px] rounded-lg border"
+              >
+                <ResizablePanel defaultSize={65} minSize={50}>
+                  <div className="p-6 md:p-8 overflow-y-auto h-full">
+                    <EuFounderMap />
+                  </div>
+                </ResizablePanel>
+
+                <ResizableHandle withHandle />
+
+                <ResizablePanel defaultSize={35} minSize={25} maxSize={45}>
+                  <div className="h-full overflow-y-auto bg-secondary/20">
+                    <div className="sticky top-0 bg-secondary/80 backdrop-blur-sm p-4 border-b z-10">
+                      <h2 className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                        <ShieldAlert className="h-3.5 w-3.5" />
+                        EU regulatory pillars
+                      </h2>
+                    </div>
+                    <EuSidebar />
+                  </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </div>
+          </section>
+        )}
+
+        {/* UAE — Vision 2030 tab */}
         {region === 'uae' && (
         <section className="py-8">
           <div className="container">
             <ResizablePanelGroup
-              direction="horizontal" 
+              direction="horizontal"
               className="min-h-[800px] rounded-lg border"
             >
               {/* Timeline Panel */}
               <ResizablePanel defaultSize={65} minSize={50}>
                 <div className="p-6 md:p-8 overflow-y-auto h-full">
+                  <MarketReality />
+
+                  <hr className="my-12 border-border" />
+
                   <div className="relative">
                     {/* Vertical line */}
                     <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2" />
@@ -417,7 +471,7 @@ export default function Context() {
                     {/* End marker */}
                     <div className="flex justify-center mt-12">
                       <div className="flex flex-col items-center gap-2">
-                        <div 
+                        <div
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: CORAL_ACCENT }}
                         />

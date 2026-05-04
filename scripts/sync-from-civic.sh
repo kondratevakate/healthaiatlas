@@ -1,48 +1,31 @@
 #!/usr/bin/env bash
-# Sync frontend/ with the civic-design-compass Lovable project.
+# DEPRECATED — do not run.
 #
-# Usage:
-#   ./scripts/sync-from-civic.sh                   # uses ../civic-design-compass
-#   CIVIC_PATH=/path/to/civic ./scripts/sync-from-civic.sh
+# As of 2026-05-03, frontend/ is the source of truth for HealthAI Atlas.
+# This script previously rsynced ../civic-design-compass into frontend/ with
+# `--delete`, which would now wipe project-specific work (the AI Frontiers
+# in Life Sciences hub, the cleanup of orphan routes, the Discovery Copilot
+# feature gate, and other healthaiatlas-only changes).
 #
-# After sync, review `git status` / `git diff frontend/`, then commit.
+# Lovable / civic-design-compass is no longer the upstream. Edit frontend/
+# directly and ship through the normal git flow.
+#
+# This file is kept (rather than deleted) so older bookmarks and pipeline
+# references find a clear "do not run" message instead of a missing-file
+# error. Delete it once nothing references it anymore.
 
-set -euo pipefail
+set -e
 
-REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-CIVIC="${CIVIC_PATH:-$REPO_ROOT/../civic-design-compass}"
+cat <<'EOF' >&2
 
-if [[ ! -d "$CIVIC" ]]; then
-  echo "civic-design-compass not found at $CIVIC" >&2
-  echo "Set CIVIC_PATH env var to the correct location." >&2
-  exit 1
-fi
+  sync-from-civic.sh is DEPRECATED.
 
-if ! command -v rsync >/dev/null 2>&1; then
-  echo "rsync is required but not installed." >&2
-  echo "On Windows, use WSL or git-bash with rsync installed." >&2
-  exit 1
-fi
+  frontend/ is now the source of truth for HealthAI Atlas. Running this
+  script would overwrite project-specific work (it used rsync --delete).
 
-echo "Syncing $CIVIC -> $REPO_ROOT/frontend/"
+  Edit frontend/ directly and commit. See AGENTS.md ("Repo layout") for
+  the current workflow.
 
-rsync -av --delete \
-  --exclude='node_modules' \
-  --exclude='dist' \
-  --exclude='.git' \
-  --exclude='.lovable' \
-  --exclude='README.md' \
-  --exclude='bun.lock' \
-  --exclude='bun.lockb' \
-  "$CIVIC/" "$REPO_ROOT/frontend/"
+EOF
 
-# Restore healthaiatlas-specific fields in package.json
-sed -i.bak \
-  -e 's/"name": "vite_react_shadcn_ts"/"name": "healthaiatlas-frontend"/' \
-  "$REPO_ROOT/frontend/package.json"
-rm -f "$REPO_ROOT/frontend/package.json.bak"
-
-echo
-echo "Sync complete. Review changes:"
-echo "  git -C $REPO_ROOT status frontend/"
-echo "  git -C $REPO_ROOT diff frontend/"
+exit 1

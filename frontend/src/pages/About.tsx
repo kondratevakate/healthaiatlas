@@ -1,7 +1,6 @@
 import { Layout } from '@/components/layout';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { analysisTools } from '@/data/tools';
+import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { Mail, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
@@ -21,14 +20,14 @@ const GitHubMark = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const About = () => {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <Layout>
       <div className="container py-12 md:py-16">
         <PageHeader
           title={t('nav.about')}
-          subtitle="Research and code by Kate Kondratieva — an independent mapping of the UAE healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
+          subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
         />
 
         {/* 1. Contacts first */}
@@ -82,11 +81,11 @@ const About = () => {
           </Card>
         </section>
 
-        {/* 2. Tools used — frameworks from rethinkingsystems.design */}
-        <section className="mb-16">
-          <h2 className="heading-lg mb-3">Tools & frameworks used</h2>
-          <p className="text-body text-muted-foreground mb-8 max-w-2xl">
-            The Atlas is built on the{' '}
+        {/* 2. Methodological grounding — Thinking Systems tradition */}
+        <section className="mb-16 max-w-3xl">
+          <h2 className="heading-lg mb-3">Methodological grounding</h2>
+          <p className="text-body text-muted-foreground">
+            The Atlas builds on the{' '}
             <a
               href={RETHINKING_SYSTEMS_URL}
               target="_blank"
@@ -96,30 +95,9 @@ const About = () => {
               ReThinking Systems
               <ExternalLink className="w-3 h-3" />
             </a>{' '}
-            frameworks (IIT Institute of Design), adapted for the AI-in-healthcare ecosystem. Each card
-            links to the original source.
+            tradition from IIT Institute of Design — treating an ecosystem as a system of actors,
+            affordances and feedback loops, then mapping it with evidence rather than vibes.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {analysisTools.slice(0, 6).map((tool) => (
-              <a
-                key={tool.id}
-                href={RETHINKING_SYSTEMS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block group"
-              >
-                <Card className="card-hover h-full border-border/50 bg-card/50 group-hover:border-primary/60 transition-colors">
-                  <CardHeader>
-                    <CardTitle className="text-base flex items-start justify-between gap-2">
-                      <span>{tool.name[language]}</span>
-                      <ExternalLink className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5 group-hover:text-primary transition-colors" />
-                    </CardTitle>
-                    <CardDescription className="text-sm">{tool.shortDescription[language]}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </a>
-            ))}
-          </div>
         </section>
 
         {/* 3. Mission — canonical About copy (independent project statement) */}
@@ -129,9 +107,10 @@ const About = () => {
           <p>
             HealthAI Atlas is an independent project founded by Dr. Ekaterina Kondrateva to provide open,
             structured knowledge about the global healthcare AI ecosystem. The project exists to make
-            ecosystem intelligence accessible to those who need it most: practicing clinicians integrating
-            AI tools into care, students learning to evaluate medical AI critically, researchers seeking
-            collaborators and context, and founders navigating an increasingly complex landscape.
+            ecosystem intelligence accessible to those who need it most: students and researchers
+            building evidence-based judgment about medical AI, founders navigating an increasingly
+            complex landscape, businesses searching for talent and partnerships, and job seekers
+            finding their lane in the ecosystem.
           </p>
 
           <p>

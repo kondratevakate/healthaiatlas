@@ -19,14 +19,14 @@ const roleLabels: Record<PathRole, { en: string; ar: string }> = {
   founder: { en: 'AI Founder', ar: 'مؤسس ذكاء اصطناعي' },
   jobseeker: { en: 'Job Seeker', ar: 'باحث عن عمل' },
   business: { en: 'Business', ar: 'أعمال' },
-  clinician: { en: 'Clinician', ar: 'طبيب' }
+  student: { en: 'Student / Researcher', ar: 'طالب / باحث' }
 };
 
 const roleDescriptions: Record<PathRole, string> = {
-  founder: 'Building healthcare AI solutions and seeking pilots',
-  jobseeker: 'Exploring opportunities in UAE healthcare AI',
-  business: 'Entering or expanding in the UAE market',
-  clinician: 'Integrating AI tools into clinical practice'
+  founder: 'Navigating the healthcare AI ecosystem to launch and scale',
+  jobseeker: 'Finding your lane in healthcare AI — could be any of the above',
+  business: 'Talent search, partnerships, and vendor selection',
+  student: 'Research, postdoc, and evidence-based contributions'
 };
 
 // Who you need based on role
@@ -39,17 +39,17 @@ const keyConnections: Record<PathRole, { role: string; why: string }[]> = {
   jobseeker: [
     { role: 'HR at HealthTech Startups', why: 'For direct opportunities' },
     { role: 'Community Organizers', why: 'For networking events' },
-    { role: 'Mentors in AI Health', why: 'For career guidance' }
+    { role: 'Mentors in Healthcare AI', why: 'For career guidance' }
   ],
   business: [
-    { role: 'Free Zone Advisors', why: 'For entity setup' },
-    { role: 'Regulatory Affairs Experts', why: 'For licensing' },
-    { role: 'Local Distribution Partners', why: 'For market access' }
+    { role: 'Talent Acquisition Leads', why: 'For senior healthcare-AI hires' },
+    { role: 'Regulatory Affairs Experts', why: 'For licensing & compliance' },
+    { role: 'Distribution & Channel Partners', why: 'For market access' }
   ],
-  clinician: [
-    { role: 'AI Vendors', why: 'For tool evaluation' },
-    { role: 'Hospital IT Leads', why: 'For integration support' },
-    { role: 'Clinical AI Researchers', why: 'For evidence-based guidance' }
+  student: [
+    { role: 'Lab PI / Advisor', why: 'For data access and supervision' },
+    { role: 'Peer Researchers', why: 'For collaboration and co-authorship' },
+    { role: 'Grant Program Officers', why: 'For funding and fellowship paths' }
   ]
 };
 

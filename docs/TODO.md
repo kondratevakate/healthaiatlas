@@ -162,6 +162,57 @@ Still open:
 
 ---
 
+## 🟧 Context tab — three-region Founder Reality system + 4-way Compare
+
+Already shipped on `process-mining-fixes` (commits `858bb7a`, `5edc1a4`, `bb7b479`):
+- US tab: 47-event reverse-chronology timeline + 7-axis Founder's Decision Matrix (19 cases, dashed-stroke fraud differentiation, `cmsPathway` field rendering NCD/NCD-CED/LCD/NTAP/TCET/Cat-I-CPT/bundled chips) + Founder Reference sidebar (Decision Stack + Pricing + VSL + 7 Policy Horizons).
+- UAE tab: Founder Reality Map (Headline Contrast + Procurement Pattern + Accelerator Inventory + Founder Takeaways) above the existing Vision 2030 timeline; scroll-progress bar + hotspot numbers removed per design review.
+- EU + CH tab: 4-layer Compliance Grammar (AI Act / EHDS / HTAR / MDR-IVDR) + Alzheimer's bridge case (Aduhelm/Leqembi/Kisunla × FDA/CMS/EMA/EC/NICE) + CEE arbitrage table + Pharma Gravity (Isomorphic/InstaDeep/Owkin + RadNet consolidation table) + Switzerland-as-separate-animal panel (Swiss-red accent) + 7-axis Founder Frame.
+- Compare tab: 4-region side-by-side matrix (8 rows from EU research Section 7.8) + per-region headline cards.
+- Section 8 critique applied to US: PDUFA, HIPAA, De Novo pathway, ACA, MACRA, Microsoft-Nuance, NCD 200.3 with CED, IRA + first-10/second-15 negotiated drugs, CDS final guidance, LDT Final Rule arc (issued/vacated/rescinded), TCET, Outcome Health, Tempus IPO, Walmart Health, 23andMe, Abridge added; Forward / Aduhelm / AMA Appendix S / 950-AI-devices reframed.
+
+Still open:
+
+### 🟥 Token unification across all 4 views (M-L)
+The 4 surfaces (US Founder Matrix, UAE Reality Map, EU Founder Map, Compare) currently use parallel-but-not-identical patterns. Per design review, the *atoms* should converge even though the *layouts* stay distinct:
+- Source-link affordance: US uses `Primary source`, UAE/EU/Compare use `Source` + `(2°)` flag for secondary. Pick one (recommend US's verbose form on first occurrence per article).
+- Eyebrow stamp: US uses `★ We are here · 2026 · …`, UAE uses `★ UAE Founder Reality · 2026 · …`, EU uses `★ EU Founder Reality · 2026 · …`. Pattern is consistent; copy needs a final pass.
+- Type chips: US drops border in timeline; UAE/EU still bordered in some places. Audit and unify on bordered-mono-with-color-square.
+- Sticky panel header: US says `Founder reference` (mono caps, small); EU says `EU regulatory pillars`. Same component, different copy — fine; verify identical CSS treatment.
+
+### 🟧 Sticky sidebar section headers (S)
+Right-pane sections (Decision Stack / Pricing Anchors / VSL / Policy Horizons on US; equivalent on EU) currently scroll as one block. Once Policy Horizons is fully expanded, the section header scrolls out of view and a reader doesn't know which section they're in. Add `position: sticky; top: 60px;` (under the panel-top sticky header) to each section's `SectionHeader`.
+
+### 🟧 Mobile breakpoint pass (M-L)
+`ResizablePanelGroup` doesn't reflow well below ~1024px. Should stack: synthesis module + timeline first, sidebar collapses into accordion below. Founder Matrix radar SVG also needs a mobile fallback (small-multiples grid or static image) — current 7-axis at 360px wide is unreadable.
+
+### 🟪 EU regulatory timeline on left panel (M)
+EU tab currently has synthesis modules occupying the entire left panel. A regulatory chronology (1965 EMA → 2017 MDR → 2021 MDR applies → 2024 AI Act → 2025 EHDS → 2026 HTAR → 2027 AI Act full) would balance the page and parallel the US/UAE timeline patterns. Data exists implicitly in `EU_REGULATORY_LAYERS.phased[]`; needs a `EuTimeline.tsx` component to render it.
+
+### 🟪 UAE source links per timeline event (research backlog, M-L)
+Existing `timelineEvents` in `frontend/src/data/timeline.ts` have no `src` field. Need to add `src?: string` to the type and source ~11 primary URLs (MOHAP / SEHA / DHA / DOH / G42 / M42 IR pages). Per AGENTS.md compliance rule, the UAE Vision 2030 timeline should match US/EU primary-source discipline.
+
+### 🟪 UAE Vision 2030 sidebar restructure 5 → 3 buckets (M)
+Per design review: hero stat / progress group (targets+budget unified) / reference group (pillars+partners). Touches `VisionSidebar` heavily. Defer until UAE has a Decision-Stack equivalent (needs UAE research Sections 1–5).
+
+### 🟪 UAE Founder Reference sidebar parity with US/EU (research-blocked, L)
+UAE tab today renders the legacy Vision 2030 sidebar. To parallel US (Decision Stack + Pricing + VSL + Policy Horizons) and EU (Regulatory Pillars), need: UAE Decision Stack (MOHAP/DOH/DHA/SEHA/PureHealth + payers + sovereign capital), UAE Pricing Anchors (drug pricing under DHA Health Insurance Law / Daman / out-of-pocket), UAE Policy Horizons (Vision 2031 / Centennial 2071 / DHA Strategy 2026 / DOH Healthcare Sector Plan / National AI Strategy 2031 / UAE Genome Program / NABIDH-Malaffi-Riayati federation / PDPL). Blocked on Sections 1–5 of the UAE research brief (only Section 6 was delivered).
+
+### 🟪 Print stylesheet (S-M)
+Page wants to be PDF'd by policy researchers. Add `@media print` rules: drop region selector + sticky chrome, expand all `<details>` by default, force black-on-white with mono-only badges, page-break-before each era / sub-block.
+
+### 🟫 Section 6 / 7 / 8 research open gaps (research backlog)
+- Section 6 (UAE): ADIO HELM portfolio direct, MBZUAI spinout count, Magnitt UAE-only premium subset, DOH-AD pilot grant disbursements, CBUAE Federal Decree-Law No. 6 of 2025.
+- Section 7 (EU/CH): EMA AI workplan 2023–2028 PDF, DiGA operational data (BfArM register), NICE Kisunla rejection rationale (NICE TA), EU Commission AI/GenAI medical-imaging pilots 2026 primary call texts, Galen Growth Q3 2025 primary, DeepHealth/Gleamer Mar 2026 primary release, Notified Body capacity data 2025.
+- Section 8 (US nice-to-haves): PBM layer + FTC investigation (July 2024 interim), Medicare Advantage 50%+ enrollment threshold (2023), FDA Pre-Cert pilot wind-down (Sept 2022) as predecessor to PCCP, Recursion-Exscientia merger (Nov 2024).
+
+### 🟫 Compare view polish (S)
+- Sortable rows by ratio (visual emphasis on largest gaps).
+- Make region cells link back to the relevant section of the per-region tab.
+- Compact "table view" toggle (vs current per-row card layout) for analysts who want everything dense.
+
+---
+
 ## 🟪 Cross-cutting (smaller, hit when convenient)
 
 - **Bundle code-splitting.** Vite warns the client bundle is over 500 KB minified. Lazy-load Discovery copilot, BubbleMap, PharmaMatrixView, DealFlowView via `React.lazy()`. They're heavy and not every visitor will open them.
@@ -177,3 +228,12 @@ For reference — what already shipped on the audit-fix branches.
 
 - `medical-tourism` branch: bubble map (Demand × Growth + Supply bars), specialty sidebar, transplant specialty, Self-Assessment intro for international clinics, Directory split-button dropdown, footer alignment, About + Terms with V2/V3 copy, license dual AGPL-3.0 + CC BY-NC 4.0, Discovery copilot panel with auth/disclosure/intake/quota, parallel free-model race, Worker proxy support.
 - `process-mining-fixes` branch: process-mining + oncology fixes (this file lives on this branch).
+
+## ✅ Done in the 2026-05-04 push (Context tab + cleanup)
+
+For reference — what shipped in commits `858bb7a` / `5edc1a4` / `bb7b479` / `4054a88`:
+
+- **Three-region Founder Reality system** (`/context?region=us|eu|uae`): per-region synthesis module + reverse-chronology US timeline + image-led UAE timeline + 4-layer EU Compliance Grammar + Switzerland panel.
+- **Section 8 critique applied to US** (regulatory technical-scrutiny pass): 14 timeline events added (PDUFA, HIPAA, De Novo pathway, ACA, MACRA, Microsoft-Nuance, NCD 200.3, IRA, CDS Rule, Outcome Health, Tempus IPO, Walmart Health, LDT arc, TCET, 23andMe, Abridge), 4 reframings (Forward / Aduhelm / AMA Appendix S / 950-devices), 7 founder cases added (Nuance, Caption Health, Abridge, Cleerly, Viz.ai, 23andMe, Walmart, Outcome Health) + new `cmsPathway` field rendering NCD/NCD-CED/LCD/NTAP/TCET/Cat-I-CPT chips.
+- **Compare view** (`/context?region=compare`): 4-region side-by-side matrix (8 rows from Section 7.8) + per-region headline cards.
+- **Cleanup PR landed via 4054a88**: 4 path pages + Maps + Tools + Newsfeed routes deleted; mentors / redflags / tools data files deleted; LeadersCloudSection + MentorCard removed; LanguageContext dead i18n keys cleaned; AGENTS.md flips civic-design-compass to DEPRECATED upstream; sync-from-civic.sh converted to no-op stub; .env.example documents `VITE_DISCOVERY_COPILOT` flag.

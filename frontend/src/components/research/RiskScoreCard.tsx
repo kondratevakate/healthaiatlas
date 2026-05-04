@@ -18,7 +18,7 @@ const roleLabels: Record<PathRole, { en: string; ar: string }> = {
   founder: { en: 'AI Founder', ar: 'مؤسس ذكاء اصطناعي' },
   jobseeker: { en: 'Job Seeker', ar: 'باحث عن عمل' },
   business: { en: 'Business', ar: 'أعمال' },
-  clinician: { en: 'Clinician', ar: 'طبيب' }
+  student: { en: 'Student / Researcher', ar: 'طالب / باحث' }
 };
 
 const riskConfig = {

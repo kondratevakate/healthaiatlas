@@ -1,14 +1,6 @@
 # healthaiatlas — frontend
 
-Vite + React 18 + Tailwind v3 + shadcn/ui SPA.
-
-## Source of truth
-
-This directory is a **mirror** of the [`civic-design-compass`](../../civic-design-compass) repo, which is the Lovable-driven source of truth for frontend changes.
-
-**Do not edit files here directly unless you also backport the change to civic-design-compass** — the next sync will overwrite local edits. Use `../scripts/sync-from-civic.sh` to pull the latest from civic-design-compass.
-
-Exception: `package.json` `name` field is healthaiatlas-specific and the sync script restores it after rsync.
+Vite + React 18 + Tailwind v3 + shadcn/ui SPA. Source of truth for the Health AI Atlas public site.
 
 ## Local development
 

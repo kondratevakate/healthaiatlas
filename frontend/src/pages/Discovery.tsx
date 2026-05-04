@@ -67,6 +67,7 @@ const verificationPrompts = [
 
 type LaunchPeriod = 'today' | 'week' | 'month' | 'all';
 type RoleFilter = PathRole | 'all';
+type Section = 'newsfeed' | 'opencalls' | 'talent';
 
 const ROLE_FILTER_OPTIONS: { value: RoleFilter; label: string }[] = [
   { value: 'all', label: 'All roles' },
@@ -76,19 +77,64 @@ const ROLE_FILTER_OPTIONS: { value: RoleFilter; label: string }[] = [
   { value: 'jobseeker', label: 'Job seeker' },
 ];
 
+const SECTION_NAV: { id: Section; label: string }[] = [
+  { id: 'newsfeed', label: 'Newsfeed' },
+  { id: 'opencalls', label: 'Open Calls' },
+  { id: 'talent', label: 'Talent Hub' },
+];
+
+// Default sub-tab per section. Used when the user switches section and the
+// existing `tab` query param doesn't belong to the new section. Values must
+// match the corresponding TabsContent `value` props in the JSX below.
+const DEFAULT_TAB_FOR_SECTION: Record<Section, string> = {
+  newsfeed: 'calendar',
+  opencalls: 'grants',
+  talent: 'talent',
+};
+
+const TABS_FOR_SECTION: Record<Section, string[]> = {
+  newsfeed: ['calendar', 'launches', 'leaders', 'prompts'],
+  opencalls: ['grants', 'programs', 'open-calls'],
+  talent: ['talent'],
+};
+
 export default function Discovery() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') ?? 'calendar';
+
+  // Top-level section selector. URL param `section` drives the view.
+  const sectionParam = (searchParams.get('section') as Section | null) ?? 'newsfeed';
+  const section: Section = (['newsfeed', 'opencalls', 'talent'] as Section[]).includes(sectionParam)
+    ? sectionParam
+    : 'newsfeed';
+
+  const setSection = (next: Section) => {
+    const params = new URLSearchParams(searchParams);
+    if (next === 'newsfeed') params.delete('section');
+    else params.set('section', next);
+    // Reset sub-tab when switching sections — old tab may not belong to the new section.
+    params.delete('tab');
+    setSearchParams(params);
+  };
+
+  // Sub-tab within a section. Snap to the section's default when the URL value
+  // doesn't belong to the active section.
+  const tabParam = searchParams.get('tab');
+  const activeTab = tabParam && TABS_FOR_SECTION[section].includes(tabParam)
+    ? tabParam
+    : DEFAULT_TAB_FOR_SECTION[section];
   const setActiveTab = (t: string) => {
     const next = new URLSearchParams(searchParams);
-    if (t === 'calendar') next.delete('tab');
+    if (t === DEFAULT_TAB_FOR_SECTION[section]) next.delete('tab');
     else next.set('tab', t);
     setSearchParams(next);
   };
+
   const [eventType, setEventType] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [launchPeriod, setLaunchPeriod] = useState<LaunchPeriod>('all');
+  // Role filter applies ONLY to the Newsfeed section (events, launches, leaders,
+  // prompts). Open Calls and Talent Hub have their own section-local filtering.
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('all');
 
   const filteredLaunches = useMemo(() => {
@@ -118,28 +164,31 @@ export default function Discovery() {
 
   const eventDates = conferences.map(c => new Date(c.date));
 
+  // Open Calls section data — region filter is the natural cut for these
+  // (grants and RFPs are region-bound). Role filter does NOT apply here.
+  const [openCallsRegion, setOpenCallsRegion] = useState<string>('all');
   const filteredGrants = useMemo(
-    () => grants.filter((g) => roleFilter === 'all' || g.roles.includes(roleFilter)),
-    [roleFilter],
+    () => grants.filter((g) => openCallsRegion === 'all' || g.region === openCallsRegion),
+    [openCallsRegion],
   );
   const filteredPrograms = useMemo(
-    () => programs.filter((p) => roleFilter === 'all' || p.roles.includes(roleFilter)),
-    [roleFilter],
+    () => programs.filter((p) => openCallsRegion === 'all' || p.region === openCallsRegion),
+    [openCallsRegion],
   );
   const filteredOpenCalls = useMemo(
-    () => openCalls.filter((c) => roleFilter === 'all' || c.roles.includes(roleFilter)),
-    [roleFilter],
+    () => openCalls.filter((c) => openCallsRegion === 'all' || c.region === openCallsRegion),
+    [openCallsRegion],
   );
+
+  // Talent Hub section — tier + availability filters live here (no role filter).
   const [tierFilter, setTierFilter] = useState<ProfileTier | 'all'>('all');
   const [availabilityOnly, setAvailabilityOnly] = useState<boolean>(false);
-
   const filteredProfiles = useMemo(() => {
     return talentProfiles
-      .filter((p) => roleFilter === 'all' || p.forRoles.includes(roleFilter))
       .filter((p) => tierFilter === 'all' || p.tier === tierFilter)
       .filter((p) => !availabilityOnly || p.availability === 'open-to-offers' || p.availability === 'open-to-collab')
       .sort((a, b) => b.rating - a.rating);
-  }, [roleFilter, tierFilter, availabilityOnly]);
+  }, [tierFilter, availabilityOnly]);
 
   const copyPrompt = (prompt: string) => {
     navigator.clipboard.writeText(prompt);
@@ -162,33 +211,92 @@ export default function Discovery() {
 
           <PageHeader
             title="Discovery"
-            subtitle="Events, launches, grants, programs, open calls, and talent — across the global healthcare AI ecosystem."
+            subtitle="Three views across the global healthcare AI ecosystem — pick one below."
             className="mb-6"
           />
 
-          {/* Role filter — chip row, filters every tab below */}
-          <div className="mb-8">
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-2">
-              Show me content for
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {ROLE_FILTER_OPTIONS.map((opt) => (
+          {/* Primary section nav — chip row matching Directory's domain-chip style.
+              Each chip is a leading-dot label that opens its own page-style view. */}
+          <div className="mb-8 flex flex-wrap gap-2">
+            {SECTION_NAV.map((s) => {
+              const isActive = section === s.id;
+              return (
                 <button
-                  key={opt.value}
+                  key={s.id}
                   type="button"
-                  onClick={() => setRoleFilter(opt.value)}
+                  onClick={() => setSection(s.id)}
                   className={cn(
-                    'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
-                    roleFilter === opt.value
-                      ? 'bg-foreground text-background border-foreground'
-                      : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                    'group inline-flex items-baseline gap-2 border px-3 py-2 transition-all',
+                    isActive
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border bg-background hover:border-primary hover:bg-primary/5',
                   )}
                 >
-                  {opt.label}
+                  <span className={cn(
+                    'text-sm font-medium transition-colors',
+                    isActive ? 'text-primary' : 'text-foreground group-hover:text-primary',
+                  )}>
+                    .{s.label}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground font-mono">→</span>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
+
+          {/* Role filter — only meaningful for the Newsfeed section
+              (events, launches, leaders, prompts). */}
+          {section === 'newsfeed' && (
+            <div className="mb-8">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-2">
+                Show me content for
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {ROLE_FILTER_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setRoleFilter(opt.value)}
+                    className={cn(
+                      'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
+                      roleFilter === opt.value
+                        ? 'bg-foreground text-background border-foreground'
+                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Region filter — Open Calls section. Grants and RFPs are inherently
+              region-bound, so region is the natural cut here (not roles). */}
+          {section === 'opencalls' && (
+            <div className="mb-8">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-2">
+                Region
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {(['all', 'US', 'EU', 'UK', 'UAE', 'Global'] as const).map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setOpenCallsRegion(r)}
+                    className={cn(
+                      'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
+                      openCallsRegion === r
+                        ? 'bg-foreground text-background border-foreground'
+                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                    )}
+                  >
+                    {r === 'all' ? 'All regions' : r}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Main content with sidebar */}
           <div>
@@ -218,47 +326,52 @@ export default function Discovery() {
             )}
 
             <div className={COPILOT_ENABLED ? 'grid lg:grid-cols-[1fr_350px] gap-8' : ''}>
-              {/* Main content - Tabs */}
+              {/* Main content — one Tabs container; TabsList content varies by section */}
               <div>
                 <Tabs value={activeTab} onValueChange={setActiveTab}>
-                  {/* Scrollable tabs */}
-                  <ScrollArea className="w-full mb-8">
-                    <TabsList className="w-max">
-                      <TabsTrigger value="calendar" className="gap-2">
-                        <CalendarDays className="h-4 w-4" />
-                        Events
-                      </TabsTrigger>
-                      <TabsTrigger value="launches" className="gap-2">
-                        <TrendingUp className="h-4 w-4" />
-                        Launches
-                      </TabsTrigger>
-                      <TabsTrigger value="leaders" className="gap-2">
-                        <Users className="h-4 w-4" />
-                        Leaders
-                      </TabsTrigger>
-                      <TabsTrigger value="grants" className="gap-2">
-                        <Award className="h-4 w-4" />
-                        Grants
-                      </TabsTrigger>
-                      <TabsTrigger value="programs" className="gap-2">
-                        <GraduationCap className="h-4 w-4" />
-                        Programs
-                      </TabsTrigger>
-                      <TabsTrigger value="open-calls" className="gap-2">
-                        <FileText className="h-4 w-4" />
-                        Open calls
-                      </TabsTrigger>
-                      <TabsTrigger value="talent" className="gap-2">
-                        <Briefcase className="h-4 w-4" />
-                        Talent hub
-                      </TabsTrigger>
-                      <TabsTrigger value="prompts" className="gap-2">
-                        <MessageSquare className="h-4 w-4" />
-                        Prompts
-                      </TabsTrigger>
-                    </TabsList>
-                    <ScrollBar orientation="horizontal" />
-                  </ScrollArea>
+                  {section !== 'talent' && (
+                    <ScrollArea className="w-full mb-8">
+                      <TabsList className="w-max">
+                        {section === 'newsfeed' && (
+                          <>
+                            <TabsTrigger value="calendar" className="gap-2">
+                              <CalendarDays className="h-4 w-4" />
+                              Events
+                            </TabsTrigger>
+                            <TabsTrigger value="launches" className="gap-2">
+                              <TrendingUp className="h-4 w-4" />
+                              Launches
+                            </TabsTrigger>
+                            <TabsTrigger value="leaders" className="gap-2">
+                              <Users className="h-4 w-4" />
+                              Leaders
+                            </TabsTrigger>
+                            <TabsTrigger value="prompts" className="gap-2">
+                              <MessageSquare className="h-4 w-4" />
+                              Prompts
+                            </TabsTrigger>
+                          </>
+                        )}
+                        {section === 'opencalls' && (
+                          <>
+                            <TabsTrigger value="grants" className="gap-2">
+                              <Award className="h-4 w-4" />
+                              Grants
+                            </TabsTrigger>
+                            <TabsTrigger value="programs" className="gap-2">
+                              <GraduationCap className="h-4 w-4" />
+                              Programs
+                            </TabsTrigger>
+                            <TabsTrigger value="open-calls" className="gap-2">
+                              <FileText className="h-4 w-4" />
+                              RFPs & sandboxes
+                            </TabsTrigger>
+                          </>
+                        )}
+                      </TabsList>
+                      <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
+                  )}
 
                   {/* Events Calendar Tab */}
                   <TabsContent value="calendar">

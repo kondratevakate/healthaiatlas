@@ -38,6 +38,16 @@ export const domains: ResearchDomain[] = [
     ],
     playerIds: ['cleveland-clinic-ad', 'seha', 'medcare'],
   },
+  {
+    id: 'ai-life-sciences',
+    name: { en: 'AI Frontiers in Life Sciences', ar: 'حدود الذكاء الاصطناعي في علوم الحياة' },
+    subtitle: { en: 'Global landscape: drug discovery, structural biology, generative biology, omics', ar: 'المشهد العالمي: اكتشاف الأدوية، البيولوجيا الهيكلية، البيولوجيا التوليدية، علم العمليات' },
+    color: '180 70% 40%',
+    stats: [
+      { label: 'Coverage', value: 'Global' },
+    ],
+    playerIds: [],
+  },
 ];
 
 export function getDomainById(id: string) {

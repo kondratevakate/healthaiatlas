@@ -25,10 +25,18 @@ type NavLink = { key: string; path: string; dropdown?: boolean };
 
 const navLinks: NavLink[] = [
   { key: 'nav.home', path: '/' },
-  { key: 'nav.discovery', path: '/discovery' },
+  { key: 'nav.discovery', path: '/discovery', dropdown: true },
   { key: 'nav.directory', path: '/directory', dropdown: true },
   { key: 'nav.context', path: '/context' },
   { key: 'nav.about', path: '/about' },
+];
+
+// Discovery section sub-nav — mirrors SECTION_NAV in pages/Discovery.tsx.
+// Kept in sync manually; if you add a section there, add it here too.
+const discoverySections: { id: string; label: string; subtitle: string; param: string }[] = [
+  { id: 'newsfeed', label: 'Newsfeed', subtitle: 'Events, launches, leaders, prompts', param: '' },
+  { id: 'opencalls', label: 'Open Calls', subtitle: 'Grants, programs, RFPs, sandboxes', param: 'section=opencalls' },
+  { id: 'talent', label: 'Talent Hub', subtitle: 'Curated rated-people directory', param: 'section=talent' },
 ];
 
 export function Header() {
@@ -82,13 +90,32 @@ export function Header() {
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
 
-              if (link.dropdown && link.path === '/directory') {
-                const subDomains = domains.filter((d) => d.id !== 'overview');
+              if (link.dropdown) {
+                // Build the dropdown items for this nav link.
+                const items: { id: string; to: string; label: string; subtitle?: string }[] =
+                  link.path === '/directory'
+                    ? domains
+                        .filter((d) => d.id !== 'overview')
+                        .map((d) => ({
+                          id: d.id,
+                          to: `/directory?domain=${d.id}`,
+                          label: d.name[language],
+                          subtitle: d.subtitle?.[language],
+                        }))
+                    : link.path === '/discovery'
+                    ? discoverySections.map((s) => ({
+                        id: s.id,
+                        to: s.param ? `/discovery?${s.param}` : '/discovery',
+                        label: s.label,
+                        subtitle: s.subtitle,
+                      }))
+                    : [];
+
                 return (
                   <div key={link.path} className="relative inline-flex items-center">
-                    {/* Main label — clickable, navigates to Overview */}
+                    {/* Main label — clickable, navigates to the section's overview */}
                     <Link
-                      to="/directory"
+                      to={link.path}
                       className={cn(
                         "text-sm font-medium transition-colors relative py-1",
                         isActive
@@ -101,7 +128,7 @@ export function Header() {
                         <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
                       )}
                     </Link>
-                    {/* Chevron — opens sub-domain dropdown */}
+                    {/* Chevron — opens sub-section dropdown */}
                     <DropdownMenu>
                       <DropdownMenuTrigger
                         className={cn(
@@ -110,21 +137,21 @@ export function Header() {
                             ? "text-foreground"
                             : "text-muted-foreground hover:text-foreground"
                         )}
-                        aria-label="Open directory sub-domains"
+                        aria-label={`Open ${t(link.key)} sub-sections`}
                       >
                         <ChevronDown className="h-3 w-3" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="min-w-[220px] rounded-none">
-                        {subDomains.map((domain) => (
-                          <DropdownMenuItem key={domain.id} asChild className="rounded-none">
+                      <DropdownMenuContent align="start" sideOffset={4} className="min-w-[240px] rounded-none">
+                        {items.map((item) => (
+                          <DropdownMenuItem key={item.id} asChild className="rounded-none">
                             <Link
-                              to={`/directory?domain=${domain.id}`}
-                              className="cursor-pointer flex flex-col items-start gap-0.5 py-1.5"
+                              to={item.to}
+                              className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
                             >
-                              <span className="text-xs font-medium">{domain.name[language]}</span>
-                              {domain.subtitle && (
-                                <span className="text-[10px] text-muted-foreground line-clamp-1">
-                                  {domain.subtitle[language]}
+                              <span className="text-xs font-medium text-left">{item.label}</span>
+                              {item.subtitle && (
+                                <span className="text-[10px] text-muted-foreground line-clamp-1 text-left">
+                                  {item.subtitle}
                                 </span>
                               )}
                             </Link>
@@ -193,15 +220,31 @@ export function Header() {
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path;
 
-                if (link.dropdown && link.path === '/directory') {
-                  const subDomains = domains.filter((d) => d.id !== 'overview');
+                if (link.dropdown) {
+                  const items: { id: string; to: string; label: string }[] =
+                    link.path === '/directory'
+                      ? domains
+                          .filter((d) => d.id !== 'overview')
+                          .map((d) => ({
+                            id: d.id,
+                            to: `/directory?domain=${d.id}`,
+                            label: d.name[language],
+                          }))
+                      : link.path === '/discovery'
+                      ? discoverySections.map((s) => ({
+                          id: s.id,
+                          to: s.param ? `/discovery?${s.param}` : '/discovery',
+                          label: s.label,
+                        }))
+                      : [];
+
                   return (
                     <div key={link.path} className="space-y-0.5">
                       <Link
                         to={link.path}
                         onClick={() => setMobileMenuOpen(false)}
                         className={cn(
-                          "block px-4 py-3 text-sm font-medium transition-colors",
+                          "block px-4 py-3 text-sm font-medium transition-colors text-left",
                           isActive
                             ? "text-primary bg-primary/5"
                             : "text-muted-foreground hover:text-foreground"
@@ -210,14 +253,14 @@ export function Header() {
                         {t(link.key)}
                       </Link>
                       <div className="pl-4 border-l-2 border-border ml-4 space-y-0.5">
-                        {subDomains.map((domain) => (
+                        {items.map((item) => (
                           <Link
-                            key={domain.id}
-                            to={`/directory?domain=${domain.id}`}
+                            key={item.id}
+                            to={item.to}
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                            className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors text-left"
                           >
-                            {domain.name[language]}
+                            {item.label}
                           </Link>
                         ))}
                       </div>

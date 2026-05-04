@@ -1,5 +1,8 @@
-// Open Calls (заявки) — RFPs, sandbox openings, pilot calls, regulatory invitations.
-// Faster cycle than grants; usually months, not years.
+// Open Calls — RFPs, sandbox openings, pilot calls, regulatory invitations.
+//
+// Entries below are scaffolds — the call names, issuers, regions, types, and
+// source URLs are real, but text fields like deadline, audience, and notes are
+// TODO until each one is verified against the issuer's current page.
 
 import { PathRole } from '@/types/research';
 import { GrantRegion } from './grants';
@@ -26,23 +29,23 @@ export const openCalls: OpenCall[] = [
     issuer: 'FDA (US)',
     region: 'US',
     type: 'sandbox',
-    deadline: 'rolling',
-    audience: 'Medical-device and SaMD companies seeking FDA feedback before formal submission',
+    deadline: 'TODO',
+    audience: 'TODO',
     roles: ['founder', 'business'],
     src: 'https://www.fda.gov/regulatory-information/search-fda-guidance-documents/requests-feedback-and-meetings-medical-device-submissions-q-submission-program',
-    notes: 'Free pre-IDE meetings; the standard way to de-risk a 510(k) or De Novo path.',
+    notes: 'TODO',
   },
   {
     id: 'nhs-ai-diagnostic-fund',
-    title: 'NHS AI Diagnostic Fund — adoption rounds',
+    title: 'NHS AI Diagnostic Fund',
     issuer: 'NHS England',
     region: 'UK',
     type: 'rfp',
-    deadline: '2026-07-31',
-    audience: 'AI vendors with CE/UKCA-marked tools deployable in NHS Trusts',
+    deadline: 'TODO',
+    audience: 'TODO',
     roles: ['founder', 'business'],
     src: 'https://transform.england.nhs.uk/ai-lab/ai-lab-programmes/',
-    notes: '£21M fund deploying validated AI tools across NHS imaging pathways.',
+    notes: 'TODO',
   },
   {
     id: 'mhra-air-sandbox',
@@ -50,11 +53,11 @@ export const openCalls: OpenCall[] = [
     issuer: 'MHRA (UK)',
     region: 'UK',
     type: 'sandbox',
-    deadline: 'rolling',
-    audience: 'Adaptive AI medical-device developers piloting under regulator supervision',
+    deadline: 'TODO',
+    audience: 'TODO',
     roles: ['founder', 'business'],
     src: 'https://www.gov.uk/government/publications/ai-airlock-regulatory-sandbox',
-    notes: 'Joint MHRA + DHSC. Lets developers test continuously-learning models with regulator oversight.',
+    notes: 'TODO',
   },
   {
     id: 'eu-ai-act-sandbox',
@@ -62,11 +65,11 @@ export const openCalls: OpenCall[] = [
     issuer: 'European Commission + Member States',
     region: 'EU',
     type: 'sandbox',
-    deadline: 'rolling (per member state)',
-    audience: 'High-risk AI system developers — including healthcare',
+    deadline: 'TODO',
+    audience: 'TODO',
     roles: ['founder', 'business', 'student'],
     src: 'https://digital-strategy.ec.europa.eu/en/policies/regulatory-sandboxes-ai',
-    notes: 'Each EU member state must run at least one sandbox by Aug 2026. Healthcare AI explicitly in scope.',
+    notes: 'TODO',
   },
   {
     id: 'dha-innovation-licensing',
@@ -74,22 +77,22 @@ export const openCalls: OpenCall[] = [
     issuer: 'Dubai Health Authority',
     region: 'UAE',
     type: 'pilot',
-    deadline: 'rolling',
-    audience: 'Healthcare-AI startups seeking pilot deployment in DHA-licensed facilities',
+    deadline: 'TODO',
+    audience: 'TODO',
     roles: ['founder', 'business'],
     src: 'https://www.dha.gov.ae/en/HealthRegulation/Pages/HealthInnovation.aspx',
-    notes: 'Faster than full medical-device licensing for time-bound pilots. Requires UAE entity or partner.',
+    notes: 'TODO',
   },
   {
-    id: 'arpah-resilient-systems',
-    title: 'ARPA-H Resilient Systems Office — Open BAA',
+    id: 'arpah-baa',
+    title: 'ARPA-H Broad Agency Announcement',
     issuer: 'ARPA-H (US)',
     region: 'US',
     type: 'rfp',
-    deadline: '2026-08-30',
-    audience: 'Domestic and international R&D teams; small-business friendly',
+    deadline: 'TODO',
+    audience: 'TODO',
     roles: ['founder', 'student'],
     src: 'https://arpa-h.gov/research-and-funding/programs',
-    notes: 'Broad Agency Announcement — lower-friction than NIH RFAs. Health resilience and access focus.',
+    notes: 'TODO',
   },
 ];

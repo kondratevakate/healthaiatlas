@@ -79,10 +79,7 @@ export default function Share() {
           </div>
 
           {/* Card */}
-          <RiskScoreCard
-            assessment={assessment}
-            onViewPath={() => navigate(`/path/${assessment.role}`)}
-          />
+          <RiskScoreCard assessment={assessment} />
 
           {/* CTA */}
           <div className="mt-8 text-center">

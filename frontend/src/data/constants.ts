@@ -6,7 +6,7 @@ export const SUGGEST_CORRECTION_URL = 'https://forms.gle/placeholder-suggest-cor
 // Per-section "last updated" dates (ISO format)
 export const LAST_UPDATED: Record<string, string> = {
   directory: '2026-04-22',
-  discovery: '2026-04-22',
+  discovery: '2026-05-06',
   context: '2026-05-04',
   claims: '2026-04-22',
   oncology: '2026-04-22',

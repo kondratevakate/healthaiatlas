@@ -222,6 +222,41 @@ Page wants to be PDF'd by policy researchers. Add `@media print` rules: drop reg
 
 ---
 
+## 🟧 Discovery — Open Calls countdown grid (follow-ups from 2026-05-06 push)
+
+Already shipped in this branch: Talent Hub section + `talentProfiles.ts` removed; `grants.ts` / `programs.ts` / `openCalls.ts` collapsed into a single [openCallEntries.ts](../frontend/src/data/openCallEntries.ts) (95 entries, ~33 from `Europe_VS funds_ Incubations.xlsx`); new `OpenCallCard` with DuckDuckGo favicon + countdown chip; new `lib/countdown.ts` + 12 unit tests; Discovery `?section=opencalls` is a 3-up grid filtered by region / category / "closing soon"; LAST_UPDATED bumped to `2026-05-06`.
+
+Still open:
+
+### 🟥 Live URL verification of the 33 Excel-derived entries (M)
+Each entry tagged `verifiedAt: '2026-05-06'` was sourced from Kate's curated spreadsheet, **not** fetched live in this session. Per AGENTS.md, every primary URL needs to resolve on the issuer's own domain and the deadline (where present) needs to match the issuer's call page. Action: WebFetch each `url` in batches of ~10, confirm the deadline string on the page; if drift detected, update `countdown.date` or move to `{ kind: 'closed', nextExpected: 'TBD' }`. Re-stamp `verifiedAt` to the day of the actual check.
+
+### 🟥 Refresh four past-deadline entries (S)
+As of 2026-05-06, four entries shipped with `kind: 'deadline'` dates already in the past — they render with `past` tone (strikethrough "Closed"):
+- AFAR — 2026-02-18 (closed Feb 18)
+- Glenn Foundation — 2026-01-27 (closed Jan 27)
+- DoH Abu Dhabi Healthcare Research Grant — 2026-02-28 (closed Feb 28)
+- NAM Healthy Longevity Global Competition — 2026-03-31 (closed Mar 31)
+
+These are typically annual cycles. Once the next call window is published on each issuer's page, switch the entry to `{ kind: 'annual', nextWindow: '<date or label>' }` or update the `date` to the new window. Until then, the strikethrough is honest.
+
+### 🟧 Migrate 8 conferences from `fellow` sheet → `conferences.ts` (M)
+Sheet category `Conference` has 8 rows excluded from Open Calls because they're events, not application calls: DOC (Truth in Medicine & Longevity), Longevity Docs Summit (2026-06-09 Cannes), Longevity Investors Conference, Viva City / Frontier Tower, Vitalist Bay, Founders Longevity Forum, Rejuvenation Startup Summit, TimePie Longevity Forum. Each has a real URL. Migrate to [conferences.ts](../frontend/src/data/conferences.ts) so they show up under Newsfeed → Events with the existing `ConferenceCard`.
+
+### 🟪 Investors view (Excel rows currently excluded — L)
+The `fellow` sheet has 11 VC funds + 16 angels + 9 societies + 10 women's-health funds + 6 Asia-ecosystem orgs + 8 UAE institutional partners — ~60 rows that don't fit Open Calls because they're investors / orgs, not application-window calls. They are valuable directory content. Spec a future `?section=investors` view (or reuse the existing Directory pattern) that surfaces these. Same hostname-favicon affordance the cards already use; no countdown chip needed (replace with `Stage` / `Check size` chip).
+
+### 🟪 Surface `verifiedAt` more clearly (S)
+Currently rendered as a tiny `✓ 2026-05-06` stamp in the bottom-right of each card (text-[9px] / opacity-40). On a thorough re-verification pass we may want a more visible "Last verified" badge — or skip the per-card stamp and put a single "All entries verified <date>" line under the page title. Current treatment is a v1 placeholder.
+
+### 🟫 Stale-URL handling for `?section=talent` (S)
+Currently the section validator quietly falls through to Newsfeed if `section=talent` arrives (e.g. an inbound link from a cached LinkedIn share). The legacy URL HTTPs 200, but the user's URL bar still says `?section=talent`. Mild UX wart. Optional: detect the mismatch and rewrite the URL via `setSearchParams({ replace: true })` so the browser's address bar shows the canonical `/discovery`.
+
+### 🟫 Bundle size (S — already noted in cross-cutting)
+This push pulled in date-fns helpers and a 95-entry data file; client bundle is now 1.30 MB minified / 396 kB gzip (was 1.30 MB / 394 kB before). The 500 KB-minified warning was already in the Vite output before this work — fix lives in the cross-cutting section below.
+
+---
+
 ## ✅ Done in the 2026-04-29 push
 
 For reference — what already shipped on the audit-fix branches.

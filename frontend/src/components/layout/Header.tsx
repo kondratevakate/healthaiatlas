@@ -35,8 +35,7 @@ const navLinks: NavLink[] = [
 // Kept in sync manually; if you add a section there, add it here too.
 const discoverySections: { id: string; label: string; subtitle: string; param: string }[] = [
   { id: 'newsfeed', label: 'Newsfeed', subtitle: 'Events, launches, leaders, prompts', param: '' },
-  { id: 'opencalls', label: 'Open Calls', subtitle: 'Grants, programs, RFPs, sandboxes', param: 'section=opencalls' },
-  { id: 'talent', label: 'Talent Hub', subtitle: 'Curated rated-people directory', param: 'section=talent' },
+  { id: 'opencalls', label: 'Open Calls', subtitle: 'Grants, fellowships, accelerators, prizes, sandboxes', param: 'section=opencalls' },
 ];
 
 export function Header() {

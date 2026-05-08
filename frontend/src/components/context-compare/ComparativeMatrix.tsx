@@ -8,7 +8,7 @@ import {
   type Region,
 } from '@/data/comparativeMatrix';
 
-const REGIONS: Region[] = ['us', 'eu', 'ch', 'uae'];
+const REGIONS: Region[] = ['us', 'eu', 'ch', 'uae', 'uk'];
 
 export function ComparativeMatrix() {
   return (
@@ -23,7 +23,7 @@ export function ComparativeMatrix() {
         <div className="flex items-center gap-2 mb-2">
           <GitCompare className="h-5 w-5" style={{ color: 'hsl(180 70% 40%)' }} />
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
-            US · EU · Switzerland · UAE
+            US · EU · Switzerland · UAE · UK
           </h2>
         </div>
         <p className="text-sm text-foreground/85 leading-relaxed max-w-3xl">
@@ -35,7 +35,7 @@ export function ComparativeMatrix() {
       </header>
 
       {/* Region headline diagnostics */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
         {REGIONS.map((r) => (
           <article
             key={r}
@@ -86,7 +86,7 @@ export function ComparativeMatrix() {
               </p>
             </header>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
               {REGIONS.map((r) => {
                 const cell = row.values[r];
                 return (

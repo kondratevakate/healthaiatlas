@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { UsTimeline, UsSidebar, FounderMatrix } from '@/components/context-us';
 import { MarketReality } from '@/components/context-uae';
 import { EuFounderMap, EuSidebar } from '@/components/context-eu';
+import { UkFounderMap, UkSidebar } from '@/components/context-uk';
 import { ComparativeMatrix } from '@/components/context-compare';
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -282,11 +283,12 @@ function VisionSidebar() {
   );
 }
 
-type ContextRegion = 'us' | 'uae' | 'eu' | 'compare';
+type ContextRegion = 'us' | 'uae' | 'eu' | 'uk' | 'compare';
 
 const REGION_OPTIONS: { id: ContextRegion; label: string; flag: string; available: boolean }[] = [
   { id: 'us', label: 'US', flag: '🇺🇸', available: true },
   { id: 'eu', label: 'EU + CH', flag: '🇪🇺', available: true },
+  { id: 'uk', label: 'UK', flag: '🇬🇧', available: true },
   { id: 'uae', label: 'UAE', flag: '🇦🇪', available: true },
   { id: 'compare', label: 'Compare', flag: '📊', available: true },
 ];
@@ -304,9 +306,13 @@ const REGION_SUBTITLES: Record<ContextRegion, { en: string; ar: string }> = {
     en: 'How the AI Act + EHDS + HTAR + MDR/IVDR rulebook stacks for healthcare-AI founders — and why Switzerland is a separate institutional animal even though it sits in the middle of Europe.',
     ar: 'كيف تتكدس قواعد قانون الذكاء الاصطناعي + EHDS + HTAR + MDR/IVDR لمؤسسي الذكاء الاصطناعي الصحي — ولماذا تعد سويسرا حيواناً مؤسسياً منفصلاً رغم موقعها في وسط أوروبا.',
   },
+  uk: {
+    en: 'Post-Brexit three-layer architecture — MHRA / NICE / NHS each on different timelines. NICE is a global HTA benchmark disproportionate to UK market size; Babylon is the bridge case to US SPAC era.',
+    ar: 'بنية ثلاثية الطبقات بعد خروج بريطانيا من الاتحاد الأوروبي — MHRA / NICE / NHS، كل منها على جدول زمني مختلف. تُعد NICE معياراً عالمياً لتقييم التكنولوجيا الصحية يفوق حجم السوق البريطاني؛ وتُعد Babylon قضية جسر إلى عصر SPAC الأمريكي.',
+  },
   compare: {
-    en: 'Same questions, different answers per market. US · EU · Switzerland · UAE side-by-side — eight rows that make the order-of-magnitude differences visible at a glance.',
-    ar: 'نفس الأسئلة، إجابات مختلفة لكل سوق. الولايات المتحدة · الاتحاد الأوروبي · سويسرا · الإمارات جنباً إلى جنب — ثمانية صفوف تكشف الفروق بترتيب الحجم في لمحة.',
+    en: 'Same questions, different answers per market. US · EU · Switzerland · UAE · UK side-by-side — eight rows that make the order-of-magnitude differences visible at a glance.',
+    ar: 'نفس الأسئلة، إجابات مختلفة لكل سوق. الولايات المتحدة · الاتحاد الأوروبي · سويسرا · الإمارات · المملكة المتحدة جنباً إلى جنب — ثمانية صفوف تكشف الفروق بترتيب الحجم في لمحة.',
   },
 };
 
@@ -431,6 +437,38 @@ export default function Context() {
                       </h2>
                     </div>
                     <EuSidebar />
+                  </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </div>
+          </section>
+        )}
+
+        {/* UK tab */}
+        {region === 'uk' && (
+          <section className="py-8">
+            <div className="container">
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="min-h-[800px] rounded-lg border"
+              >
+                <ResizablePanel defaultSize={65} minSize={50}>
+                  <div className="p-6 md:p-8 overflow-y-auto h-full">
+                    <UkFounderMap />
+                  </div>
+                </ResizablePanel>
+
+                <ResizableHandle withHandle />
+
+                <ResizablePanel defaultSize={35} minSize={25} maxSize={45}>
+                  <div className="h-full overflow-y-auto bg-secondary/20">
+                    <div className="sticky top-0 bg-secondary/80 backdrop-blur-sm p-4 border-b z-10">
+                      <h2 className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                        <ShieldAlert className="h-3.5 w-3.5" />
+                        UK regulatory pillars
+                      </h2>
+                    </div>
+                    <UkSidebar />
                   </div>
                 </ResizablePanel>
               </ResizablePanelGroup>

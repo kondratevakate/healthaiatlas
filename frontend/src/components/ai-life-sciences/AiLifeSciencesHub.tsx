@@ -2,12 +2,20 @@ import { HubShell } from '@/components/shared/HubShell';
 import { LandscapeView } from './LandscapeView';
 import { ModalityMatrixView } from './ModalityMatrixView';
 import { ClusterTreemapView } from './ClusterTreemapView';
+import { RecentSignalsView } from './RecentSignalsView';
 
 export function AiLifeSciencesHub() {
   return (
     <HubShell
       domainId="ai-life-sciences"
       views={[
+        {
+          id: 'recent-signals',
+          label: 'Recent Signals',
+          description:
+            'What just happened in AI × life sciences. Scale-of-deals bar chart over the last ~12 months, plus three narrative lenses: who Anthropic is acquiring, where OpenAI is placing healthcare bets, which pharma majors are paying for AI drug discovery.',
+          render: () => <RecentSignalsView />,
+        },
         {
           id: 'cluster-treemap',
           label: 'Capital flow × clusters',

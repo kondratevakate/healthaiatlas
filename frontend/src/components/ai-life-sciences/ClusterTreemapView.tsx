@@ -5,9 +5,12 @@ import {
   LS_CLUSTERS,
   LS_ET_LABELS,
   LS_FAMILY_LABELS,
+  LS_TEMPERATURE_COLORS,
+  LS_TEMPERATURE_LABELS,
   type LSBubble,
   type LSCluster,
   type LSClusterFamily,
+  type LSTemperature,
 } from '@/data/aiLifeSciences';
 import { squarifiedTreemap } from '@/lib/squarifiedTreemap';
 import { cn } from '@/lib/utils';
@@ -92,9 +95,11 @@ function getSignal(c: LSCluster, key: SignalKey): number | null {
 }
 
 const FAMILY_ORDER: LSClusterFamily[] = ['care_delivery', 'discovery_rd', 'therapeutic', 'ai_infra', 'meta'];
+const TEMPERATURE_ORDER: LSTemperature[] = ['red', 'orange', 'blue', 'neutral'];
 
 export function ClusterTreemapView() {
   const [signal, setSignal] = useState<SignalKey>('event_count');
+  const [colorBy, setColorBy] = useState<'family' | 'temperature'>('family');
   const [hovered, setHovered] = useState<string | null>(null);
   const [opened, setOpened] = useState<string | null>(null);
 
@@ -204,7 +209,7 @@ export function ClusterTreemapView() {
   return (
     <div>
       {/* Signal toggle */}
-      <div className="flex flex-wrap gap-1 mb-3 items-center">
+      <div className="flex flex-wrap gap-1 mb-2 items-center">
         <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mr-2">
           Size by:
         </span>
@@ -222,6 +227,35 @@ export function ClusterTreemapView() {
             {s.short}
           </button>
         ))}
+      </div>
+
+      {/* Color-mode toggle: family vs. wave market-temperature (Kondrateva-Seregina 2026) */}
+      <div className="flex flex-wrap gap-1 mb-3 items-center">
+        <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mr-2">
+          Color by:
+        </span>
+        <button
+          onClick={() => setColorBy('family')}
+          className={cn(
+            'px-2 py-1 text-[11px] font-mono border transition-colors',
+            colorBy === 'family'
+              ? 'bg-foreground text-background border-foreground'
+              : 'border-border text-muted-foreground hover:text-foreground',
+          )}
+        >
+          Family
+        </button>
+        <button
+          onClick={() => setColorBy('temperature')}
+          className={cn(
+            'px-2 py-1 text-[11px] font-mono border transition-colors',
+            colorBy === 'temperature'
+              ? 'bg-foreground text-background border-foreground'
+              : 'border-border text-muted-foreground hover:text-foreground',
+          )}
+        >
+          Market temperature
+        </button>
       </div>
 
       {/* Caption */}
@@ -255,7 +289,7 @@ export function ClusterTreemapView() {
                 top: `${(rect.y / size.h) * 100}%`,
                 width: `${(rect.w / size.w) * 100}%`,
                 height: `${(rect.h / size.h) * 100}%`,
-                background: cluster.color,
+                background: colorBy === 'temperature' ? LS_TEMPERATURE_COLORS[cluster.temperature] : cluster.color,
                 opacity: isPlaceholder ? 0.55 : 1,
                 outline: isHovered ? '2px solid hsl(var(--primary))' : '1px solid rgba(0,0,0,0.25)',
                 outlineOffset: isHovered ? '-2px' : '0',
@@ -312,7 +346,7 @@ export function ClusterTreemapView() {
                 className="text-white text-left p-2 overflow-hidden hover:ring-2 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 style={{
                   width: `${w}%`,
-                  background: c.color,
+                  background: colorBy === 'temperature' ? LS_TEMPERATURE_COLORS[c.temperature] : c.color,
                   opacity: isPlaceholder ? 0.55 : 1,
                   transition: 'all 600ms cubic-bezier(.4,0,.2,1)',
                 }}
@@ -332,19 +366,34 @@ export function ClusterTreemapView() {
         </div>
       </div>
 
-      {/* Family legend */}
-      <div className="flex flex-wrap gap-3 mt-4 text-[10px] font-mono text-muted-foreground">
-        {FAMILY_ORDER.map((f) => {
-          const cluster = LS_CLUSTERS.find((c) => c.family === f);
-          if (!cluster) return null;
-          return (
-            <span key={f} className="inline-flex items-center gap-1.5">
-              <span aria-hidden="true" className="inline-block w-3 h-3" style={{ background: cluster.color }} />
-              {LS_FAMILY_LABELS[f]}
+      {/* Legend — family OR temperature, depending on toggle */}
+      {colorBy === 'family' ? (
+        <div className="flex flex-wrap gap-3 mt-4 text-[10px] font-mono text-muted-foreground">
+          {FAMILY_ORDER.map((f) => {
+            const cluster = LS_CLUSTERS.find((c) => c.family === f);
+            if (!cluster) return null;
+            return (
+              <span key={f} className="inline-flex items-center gap-1.5">
+                <span aria-hidden="true" className="inline-block w-3 h-3" style={{ background: cluster.color }} />
+                {LS_FAMILY_LABELS[f]}
+              </span>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-3 mt-4 text-[10px] font-mono text-muted-foreground">
+          {TEMPERATURE_ORDER.map((t) => (
+            <span key={t} className="inline-flex items-center gap-1.5">
+              <span
+                aria-hidden="true"
+                className="inline-block w-3 h-3 border border-border"
+                style={{ background: LS_TEMPERATURE_COLORS[t] }}
+              />
+              {LS_TEMPERATURE_LABELS[t]}
             </span>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Cluster detail modal */}
       {opened && <ClusterDetail clusterId={opened} signal={signal} onClose={() => setOpened(null)} />}

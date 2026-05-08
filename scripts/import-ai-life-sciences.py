@@ -42,43 +42,44 @@ CLUSTERS = [
     # In-frame (main treemap)
     dict(
         id="diagnostics_imaging", label="Diagnostics & imaging AI",
-        family="care_delivery", off_frame=False,
+        family="care_delivery", temperature="red", off_frame=False,
         revenue_usd_m=6000,
         highlights=[
-            "~75% of FDA-cleared AI medical devices",
+            "Wave 1 — saturated; ~75% of FDA-cleared AI devices",
             "Radiology, ophthalmology, cardio, pathology",
-            "Aidoc, Viz.ai, RapidAI, Heartflow, PathAI, Lunit",
+            "Aidoc, Viz.ai, Heartflow, PathAI, Lunit, Paige, RadAI",
             "Mayo: 3-year pancreatic pre-diagnosis",
             "~$5–7B revenue (2025)",
         ],
     ),
     dict(
         id="hospital_ops", label="Hospital ops / RCM / scribes",
-        family="care_delivery", off_frame=False,
+        family="care_delivery", temperature="orange", off_frame=False,
         revenue_usd_m=1200,
         highlights=[
+            "Wave 2 — scaling; admin LLM layer",
             "Microsoft Dragon Copilot ~32%",
-            "Abridge 30%, Ambience 13%",
-            "Suki 10%, Nabla 4%, Freed 4%",
-            "Epic ambient launched Sep 2025 (~$80/mo)",
+            "Abridge 30%, Ambience 13%, Tennr referrals",
+            "Nabla (Paris) → AMI Labs partner",
             "$1B+ VC raised in 2025",
             "JAMA: ~13 min/day saved per clinician",
         ],
     ),
     dict(
-        id="surgical_robotics", label="Surgical robotics",
-        family="care_delivery", off_frame=False,
-        revenue_usd_m=8000,
+        id="surgical_robotics", label="AI-narrow surgical assist",
+        family="care_delivery", temperature="neutral", off_frame=False,
+        revenue_usd_m=300,
         highlights=[
-            "Intuitive Surgical (incumbent)",
-            "Figure, NVIDIA GR00T (humanoid pipeline)",
+            "AI-narrow surgical assistance only",
             "Aleph Surgical (SPC-backed)",
-            "Strut Motors (SPC-backed)",
+            "Intuitive Surgical AI portion (narrow vs $8B Da Vinci total)",
+            "Note: paper does NOT cover surgical robotics",
+            "Most surgical-robot $$ is teleoperated mechanical, not AI",
         ],
     ),
     dict(
         id="mental_consumer", label="Mental + consumer",
-        family="care_delivery", off_frame=False,
+        family="care_delivery", temperature="neutral", off_frame=False,
         revenue_usd_m=200,
         highlights=[
             "Legion Health (FDA refills)",
@@ -89,54 +90,74 @@ CLUSTERS = [
     ),
     dict(
         id="clinical_ai_agents", label="Clinical AI agents",
-        family="care_delivery", off_frame=False,
+        family="care_delivery", temperature="orange", off_frame=False,
         revenue_usd_m=400,
         highlights=[
-            "OpenAI, DeepMind, Anthropic clinician copilots",
-            "Big-lab decision support layer",
-            "Open Evidence, Hippocratic AI, K Health",
+            "Wave 2 — scaling; clinical decision support",
+            "OpenEvidence, Hippocratic AI, Glass Health",
+            "OpenAI, DeepMind, Anthropic copilots",
             "Cheatham (Breyer) thesis",
         ],
     ),
     dict(
         id="ai_drug_discovery", label="AI drug discovery + vertical operators",
-        family="discovery_rd", off_frame=False,
+        family="discovery_rd", temperature="blue", off_frame=False,
         revenue_usd_m=300,
         highlights=[
-            "Isomorphic Labs (ISM8969 FDA-cleared)",
-            "Recursion–Exscientia merged",
-            "Insilico, XtalPi, Pathos AI, Insitro",
-            "Lilly: #14→#1 on CB Insights",
+            "Wave 3b — frontier; full-stack TechBio",
+            "Insilico (Rentosertib Nature Med), Recursion–Exscientia",
+            "Isomorphic Labs, Owkin, Iambic, Latent Labs",
             "$3B+ pharma deal value (Novartis-Iso)",
         ],
     ),
     dict(
         id="pure_ml_biology", label="Pure ML for biology",
-        family="discovery_rd", off_frame=False,
+        family="discovery_rd", temperature="blue", off_frame=False,
         revenue_usd_m=50,
         highlights=[
+            "Wave 3b — frontier; tools layer",
             "EvolutionaryScale (ESM3, $142M)",
-            "Chai Discovery ($225M+)",
-            "Profluent ($150M)",
-            "Latent Labs ($50M, S. Kohl)",
+            "Chai Discovery, Profluent, Latent Labs",
+        ],
+    ),
+    dict(
+        id="ai_scientists", label="AI scientists as products",
+        family="discovery_rd", temperature="blue", off_frame=False,
+        revenue_usd_m=None,  # pre-revenue
+        highlights=[
+            "Wave 3a — frontier; agentic AI scientists",
+            "Future House (Robin), Edison Scientific (Kosmos)",
+            "Lila Sciences ($435M), Periodic Labs ($300M)",
+            "Coefficient Bio (Anthropic acq, $400M)",
+            "Sakana AI Scientist (Nature 2026)",
+        ],
+    ),
+    dict(
+        id="automated_labs", label="Automated laboratories",
+        family="ai_infra", temperature="blue", off_frame=False,
+        revenue_usd_m=None,
+        highlights=[
+            "Wave 4 — frontier; data factories for AI",
+            "XtalPi (HKEX, $5.99B DoveTree)",
+            "Emerald Cloud Lab, Ginkgo Datapoints",
+            "Strateos, Culture Biosciences, Medra",
         ],
     ),
     dict(
         id="longevity_aging", label="Longevity / aging",
-        family="therapeutic", off_frame=False,
+        family="therapeutic", temperature="neutral", off_frame=False,
         revenue_usd_m=None,  # pre-revenue
         highlights=[
             "Altos Labs ($3B, 2022)",
-            "Retro Biosciences ($180M)",
-            "Loyal ($58M), NewLimit ($40M)",
-            "Calico (Alphabet, internal)",
-            "LBF8 alum: Powerhouse, Matter Bio",
-            "Lilly GLP-1 (A. Adams)",
+            "Retro Biosciences, Life Biosciences",
+            "Loyal, NewLimit, LBF Fellowship",
+            "Lilly GLP-1 (A. Adams ARDD2025)",
+            "Sinclair lab K-Dense aging clocks",
         ],
     ),
     dict(
         id="bci_neurotech", label="BCI / neurotech",
-        family="therapeutic", off_frame=False,
+        family="therapeutic", temperature="neutral", off_frame=False,
         revenue_usd_m=None,  # pre-revenue
         highlights=[
             "Neuralink ($363M+) @ CCAD UAE",
@@ -147,17 +168,16 @@ CLUSTERS = [
     ),
     dict(
         id="ai_infra", label="AI infra / research",
-        family="ai_infra", off_frame=False,
+        family="ai_infra", temperature="neutral", off_frame=False,
         revenue_usd_m=None,
         highlights=[
             "Zyphra (ZAYA1 + Maia + AMD inference cloud)",
-            "Sentra, MAPPA, Vmax",
-            "General-purpose AI infra (not bio-specific)",
+            "General-purpose AI infra — paper out-of-scope",
         ],
     ),
     dict(
         id="regulatory", label="Regulatory frameworks",
-        family="meta", off_frame=False,
+        family="meta", temperature="neutral", off_frame=False,
         revenue_usd_m=None,
         highlights=[
             "FDA Elsa internal tool",
@@ -166,10 +186,20 @@ CLUSTERS = [
             "Cross-jurisdiction harmonisation",
         ],
     ),
+    dict(
+        id="policy_initiatives", label="National AI-for-science policy",
+        family="meta", temperature="neutral", off_frame=False,
+        revenue_usd_m=None,
+        highlights=[
+            "US Genesis Mission (Nov 2025)",
+            "UK AI for Science Strategy",
+            "DOE labs + federal datasets for AI discovery",
+        ],
+    ),
     # Off-frame (capital flows outside main VC count)
     dict(
         id="frontier_labs", label="Frontier AI labs (general-purpose)",
-        family="ai_infra", off_frame=True,
+        family="ai_infra", temperature="neutral", off_frame=True,
         revenue_usd_m=10000,
         highlights=[
             "Anthropic, OpenAI, DeepMind, Mistral, xAI",
@@ -179,7 +209,7 @@ CLUSTERS = [
     ),
     dict(
         id="pharma_corp_rd", label="Pharma corporate AI R&D",
-        family="discovery_rd", off_frame=True,
+        family="discovery_rd", temperature="neutral", off_frame=True,
         revenue_usd_m=None,
         highlights=[
             "Lilly (T. Fuchs CAIO), Novartis, Roche",
@@ -189,7 +219,7 @@ CLUSTERS = [
     ),
     dict(
         id="china_biotech", label="China AI biotech",
-        family="discovery_rd", off_frame=True,
+        family="discovery_rd", temperature="neutral", off_frame=True,
         revenue_usd_m=None,
         highlights=[
             "DeepSeek med, Alibaba, SenseTime, BGI",
@@ -199,7 +229,7 @@ CLUSTERS = [
     ),
     dict(
         id="public_market", label="Public market AI biotech",
-        family="meta", off_frame=True,
+        family="meta", temperature="neutral", off_frame=True,
         revenue_usd_m=None,
         highlights=[
             "Insilico HKEX IPO ($293M, Dec 2025)",
@@ -219,6 +249,24 @@ FAMILY_COLORS = {
     "meta": "hsl(0 0% 25%)",
 }
 
+# Wave-temperature colors keyed to Kondrateva & Seregina (May 2026) paper:
+# Wave 1 saturated CV imaging = red; Wave 2 scaling admin/clinical LLM = orange;
+# Wave 3 + Wave 4 frontier (AI scientists, TechBio, automated labs) = blue;
+# clusters not framed by the paper (longevity, BCI, robotics, etc.) = neutral grey.
+TEMPERATURE_COLORS = {
+    "red": "hsl(0 70% 45%)",
+    "orange": "hsl(28 85% 50%)",
+    "blue": "hsl(210 70% 45%)",
+    "neutral": "hsl(0 0% 50%)",
+}
+
+TEMPERATURE_LABELS = {
+    "red": "Saturated (Wave 1 — CV imaging)",
+    "orange": "Scaling (Wave 2 — admin / clinical LLM)",
+    "blue": "Frontier (Wave 3 / 4 — AI scientists, TechBio, automated labs)",
+    "neutral": "Out of paper scope",
+}
+
 
 # ---------------------------------------------------------------------------
 # Company → cluster mapping. Always wins over the layer fallback.
@@ -236,6 +284,8 @@ COMPANY_TO_CLUSTER = {
     "Truveta": "diagnostics_imaging",
     "Digital Diagnostics / IDx": "diagnostics_imaging",
     "SOPHiA GENETICS": "diagnostics_imaging",
+    "Paige": "diagnostics_imaging",
+    "RadAI": "diagnostics_imaging",
     "Caris Life Sciences": "public_market",
     "Isensee et al. / DKFZ": "pure_ml_biology",
     "Rajpurkar et al. / Stanford": "pure_ml_biology",
@@ -252,6 +302,9 @@ COMPANY_TO_CLUSTER = {
     "CodaMetrix": "hospital_ops",
     "Cohere Health": "hospital_ops",
     "Innovaccer": "hospital_ops",
+    "Tennr": "hospital_ops",
+    "Nabla": "hospital_ops",
+    "AMI Labs": "frontier_labs",
     "Qventus": "hospital_ops",
     "Commure": "hospital_ops",
     "Heidi Health": "hospital_ops",
@@ -264,12 +317,12 @@ COMPANY_TO_CLUSTER = {
     "Stanford CRFM": "hospital_ops",
     "Stanford BMIR": "hospital_ops",
 
-    # Surgical robotics
+    # Surgical robotics — AI-narrow assist only
     "Intuitive Surgical": "surgical_robotics",
-    "Figure": "surgical_robotics",
-    "NVIDIA": "surgical_robotics",
     "Aleph Surgical": "surgical_robotics",
-    "Strut Motors": "surgical_robotics",
+    # Humanoid robotics & non-bio: routed to frontier_labs (general AI/robotics)
+    "Figure": "frontier_labs",
+    "NVIDIA": "frontier_labs",
 
     # Mental + consumer
     "Legion Health": "mental_consumer",
@@ -313,13 +366,36 @@ COMPANY_TO_CLUSTER = {
     "China AI biotech (aggregate)": "china_biotech",
     "Public market AI biotech (aggregate)": "public_market",
 
+    # AI scientists as products (Wave 3a — frontier blue)
+    "Future House": "ai_scientists",
+    "Future House (Robin)": "ai_scientists",
+    "Future House Fellowship": "ai_scientists",
+    "Edison Scientific": "ai_scientists",
+    "Periodic Labs": "ai_scientists",
+    "Coefficient Bio": "ai_scientists",
+    "Anthropic Healthcare & Life Sciences": "ai_scientists",
+    "Sakana AI": "ai_scientists",
+    "Unreasonable Labs": "ai_scientists",
+    "Lila Sciences": "ai_scientists",  # moved from ai_drug_discovery — paper frames Lila as AI scientist
+
+    # Automated labs (Wave 4 — frontier blue)
+    "Emerald Cloud Lab": "automated_labs",
+    "Ginkgo Bioworks": "automated_labs",
+    "Strateos": "automated_labs",
+    "Culture Biosciences": "automated_labs",
+    "Medra": "automated_labs",
+    "XtalPi": "automated_labs",  # moved from ai_drug_discovery — paper frames XtalPi as automated lab
+
+    # Policy initiatives (national AI-for-science strategies)
+    "US White House Genesis Mission": "policy_initiatives",
+    "UK Government AI for Science Strategy": "policy_initiatives",
+
     # AI drug discovery (verticals)
     "Isomorphic Labs": "ai_drug_discovery",
     "Recursion Pharmaceuticals": "ai_drug_discovery",
     "Insilico Medicine": "ai_drug_discovery",
-    "Lila Sciences": "ai_drug_discovery",
+    "Owkin": "ai_drug_discovery",
     "BenevolentAI": "ai_drug_discovery",
-    "XtalPi": "ai_drug_discovery",
     "Eikon Therapeutics": "ai_drug_discovery",
     "Exscientia": "ai_drug_discovery",
     "Generate Biomedicines": "ai_drug_discovery",
@@ -371,6 +447,8 @@ COMPANY_TO_CLUSTER = {
     "Loyal": "longevity_aging",
     "NewLimit": "longevity_aging",
     "Longevity Biotech Fellowship": "longevity_aging",
+    "Life Biosciences": "longevity_aging",
+    "Sinclair lab / Agarwal et al. (K-Dense)": "longevity_aging",
 
     # BCI
     "Neuralink": "bci_neurotech",
@@ -879,6 +957,8 @@ def write_ts(bubbles, clusters, file_hash):
     lines.append("")
     lines.append("export type LSClusterFamily = 'care_delivery' | 'discovery_rd' | 'therapeutic' | 'ai_infra' | 'meta';")
     lines.append("")
+    lines.append("export type LSTemperature = 'red' | 'orange' | 'blue' | 'neutral';")
+    lines.append("")
     lines.append("export interface LSClusterSignals {")
     lines.append("  revenue_usd_m: number | null;")
     lines.append("  vc_disclosed_usd_m: number;")
@@ -893,6 +973,7 @@ def write_ts(bubbles, clusters, file_hash):
     lines.append("  id: string;")
     lines.append("  label: string;")
     lines.append("  family: LSClusterFamily;")
+    lines.append("  temperature: LSTemperature;")
     lines.append("  color: string;")
     lines.append("  offFrame: boolean;")
     lines.append("  highlights: string[];")
@@ -995,6 +1076,18 @@ def write_ts(bubbles, clusters, file_hash):
     lines.append("};")
     lines.append("")
 
+    # Wave-temperature colors keyed to Kondrateva & Seregina (May 2026) paper.
+    lines.append("export const LS_TEMPERATURE_COLORS: Record<LSTemperature, string> = {")
+    for k, v in TEMPERATURE_COLORS.items():
+        lines.append(f"  {k}: {ts_string(v)},")
+    lines.append("};")
+    lines.append("")
+    lines.append("export const LS_TEMPERATURE_LABELS: Record<LSTemperature, string> = {")
+    for k, v in TEMPERATURE_LABELS.items():
+        lines.append(f"  {k}: {ts_string(v)},")
+    lines.append("};")
+    lines.append("")
+
     # Bubbles
     lines.append("export const LS_BUBBLES: LSBubble[] = [")
     for b in bubbles_sorted:
@@ -1033,6 +1126,7 @@ def write_ts(bubbles, clusters, file_hash):
         lines.append(f"    id: {ts_string(c['id'])},")
         lines.append(f"    label: {ts_string(c['label'])},")
         lines.append(f"    family: {ts_string(c['family'])} as LSClusterFamily,")
+        lines.append(f"    temperature: {ts_string(c['temperature'])} as LSTemperature,")
         lines.append(f"    color: {ts_string(c['color'])},")
         lines.append(f"    offFrame: {'true' if c['off_frame'] else 'false'},")
         highlights = ", ".join(ts_string(h) for h in c["highlights"])

@@ -12,7 +12,7 @@ export const LAST_UPDATED: Record<string, string> = {
   oncology: '2026-04-22',
   'process-mining': '2026-04-22',
   'medical-tourism': '2026-04-22',
-  'ai-life-sciences': '2026-05-03',
+  'ai-life-sciences': '2026-05-08',
 };
 
 // Fixed ordering for cross-hub navigation ("See also" strips).

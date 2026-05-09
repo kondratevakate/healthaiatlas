@@ -8,7 +8,7 @@ import {
   type Region,
 } from '@/data/comparativeMatrix';
 
-const REGIONS: Region[] = ['us', 'eu', 'ch', 'uae'];
+const REGIONS: Region[] = ['us', 'eu', 'ch', 'uae', 'uk'];
 
 export function ComparativeMatrix() {
   return (
@@ -17,13 +17,13 @@ export function ComparativeMatrix() {
         <div
           className="text-[10px] uppercase tracking-widest font-mono italic text-muted-foreground mb-2"
         >
-          ★ <span style={{ color: 'hsl(14 90% 55%)' }}>Compare all four</span> · 2026 · the founder-decision question rendered as a snapshot
+          ★ <span style={{ color: 'hsl(14 90% 55%)' }}>Compare all five</span> · 2026 · the founder-decision question rendered as a snapshot
         </div>
 
         <div className="flex items-center gap-2 mb-2">
           <GitCompare className="h-5 w-5" style={{ color: 'hsl(180 70% 40%)' }} />
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
-            US · EU · Switzerland · UAE
+            US · EU · Switzerland · UAE · UK
           </h2>
         </div>
         <p className="text-sm text-foreground/85 leading-relaxed max-w-3xl">
@@ -35,7 +35,7 @@ export function ComparativeMatrix() {
       </header>
 
       {/* Region headline diagnostics */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {REGIONS.map((r) => (
           <article
             key={r}
@@ -51,17 +51,20 @@ export function ComparativeMatrix() {
                 {REGION_LABELS[r]}
               </h3>
             </div>
-            <p className="text-[12px] text-foreground/85 leading-relaxed italic">
+            <p className="text-[13px] text-foreground/90 leading-relaxed italic">
               {REGION_HEADLINE[r]}
             </p>
           </article>
         ))}
       </div>
 
-      {/* The compare table — one row per metric */}
+      {/* The compare table — one card per metric, vertical region rows inside.
+          Avoids the 5-column-grid cramming where each cell got 1/5 width for
+          long text like "$2–4 bn estimated; Q3 2025 $409m UK-only". Now each
+          region gets a full-width row inside its metric card. */}
       <div className="space-y-4">
         {COMPARE_ROWS.map((row) => (
-          <article key={row.id} className="border border-border bg-background p-4">
+          <article key={row.id} className="border border-border bg-background p-4 md:p-5">
             <header className="mb-3 pb-3 border-b border-border">
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className="font-serif text-base md:text-lg font-bold text-foreground">
@@ -86,36 +89,43 @@ export function ComparativeMatrix() {
               </p>
             </header>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <ul className="divide-y divide-border/60">
               {REGIONS.map((r) => {
                 const cell = row.values[r];
                 return (
-                  <div
+                  <li
                     key={r}
-                    className="border-l-2 pl-3 py-1"
-                    style={{ borderColor: REGION_ACCENTS[r] }}
+                    className="grid grid-cols-[auto_1fr_auto] items-baseline gap-x-3 gap-y-1 py-2.5 first:pt-0 last:pb-0"
                   >
-                    <div className="flex items-baseline justify-between gap-2 mb-1">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-[10px]">{REGION_FLAGS[r]}</span>
-                        <span
-                          className="font-mono text-[10px] uppercase tracking-widest font-semibold"
-                          style={{ color: REGION_ACCENTS[r] }}
-                        >
-                          {REGION_LABELS[r]}
-                        </span>
-                      </div>
-                      {cell.ratio && (
-                        <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
-                          {cell.ratio}
-                        </span>
-                      )}
+                    {/* Region label — fixed-width column so values line up across rows */}
+                    <div
+                      className="flex items-baseline gap-1.5 border-l-2 pl-2 min-w-[88px] md:min-w-[112px]"
+                      style={{ borderColor: REGION_ACCENTS[r] }}
+                    >
+                      <span className="text-[12px]">{REGION_FLAGS[r]}</span>
+                      <span
+                        className="font-mono text-[10px] uppercase tracking-widest font-semibold"
+                        style={{ color: REGION_ACCENTS[r] }}
+                      >
+                        {REGION_LABELS[r]}
+                      </span>
                     </div>
-                    <p className="text-[12px] text-foreground/90 leading-relaxed">{cell.text}</p>
-                  </div>
+
+                    {/* Value text — gets the bulk of the width */}
+                    <p className="text-[13px] text-foreground/90 leading-relaxed">{cell.text}</p>
+
+                    {/* Ratio chip — right-aligned, fixed for visual scanning */}
+                    {cell.ratio ? (
+                      <span className="font-mono text-[11px] text-muted-foreground tabular-nums whitespace-nowrap text-right min-w-[72px]">
+                        {cell.ratio}
+                      </span>
+                    ) : (
+                      <span className="min-w-[72px]" aria-hidden="true" />
+                    )}
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           </article>
         ))}
       </div>

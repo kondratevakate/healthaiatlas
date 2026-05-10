@@ -8,6 +8,13 @@ frontend/dist
 frontend/dist-ssr
 frontend/build
 /build
+.vite/
+frontend/.vite/
+
+# Playwright artifacts
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
 
 # testing
 /coverage

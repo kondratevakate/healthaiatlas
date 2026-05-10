@@ -25,7 +25,7 @@ export function NiceRejection() {
       </p>
 
       <div className="border border-border bg-background">
-        <div className="grid grid-cols-[110px_90px_1fr_auto] gap-3 items-baseline px-4 py-2 border-b border-border bg-secondary/30 text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
+        <div className="hidden sm:grid sm:grid-cols-[110px_90px_1fr_auto] gap-3 items-baseline px-4 py-2 border-b border-border bg-secondary/30 text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
           <span>Date</span>
           <span>Agency</span>
           <span>Detail</span>
@@ -35,10 +35,12 @@ export function NiceRejection() {
           {UK_NICE_REJECTION.map((e) => (
             <div
               key={e.id}
-              className="grid grid-cols-[110px_90px_1fr_auto] gap-3 items-baseline px-4 py-3 text-[12px] hover:bg-secondary/40 transition-colors"
+              className="grid grid-cols-1 sm:grid-cols-[110px_90px_1fr_auto] gap-x-3 gap-y-2 items-baseline px-4 py-3 text-[12px] hover:bg-secondary/40 transition-colors"
             >
-              <div className="font-mono text-muted-foreground tabular-nums">{e.date}</div>
-              <div className="font-mono text-foreground font-semibold">{e.agency}</div>
+              <div className="flex items-baseline gap-2 sm:contents">
+                <div className="font-mono text-muted-foreground tabular-nums">{e.date}</div>
+                <div className="font-mono text-foreground font-semibold">{e.agency}</div>
+              </div>
               <div className="text-foreground/85 leading-relaxed">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span
@@ -64,7 +66,7 @@ export function NiceRejection() {
                 href={e.src}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium shrink-0"
+                className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium shrink-0 justify-self-start sm:justify-self-auto"
                 title={e.tier === 'secondary' ? 'Secondary source' : 'Primary source'}
               >
                 <ExternalLink className="h-3 w-3" />

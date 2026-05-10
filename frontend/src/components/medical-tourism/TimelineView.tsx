@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type CSSProperties } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TIMELINE, EVENT_TYPE_LABELS, EventType } from '@/data/medicalTourism';
@@ -55,8 +55,8 @@ export function TimelineView({ specialty }: Props) {
       </div>
 
       <div
-        className="grid gap-3"
-        style={{ gridTemplateColumns: `repeat(${Math.min(years.length, 5)}, minmax(0, 1fr))` }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:[grid-template-columns:var(--lg-cols)] gap-3"
+        style={{ '--lg-cols': `repeat(${Math.min(years.length, 5)}, minmax(0, 1fr))` } as CSSProperties}
       >
         {years.map(y => {
           const yearEvents = events.filter(e => e.y === y).sort((a, b) => a.q - b.q);

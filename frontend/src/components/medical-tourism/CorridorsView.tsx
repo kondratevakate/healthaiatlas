@@ -38,7 +38,7 @@ export function CorridorsView({ specialty }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-start">
         {/* Sources column — origin countries (filter on click) */}
         <div className="space-y-1 bg-secondary/30 border border-border p-3">
           <div className="flex items-baseline justify-between mb-2">

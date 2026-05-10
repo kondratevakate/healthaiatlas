@@ -1,7 +1,8 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo } from 'react';
 import { ONCO_BUBBLES, ONCO_TUMOR_COLORS, ONCO_DP_ORDER, ONCO_DP_LABELS, ONCO_ET_LABELS, ONCO_RELIABILITY } from '@/data/oncology';
 import { cn } from '@/lib/utils';
 import { ExternalLink } from 'lucide-react';
+import { useResponsiveSvgWidth } from '@/hooks/use-responsive-svg-width';
 
 // Per-tumour emoji, mirrors the medical-tourism specialty rail style.
 // Pan-cancer = generic ribbon; rest are anatomy-suggesting hints.
@@ -24,18 +25,7 @@ export function LandscapeView() {
   }, [tumorFilter]);
 
   // Responsive width — chart fills the frame instead of cutting off at 800px.
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerW, setContainerW] = useState(900);
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const obs = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setContainerW(entry.contentRect.width);
-      }
-    });
-    obs.observe(containerRef.current);
-    return () => obs.disconnect();
-  }, []);
+  const { ref: containerRef, width: containerW } = useResponsiveSvgWidth(900);
 
   // SVG layout — chartW now derived from container, with a sensible floor.
   const rowH = 32;
@@ -43,7 +33,7 @@ export function LandscapeView() {
   const minYear = 2013;
   const maxYear = 2026;
   const yearRange = maxYear - minYear;
-  const chartW = Math.max(600, containerW - leftW - 24);
+  const chartW = Math.max(280, containerW - leftW - 24);
   const svgW = leftW + chartW + 20;
   const svgH = ONCO_DP_ORDER.length * rowH + 40;
 

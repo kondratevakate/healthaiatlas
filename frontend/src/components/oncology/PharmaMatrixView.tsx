@@ -448,7 +448,7 @@ function VendorSummary({ penetration, totalPharmas, onSelectVendor }: VendorSumm
               <button
                 type="button"
                 onClick={() => onSelectVendor(row.v)}
-                className="w-full text-left grid grid-cols-[140px_1fr_auto] items-center gap-3 py-1.5 px-2 hover:bg-secondary/30 transition-colors text-xs"
+                className="w-full text-left grid grid-cols-[100px_1fr_auto] sm:grid-cols-[140px_1fr_auto] items-center gap-2 sm:gap-3 py-1.5 px-2 hover:bg-secondary/30 transition-colors text-xs"
               >
                 <span className="font-medium text-foreground truncate">{row.v}</span>
                 <span className="relative h-2 bg-secondary/50">
@@ -458,7 +458,8 @@ function VendorSummary({ penetration, totalPharmas, onSelectVendor }: VendorSumm
                   />
                 </span>
                 <span className="font-mono text-muted-foreground tabular-nums whitespace-nowrap">
-                  {row.pharmaCount}/{totalPharmas} pharmas · {Math.round(pct * 100)}%
+                  <span className="sm:hidden">{row.pharmaCount}/{totalPharmas} · {Math.round(pct * 100)}%</span>
+                  <span className="hidden sm:inline">{row.pharmaCount}/{totalPharmas} pharmas · {Math.round(pct * 100)}%</span>
                 </span>
               </button>
             </li>

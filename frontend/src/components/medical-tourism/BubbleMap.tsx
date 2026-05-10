@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { SOURCES, DESTINATIONS, CORRIDORS } from '@/data/medicalTourism';
+import { useResponsiveSvgWidth } from '@/hooks/use-responsive-svg-width';
 
 interface Props {
   specialty: string;
@@ -44,6 +45,8 @@ interface DstPoint {
 
 export function BubbleMap({ specialty, selSrc, selDst }: Props) {
   const [hoverId, setHoverId] = useState<string | null>(null);
+  const { ref: demandRef, width: demandContainerW } = useResponsiveSvgWidth(760);
+  const { ref: supplyRef, width: supplyContainerW } = useResponsiveSvgWidth(580);
 
   const { sources, destinations } = useMemo(() => {
     const srcVol = new Map<string, number>();
@@ -135,8 +138,9 @@ export function BubbleMap({ specialty, selSrc, selDst }: Props) {
   const dimFor = (id: string) => !matchesUpperFilter(id) || !isRelevant(id);
 
   // ── DEMAND scatter chart geometry ────────────────────────────────────
-  const W = 760;
-  const H = 380;
+  // Width-aware: SVG renders 1:1 (no viewBox) so fontSize stays at CSS px.
+  const W = Math.max(280, demandContainerW);
+  const H = W < 500 ? 320 : 380;
   const padL = 56;
   const padR = 24;
   const padT = 28;
@@ -174,7 +178,7 @@ export function BubbleMap({ specialty, selSrc, selDst }: Props) {
   })();
 
   // ── SUPPLY bar strip geometry ────────────────────────────────────────
-  const SBW = 580;          // supply bar SVG width
+  const SBW = Math.max(280, supplyContainerW);
   const SBH = 180;
   const sbPad = 12;
   const usableSBW = SBW - 2 * sbPad;
@@ -205,8 +209,8 @@ export function BubbleMap({ specialty, selSrc, selDst }: Props) {
       </div>
 
       {/* ── DEMAND scatter ──────────────────────────────────────────── */}
-      <div className="border border-border bg-secondary/20">
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block">
+      <div ref={demandRef} className="border border-border bg-secondary/20 min-w-0">
+        <svg viewBox={`0 0 ${W} ${H}`} className="block w-full h-auto">
           {/* Y gridlines + tick labels */}
           {yTicks.map((g) => {
             const y = yScale(g);
@@ -371,8 +375,8 @@ export function BubbleMap({ specialty, selSrc, selDst }: Props) {
           </div>
 
           {/* Right column — supply bars */}
-          <div className="border border-border bg-secondary/20">
-            <svg viewBox={`0 0 ${SBW} ${SBH}`} className="w-full h-auto block">
+          <div ref={supplyRef} className="border border-border bg-secondary/20 min-w-0">
+            <svg viewBox={`0 0 ${SBW} ${SBH}`} className="block w-full h-auto">
               {destinations.map((d, idx) => {
                 const x = dstBarX(idx);
                 const w = dstBarWidth;

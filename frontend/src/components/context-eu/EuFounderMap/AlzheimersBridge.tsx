@@ -34,11 +34,11 @@ export function AlzheimersBridge() {
               {c.outcomes.map((o, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-[120px_1fr_auto] gap-3 items-baseline text-[12px]"
+                  className="grid grid-cols-1 sm:grid-cols-[120px_1fr_auto] gap-x-3 gap-y-2 items-baseline text-[12px]"
                 >
                   <div className="font-mono text-foreground font-semibold">{o.agency}</div>
                   <div className="text-foreground/85 leading-relaxed">
-                    <div className="flex items-baseline gap-2 mb-0.5">
+                    <div className="flex items-baseline gap-2 mb-0.5 flex-wrap">
                       <span
                         className={cn(
                           'text-[9px] font-mono uppercase tracking-widest px-1.5 py-0.5 border',
@@ -55,7 +55,7 @@ export function AlzheimersBridge() {
                     href={o.src}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium shrink-0"
+                    className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium shrink-0 justify-self-start sm:justify-self-auto"
                     title={o.tier === 'secondary' ? 'Secondary source' : 'Primary source'}
                   >
                     <ExternalLink className="h-3 w-3" />

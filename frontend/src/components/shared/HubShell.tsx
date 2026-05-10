@@ -38,9 +38,9 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
 
   return (
     <div className="border border-border bg-background">
-      {children && <div className="border-b border-border p-4">{children}</div>}
+      {children && <div className="border-b border-border p-3 sm:p-4">{children}</div>}
 
-      <Tabs value={active} onValueChange={setActive} className="p-4">
+      <Tabs value={active} onValueChange={setActive} className="p-3 sm:p-4">
         <TabsList className="h-auto bg-transparent border-b border-border rounded-none p-0 mb-6 w-full justify-start gap-0 flex-wrap">
           {views.map((v, idx) => (
             <TabsTrigger
@@ -70,7 +70,7 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
         ))}
       </Tabs>
 
-      <div className="border-t border-border px-4 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-muted-foreground">
+      <div className="border-t border-border px-3 sm:px-4 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-muted-foreground">
         {neighbors.length > 0 ? (
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="uppercase tracking-widest font-mono text-[10px]">See also</span>

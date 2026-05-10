@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo } from 'react';
+import { useResponsiveSvgWidth } from '@/hooks/use-responsive-svg-width';
 import {
   LS_BUBBLES,
   LS_CLUSTERS,
@@ -60,16 +61,7 @@ export function LandscapeView() {
     );
   }, [filter, colorBy]);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerW, setContainerW] = useState(900);
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const obs = new ResizeObserver((entries) => {
-      for (const entry of entries) setContainerW(entry.contentRect.width);
-    });
-    obs.observe(containerRef.current);
-    return () => obs.disconnect();
-  }, []);
+  const { ref: containerRef, width: containerW } = useResponsiveSvgWidth(900);
 
   // Date range derived from data
   const minYear = 2014;
@@ -77,7 +69,7 @@ export function LandscapeView() {
   const yearRange = maxYear - minYear;
   const rowH = 30;
   const leftW = 220;
-  const chartW = Math.max(700, containerW - leftW - 24);
+  const chartW = Math.max(280, containerW - leftW - 24);
   const svgW = leftW + chartW + 20;
   const svgH = visibleClusters.length * rowH + 50;
 

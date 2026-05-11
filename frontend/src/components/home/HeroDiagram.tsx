@@ -101,20 +101,20 @@ export function HeroDiagram() {
           );
         })}
 
-        {/* Traveling pulses along connections */}
+        {/* Traveling pulses along connections — animate via transform on a
+            wrapping <g> so Framer Motion never has to write SVG cx/cy attrs
+            (which leak `undefined` on the first frame for keyframed values). */}
         {connections.map((conn, i) => {
           const a = nodePos(conn.from);
           const b = nodePos(conn.to);
           const size = 0.4 + conn.weight * 0.4;
           return (
-            <motion.circle
+            <motion.g
               key={`pulse-${i}`}
-              r={size}
-              fill={`hsl(var(--foreground) / 0.5)`}
-              initial={{ opacity: 0 }}
+              initial={{ x: a.x, y: a.y, opacity: 0 }}
               animate={{
-                cx: [a.x, b.x],
-                cy: [a.y, b.y],
+                x: [a.x, b.x],
+                y: [a.y, b.y],
                 opacity: [0, 0.8, 0.8, 0],
               }}
               transition={{
@@ -124,7 +124,9 @@ export function HeroDiagram() {
                 repeatDelay: 8 + i * 0.5,
                 ease: 'easeInOut',
               }}
-            />
+            >
+              <circle r={size} fill={`hsl(var(--foreground) / 0.5)`} />
+            </motion.g>
           );
         })}
 

@@ -1,7 +1,9 @@
 // Global constants for the Verifiable Claims Directory
 
-export const SUGGEST_ENTRY_URL = 'https://forms.gle/placeholder-suggest-entry';
-export const SUGGEST_CORRECTION_URL = 'https://forms.gle/placeholder-suggest-correction';
+export const SUGGEST_ENTRY_URL =
+  'mailto:kondratevakate@gmail.com?subject=HealthAI%20Atlas%20%E2%80%94%20Suggest%20entry&body=Entry%20name%3A%0AURL%3A%0AWhy%20it%20matters%3A';
+export const SUGGEST_CORRECTION_URL =
+  'mailto:kondratevakate@gmail.com?subject=HealthAI%20Atlas%20%E2%80%94%20Suggest%20correction&body=Which%20entry%3A%0AWhat%27s%20wrong%3A%0ACorrect%20information%3A';
 
 // Per-section "last updated" dates (ISO format)
 export const LAST_UPDATED: Record<string, string> = {

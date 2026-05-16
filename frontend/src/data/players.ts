@@ -3,6 +3,29 @@ import { Player } from '@/types';
 // Sample UAE AI Health ecosystem players
 export const players: Player[] = [
   {
+    id: 'dha',
+    name: {
+      en: 'Dubai Health Authority',
+      ar: 'هيئة الصحة بدبي',
+    },
+    type: 'government',
+    country: 'UAE',
+    city: 'Dubai',
+    founded: 2007,
+    employees: '1000+',
+    aiAreas: ['health-records', 'administrative'],
+    description: {
+      en: 'Regulator of Dubai\'s health sector. Mandates NABIDH connection for all Dubai-licensed healthcare facilities and publishes the HL7 integration spec.',
+      ar: 'الجهة المنظِّمة لقطاع الصحة في دبي. تُلزم جميع المرافق الصحية المرخَّصة في دبي بالاتصال بمنصة نبض، وتنشر مواصفات تكامل HL7.',
+    },
+    website: 'https://www.dha.gov.ae',
+    coordinates: { lat: 25.2048, lng: 55.2708 },
+    systemRole: 'components',
+    connections: ['nabidh'],
+    featured: false,
+    claim_ids: [],
+  },
+  {
     id: 'nabidh',
     name: { 
       en: 'NABIDH (DHA)', 

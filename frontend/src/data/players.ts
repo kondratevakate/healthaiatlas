@@ -38,8 +38,8 @@ export const players: Player[] = [
     employees: '51-200',
     aiAreas: ['health-records', 'patient-monitoring', 'administrative'],
     description: {
-      en: 'Dubai Health Authority\'s unified health information exchange platform connecting all healthcare providers in Dubai.',
-      ar: 'منصة تبادل المعلومات الصحية الموحدة لهيئة الصحة بدبي التي تربط جميع مقدمي الرعاية الصحية في دبي.'
+      en: 'DHA\'s health information exchange. Every Dubai-licensed healthcare provider must connect to it — that\'s how Dubai gets a single patient record across facilities.',
+      ar: 'منصة تبادل المعلومات الصحية التابعة لهيئة الصحة بدبي. كل مقدّم رعاية صحية مرخَّص في دبي ملزَم بالاتصال بها — وعبرها تحصل دبي على سجلٍ موحَّد للمريض بين المرافق.'
     },
     website: 'https://www.dha.gov.ae/nabidh',
     coordinates: { lat: 25.2048, lng: 55.2708 },
@@ -61,8 +61,8 @@ export const players: Player[] = [
     employees: '1000+',
     aiAreas: ['diagnostics', 'patient-monitoring', 'administrative'],
     description: {
-      en: 'Abu Dhabi Health Services Company, the largest healthcare network in the UAE operating 14 hospitals and numerous clinics.',
-      ar: 'شركة أبوظبي للخدمات الصحية، أكبر شبكة رعاية صحية في الإمارات تدير 14 مستشفى والعديد من العيادات.'
+      en: 'Abu Dhabi\'s public hospital operator. Runs 14 hospitals and a network of primary-care clinics across the emirate.',
+      ar: 'مشغّل المستشفيات الحكومية في أبوظبي. يدير 14 مستشفى وشبكة من عيادات الرعاية الأولية في الإمارة.'
     },
     website: 'https://www.seha.ae',
     coordinates: { lat: 24.4539, lng: 54.3773 },
@@ -85,8 +85,8 @@ export const players: Player[] = [
     funding: '$100M+',
     aiAreas: ['genomics', 'drug-discovery', 'diagnostics', 'medical-imaging'],
     description: {
-      en: 'AI-powered healthcare company developing precision medicine solutions, genomics, and population health initiatives.',
-      ar: 'شركة رعاية صحية مدعومة بالذكاء الاصطناعي تطور حلول الطب الدقيق والجينوميات ومبادرات صحة السكان.'
+      en: 'Builds precision-medicine and genomics infrastructure for the UAE health system. Runs the country\'s population-scale sequencing program.',
+      ar: 'يبني البنية التحتية للطب الدقيق والجينوميات في النظام الصحي الإماراتي. يُشغّل برنامج تسلسل الجينوم على نطاق سكاني في الدولة.'
     },
     website: 'https://g42healthcare.ai',
     coordinates: { lat: 24.4667, lng: 54.3667 },
@@ -108,8 +108,8 @@ export const players: Player[] = [
     employees: '1000+',
     aiAreas: ['diagnostics', 'medical-imaging', 'patient-monitoring', 'robotics'],
     description: {
-      en: 'Multi-specialty hospital using AI for diagnostics and surgical robotics, part of Cleveland Clinic global network.',
-      ar: 'مستشفى متعدد التخصصات يستخدم الذكاء الاصطناعي للتشخيص والروبوتات الجراحية، جزء من شبكة كليفلاند كلينك العالمية.'
+      en: 'Cleveland Clinic\'s Abu Dhabi outpost. Uses AI in diagnostics and runs the da Vinci robotic-surgery program.',
+      ar: 'الفرع الإقليمي لكليفلاند كلينك في أبوظبي. يستخدم الذكاء الاصطناعي في التشخيص ويُشغّل برنامج الجراحة الروبوتية بنظام دافنشي.'
     },
     website: 'https://www.clevelandclinicabudhabi.ae',
     coordinates: { lat: 24.4225, lng: 54.4346 },
@@ -130,8 +130,8 @@ export const players: Player[] = [
     employees: '501-1000',
     aiAreas: ['diagnostics', 'telemedicine', 'patient-monitoring'],
     description: {
-      en: 'Network of hospitals and clinics implementing AI-powered diagnostic tools and telemedicine services.',
-      ar: 'شبكة من المستشفيات والعيادات تنفذ أدوات تشخيصية مدعومة بالذكاء الاصطناعي وخدمات الطب عن بعد.'
+      en: 'Private hospital network in Dubai. Uses AI in diagnostics and runs a telemedicine service across its clinics.',
+      ar: 'شبكة مستشفيات خاصة في دبي. تستخدم الذكاء الاصطناعي في التشخيص وتُشغّل خدمة طب عن بُعد عبر عياداتها.'
     },
     website: 'https://www.medcare.ae',
     coordinates: { lat: 25.1865, lng: 55.2615 },
@@ -152,8 +152,8 @@ export const players: Player[] = [
     funding: '$50M',
     aiAreas: ['telemedicine', 'mental-health', 'patient-monitoring'],
     description: {
-      en: 'Health-tech startup behind the Botim super-app, integrating telemedicine and AI health features.',
-      ar: 'شركة ناشئة في مجال التكنولوجيا الصحية وراء تطبيق بوتيم الفائق، تدمج الطب عن بعد وميزات الصحة بالذكاء الاصطناعي.'
+      en: 'Health-tech behind the Botim super-app — bundles telemedicine and AI health features into a single UAE consumer app.',
+      ar: 'الشركة الصحية الرقمية التي تقف خلف تطبيق بوتيم الفائق — تجمع الطب عن بُعد وميزات الصحة بالذكاء الاصطناعي في تطبيق مستهلك إماراتي واحد.'
     },
     website: 'https://astra.tech',
     coordinates: { lat: 24.4539, lng: 54.3773 },
@@ -173,8 +173,8 @@ export const players: Player[] = [
     employees: '501-1000',
     aiAreas: ['health-records', 'administrative', 'clinical-trials'],
     description: {
-      en: 'Regulatory body for healthcare in Abu Dhabi, driving AI adoption policies and digital health transformation.',
-      ar: 'الجهة التنظيمية للرعاية الصحية في أبوظبي، تقود سياسات تبني الذكاء الاصطناعي والتحول الرقمي الصحي.'
+      en: 'Abu Dhabi\'s health regulator. Sets AI adoption policies for the emirate and oversees the Malaffi health information exchange.',
+      ar: 'الجهة المنظِّمة لقطاع الصحة في أبوظبي. تضع سياسات تبنّي الذكاء الاصطناعي في الإمارة وتشرف على منصة ملفي لتبادل المعلومات الصحية.'
     },
     website: 'https://www.doh.gov.ae',
     coordinates: { lat: 24.4539, lng: 54.3773 },
@@ -195,8 +195,8 @@ export const players: Player[] = [
     employees: '1000+',
     aiAreas: ['health-records', 'administrative', 'patient-monitoring'],
     description: {
-      en: 'Federal ministry overseeing healthcare policy and AI integration across the UAE healthcare system.',
-      ar: 'الوزارة الاتحادية المشرفة على سياسات الرعاية الصحية ودمج الذكاء الاصطناعي في نظام الرعاية الصحية الإماراتي.'
+      en: 'UAE federal health ministry. Sets policy for the seven-emirates healthcare system, including how AI is adopted in public care.',
+      ar: 'الوزارة الاتحادية للصحة في الإمارات. تضع السياسات لمنظومة الرعاية الصحية في الإمارات السبع، بما في ذلك كيفية تبنّي الذكاء الاصطناعي في الرعاية العامة.'
     },
     website: 'https://www.mohap.gov.ae',
     coordinates: { lat: 25.2048, lng: 55.2708 },
@@ -218,8 +218,8 @@ export const players: Player[] = [
     funding: '$5M',
     aiAreas: ['medical-imaging', 'diagnostics'],
     description: {
-      en: 'AI startup specializing in medical imaging analysis and early disease detection algorithms.',
-      ar: 'شركة ناشئة في مجال الذكاء الاصطناعي متخصصة في تحليل التصوير الطبي وخوارزميات الكشف المبكر عن الأمراض.'
+      en: 'Medical-imaging startup. Builds early-detection models for radiology workflows in Dubai-based clinical partnerships.',
+      ar: 'شركة ناشئة في مجال التصوير الطبي. تبني نماذج للكشف المبكر مدمجة في سير عمل الأشعة عبر شراكات سريرية في دبي.'
     },
     coordinates: { lat: 25.0657, lng: 55.1713 },
     systemRole: 'components',
@@ -238,8 +238,8 @@ export const players: Player[] = [
     employees: '201-500',
     aiAreas: ['medical-imaging', 'drug-discovery', 'genomics'],
     description: {
-      en: 'World\'s first graduate-level AI university with healthcare AI research programs and partnerships.',
-      ar: 'أول جامعة في العالم للدراسات العليا في الذكاء الاصطناعي مع برامج بحثية وشراكات في الذكاء الاصطناعي الصحي.'
+      en: 'The first AI-focused graduate university in the world. Runs healthcare AI research groups in medical imaging, drug discovery, and genomics.',
+      ar: 'أول جامعة في العالم متخصصة في الدراسات العليا للذكاء الاصطناعي. تُشغّل مجموعات بحثية في الذكاء الاصطناعي الصحي ضمن التصوير الطبي واكتشاف الأدوية والجينوميات.'
     },
     website: 'https://mbzuai.ac.ae',
     coordinates: { lat: 24.4347, lng: 54.6152 },

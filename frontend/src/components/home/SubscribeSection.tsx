@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,6 +38,11 @@ export function SubscribeSection() {
     // never existed.
     setAlreadySubscribed(localStorage.getItem('newsletter_email_confirmed') === '1');
   }, []);
+
+  // Per Privacy Policy, the address is not retained client-side. This state
+  // lives only for the current page session — a refresh resets it.
+  const [alreadySubscribed, setAlreadySubscribed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,11 +88,14 @@ export function SubscribeSection() {
       setConsent(false);
       return;
     }
+    const sent = await postSignup(email, 'healthaiatlas/home/subscribe');
+    setAlreadySubscribed(true);
 
     // Surface the failure. Do not pretend success — CLAUDE.md "no silent failures"
     // and GDPR Art. 7 (we cannot claim to hold consent we never recorded).
     toast({
       title: language === 'en' ? "Couldn't save your email" : 'تعذّر حفظ البريد',
+      title: language === 'en' ? 'Thanks!' : 'شكراً',
       description:
         result === 'network_error'
           ? language === 'en'
@@ -97,6 +104,8 @@ export function SubscribeSection() {
           : language === 'en'
             ? 'The signup service returned an error. Please try again in a moment.'
             : 'استجابت خدمة الاشتراك بخطأ. يرجى المحاولة مرة أخرى بعد قليل.',
+            ? "Couldn't reach the server — please try again later."
+            : 'تعذَّر الوصول إلى الخادم — يرجى المحاولة لاحقاً.',
     });
   };
 

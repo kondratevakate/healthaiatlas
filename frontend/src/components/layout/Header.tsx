@@ -52,7 +52,8 @@ export function Header() {
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    // Try the backend Worker if configured; always also keep a local copy.
+    // Privacy policy commits to not collecting PII in the browser.
+    // The Worker (when configured) is the only path that holds the address.
     const url = import.meta.env.VITE_NEWSLETTER_SIGNUP_URL as string | undefined;
     if (url) {
       try {
@@ -62,13 +63,8 @@ export function Header() {
           body: JSON.stringify({ email, source: 'healthaiatlas/header' }),
         });
       } catch {
-        /* fall through to local-only */
+        /* silent — Worker is the source of truth, no local fallback */
       }
-    }
-    const saved = JSON.parse(localStorage.getItem('subscribe-emails') || '[]');
-    if (!saved.includes(email)) {
-      saved.push(email);
-      localStorage.setItem('subscribe-emails', JSON.stringify(saved));
     }
     toast({ title: 'Thanks!', description: "We'll reach out when the newsletter launches." });
     setEmail('');

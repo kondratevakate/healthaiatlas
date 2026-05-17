@@ -1,61 +1,103 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowRight, Bell, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const SIGNUP_URL = import.meta.env.VITE_NEWSLETTER_SIGNUP_URL as string | undefined;
+const SIGNUP_LIVE = !!SIGNUP_URL;
 
-async function postSignup(email: string, source: string): Promise<boolean> {
-  if (!SIGNUP_URL) return false;
+type PostResult = 'ok' | 'network_error' | 'server_error';
+
+async function postSignup(email: string, source: string, consentAt: string): Promise<PostResult> {
+  if (!SIGNUP_URL) return 'server_error';
   try {
     const res = await fetch(SIGNUP_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, source }),
+      body: JSON.stringify({ email, source, consent_at: consentAt, consent_version: '1' }),
     });
-    return res.ok;
+    return res.ok ? 'ok' : 'server_error';
   } catch {
-    return false;
+    return 'network_error';
   }
 }
 
 export function SubscribeSection() {
   const { t, language } = useLanguage();
   const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    setAlreadySubscribed(!!localStorage.getItem('newsletter_email'));
+    // Only consider the user subscribed if the Worker confirmed it. Local-only
+    // markers from old builds are ignored — they were "saved" to a list that
+    // never existed.
+    setAlreadySubscribed(localStorage.getItem('newsletter_email_confirmed') === '1');
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
+
+    if (!SIGNUP_LIVE) {
+      toast({
+        title: language === 'en' ? 'Signup not live yet' : 'النشرة غير متاحة بعد',
+        description:
+          language === 'en'
+            ? "We're not collecting signups yet — the newsletter service isn't connected. Check back soon."
+            : 'لا نقوم بجمع الاشتراكات حالياً — خدمة النشرة غير متصلة. عاود الزيارة قريباً.',
+      });
+      return;
+    }
+
+    if (!consent) {
+      toast({
+        title: language === 'en' ? 'Consent required' : 'الموافقة مطلوبة',
+        description:
+          language === 'en'
+            ? 'Tick the consent box so we can lawfully email you (GDPR Art. 7).'
+            : 'يرجى تأكيد الموافقة لنتمكن من مراسلتك بشكل قانوني.',
+      });
+      return;
+    }
+
     setSubmitting(true);
-
-    const sent = await postSignup(email, 'healthaiatlas/home/subscribe');
-
-    // Always cache locally so the user sees a thank-you, even if the Worker
-    // is misconfigured. Worker success is the source of truth for the list.
-    localStorage.setItem('newsletter_email', email);
-    setAlreadySubscribed(true);
-
-    toast({
-      title: language === 'en' ? 'Email saved' : 'تم حفظ البريد',
-      description:
-        sent || !SIGNUP_URL
-          ? language === 'en'
-            ? "We'll notify you when the newsletter launches."
-            : 'سنُعلمك عند إطلاق النشرة البريدية.'
-          : language === 'en'
-            ? "Saved locally. We're working on a sync issue — try again later."
-            : 'تم الحفظ محلياً. نعمل على مشكلة المزامنة — حاول مرة أخرى لاحقاً.',
-    });
-    setEmail('');
+    const result = await postSignup(email, 'healthaiatlas/home/subscribe', new Date().toISOString());
     setSubmitting(false);
+
+    if (result === 'ok') {
+      localStorage.setItem('newsletter_email_confirmed', '1');
+      setAlreadySubscribed(true);
+      toast({
+        title: language === 'en' ? 'Subscribed' : 'تم الاشتراك',
+        description:
+          language === 'en'
+            ? "Thanks — we'll be in touch when the newsletter launches."
+            : 'شكراً — سنتواصل معك عند إطلاق النشرة.',
+      });
+      setEmail('');
+      setConsent(false);
+      return;
+    }
+
+    // Surface the failure. Do not pretend success — CLAUDE.md "no silent failures"
+    // and GDPR Art. 7 (we cannot claim to hold consent we never recorded).
+    toast({
+      title: language === 'en' ? "Couldn't save your email" : 'تعذّر حفظ البريد',
+      description:
+        result === 'network_error'
+          ? language === 'en'
+            ? 'Network error reaching the signup service. Check your connection and try again.'
+            : 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.'
+          : language === 'en'
+            ? 'The signup service returned an error. Please try again in a moment.'
+            : 'استجابت خدمة الاشتراك بخطأ. يرجى المحاولة مرة أخرى بعد قليل.',
+    });
   };
 
   return (
@@ -78,32 +120,63 @@ export function SubscribeSection() {
             : 'النشرة البريدية لم تنطلق بعد. اترك بريدك وسنُعلمك عند الإطلاق.'}
         </p>
 
+        {!SIGNUP_LIVE && (
+          <p className="text-sm text-amber-700 dark:text-amber-400">
+            {language === 'en'
+              ? 'Signup form is not connected yet — submissions are not being stored. The button is here to gauge interest.'
+              : 'نموذج الاشتراك غير متصل بعد — لا يتم تخزين الإرسالات. الزر معروض لقياس الاهتمام.'}
+          </p>
+        )}
+
         {alreadySubscribed ? (
           <p className="text-sm text-muted-foreground">
-            ✓ {language === 'en' ? 'Your email is saved. We\'ll be in touch.' : 'تم حفظ بريدك. سنتواصل معك.'}
+            ✓ {language === 'en' ? 'Your email is on the list. We\'ll be in touch.' : 'بريدك مسجّل. سنتواصل معك.'}
           </p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex gap-2 max-w-md">
-            <Input
-              type="email"
-              placeholder={t('subscribe.emailPlaceholder')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="flex-1"
-            />
-            <Button type="submit" className="group" disabled={submitting}>
-              <span className="hidden sm:inline">
-                {submitting
-                  ? language === 'en' ? 'Saving…' : 'جارٍ الحفظ…'
-                  : language === 'en' ? 'Notify me' : 'أعلمني'}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-md">
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                placeholder={t('subscribe.emailPlaceholder')}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="flex-1"
+              />
+              <Button type="submit" className="group" disabled={submitting}>
+                <span className="hidden sm:inline">
+                  {submitting
+                    ? language === 'en' ? 'Saving…' : 'جارٍ الحفظ…'
+                    : language === 'en' ? 'Notify me' : 'أعلمني'}
+                </span>
+                {submitting ? (
+                  <Loader2 className="h-4 w-4 sm:ml-2 animate-spin" />
+                ) : (
+                  <ArrowRight className="h-4 w-4 sm:ml-2 transition-transform group-hover:translate-x-1" />
+                )}
+              </Button>
+            </div>
+            <label className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
+              <Checkbox
+                checked={consent}
+                onCheckedChange={(v) => setConsent(v === true)}
+                className="mt-0.5"
+                aria-label={language === 'en' ? 'Consent to receive the newsletter' : 'الموافقة على تلقي النشرة'}
+              />
+              <span>
+                {language === 'en' ? (
+                  <>
+                    I agree to receive the HealthAI Atlas newsletter at this email. I can unsubscribe at
+                    any time. See the <Link to="/privacy" className="underline">privacy notice</Link>.
+                  </>
+                ) : (
+                  <>
+                    أوافق على تلقي نشرة HealthAI Atlas على هذا البريد. يمكنني إلغاء الاشتراك في أي وقت.
+                    راجع <Link to="/privacy" className="underline">إشعار الخصوصية</Link>.
+                  </>
+                )}
               </span>
-              {submitting ? (
-                <Loader2 className="h-4 w-4 sm:ml-2 animate-spin" />
-              ) : (
-                <ArrowRight className="h-4 w-4 sm:ml-2 transition-transform group-hover:translate-x-1" />
-              )}
-            </Button>
+            </label>
           </form>
         )}
       </div>

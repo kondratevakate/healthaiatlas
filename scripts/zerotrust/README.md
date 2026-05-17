@@ -8,9 +8,10 @@ Inspired by aisafety.com's directory model + AGENTS.md compliance rule
 ("every entry that asserts a fact must include a `src` URL pointing at
 primary evidence"). Designed so the same dataset feeds:
 
-1. **Airtable** for analysis (filter/group/rollup)
-2. **Frontend hubs** (TS data generation — already does this for
-   `aiLifeSciences.ts`)
+1. **Airtable** — canonical store (base `appiYen6pEW5tSVrn`, "AI Atlas")
+2. **Frontend** — `frontend/src/data/*.ts` generated FROM Airtable
+   (target architecture; some files currently bypass Airtable and will
+   be migrated — see `feedback_zerotrust_is_canonical.md` in memory)
 3. **Audits** — `validate.py` enforces invariants on every build
 
 ## Quickstart
@@ -55,6 +56,44 @@ C:\Projects\data\aiatls\zerotrust\
 | `validate.py`               | Enforces invariants (claims have sources, no dup URLs, …)  |
 | `to_airtable.py`            | Idempotent upload via PAT                                  |
 | `airtable_schema.md`        | One-time base setup instructions                           |
+| `cleanup_stub_sources.py`   | Delete orphan stub Source rows (no URL, no claims linked)  |
+| `cleanup_duplicate_tags.py` | Dedupe Tags rows that share a Tag Name                     |
+| `schema_patch.py`           | Add missing fields (`Value Text`, `Entity`, `Domain Tags`) via Metadata API |
+
+## Hygiene scripts
+
+The base accumulates parallel/duplicate data over time (Airtable native
+xlsx imports, AI auto-tagging, abandoned upload attempts). The
+`cleanup_*` and `schema_patch` scripts are the canonical way to fix it.
+
+All three are **dry-run by default** and write timestamped backups to
+`C:\Projects\data\aiatls\zerotrust\` before any mutation.
+
+```
+# Inspect what would change
+python -m scripts.zerotrust.cleanup_stub_sources
+python -m scripts.zerotrust.cleanup_duplicate_tags
+python -m scripts.zerotrust.schema_patch
+
+# Apply
+python -m scripts.zerotrust.cleanup_stub_sources --apply
+python -m scripts.zerotrust.cleanup_duplicate_tags --apply
+python -m scripts.zerotrust.schema_patch --apply
+
+# Then re-run upload to fill what was previously skipped
+python -m scripts.zerotrust.to_airtable
+```
+
+### What `schema_patch.py` adds
+
+| Table     | Field         | Type                   | Purpose |
+|-----------|---------------|------------------------|---------|
+| Claims    | `Value Text`  | multilineText          | Holds non-numeric claim values (`partnered_with=Microsoft`, `released_product=ISM8969`). Without it `to_airtable.py` skips ~60% of generated claims. |
+| Claims    | `Entity`      | multipleRecordLinks → Entities | Real Claim → Entity FK so rollups on Entities (Total Claims, Total Revenue, …) work. |
+| Entities  | `Domain Tags` | multipleRecordLinks → Tags | Filter Entities by domain in the Airtable UI. Currently all 470 Entities have no domain attribution at entity level — only at claim level. |
+
+Requires `schema.bases:write` scope on the PAT. If 403, regenerate the
+token at https://airtable.com/create/tokens with that scope checked.
 
 ## Invariants
 

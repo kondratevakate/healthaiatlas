@@ -12,6 +12,21 @@ If zero new verified calls are found, no PR is opened (no-noise rule).
 - Routine config: https://claude.ai/code/routines/trig_01SR4rdtLYQxd7Gprhg4ht9Q
 - Minimum interval between runs: 1 hour (Anthropic platform limit)
 
+### Fetch strategy
+
+Each seed URL from `SOURCES.md` is fetched with a two-attempt strategy:
+
+1. **Direct `WebFetch`** on the original URL.
+2. **Jina Reader fallback** (`https://r.jina.ai/<url>`) if the direct fetch
+   returns an error, a Cloudflare/anti-bot interstitial, a JS-shell with no
+   content, or fewer than 200 characters. Jina Reader is a hosted reader-mode
+   service that renders the page and returns clean markdown.
+
+If both attempts fail, the URL is listed in a `Sources that failed to fetch`
+footer in that day's digest. This makes recurring failures visible so they
+can be cleaned out of `SOURCES.md`. The routine never silently drops a
+source — every failure surfaces in the PR.
+
 ## Files in this directory
 
 - `SOURCES.md` — **edit this freely**; the routine reads it on every run as

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { UserPersona } from '@/types';
 import { User, Stethoscope, Building2, Rocket, Lightbulb, ArrowRight, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getPersonaById } from '@/data/personas';
 
 interface PersonaCardProps {
   persona: UserPersona;
@@ -12,44 +13,26 @@ interface PersonaCardProps {
 const personaConfig: Record<UserPersona, {
   icon: React.ElementType;
   colorClass: string;
-  path: string;
 }> = {
-  patient: {
-    icon: User,
-    colorClass: 'hover:border-pink group-hover:text-pink',
-    path: '/patient'
-  },
-  doctor: {
-    icon: Stethoscope,
-    colorClass: 'hover:border-primary group-hover:text-primary',
-    path: '/doctor'
-  },
-  business: {
-    icon: Building2,
-    colorClass: 'hover:border-yellow group-hover:text-yellow',
-    path: '/business'
-  },
-  startup: {
-    icon: Rocket,
-    colorClass: 'hover:border-orange group-hover:text-orange',
-    path: '/startup'
-  },
-  leader: {
-    icon: Lightbulb,
-    colorClass: 'hover:border-blue group-hover:text-blue',
-    path: '/leader'
-  }
+  patient: { icon: User, colorClass: 'hover:border-pink group-hover:text-pink' },
+  doctor: { icon: Stethoscope, colorClass: 'hover:border-primary group-hover:text-primary' },
+  business: { icon: Building2, colorClass: 'hover:border-yellow group-hover:text-yellow' },
+  startup: { icon: Rocket, colorClass: 'hover:border-orange group-hover:text-orange' },
+  leader: { icon: Lightbulb, colorClass: 'hover:border-blue group-hover:text-blue' },
 };
 
 export function PersonaCard({ persona, className }: PersonaCardProps) {
-  const { t, isRTL } = useLanguage();
+  const { t, isRTL, language } = useLanguage();
   const config = personaConfig[persona];
+  const data = getPersonaById(persona);
   const Icon = config.icon;
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
+  if (!data) return null;
+
   return (
     <Link
-      to={config.path}
+      to={`/${persona}`}
       className={cn(
         "group flex flex-col p-6 border border-border transition-all duration-300",
         config.colorClass,
@@ -57,13 +40,13 @@ export function PersonaCard({ persona, className }: PersonaCardProps) {
       )}
     >
       <Icon className="w-8 h-8 text-muted-foreground group-hover:text-foreground mb-4 transition-colors" />
-      
+
       <h3 className="font-semibold text-foreground mb-2">
-        {t(`persona.${persona}.title`)}
+        {data.title[language]}
       </h3>
-      
+
       <p className="text-sm text-muted-foreground mb-4 flex-1">
-        {t(`persona.${persona}.description`)}
+        {data.cardDescription[language]}
       </p>
 
       <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">

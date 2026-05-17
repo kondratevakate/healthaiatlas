@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,12 +24,10 @@ async function postSignup(email: string, source: string): Promise<boolean> {
 export function SubscribeSection() {
   const { t, language } = useLanguage();
   const [email, setEmail] = useState('');
+  // Per Privacy Policy, the address is not retained client-side. This state
+  // lives only for the current page session — a refresh resets it.
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    setAlreadySubscribed(!!localStorage.getItem('newsletter_email'));
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,22 +35,18 @@ export function SubscribeSection() {
     setSubmitting(true);
 
     const sent = await postSignup(email, 'healthaiatlas/home/subscribe');
-
-    // Always cache locally so the user sees a thank-you, even if the Worker
-    // is misconfigured. Worker success is the source of truth for the list.
-    localStorage.setItem('newsletter_email', email);
     setAlreadySubscribed(true);
 
     toast({
-      title: language === 'en' ? 'Email saved' : 'تم حفظ البريد',
+      title: language === 'en' ? 'Thanks!' : 'شكراً',
       description:
         sent || !SIGNUP_URL
           ? language === 'en'
             ? "We'll notify you when the newsletter launches."
             : 'سنُعلمك عند إطلاق النشرة البريدية.'
           : language === 'en'
-            ? "Saved locally. We're working on a sync issue — try again later."
-            : 'تم الحفظ محلياً. نعمل على مشكلة المزامنة — حاول مرة أخرى لاحقاً.',
+            ? "Couldn't reach the server — please try again later."
+            : 'تعذَّر الوصول إلى الخادم — يرجى المحاولة لاحقاً.',
     });
     setEmail('');
     setSubmitting(false);

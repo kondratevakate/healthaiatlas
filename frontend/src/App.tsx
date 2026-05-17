@@ -17,6 +17,7 @@ import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 import Discovery from "./pages/Discovery";
 import Share from "./pages/Share";
+import PersonaPage from "./pages/PersonaPage";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,13 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/discovery" element={<Discovery />} />
               <Route path="/share/:id" element={<Share />} />
+
+              {/* Persona landing pages — single PersonaPage dispatches on :id */}
+              <Route path="/patient" element={<PersonaPage />} />
+              <Route path="/doctor" element={<PersonaPage />} />
+              <Route path="/business" element={<PersonaPage />} />
+              <Route path="/startup" element={<PersonaPage />} />
+              <Route path="/leader" element={<PersonaPage />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

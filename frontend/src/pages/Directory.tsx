@@ -29,12 +29,14 @@ const typeIcons: Record<string, React.ElementType> = {
   enterprise: Briefcase,
 };
 
+// Monochrome scale, all dark enough for white text to pass WCAG 2.1 AA (4.5:1).
+// Lightness range 20–43% — anything ≥46% with white text fails AA.
 const typeColors: Record<string, string> = {
-  startup: 'bg-[hsl(0,0%,45%)] text-white group-hover:bg-primary',
-  hospital: 'bg-[hsl(0,0%,50%)] text-white group-hover:bg-primary',
-  government: 'bg-[hsl(0,0%,55%)] text-white group-hover:bg-primary',
-  research: 'bg-[hsl(0,0%,60%)] text-white group-hover:bg-primary',
-  enterprise: 'bg-[hsl(0,0%,65%)] text-white group-hover:bg-primary',
+  startup: 'bg-[hsl(0,0%,20%)] text-white group-hover:bg-primary',
+  hospital: 'bg-[hsl(0,0%,28%)] text-white group-hover:bg-primary',
+  government: 'bg-[hsl(0,0%,33%)] text-white group-hover:bg-primary',
+  research: 'bg-[hsl(0,0%,38%)] text-white group-hover:bg-primary',
+  enterprise: 'bg-[hsl(0,0%,43%)] text-white group-hover:bg-primary',
 };
 
 const roleColors: Record<string, string> = {

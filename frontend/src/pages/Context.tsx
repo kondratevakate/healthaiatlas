@@ -11,7 +11,8 @@ import { MarketReality } from '@/components/context-uae';
 import { EuFounderMap, EuSidebar } from '@/components/context-eu';
 import { UkFounderMap, UkSidebar } from '@/components/context-uk';
 import { ComparativeMatrix } from '@/components/context-compare';
-import { useMemo } from 'react';
+import { ArchitectureRevenueMap, ArchitectureSidebar } from '@/components/context-architecture';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
@@ -283,7 +284,7 @@ function VisionSidebar() {
   );
 }
 
-type ContextRegion = 'us' | 'uae' | 'eu' | 'uk' | 'compare';
+type ContextRegion = 'us' | 'uae' | 'eu' | 'uk' | 'compare' | 'arch';
 
 const REGION_OPTIONS: { id: ContextRegion; label: string; flag: string; available: boolean }[] = [
   { id: 'us', label: 'US', flag: '🇺🇸', available: true },
@@ -291,6 +292,7 @@ const REGION_OPTIONS: { id: ContextRegion; label: string; flag: string; availabl
   { id: 'uk', label: 'UK', flag: '🇬🇧', available: true },
   { id: 'uae', label: 'UAE', flag: '🇦🇪', available: true },
   { id: 'compare', label: 'Compare', flag: '📊', available: true },
+  { id: 'arch', label: 'Architecture × Revenue', flag: '📈', available: true },
 ];
 
 const REGION_SUBTITLES: Record<ContextRegion, { en: string; ar: string }> = {
@@ -314,6 +316,10 @@ const REGION_SUBTITLES: Record<ContextRegion, { en: string; ar: string }> = {
     en: 'Same questions, different answers per market. US · EU · Switzerland · UAE · UK side-by-side — eight rows that make the order-of-magnitude differences visible at a glance.',
     ar: 'نفس الأسئلة، إجابات مختلفة لكل سوق. الولايات المتحدة · الاتحاد الأوروبي · سويسرا · الإمارات · المملكة المتحدة جنباً إلى جنب — ثمانية صفوف تكشف الفروق بترتيب الحجم في لمحة.',
   },
+  arch: {
+    en: 'Global view — not regional. 22 canonical SOTA architectures plotted against 58 products that depend on them. Y is estimated attributable revenue (Bayesian, not measured). Toggle X between research volume and publication year. Click any bubble to see the products behind the estimate.',
+    ar: 'عرض عالمي — لا إقليمي. ٢٢ بنية SOTA مرجعية مقابل ٥٨ منتجاً يعتمد عليها. المحور الصادي هو الإيراد المُسند المُقدَّر (بايزي، غير مُقاس). بدّل المحور السيني بين حجم الأبحاث وسنة النشر. اضغط على أي فقاعة لرؤية المنتجات وراء التقدير.',
+  },
 };
 
 export default function Context() {
@@ -324,6 +330,7 @@ export default function Context() {
     if (r === 'us') setSearchParams({});
     else setSearchParams({ region: r });
   };
+  const [selectedArchId, setSelectedArchId] = useState<string | null>(null);
 
   const sortedEvents = useMemo(() =>
     [...timelineEvents].sort((a, b) => a.year - b.year),
@@ -408,6 +415,44 @@ export default function Context() {
           <section className="py-8">
             <div className="container max-w-6xl">
               <ComparativeMatrix />
+            </div>
+          </section>
+        )}
+
+        {/* Architecture × Revenue — global view */}
+        {region === 'arch' && (
+          <section className="py-8">
+            <div className="container">
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="min-h-[800px] rounded-lg border"
+              >
+                <ResizablePanel defaultSize={68} minSize={50}>
+                  <div className="p-6 md:p-8 overflow-y-auto h-full">
+                    <ArchitectureRevenueMap
+                      selectedArchId={selectedArchId}
+                      onSelect={setSelectedArchId}
+                    />
+                  </div>
+                </ResizablePanel>
+
+                <ResizableHandle withHandle />
+
+                <ResizablePanel defaultSize={32} minSize={25} maxSize={45}>
+                  <div className="h-full overflow-y-auto bg-secondary/20">
+                    <div className="sticky top-0 bg-secondary/80 backdrop-blur-sm p-4 border-b z-10">
+                      <h2 className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                        <ShieldAlert className="h-3.5 w-3.5" />
+                        {selectedArchId ? 'Architecture detail' : 'Methodology & legend'}
+                      </h2>
+                    </div>
+                    <ArchitectureSidebar
+                      selectedArchId={selectedArchId}
+                      onClose={() => setSelectedArchId(null)}
+                    />
+                  </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
             </div>
           </section>
         )}

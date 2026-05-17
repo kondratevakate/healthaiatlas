@@ -49,7 +49,7 @@ DOMAIN_TAG = "us_policy"
 def load_ts_module(path: Path) -> dict:
     proc = subprocess.run(
         ["node", "--experimental-strip-types", str(DUMPER), str(path)],
-        capture_output=True, text=True, check=False,
+        capture_output=True, text=True, encoding='utf-8', check=False,
     )
     if proc.returncode != 0:
         sys.stderr.write(proc.stderr)

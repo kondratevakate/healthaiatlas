@@ -67,7 +67,7 @@ def load_ts_module() -> dict:
         raise FileNotFoundError(f"Dumper missing: {DUMPER}")
     proc = subprocess.run(
         ["node", "--experimental-strip-types", str(DUMPER), str(TS_FILE)],
-        capture_output=True, text=True, check=False,
+        capture_output=True, text=True, encoding='utf-8', check=False,
     )
     if proc.returncode != 0:
         sys.stderr.write(proc.stderr)

@@ -21,7 +21,11 @@ if (!token) {
   process.exit(1);
 }
 
-console.log(`Token detected (${token.slice(0, 6)}…${token.slice(-4)}, ${token.length} chars).\n`);
+// Don't print token bytes — even a 6-char prefix + 4-char suffix is enough to
+// fingerprint a specific token if it ends up in a public CI log or a Slack
+// paste. Surface length only; that's enough to confirm "something is loaded."
+const prefix = token.startsWith('hf_') ? 'hf_' : token.slice(0, 1);
+console.log(`Token detected (prefix=${prefix}…, length=${token.length} chars).\n`);
 
 // Models to try. The :fastest suffix asks Hugging Face to route to whichever
 // inference provider currently has lowest latency for that model.

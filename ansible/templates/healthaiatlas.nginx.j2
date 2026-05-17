@@ -1,9 +1,39 @@
 # Managed by ansible/playbook.yml — do not edit in place.
 
+# HTTP → HTTPS redirect. Also serves the ACME http-01 challenge so certbot
+# renewals keep working without taking the site down.
 server {
     listen 80;
     listen [::]:80;
     server_name {{ server_name }};
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name {{ server_name }};
+
+    ssl_certificate     /etc/letsencrypt/live/{{ server_name }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ server_name }}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/{{ server_name }}/chain.pem;
+
+    # Modern TLS only. Drop TLS 1.0/1.1 (PCI-DSS, GDPR Art. 32).
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305';
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 1d;
+    ssl_session_tickets off;
+    ssl_stapling on;
+    ssl_stapling_verify on;
 
     root {{ doc_root }};
     index index.html;
@@ -27,9 +57,17 @@ server {
     }
 
     # Security headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()" always;
+    # CSP: 'unsafe-inline' on script-src is required by the GA bootstrap in index.html
+    # and by Recharts CSS-in-JS (dangerouslySetInnerHTML in components/ui/chart.tsx).
+    # Tighten with a nonce-based CSP after migrating those two call sites.
+    # connect-src lists every LLM provider currently fanned out by EventInsights —
+    # remove vendors as the Discovery Copilot moves server-side (see B3 in risk report).
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://text.pollinations.ai https://ai.hackclub.com https://router.huggingface.co https://api-inference.huggingface.co; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'" always;
 
     # Deny access to dotfiles
     location ~ /\. {

@@ -27,20 +27,40 @@
     <meta name="twitter:description" content="Research-driven navigator for the global healthcare AI ecosystem — directory, system map, talent hub, open calls." />
     <meta name="twitter:image" content="/og-image.png" />
 
-    <!-- Google Analytics -->
+    <!--
+      Google Analytics with Consent Mode v2.
+      All storage is denied by default; the React CookieBanner calls
+      window.gtag('consent','update', ...) once the user accepts. Until then,
+      gtag.js loads but cannot read or write cookies, satisfying ePrivacy Art.
+      5(3) and GDPR Art. 7 (no tracking before consent).
+    -->
     <script>
       (function () {
         var gaId = "%VITE_GA_ID%";
         if (!gaId || gaId.indexOf("VITE_GA_ID") !== -1) return;
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ window.dataLayer.push(arguments); }
+        window.gtag = gtag;
+
+        // Consent Mode v2 — DENY everything until the banner records a choice.
+        // Read prior choice synchronously so accepted users don't see a flicker.
+        var prior = null;
+        try { prior = localStorage.getItem("cookie-consent"); } catch (e) {}
+        var granted = prior === "granted";
+        gtag("consent", "default", {
+          ad_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied",
+          analytics_storage: granted ? "granted" : "denied",
+          wait_for_update: 500
+        });
+
         var s = document.createElement("script");
         s.async = true;
         s.src = "https://www.googletagmanager.com/gtag/js?id=" + gaId;
         document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ window.dataLayer.push(arguments); }
         gtag("js", new Date());
-        gtag("config", gaId);
-        window.gtag = gtag;
+        gtag("config", gaId, { anonymize_ip: true });
       })();
     </script>
   </head>

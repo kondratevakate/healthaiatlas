@@ -648,7 +648,7 @@ async function askInsight(history: AIMessage[], userContext: UserContext | null)
 }
 
 export function EventInsights({ variant = 'card' }: Props) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, authEnabled } = useAuth();
   const [signInOpen, setSignInOpen] = useState(false);
   const [items, setItems] = useState<ChatItem[]>([]);
   const [input, setInput] = useState('');
@@ -693,7 +693,8 @@ export function EventInsights({ variant = 'card' }: Props) {
     const text = userText.trim();
     if (!text || loading) return;
     if (!isAuthenticated && usesLeft <= 0) {
-      setSignInOpen(true);
+      if (authEnabled) setSignInOpen(true);
+      else setError(`Daily limit reached (${FREE_USES_LIMIT} questions). Try again tomorrow.`);
       return;
     }
     if (isAuthenticated && signedDailyLeft <= 0) {
@@ -769,15 +770,18 @@ export function EventInsights({ variant = 'card' }: Props) {
                 You've used your {FREE_USES_LIMIT} free questions
               </div>
               <p className="text-xs text-muted-foreground">
-                Sign in to keep going. Free during beta — sign-in lets us rate-limit fairly
-                across users.
+                {authEnabled
+                  ? 'Sign in to keep going (dev build — mock auth has no real backend).'
+                  : 'Free-tier daily quota reached. Try again tomorrow — accounts and higher limits are not live yet.'}
               </p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2 w-full">
-            <Button size="sm" onClick={() => setSignInOpen(true)} className="flex-1 sm:flex-initial">
-              Sign in to continue
-            </Button>
+            {authEnabled && (
+              <Button size="sm" onClick={() => setSignInOpen(true)} className="flex-1 sm:flex-initial">
+                Sign in to continue
+              </Button>
+            )}
             {import.meta.env.DEV && (
               <Button
                 size="sm"
@@ -923,13 +927,15 @@ export function EventInsights({ variant = 'card' }: Props) {
               <span>
                 {usesLeft} of {FREE_USES_LIMIT} free question{usesLeft === 1 ? '' : 's'} left
               </span>
-              <button
-                type="button"
-                onClick={() => setSignInOpen(true)}
-                className="text-primary hover:underline"
-              >
-                Sign in for more
-              </button>
+              {authEnabled && (
+                <button
+                  type="button"
+                  onClick={() => setSignInOpen(true)}
+                  className="text-primary hover:underline"
+                >
+                  Sign in for more
+                </button>
+              )}
             </div>
           ) : (
             <div className="text-[11px] font-mono text-muted-foreground">
@@ -968,7 +974,7 @@ export function EventInsights({ variant = 'card' }: Props) {
     return (
       <>
         {body}
-        <SignInModal open={signInOpen} onOpenChange={setSignInOpen} />
+        {authEnabled && <SignInModal open={signInOpen} onOpenChange={setSignInOpen} />}
       </>
     );
   }
@@ -998,7 +1004,7 @@ export function EventInsights({ variant = 'card' }: Props) {
         </CardHeader>
         <CardContent className="pt-0">{body}</CardContent>
       </Card>
-      <SignInModal open={signInOpen} onOpenChange={setSignInOpen} />
+      {authEnabled && <SignInModal open={signInOpen} onOpenChange={setSignInOpen} />}
     </>
   );
 }

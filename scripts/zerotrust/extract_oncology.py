@@ -36,14 +36,9 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import subprocess
 import sys
 import time
-import urllib.error
-import urllib.parse
-import urllib.request
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from .common import (
@@ -51,6 +46,9 @@ from .common import (
     write_claims, write_entities, write_quarantine, write_sources,
 )
 from .schema import Claim, Entity, QuarantineRow, Source
+from .verify import (
+    classify_confidence, downgrade, salvage_via_wayback, verify_urls,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 TS_FILE = REPO_ROOT / "frontend" / "src" / "data" / "oncology.ts"
@@ -58,144 +56,8 @@ DUMPER = REPO_ROOT / "scripts" / "zerotrust" / "dump_ts_module.mjs"
 OUT_DIR = Path(r"C:\Projects\data\aiatls\zerotrust")
 DOMAIN_TAG = "oncology"
 
-# ── domain → confidence tier ────────────────────────────────────────────────
-
-PRIMARY_DOMAINS = {
-    "arxiv.org", "nature.com", "nih.gov", "fda.gov", "sec.gov",
-    "europa.eu", "who.int", "pmc.ncbi.nlm.nih.gov",
-    "jamanetwork.com", "nejm.org", "thelancet.com", "bmj.com",
-    "businesswire.com", "prnewswire.com",  # press distribution = primary
-    "ftc.gov", "ema.europa.eu",
-}
-PRIMARY_SUFFIXES = (".gov", ".gov.uk", ".europa.eu")
-PRIMARY_PATTERNS = (
-    re.compile(r"^(investors|ir)\."),       # corporate investor relations
-    re.compile(r"^press\."),                # press subdomains
-    re.compile(r"\.fda\.gov$"),
-)
-
-SECONDARY_DOMAINS = {
-    "reuters.com", "bloomberg.com", "ft.com", "wsj.com",
-    "techcrunch.com", "axios.com", "fortune.com",
-    "fiercehealthcare.com", "modernpathology.org",
-    "healthcareittoday.com", "spglobal.com", "koreabiomed.com",
-    "cancerletter.com", "biospace.com",
-    "technode.com", "lbx-summit.com",
-}
-
-# Named company sites count as secondary (vendor disclosure)
-def is_company_domain(host: str) -> bool:
-    parts = host.split(".")
-    if len(parts) < 2:
-        return False
-    if parts[-1] in {"com", "ai", "io", "co", "health", "bio"}:
-        return True
-    return False
-
-
-LOW_DOMAINS = {
-    "sacra.com", "theinformation.com", "crunchbase.com",
-    "dennisgong.com",
-}
-
-
-def classify_confidence(url: str) -> tuple[str, str]:
-    """Return (confidence, source_type). canonical scale: high|medium|low."""
-    try:
-        host = urllib.parse.urlparse(url).hostname or ""
-    except Exception:
-        return "low", "other"
-    host = host.lower().lstrip("www.")
-
-    # PRIMARY checks
-    if host in PRIMARY_DOMAINS:
-        return "high", "official_registry"
-    if any(host.endswith(s) for s in PRIMARY_SUFFIXES):
-        return "high", "policy"
-    if any(p.search(host) for p in PRIMARY_PATTERNS):
-        return "high", "press_release"
-
-    # LOW checks (before SECONDARY — analyst aggregators)
-    if host in LOW_DOMAINS:
-        return "low", "blog"
-
-    # SECONDARY
-    if host in SECONDARY_DOMAINS:
-        return "medium", "news"
-
-    # Default: company domain → medium (vendor doc), else low (unknown)
-    if is_company_domain(host):
-        return "medium", "vendor_doc"
-    return "low", "other"
-
-
-# ── URL liveness check ──────────────────────────────────────────────────────
-
-URL_TIMEOUT = 8  # seconds
-
-# Browser-ish headers — many sites (BusinessWire, JAMA, Crunchbase, modern-
-# pathology) reject the default urllib UA outright. Without these we'd
-# false-negative on real, archived content.
-BROWSER_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/124.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate",
-    "Connection": "close",
-}
-
-
-def check_url(url: str) -> tuple[bool, str]:
-    """Try GET (browser-like) with redirect-following. Distinguish:
-
-      alive=True    → ('http_<code>',) — site responded 2xx or 3xx
-      alive=False   → ('http_404' | 'http_5xx' | 'dns_fail' | 'ssl_fail' | …)
-
-    Returns (alive, status_tag). We use GET not HEAD because too many sites
-    (BusinessWire, JAMA, Crunchbase) 405 or 403 a HEAD.
-    """
-    import ssl
-
-    # First try with SSL verification on.
-    try:
-        req = urllib.request.Request(url, method="GET", headers=BROWSER_HEADERS)
-        with urllib.request.urlopen(req, timeout=URL_TIMEOUT) as resp:
-            return True, f"http_{resp.status}"
-    except urllib.error.HTTPError as e:
-        # 403/451 = blocked by anti-bot, very likely alive in a real browser.
-        # 404/410 = truly stale.
-        if e.code in (403, 451, 429):
-            return True, f"http_{e.code}_blocked"
-        if e.code in (404, 410):
-            return False, f"http_{e.code}"
-        if 500 <= e.code < 600:
-            return False, f"http_{e.code}"
-        return False, f"http_{e.code}"
-    except urllib.error.URLError as e:
-        reason = str(e.reason)
-        # SSL hostname mismatch — host probably exists, just has bad cert.
-        if "CERTIFICATE_VERIFY_FAILED" in reason or "SSL" in reason.upper():
-            # Retry without verify to confirm host alive.
-            try:
-                ctx = ssl.create_default_context()
-                ctx.check_hostname = False
-                ctx.verify_mode = ssl.CERT_NONE
-                req = urllib.request.Request(url, method="GET", headers=BROWSER_HEADERS)
-                with urllib.request.urlopen(req, timeout=URL_TIMEOUT, context=ctx) as resp:
-                    return True, f"http_{resp.status}_ssl_bad_cert"
-            except Exception:
-                return False, "ssl_fail"
-        if "getaddrinfo" in reason or "Name or service not known" in reason:
-            return False, "dns_fail"
-        if "timed out" in reason.lower():
-            return False, "timeout"
-        return False, f"url_err:{reason[:40]}"
-    except Exception as e:
-        return False, f"{type(e).__name__}:{str(e)[:40]}"
+# Local alias kept so the existing extract_bubbles call sites read naturally.
+_downgrade = downgrade
 
 
 # ── TS module load ──────────────────────────────────────────────────────────
@@ -244,7 +106,12 @@ def fractional_year_to_period(d: float) -> str:
 
 # ── main extract ────────────────────────────────────────────────────────────
 
-def extract_bubbles(data: dict, url_status: dict[str, tuple[bool, str | int]]):
+def extract_bubbles(
+    data: dict,
+    url_status: dict[str, tuple[bool, str | int]],
+    wayback_replacements: dict[str, str] | None = None,
+):
+    wayback_replacements = wayback_replacements or {}
     entities: dict[str, Entity] = {}
     claims: list[Claim] = []
     sources: dict[str, Source] = {}
@@ -281,15 +148,21 @@ def extract_bubbles(data: dict, url_status: dict[str, tuple[bool, str | int]]):
             ))
             continue
 
-        confidence, source_type = classify_confidence(src)
-
-        # Source
-        canon = canonical_url(src)
-        sid = source_id_for(src)
+        # If the URL was salvaged via Wayback, use the snapshot URL as the
+        # canonical source URL but keep the original in url_raw. Domain-based
+        # confidence is downgraded by one tier because the snapshot is a
+        # second-hand artefact (Internet Archive doesn't add evidence weight
+        # to the original).
+        wayback_url = wayback_replacements.get(src)
+        eff_url = wayback_url or src
+        confidence, source_type = classify_confidence(src)  # always score original domain
+        if wayback_url:
+            confidence = _downgrade(confidence)
+        sid = source_id_for(eff_url)
         if sid not in sources:
             sources[sid] = Source(
                 source_id=sid,
-                url=canon,
+                url=canonical_url(eff_url),
                 url_raw=src,
                 source_type=source_type,
                 retrieved_at=today(),
@@ -358,6 +231,8 @@ def extract_bubbles(data: dict, url_status: dict[str, tuple[bool, str | int]]):
             tags.append(f"evidence:{bubble['e']}")
         if bubble.get("r") and bubble["r"] not in ("none", "N/A", ""):
             tags.append(f"regulatory:{bubble['r']}")
+        if wayback_url:
+            tags.append("wayback_archived")
         tags.append(f"entity:{eid}")
 
         claims.append(Claim(
@@ -378,8 +253,9 @@ def extract_bubbles(data: dict, url_status: dict[str, tuple[bool, str | int]]):
     return entities, claims, sources, quarantine
 
 
-def extract_reliability(data: dict, url_status):
+def extract_reliability(data: dict, url_status, wayback_replacements=None):
     """Reliability warnings → claims about pathology AI products as a group."""
+    wayback_replacements = wayback_replacements or {}
     claims = []
     quarantine = []
     sources = {}
@@ -407,11 +283,15 @@ def extract_reliability(data: dict, url_status):
             ))
             continue
 
+        wayback_url = wayback_replacements.get(src)
+        eff_url = wayback_url or src
         confidence, source_type = classify_confidence(src)
-        sid = source_id_for(src)
+        if wayback_url:
+            confidence = _downgrade(confidence)
+        sid = source_id_for(eff_url)
         if sid not in sources:
             sources[sid] = Source(
-                source_id=sid, url=canonical_url(src), url_raw=src,
+                source_id=sid, url=canonical_url(eff_url), url_raw=src,
                 source_type=source_type, retrieved_at=today(),
             )
         eid = entity_id_for(c)
@@ -421,11 +301,18 @@ def extract_reliability(data: dict, url_status):
                 domain_tags=f"{DOMAIN_TAG},reliability",
             )
         cid = claim_id_for(eid, "ecosystem_event", "", desc[:64])
+        tags = [
+            "category:reliability_warning",
+            f"product:{item.get('p','')}",
+            f"entity:{eid}",
+        ]
+        if wayback_url:
+            tags.append("wayback_archived")
         claims.append(Claim(
             claim_id=cid, entity_id=eid, predicate="ecosystem_event",
             value=desc, confidence=confidence, source_ids=sid,
             domain_tags=f"{DOMAIN_TAG},reliability",
-            tags=f"category:reliability_warning,product:{item.get('p','')},entity:{eid}",
+            tags=",".join(tags),
             extracted_from=f"oncology.ts#ONCO_RELIABILITY[c={c}]",
             extracted_at=today(),
         ))
@@ -460,26 +347,11 @@ def collect_all_urls(data: dict) -> set[str]:
     return urls
 
 
-def verify_urls(urls: set[str], workers: int = 8) -> dict[str, tuple[bool, str | int]]:
-    """Parallel HEAD/GET. Returns {url: (alive, status_or_reason)}."""
-    results: dict[str, tuple[bool, str | int]] = {}
-    with ThreadPoolExecutor(max_workers=workers) as ex:
-        futures = {ex.submit(check_url, u): u for u in urls}
-        for i, fut in enumerate(as_completed(futures), 1):
-            u = futures[fut]
-            try:
-                results[u] = fut.result()
-            except Exception as e:
-                results[u] = (False, f"{type(e).__name__}: {e}")
-            if i % 20 == 0:
-                print(f"  verified {i}/{len(urls)}...", file=sys.stderr)
-    return results
-
-
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--write", action="store_true", help="write CSVs to zerotrust/")
     ap.add_argument("--skip-verify", action="store_true", help="assume all URLs alive (faster, no HEAD)")
+    ap.add_argument("--skip-wayback", action="store_true", help="don't try Wayback Machine for dead URLs")
     args = ap.parse_args()
 
     print(f"Loading {TS_FILE}...")
@@ -491,6 +363,7 @@ def main() -> int:
 
     urls = collect_all_urls(data)
     print(f"\nVerifying {len(urls)} distinct URLs ...")
+    wayback_replacements: dict[str, str] = {}
     if args.skip_verify:
         url_status = {u: (True, "skipped") for u in urls}
     else:
@@ -501,9 +374,13 @@ def main() -> int:
         dead = len(url_status) - alive
         print(f"  done in {dt:.1f}s — alive={alive} dead={dead}")
 
+        # Wayback Machine fallback for the dead URLs
+        if not args.skip_wayback and dead:
+            wayback_replacements = salvage_via_wayback(url_status)
+
     print("\nExtracting...")
-    e1, c1, s1, q1 = extract_bubbles(data, url_status)
-    e2, c2, s2, q2 = extract_reliability(data, url_status)
+    e1, c1, s1, q1 = extract_bubbles(data, url_status, wayback_replacements)
+    e2, c2, s2, q2 = extract_reliability(data, url_status, wayback_replacements)
 
     entities = merge_dicts(e1, e2)
     claims = c1 + c2

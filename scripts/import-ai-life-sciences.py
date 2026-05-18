@@ -1,4 +1,19 @@
-"""Import AI Life Sciences landscape v4 Excel into typed TypeScript data file.
+"""DEPRECATED: Import AI Life Sciences landscape v4 Excel into typed TypeScript.
+
+⚠️ This script writes directly from xlsx → TS, bypassing the canonical
+Airtable store. See memory/feedback_zerotrust_is_canonical.md.
+
+Migration path:
+  1. xlsx is already extracted via scripts/zerotrust/extract_lifesci_style.py
+     into Airtable as the ai_lifesci domain (159 entities + 701 claims).
+  2. Write `scripts/zerotrust/regen_life_sciences.py` (analogous to
+     regen_oncology / regen_us_timeline) that pulls from Airtable and
+     reconstructs LSBubble + LSReliability + LSCluster shapes plus
+     editorial overlays (cluster taxonomy, colors, decision-point labels).
+  3. Delete this script; switch routines and docs to invoke the regen.
+
+Until that migration lands this remains functional for back-compat but
+should NOT be considered the source of truth.
 
 Source:  C:/Projects/data/aiatls/AI_LifeSci_Landscape_v4.xlsx
 Target:  frontend/src/data/aiLifeSciences.ts

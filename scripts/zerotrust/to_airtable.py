@@ -88,6 +88,11 @@ FIELDS = {
         # 'Value Text' (long text) is optional — if user adds it, non-numeric
         # values will be written there. Detected at runtime via _has_field().
         "value_text":    "Value Text",
+        # 'Notes' (long text, multilineText) is optional — added by
+        # schema_patch v2. Holds the original narrative `desc` / `detail`
+        # field from the source draft so regen_*.py can reconstruct
+        # narrative fields losslessly. Detected at runtime via _has_field().
+        "notes":         "Notes",
     },
 }
 
@@ -331,7 +336,8 @@ def _build_claim_payloads(rows: list[dict],
                           entity_map: dict[str, str],
                           source_map: dict[str, str],
                           tag_map: dict[str, str],
-                          has_value_text: bool) -> tuple[list[dict], int]:
+                          has_value_text: bool,
+                          has_notes: bool = False) -> tuple[list[dict], int]:
     """Returns (payloads, skipped_non_numeric_count)."""
     M = FIELDS[TABLE_CLAIMS]
     out = []
@@ -377,6 +383,9 @@ def _build_claim_payloads(rows: list[dict],
                 pass
         elif has_value_text:
             fields[M["value_text"]] = val_raw
+
+        if has_notes and r.get("notes", "").strip():
+            fields[M["notes"]] = r["notes"].strip()
 
         out.append({"fields": fields})
     return out, skipped
@@ -430,6 +439,9 @@ def main() -> int:
     has_value_text = _has_field(schema, TABLE_CLAIMS, FIELDS[TABLE_CLAIMS]["value_text"])
     if not has_value_text:
         print("[warn] Claims has no 'Value Text' field — non-numeric claims will be skipped.")
+    has_notes = _has_field(schema, TABLE_CLAIMS, FIELDS[TABLE_CLAIMS]["notes"])
+    if not has_notes:
+        print("[warn] Claims has no 'Notes' field — original narrative `desc` will not be uploaded.")
 
     # 1. Tags ──────────────────────────────────────────────────────────────
     print("[1/4] Tags …")
@@ -459,7 +471,8 @@ def main() -> int:
     # 4. Claims ───────────────────────────────────────────────────────────
     print("[4/4] Claims …")
     claim_payloads, skipped = _build_claim_payloads(
-        claims_rows, entity_map, source_map, tag_map, has_value_text)
+        claims_rows, entity_map, source_map, tag_map, has_value_text,
+        has_notes=has_notes)
     if skipped:
         print(f"  [Claims] skipped {skipped} rows (non-numeric without Value Text, "
               f"or unresolved entity/source linkage)")

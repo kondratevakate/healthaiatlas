@@ -149,11 +149,12 @@ def airtable_to_canonical(records: list[dict], kind: str) -> list[dict]:
                 "external_id": f.get("External ID", ""),
                 "predicate": f.get("Predicate", ""),
                 "value": f.get("Value"),
-                "value_text": f.get("Value Text", ""),  # may not exist yet
+                "value_text": f.get("Value Text", ""),  # added by schema_patch v1
                 "value_unit": f.get("Value Unit", ""),
                 "period": f.get("Period", ""),
                 "jurisdiction": f.get("Jurisdiction", ""),
                 "confidence": f.get("Confidence", ""),
+                "notes": f.get("Notes", ""),            # added by schema_patch v2
                 "claim_id": f.get("Claim ID", ""),
                 "domain_tags": f.get("Domain Tags", []) or [],
                 "tags": f.get("Tags", []) or [],

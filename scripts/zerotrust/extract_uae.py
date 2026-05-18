@@ -68,6 +68,7 @@ def _build(
     extracted_from: str,
     url_status,
     wayback_replacements,
+    notes: str = "",
 ):
     if not src:
         return None, None, None, QuarantineRow(
@@ -111,6 +112,7 @@ def _build(
         value=value[:500], period=period, jurisdiction="AE",
         confidence=confidence, source_ids=sid, domain_tags=DOMAIN_TAG,
         tags=",".join(tags),
+        notes=notes,
         extracted_from=extracted_from,
         extracted_at=today(),
     )

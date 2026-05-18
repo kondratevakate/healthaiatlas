@@ -58,6 +58,7 @@ def _build(
     *, raw_id, src, title, value, period, entity_name, entity_type,
     predicate, country, extra_tags, extracted_from,
     url_status, wayback_replacements,
+    notes: str = "",
 ):
     if not src:
         return None, None, None, QuarantineRow(
@@ -99,6 +100,7 @@ def _build(
         value=value[:500], period=period, jurisdiction=country or "EU",
         confidence=confidence, source_ids=sid, domain_tags=DOMAIN_TAG,
         tags=",".join(tags),
+        notes=notes,
         extracted_from=extracted_from,
         extracted_at=today(),
     )

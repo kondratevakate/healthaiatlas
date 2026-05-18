@@ -134,21 +134,22 @@ def regen() -> str:
         predicate = c.get("predicate") or ""
         et = PREDICATE_TO_ET.get(predicate, "Event")
 
-        # Lossy desc reconstruction: only narrative predicates carry the
-        # original `desc` in their `value` field. Amount and year predicates
-        # have value=number/year, so desc is genuinely lost on round-trip
-        # until the canonical schema grows a `Notes` field on Claim.
+        # Lossless desc reconstruction (after schema_patch v2):
+        #   notes field carries the original OncoBubble.desc verbatim.
+        # Fallback for pre-Notes data: value when predicate is narrative.
         value_unit = (c.get("value_unit") or "").strip()
         narrative_predicates = {
             "ecosystem_event", "regulatory_event", "clinical_trial_result",
             "released_product", "fda_clearance",
         }
-        if value_unit == "usd_m":
-            amount = float(c.get("value") or 0)
-            desc = ""
+        amount = float(c.get("value") or 0) if value_unit == "usd_m" else 0.0
+        notes = (c.get("notes") or "").strip()
+        if notes:
+            desc = notes
+        elif value_unit != "usd_m" and predicate in narrative_predicates:
+            desc = (c.get("value") or "").strip()
         else:
-            amount = 0.0
-            desc = (c.get("value") or "").strip() if predicate in narrative_predicates else ""
+            desc = ""
 
         bubble = {
             "c": ent["name"],

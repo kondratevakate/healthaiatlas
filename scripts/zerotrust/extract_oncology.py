@@ -246,6 +246,7 @@ def extract_bubbles(
             source_ids=sid,
             domain_tags=DOMAIN_TAG,
             tags=",".join(tags),
+            notes=bubble.get("desc", "") or "",
             extracted_from=f"oncology.ts#ONCO_BUBBLES[c={company}, et={et}, d={bubble.get('d')}]",
             extracted_at=today(),
         ))
@@ -313,6 +314,7 @@ def extract_reliability(data: dict, url_status, wayback_replacements=None):
             value=desc, confidence=confidence, source_ids=sid,
             domain_tags=f"{DOMAIN_TAG},reliability",
             tags=",".join(tags),
+            notes=desc,
             extracted_from=f"oncology.ts#ONCO_RELIABILITY[c={c}]",
             extracted_at=today(),
         ))

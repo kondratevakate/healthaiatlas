@@ -182,6 +182,7 @@ def extract_timeline(data, url_status, wayback_replacements=None):
             jurisdiction="US", confidence=confidence,
             source_ids=sid, domain_tags=DOMAIN_TAG,
             tags=",".join(tags),
+            notes=ev.get("detail", "") or "",
             extracted_from=f"usHealthcareTimeline.ts#US_TIMELINE[id={ev.get('id')}]",
             extracted_at=today(),
         ))

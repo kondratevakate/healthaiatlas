@@ -168,6 +168,7 @@ def extract(data, url_status, wayback_replacements=None):
             jurisdiction=sig.get("geo", ""),
             confidence=confidence, source_ids=sid, domain_tags=DOMAIN_TAG,
             tags=",".join(tags),
+            notes=sig.get("qualitySignal", "") or "",
             extracted_from=f"aiLifeSciencesRecentSignals.ts#RECENT_SIGNALS[id={sig_id}]",
             extracted_at=today(),
         ))

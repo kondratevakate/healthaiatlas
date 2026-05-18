@@ -58,7 +58,22 @@ C:\Projects\data\aiatls\zerotrust\
 | `airtable_schema.md`        | One-time base setup instructions                           |
 | `cleanup_stub_sources.py`   | Delete orphan stub Source rows (no URL, no claims linked)  |
 | `cleanup_duplicate_tags.py` | Dedupe Tags rows that share a Tag Name                     |
-| `schema_patch.py`           | Add missing fields (`Value Text`, `Entity`, `Domain Tags`) via Metadata API |
+| `schema_patch.py`           | Add missing fields (`Value Text`, `Entity`, `Domain Tags`, `Notes`) via Metadata API |
+| `verify.py`                 | URL liveness + browser-headers + Wayback fallback + domain → confidence tier |
+| `wayback.py`                | Wayback Machine probe via `/web/0/<url>` redirect (avoids rate-limited /available API) |
+| `dump_ts_module.mjs`        | Node-native TS → JSON dumper (no extra TS toolchain)       |
+| `extract_oncology.py`       | Frontend extractor: oncology.ts → CSV (88% src density)    |
+| `extract_us_timeline.py`    | Frontend extractor: usHealthcareTimeline.ts                |
+| `extract_us_policy.py`      | Frontend extractor: usPolicyHorizons + usDecisionStack     |
+| `extract_recent_signals.py` | Frontend extractor: aiLifeSciencesRecentSignals.ts         |
+| `extract_uae.py`            | Frontend extractor: uaeMarketReality.ts                    |
+| `extract_eu.py`             | Frontend extractor: euMarketReality.ts                     |
+| `extract_uk.py`             | Frontend extractor: ukMarketReality.ts                     |
+| `from_airtable.py`          | **Round-trip:** Airtable → JSON snapshot per domain        |
+| `regen_oncology.py`         | Airtable → oncology.regenerated.ts (PoC of regen pattern)  |
+| `regen_us_timeline.py`      | Airtable → usHealthcareTimeline.regenerated.ts             |
+| `daily_search.py`           | Per-entity web search → candidates CSV for human review    |
+| `backfill_vision2030.py`    | Find UAE-official sources for vision2030 entries (no src)  |
 
 ## Hygiene scripts
 

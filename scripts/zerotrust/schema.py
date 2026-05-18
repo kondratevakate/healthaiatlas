@@ -62,6 +62,10 @@ class Claim:
     source_ids: str = ""    # comma-separated -> sources.source_id
     domain_tags: str = ""   # which hub(s) this claim feeds: "ai_lifesci"
     tags: str = ""          # free-form, comma-separated
+    notes: str = ""         # free-text narrative preserved from the source
+                            # draft (OncoBubble.desc, USEvent.detail) so
+                            # regen_*.py can rebuild narrative fields losslessly.
+                            # Maps to Airtable Claims.Notes (added by schema_patch).
     extracted_from: str = ""  # path to xlsx + sheet + row, for audit
     extracted_at: str = ""    # ISO date
 

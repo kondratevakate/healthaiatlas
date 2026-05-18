@@ -161,6 +161,22 @@ PATCHES = [
             },
         },
     },
+    {
+        "table_id": CLAIMS_TABLE_ID,
+        "table_name": "Claims",
+        "field_name": "Notes",
+        "body": {
+            "name": "Notes",
+            "type": "multilineText",
+            "description": (
+                "Free-text annotation preserved from the original frontend "
+                "draft. Used by regen_*.py scripts to reconstruct narrative "
+                "fields (OncoBubble.desc, USEvent.detail, etc.) that don't "
+                "fit cleanly into Value / Value Text / Tags. Closes the "
+                "round-trip fidelity gap for narrative descriptions."
+            ),
+        },
+    },
 ]
 
 

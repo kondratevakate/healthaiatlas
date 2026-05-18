@@ -46,7 +46,7 @@ DOMAIN_TAG = "us_healthcare_timeline"
 def load_ts_module() -> dict:
     proc = subprocess.run(
         ["node", "--experimental-strip-types", str(DUMPER), str(TS_FILE)],
-        capture_output=True, text=True, check=False,
+        capture_output=True, text=True, encoding='utf-8', check=False,
     )
     if proc.returncode != 0:
         sys.stderr.write(proc.stderr)
@@ -182,6 +182,7 @@ def extract_timeline(data, url_status, wayback_replacements=None):
             jurisdiction="US", confidence=confidence,
             source_ids=sid, domain_tags=DOMAIN_TAG,
             tags=",".join(tags),
+            notes=ev.get("detail", "") or "",
             extracted_from=f"usHealthcareTimeline.ts#US_TIMELINE[id={ev.get('id')}]",
             extracted_at=today(),
         ))

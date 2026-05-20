@@ -18,6 +18,9 @@ import NotFound from "./pages/NotFound";
 import Discovery from "./pages/Discovery";
 import Share from "./pages/Share";
 import PersonaPage from "./pages/PersonaPage";
+import Founders from "./pages/Founders";
+import FoundersContext from "./pages/FoundersContext";
+import FoundersDeadValley from "./pages/FoundersDeadValley";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +42,9 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/discovery" element={<Discovery />} />
+              <Route path="/founders" element={<Founders />} />
+              <Route path="/founders/context" element={<FoundersContext />} />
+              <Route path="/founders/dead-valley" element={<FoundersDeadValley />} />
               <Route path="/share/:id" element={<Share />} />
 
               {/* Persona landing pages — single PersonaPage dispatches on :id */}

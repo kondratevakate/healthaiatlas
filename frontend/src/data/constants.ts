@@ -5,6 +5,22 @@ export const SUGGEST_ENTRY_URL =
 export const SUGGEST_CORRECTION_URL =
   'mailto:kondratevakate@gmail.com?subject=HealthAI%20Atlas%20%E2%80%94%20Suggest%20correction&body=Which%20entry%3A%0AWhat%27s%20wrong%3A%0ACorrect%20information%3A';
 
+// Atlas Notes — editorial companion newsletter on LinkedIn.
+// The directory (this site) holds structured, cited records.
+// Atlas Notes holds the long-form analysis and author voice that ties them together.
+export const ATLAS_NOTES_SUBSCRIBE_URL =
+  'https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7451945270583390208';
+
+// Support via Manifund — fiscal sponsorship platform for AI-ecosystem
+// projects. Manifund's 501(c)(3) receives funds and pays out as grants, which
+// means the Atlas does NOT need its own legal entity, payment processor, or
+// US/EU tax residency. This is the structurally correct channel for a
+// solo-researcher project in a non-supported jurisdiction (UAE).
+//
+// Currently points to Manifund's project search — update to the specific
+// project URL once the Atlas project page is published on Manifund.
+export const MANIFUND_PROJECT_URL = 'https://manifund.org/';
+
 // Per-section "last updated" dates (ISO format)
 export const LAST_UPDATED: Record<string, string> = {
   directory: '2026-04-22',

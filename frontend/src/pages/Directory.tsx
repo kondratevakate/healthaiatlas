@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { MapPin, Users, Calendar, ExternalLink, Building2, Rocket, FlaskConical, Landmark, Briefcase, ShieldCheck, Network } from 'lucide-react';
+import { MapPin, Users, Calendar, ExternalLink, Building2, Rocket, FlaskConical, Landmark, Briefcase, ShieldCheck, Network, Database } from 'lucide-react';
 import { SystemDiagram } from '@/components/home/SystemDiagram';
 import { SystemMapOverview } from '@/components/home/SystemMapOverview';
 import { MedicalTourismHub } from '@/components/medical-tourism';
@@ -18,7 +18,7 @@ import { SuggestActions } from '@/components/shared/SuggestActions';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { ClaimCard } from '@/components/claims';
-import { SUGGEST_ENTRY_URL, HUB_DOMAIN_IDS } from '@/data/constants';
+import { SUGGEST_ENTRY_URL, HUB_DOMAIN_IDS, AIRTABLE_PROVENANCE_URL } from '@/data/constants';
 import { Player } from '@/types';
 
 const typeIcons: Record<string, React.ElementType> = {
@@ -268,7 +268,36 @@ const Directory = () => {
           </div>
         )}
 
-        <div className="mt-16 pt-8 border-t border-border">
+        {/* Provenance footer — every player / claim above is held in a
+            Zero-Trust Airtable base. Frontend TS data is derived from
+            it via scripts/zerotrust/from_airtable.py; the base is
+            canonical. Same footer appears under Founders → Context. */}
+        <div className="mt-16 border border-border/60 bg-secondary/30 p-5">
+          <div className="flex items-start gap-3 max-w-3xl">
+            <Database className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-1">
+                Primary sources
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                {language === 'en'
+                  ? 'Every domain and player row is held in a Zero-Trust Airtable base — each entry carries a primary src URL on the issuer\'s domain plus a verifiedAt stamp. The frontend data is regenerated from the base; the base is canonical.'
+                  : 'كل صف للمجالات واللاعبين محفوظ في قاعدة بيانات Airtable Zero-Trust — كل إدخال يحمل عنوان URL أساسي على نطاق الجهة المُصدِرة مع طابع verifiedAt. بيانات الواجهة الأمامية يتم توليدها من القاعدة؛ القاعدة هي المصدر الرسمي.'}
+              </p>
+              <a
+                href={AIRTABLE_PROVENANCE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+              >
+                {language === 'en' ? 'Open the canonical Airtable base' : 'افتح قاعدة بيانات Airtable الرسمية'}
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 pt-8 border-t border-border">
           <SuggestActions />
         </div>
       </div>

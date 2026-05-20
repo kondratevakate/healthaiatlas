@@ -9,8 +9,8 @@ import { launches } from '@/data/launches';
 import {
   openCallEntries,
   OPEN_CALL_REGIONS,
-  OPEN_CALL_CATEGORIES,
   categoryLabel,
+  categoryGlyph,
   type OpenCallCategory,
   type GrantRegion,
 } from '@/data/openCallEntries';
@@ -113,6 +113,20 @@ const DEFAULT_TAB_FOR_SECTION: Record<Section, string> = {
 
 const NEWSFEED_TABS = ['calendar', 'launches', 'leaders', 'prompts'];
 
+// Categories surfaced in the Open Calls UI. Sandbox is dropped from
+// primary view because it's a regulatory-product niche (≈5% of calls,
+// only relevant to founders building actual SaMD products); hackathon
+// is dropped because the data file has zero entries today — showing
+// "Hackathon · 0 calls" reads as broken product. Both categories are
+// preserved in the data layer (OpenCallCategory type) and will resurface
+// here automatically if/when entries land.
+const VISIBLE_OPEN_CALL_CATEGORIES: OpenCallCategory[] = [
+  'grant',
+  'fellowship',
+  'accelerator',
+  'prize',
+];
+
 const MS_PER_DAY = 86_400_000;
 
 function daysUntilUtc(deadline: Date, now: Date): number {
@@ -184,10 +198,16 @@ export default function Discovery() {
 
   const eventDates = conferences.map((c) => new Date(c.date));
 
-  // Open Calls — region + category + closing-soon filters. Sort by countdown.
+  // Open Calls — region + category + status filters. Sort by countdown.
+  // Two status filters, mutually exclusive (radio-like). Empty string =
+  // no status filter applied. Window is 90 days for closing-soon because
+  // the data has ~zero deadlines inside 30d at any given time (open calls
+  // typically post 3-6 months ahead), so a 30d window almost always
+  // returned 0 results and read as broken.
   const [openCallsRegion, setOpenCallsRegion] = useState<GrantRegion | 'all'>('all');
   const [openCallsCategory, setOpenCallsCategory] = useState<OpenCallCategory | 'all'>('all');
-  const [closingSoonOnly, setClosingSoonOnly] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<'' | 'closing' | 'coming'>('');
+  const CLOSING_WINDOW_DAYS = 90;
 
   const filteredOpenCalls = useMemo(() => {
     const now = new Date();
@@ -195,13 +215,17 @@ export default function Discovery() {
       .filter((e) => openCallsRegion === 'all' || e.region === openCallsRegion)
       .filter((e) => openCallsCategory === 'all' || e.category === openCallsCategory)
       .filter((e) => {
-        if (!closingSoonOnly) return true;
-        if (e.countdown.kind !== 'deadline') return false;
-        const d = daysUntilUtc(e.countdown.date, now);
-        return d >= 0 && d <= 30;
+        if (statusFilter === '') return true;
+        if (statusFilter === 'closing') {
+          if (e.countdown.kind !== 'deadline') return false;
+          const d = daysUntilUtc(e.countdown.date, now);
+          return d >= 0 && d <= CLOSING_WINDOW_DAYS;
+        }
+        // 'coming' — recurring annual cycles you can prepare for.
+        return e.countdown.kind === 'annual';
       })
       .sort((a, b) => countdownSortKey(a.countdown, now) - countdownSortKey(b.countdown, now));
-  }, [openCallsRegion, openCallsCategory, closingSoonOnly]);
+  }, [openCallsRegion, openCallsCategory, statusFilter]);
 
   const copyPrompt = (prompt: string) => {
     navigator.clipboard.writeText(prompt);
@@ -221,9 +245,16 @@ export default function Discovery() {
             Back
           </Button>
 
+          {/* Title tracks the active section — the page header reflects
+              what the visitor actually navigated to (Open Calls vs Events),
+              not the internal route name "Discovery". */}
           <PageHeader
-            title="Discovery"
-            subtitle="Two views across the global healthcare AI ecosystem — pick one below."
+            title={section === 'opencalls' ? 'Open Calls' : 'Events'}
+            subtitle={
+              section === 'opencalls'
+                ? 'Grants, fellowships, accelerators, prizes — sorted by deadline. Every entry links to the issuer\'s primary page.'
+                : 'Conferences, launches, leader spotlights, and verification prompts across the healthcare AI ecosystem.'
+            }
             className="mb-6"
           />
 
@@ -313,7 +344,7 @@ export default function Discovery() {
                   Category
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
-                  {(['all', ...OPEN_CALL_CATEGORIES] as const).map((c) => (
+                  {(['all', ...VISIBLE_OPEN_CALL_CATEGORIES] as const).map((c) => (
                     <button
                       key={c}
                       type="button"
@@ -331,15 +362,28 @@ export default function Discovery() {
                   <div className="h-4 w-px bg-border mx-1" />
                   <button
                     type="button"
-                    onClick={() => setClosingSoonOnly((v) => !v)}
+                    onClick={() => setStatusFilter((v) => (v === 'closing' ? '' : 'closing'))}
                     className={cn(
                       'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
-                      closingSoonOnly
+                      statusFilter === 'closing'
                         ? 'bg-foreground text-background border-foreground'
                         : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
                     )}
                   >
-                    Closing soon (≤30d)
+                    Closing soon (≤{CLOSING_WINDOW_DAYS}d)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStatusFilter((v) => (v === 'coming' ? '' : 'coming'))}
+                    className={cn(
+                      'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
+                      statusFilter === 'coming'
+                        ? 'bg-foreground text-background border-foreground'
+                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                    )}
+                    title="Annual cycles you can prepare for"
+                  >
+                    Coming soon (annual)
                   </button>
                   <span className="ml-auto text-[10px] text-muted-foreground font-mono self-center">
                     {filteredOpenCalls.length}{' '}
@@ -663,9 +707,41 @@ export default function Discovery() {
                       </p>
                       <div className="h-0.5 w-12 bg-primary mb-4" />
                       <p className="text-muted-foreground">
-                        Grants, fellowships, accelerators, prizes, and regulatory sandboxes —
+                        Grants, fellowships, accelerators, prizes, sandboxes, and hackathons —
                         sorted by deadline. Every entry links to the issuer's primary page.
                       </p>
+                    </div>
+
+                    {/* Category quick-pick cards. Bigger, more discoverable
+                        surface than the chip-row above; both write to the
+                        same `openCallsCategory` state. Click a card to
+                        filter to that sub-category; click again to clear. */}
+                    <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {VISIBLE_OPEN_CALL_CATEGORIES.map((c) => {
+                        const count = openCallEntries.filter((e) => e.category === c).length;
+                        const isActive = openCallsCategory === c;
+                        return (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setOpenCallsCategory(isActive ? 'all' : c)}
+                            className={cn(
+                              'group border bg-background p-4 flex flex-col items-start gap-2 transition-all text-left',
+                              isActive
+                                ? 'border-primary shadow-sm'
+                                : 'border-border hover:border-foreground/40 hover:shadow-sm',
+                            )}
+                          >
+                            <span className={cn('font-mono text-2xl leading-none', isActive ? 'text-primary' : 'text-foreground')}>
+                              {categoryGlyph[c]}
+                            </span>
+                            <span className="text-xs font-medium">{categoryLabel[c]}</span>
+                            <span className="text-[10px] text-muted-foreground font-mono">
+                              {count} {count === 1 ? 'call' : 'calls'}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
 
                     {filteredOpenCalls.length > 0 ? (
@@ -676,9 +752,23 @@ export default function Discovery() {
                       </div>
                     ) : (
                       <div className="text-center py-16 border border-dashed border-border">
-                        <p className="text-muted-foreground">
+                        <p className="text-muted-foreground mb-2">
                           No calls match the current filters.
                         </p>
+                        {statusFilter === 'closing' && (
+                          <p className="text-sm text-muted-foreground">
+                            No deadlines inside {CLOSING_WINDOW_DAYS} days right now —
+                            try{' '}
+                            <button
+                              type="button"
+                              onClick={() => setStatusFilter('coming')}
+                              className="text-primary hover:underline"
+                            >
+                              Coming soon
+                            </button>{' '}
+                            for annual cycles you can prepare for.
+                          </p>
+                        )}
                       </div>
                     )}
                   </>

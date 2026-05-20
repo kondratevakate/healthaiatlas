@@ -9,7 +9,6 @@ import { launches } from '@/data/launches';
 import {
   openCallEntries,
   OPEN_CALL_REGIONS,
-  OPEN_CALL_CATEGORIES,
   categoryLabel,
   categoryGlyph,
   type OpenCallCategory,
@@ -113,6 +112,20 @@ const DEFAULT_TAB_FOR_SECTION: Record<Section, string> = {
 };
 
 const NEWSFEED_TABS = ['calendar', 'launches', 'leaders', 'prompts'];
+
+// Categories surfaced in the Open Calls UI. Sandbox is dropped from
+// primary view because it's a regulatory-product niche (≈5% of calls,
+// only relevant to founders building actual SaMD products); hackathon
+// is dropped because the data file has zero entries today — showing
+// "Hackathon · 0 calls" reads as broken product. Both categories are
+// preserved in the data layer (OpenCallCategory type) and will resurface
+// here automatically if/when entries land.
+const VISIBLE_OPEN_CALL_CATEGORIES: OpenCallCategory[] = [
+  'grant',
+  'fellowship',
+  'accelerator',
+  'prize',
+];
 
 const MS_PER_DAY = 86_400_000;
 
@@ -232,9 +245,16 @@ export default function Discovery() {
             Back
           </Button>
 
+          {/* Title tracks the active section — the page header reflects
+              what the visitor actually navigated to (Open Calls vs Events),
+              not the internal route name "Discovery". */}
           <PageHeader
-            title="Discovery"
-            subtitle="Two views across the global healthcare AI ecosystem — pick one below."
+            title={section === 'opencalls' ? 'Open Calls' : 'Events'}
+            subtitle={
+              section === 'opencalls'
+                ? 'Grants, fellowships, accelerators, prizes — sorted by deadline. Every entry links to the issuer\'s primary page.'
+                : 'Conferences, launches, leader spotlights, and verification prompts across the healthcare AI ecosystem.'
+            }
             className="mb-6"
           />
 
@@ -324,7 +344,7 @@ export default function Discovery() {
                   Category
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
-                  {(['all', ...OPEN_CALL_CATEGORIES] as const).map((c) => (
+                  {(['all', ...VISIBLE_OPEN_CALL_CATEGORIES] as const).map((c) => (
                     <button
                       key={c}
                       type="button"
@@ -696,8 +716,8 @@ export default function Discovery() {
                         surface than the chip-row above; both write to the
                         same `openCallsCategory` state. Click a card to
                         filter to that sub-category; click again to clear. */}
-                    <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                      {OPEN_CALL_CATEGORIES.map((c) => {
+                    <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {VISIBLE_OPEN_CALL_CATEGORIES.map((c) => {
                         const count = openCallEntries.filter((e) => e.category === c).length;
                         const isActive = openCallsCategory === c;
                         return (

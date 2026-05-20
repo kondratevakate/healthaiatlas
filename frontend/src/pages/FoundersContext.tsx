@@ -24,14 +24,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LastUpdated } from '@/components/shared/LastUpdated';
 import { AIRTABLE_PROVENANCE_URL } from '@/data/constants';
 
-import { FounderMatrix } from '@/components/context-us';
+import { FounderMatrix, UsTimeline, UsSidebar } from '@/components/context-us';
 import { MarketReality } from '@/components/context-uae';
-import { EuFounderMap } from '@/components/context-eu';
+import { EuFounderMap, SwissAnimal } from '@/components/context-eu';
 import { UkFounderMap } from '@/components/context-uk';
 import { ComparativeMatrix } from '@/components/context-compare';
+import { PM_GEO } from '@/data/processMining';
 
 type Side = 'ai' | 'healthcare';
-type RegionId = 'compare' | 'uae' | 'eu' | 'uk' | 'us';
+type RegionId = 'compare' | 'uae' | 'eu' | 'ch' | 'uk' | 'us' | 'cn';
 
 const SIDES: { id: Side; label: string; icon: typeof Cpu; oneLiner: string }[] = [
   {
@@ -52,11 +53,98 @@ const SIDES: { id: Side; label: string; icon: typeof Cpu; oneLiner: string }[] =
 
 const REGIONS: { id: RegionId; label: string; oneLiner: string }[] = [
   { id: 'compare', label: 'Compare', oneLiner: 'Five regions on one frame — TAM, regulator stack, exit ramp, founder reality. Read across before drilling into any single country.' },
-  { id: 'uae', label: 'UAE', oneLiner: 'The floor is too low for any spoke to matter at venture scale.' },
+  { id: 'us', label: 'US', oneLiner: 'Largest TAM, four-spoke decision matrix decides which one kills you. Timeline + horizons + decision matrix on one tab.' },
   { id: 'eu', label: 'EU', oneLiner: 'CEE is cheaper evidence; Switzerland is expensive credibility.' },
+  { id: 'ch', label: 'Switzerland', oneLiner: 'Institutionally outside the EU. Expensive credibility, not cheap evidence — use for regulatory-passport plays, not for scaling.' },
   { id: 'uk', label: 'UK', oneLiner: 'NHS gravity well — one payer, slow procurement, brutal exit ramp (Babylon).' },
-  { id: 'us', label: 'US', oneLiner: 'Largest TAM, four-spoke decision matrix decides which one kills you.' },
+  { id: 'uae', label: 'UAE', oneLiner: 'The floor is too low for any spoke to matter at venture scale.' },
+  { id: 'cn', label: 'China', oneLiner: 'NMPA pathway + JD/Alibaba/iFLYTEK gravity + Yiducloud as the cautionary IPO. Strong tailwinds, restricted access for non-resident founders.' },
 ];
+
+// China data lives on the PM_GEO row today — extracted here for the
+// stub China tab. When a full chinaMarketReality.ts is written this
+// can be removed and replaced with a dedicated component.
+const CHINA_GEO = PM_GEO.find((g) => g.n === 'China');
+
+// China stub — first-pass coverage using the data already in
+// processMining.ts (PM_GEO row for China). When a dedicated
+// chinaMarketReality.ts is written, replace this with that
+// component, the structure should mirror UAE / EU / UK.
+function ChinaStub() {
+  if (!CHINA_GEO) {
+    return (
+      <div className="border border-dashed border-border p-12 text-center text-muted-foreground text-sm">
+        China data not yet available.
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-6 max-w-4xl">
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="border border-border p-5">
+          <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-1">
+            HC AI market
+          </div>
+          <div className="text-3xl font-bold">{CHINA_GEO.mkt}</div>
+          <div className="text-xs text-muted-foreground mt-1">
+            {CHINA_GEO.sh}% global share · {CHINA_GEO.buy} buyers
+          </div>
+        </div>
+        <div className="border border-border p-5">
+          <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-1">
+            Active vendors
+          </div>
+          <div className="text-sm space-y-1 font-medium">
+            {CHINA_GEO.v.map((v) => (
+              <div key={v}>{v}</div>
+            ))}
+          </div>
+        </div>
+        <div className="border border-destructive/40 p-5 bg-destructive/5">
+          <div className="text-[10px] uppercase tracking-widest font-mono text-destructive mb-1">
+            Cautionary tales
+          </div>
+          <div className="text-sm space-y-1">
+            {CHINA_GEO.dv.map((v) => (
+              <div key={v} className="text-muted-foreground">{v}</div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {CHINA_GEO.dl && (
+        <div className="border border-border p-5">
+          <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
+            Recent deal flow
+          </div>
+          <p className="text-sm">{CHINA_GEO.dl}</p>
+        </div>
+      )}
+
+      {CHINA_GEO.cu && (
+        <div className="border border-border p-5">
+          <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
+            Customer signal
+          </div>
+          <p className="text-sm">{CHINA_GEO.cu}</p>
+        </div>
+      )}
+
+      <div className="border border-border/60 bg-secondary/30 p-5">
+        <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
+          In preparation
+        </div>
+        <h3 className="text-base font-semibold mb-2">Full China founder reality — coming next</h3>
+        <p className="text-sm text-muted-foreground">
+          NMPA approval pathway, BAT players (Baidu / Alibaba / Tencent) gravity, healthcare-AI
+          regulation specifics for non-Chinese founders, IPO landscape post-Yiducloud. The view
+          above is extracted from the process-mining geo dataset and lacks the depth UAE / EU /
+          UK have. Reach out via Suggest entry if you want to contribute.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 const FoundersContext = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -143,8 +231,22 @@ const FoundersContext = () => {
                   {r.id === 'compare' && <ComparativeMatrix />}
                   {r.id === 'uae' && <MarketReality />}
                   {r.id === 'eu' && <EuFounderMap />}
+                  {r.id === 'ch' && <SwissAnimal />}
                   {r.id === 'uk' && <UkFounderMap />}
-                  {r.id === 'us' && <FounderMatrix />}
+                  {r.id === 'us' && (
+                    <div className="space-y-12">
+                      {/* US tab beefed up to parity with EU/UK/UAE:
+                          decision matrix (FounderMatrix) → timeline
+                          (UsTimeline) → policy horizons sidebar
+                          (UsSidebar). The three pieces give a founder
+                          the static decision, the moving history, and
+                          the active policy front in one view. */}
+                      <FounderMatrix />
+                      <UsTimeline />
+                      <UsSidebar />
+                    </div>
+                  )}
+                  {r.id === 'cn' && <ChinaStub />}
                 </TabsContent>
               ))}
             </Tabs>

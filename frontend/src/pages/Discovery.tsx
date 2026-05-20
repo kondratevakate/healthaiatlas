@@ -11,6 +11,7 @@ import {
   OPEN_CALL_REGIONS,
   OPEN_CALL_CATEGORIES,
   categoryLabel,
+  categoryGlyph,
   type OpenCallCategory,
   type GrantRegion,
 } from '@/data/openCallEntries';
@@ -686,9 +687,41 @@ export default function Discovery() {
                       </p>
                       <div className="h-0.5 w-12 bg-primary mb-4" />
                       <p className="text-muted-foreground">
-                        Grants, fellowships, accelerators, prizes, and regulatory sandboxes —
+                        Grants, fellowships, accelerators, prizes, sandboxes, and hackathons —
                         sorted by deadline. Every entry links to the issuer's primary page.
                       </p>
+                    </div>
+
+                    {/* Category quick-pick cards. Bigger, more discoverable
+                        surface than the chip-row above; both write to the
+                        same `openCallsCategory` state. Click a card to
+                        filter to that sub-category; click again to clear. */}
+                    <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                      {OPEN_CALL_CATEGORIES.map((c) => {
+                        const count = openCallEntries.filter((e) => e.category === c).length;
+                        const isActive = openCallsCategory === c;
+                        return (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setOpenCallsCategory(isActive ? 'all' : c)}
+                            className={cn(
+                              'group border bg-background p-4 flex flex-col items-start gap-2 transition-all text-left',
+                              isActive
+                                ? 'border-primary shadow-sm'
+                                : 'border-border hover:border-foreground/40 hover:shadow-sm',
+                            )}
+                          >
+                            <span className={cn('font-mono text-2xl leading-none', isActive ? 'text-primary' : 'text-foreground')}>
+                              {categoryGlyph[c]}
+                            </span>
+                            <span className="text-xs font-medium">{categoryLabel[c]}</span>
+                            <span className="text-[10px] text-muted-foreground font-mono">
+                              {count} {count === 1 ? 'call' : 'calls'}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
 
                     {filteredOpenCalls.length > 0 ? (

@@ -11,6 +11,17 @@ export const SUGGEST_CORRECTION_URL =
 export const ATLAS_NOTES_SUBSCRIBE_URL =
   'https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7451945270583390208';
 
+// Zero-Trust canonical store — the Airtable base where every player /
+// claim / source row is verified and held. The frontend TS data files
+// are derived from this base via scripts/zerotrust/from_airtable.py.
+// Linking out from country / domain pages gives readers direct access
+// to the primary-evidence provenance layer (every row carries a `src`
+// URL on the issuer's domain plus a `verifiedAt` stamp).
+//
+// Currently points to the base homepage; if a public shared view is
+// later published, swap this URL for the view URL.
+export const AIRTABLE_PROVENANCE_URL = 'https://airtable.com/appiYen6pEW5tSVrn';
+
 // Support via Manifund — fiscal sponsorship platform for AI-ecosystem
 // projects. Manifund's 501(c)(3) receives funds and pays out as grants, which
 // means the Atlas does NOT need its own legal entity, payment processor, or

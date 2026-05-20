@@ -1,33 +1,37 @@
 // Founder Toolkit → Context. Two-axis structure:
 //
 //   side:    'ai' | 'healthcare'   — the conceptual domain split
-//   region:  'uae' | 'eu' | 'uk' | 'us'  — only meaningful inside Healthcare
+//   region:  'compare' | 'uae' | 'eu' | 'uk' | 'us'  — only on Healthcare
 //
 // URL state lives in searchParams (`?side=...&region=...`), so any
-// combination is independently shareable. Default opens Healthcare → UAE
-// because that's where the data coverage is deepest today.
+// combination is independently shareable. Default opens Healthcare →
+// Compare so the founder sees the cross-region matrix first and picks a
+// country to drill into, rather than landing in a single (currently UAE)
+// country and wondering "why UAE?".
 //
-// Healthcare side re-uses the four pre-built founder-frame components
-// (FounderMatrix / MarketReality / EuFounderMap / UkFounderMap). AI side is
-// pointer-layered onto the existing AI Life Sciences hub and Atlas Notes —
-// no duplicate content; this page just frames where to look.
+// Healthcare side re-uses pre-built founder-frame components:
+//   compare  → ComparativeMatrix (5-region snapshot)
+//   uae/eu/uk/us → MarketReality / EuFounderMap / UkFounderMap / FounderMatrix
+// AI side is pointer-layered onto medRxiv + arXiv — no duplicate content.
 
 import { useSearchParams, Link } from 'react-router-dom';
-import { ArrowLeft, Cpu, Stethoscope, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Cpu, Stethoscope, ExternalLink, GitCompare, Database } from 'lucide-react';
 
 import { Layout } from '@/components/layout';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LastUpdated } from '@/components/shared/LastUpdated';
+import { AIRTABLE_PROVENANCE_URL } from '@/data/constants';
 
 import { FounderMatrix } from '@/components/context-us';
 import { MarketReality } from '@/components/context-uae';
 import { EuFounderMap } from '@/components/context-eu';
 import { UkFounderMap } from '@/components/context-uk';
+import { ComparativeMatrix } from '@/components/context-compare';
 
 type Side = 'ai' | 'healthcare';
-type RegionId = 'uae' | 'eu' | 'uk' | 'us';
+type RegionId = 'compare' | 'uae' | 'eu' | 'uk' | 'us';
 
 const SIDES: { id: Side; label: string; icon: typeof Cpu; oneLiner: string }[] = [
   {
@@ -47,6 +51,7 @@ const SIDES: { id: Side; label: string; icon: typeof Cpu; oneLiner: string }[] =
 ];
 
 const REGIONS: { id: RegionId; label: string; oneLiner: string }[] = [
+  { id: 'compare', label: 'Compare', oneLiner: 'Five regions on one frame — TAM, regulator stack, exit ramp, founder reality. Read across before drilling into any single country.' },
   { id: 'uae', label: 'UAE', oneLiner: 'The floor is too low for any spoke to matter at venture scale.' },
   { id: 'eu', label: 'EU', oneLiner: 'CEE is cheaper evidence; Switzerland is expensive credibility.' },
   { id: 'uk', label: 'UK', oneLiner: 'NHS gravity well — one payer, slow procurement, brutal exit ramp (Babylon).' },
@@ -58,7 +63,7 @@ const FoundersContext = () => {
   const side: Side = (searchParams.get('side') as Side | null) === 'ai' ? 'ai' : 'healthcare';
   const region: RegionId = ((): RegionId => {
     const r = searchParams.get('region') as RegionId | null;
-    return r && REGIONS.some((x) => x.id === r) ? r : 'uae';
+    return r && REGIONS.some((x) => x.id === r) ? r : 'compare';
   })();
 
   const updateParam = (key: string, value: string) => {
@@ -111,17 +116,20 @@ const FoundersContext = () => {
               </p>
             </div>
 
-            {/* Inner axis: region. Only meaningful on the Healthcare side —
-                each region carries its own regulators, procurement
-                patterns, and founder takeaways. */}
+            {/* Inner axis: region. Compare is the default landing — five
+                regions on one frame — so the founder reads across before
+                picking a single country to drill into. UAE/EU/UK/US tabs
+                are deep dives; the `compare` tab uses the existing
+                cross-region ComparativeMatrix component. */}
             <Tabs value={region} onValueChange={(v) => updateParam('region', v)}>
               <TabsList className="rounded-none border border-border bg-background p-0 h-auto flex-wrap">
                 {REGIONS.map((r) => (
                   <TabsTrigger
                     key={r.id}
                     value={r.id}
-                    className="rounded-none px-5 py-3 data-[state=active]:bg-secondary data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-sm font-medium"
+                    className="rounded-none px-5 py-3 data-[state=active]:bg-secondary data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-sm font-medium inline-flex items-center gap-2"
                   >
+                    {r.id === 'compare' && <GitCompare className="w-3.5 h-3.5" />}
                     {r.label}
                   </TabsTrigger>
                 ))}
@@ -132,6 +140,7 @@ const FoundersContext = () => {
                   <div className="max-w-3xl mb-6 text-sm text-muted-foreground border-l-2 border-border pl-3 italic">
                     {r.oneLiner}
                   </div>
+                  {r.id === 'compare' && <ComparativeMatrix />}
                   {r.id === 'uae' && <MarketReality />}
                   {r.id === 'eu' && <EuFounderMap />}
                   {r.id === 'uk' && <UkFounderMap />}
@@ -139,6 +148,37 @@ const FoundersContext = () => {
                 </TabsContent>
               ))}
             </Tabs>
+
+            {/* Provenance footer — Airtable canonical store. Every row
+                on the country tabs above is derived from this base via
+                scripts/zerotrust/from_airtable.py. Sources are linked
+                inline on each row's `src` URL; this is the primary
+                channel for readers who want the raw verified dataset. */}
+            <div className="mt-12 border border-border/60 bg-secondary/30 p-5 max-w-3xl">
+              <div className="flex items-start gap-3">
+                <Database className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-1">
+                    Primary sources
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Every country row above is held in a Zero-Trust Airtable base — each entry
+                    carries a primary <code className="text-xs font-mono">src</code> URL on the
+                    issuer's domain plus a <code className="text-xs font-mono">verifiedAt</code> stamp.
+                    The frontend data is regenerated from the base; the base is canonical.
+                  </p>
+                  <a
+                    href={AIRTABLE_PROVENANCE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                  >
+                    Open the canonical Airtable base
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="ai" className="mt-8">

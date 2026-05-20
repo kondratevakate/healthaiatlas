@@ -13,14 +13,13 @@
 // no duplicate content; this page just frames where to look.
 
 import { useSearchParams, Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Cpu, Stethoscope, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Cpu, Stethoscope, ExternalLink } from 'lucide-react';
 
 import { Layout } from '@/components/layout';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LastUpdated } from '@/components/shared/LastUpdated';
-import { ATLAS_NOTES_SUBSCRIBE_URL } from '@/data/constants';
 
 import { FounderMatrix } from '@/components/context-us';
 import { MarketReality } from '@/components/context-uae';
@@ -43,7 +42,7 @@ const SIDES: { id: Side; label: string; icon: typeof Cpu; oneLiner: string }[] =
     label: 'AI',
     icon: Cpu,
     oneLiner:
-      'Methods, models, technologies and editorial coverage of AI applied to medicine and life sciences.',
+      'The raw research stream — preprints and papers where the methods get developed before they hit clinical deployment.',
   },
 ];
 
@@ -149,51 +148,56 @@ const FoundersContext = () => {
               </p>
             </div>
 
-            {/* AI side — pointer layer. Structured technology coverage lives
-                in the AI Life Sciences hub; long-form analysis lives in
-                Atlas Notes. We don't duplicate that content here, just
-                frame where to look. Future iterations can add a curated
-                methods atlas (foundation models in clinical use, ML
-                architectures by task, etc.) directly on this page. */}
+            {/* AI side — pointer layer to academic literature. medRxiv is
+                where new clinical-AI methods land before peer review;
+                arXiv is where the foundation-model and ML-method papers
+                develop. The Atlas doesn't duplicate paper feeds — it
+                frames where to look. A curated papers atlas (key
+                healthcare-AI papers indexed by clinical task) is in
+                preparation and will live directly on this tab. */}
             <div className="grid md:grid-cols-2 gap-6 mb-12">
-              <Link
-                to="/directory?domain=ai-life-sciences"
-                className="group border border-border bg-background p-6 hover:border-primary hover:shadow-md transition-all flex flex-col"
-              >
-                <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
-                  Methods · Technologies
-                </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                  AI Life Sciences hub
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4 flex-1">
-                  Structured taxonomy: drug discovery, structural biology, generative biology, omics.
-                  Players, methods, recent signals. The deepest AI-side data the Atlas carries today.
-                </p>
-                <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform">
-                  Open the hub
-                  <ArrowRight className="w-4 h-4 ml-1.5" />
-                </div>
-              </Link>
-
               <a
-                href={ATLAS_NOTES_SUBSCRIBE_URL}
+                href="https://www.medrxiv.org/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group border border-border bg-background p-6 hover:border-primary hover:shadow-md transition-all flex flex-col"
               >
                 <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
-                  Editorial · Long-form
+                  Health preprints
                 </div>
                 <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                  Atlas Notes
+                  medRxiv
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4 flex-1">
-                  Long-form analysis of where AI is moving in healthcare — methods, model behaviour,
-                  clinical-deployment realities. Author voice, with named takes you can argue with.
+                  The preprint server for the health sciences. Where new methods, validation studies
+                  and clinical deployment papers land before peer review. The freshest signal in
+                  healthcare AI — read for what's being attempted right now.
                 </p>
                 <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform">
-                  Read on LinkedIn
+                  Browse medRxiv
+                  <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                </div>
+              </a>
+
+              <a
+                href="https://arxiv.org/list/cs.LG/recent"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group border border-border bg-background p-6 hover:border-primary hover:shadow-md transition-all flex flex-col"
+              >
+                <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
+                  ML method papers
+                </div>
+                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+                  arXiv (cs.LG · q-bio)
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4 flex-1">
+                  Foundation-model architectures, transformer variants, quantitative-biology methods.
+                  Read for what's technically possible; medRxiv for what's clinically validated. Most
+                  healthcare-AI methods originate here months before they appear on medRxiv.
+                </p>
+                <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform">
+                  Browse arXiv
                   <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
                 </div>
               </a>
@@ -203,12 +207,12 @@ const FoundersContext = () => {
               <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
                 In preparation
               </div>
-              <h3 className="text-base font-semibold mb-2">A curated methods atlas — coming next</h3>
+              <h3 className="text-base font-semibold mb-2">A curated papers atlas — coming next</h3>
               <p className="text-sm text-muted-foreground">
-                Foundation models in clinical use; ML architectures by clinical task (imaging /
-                language / genomics / signals); limitations and failure modes of AI in medicine.
-                Will live directly on this tab. Until then, the AI Life Sciences hub and Atlas Notes
-                cover the same ground from two different angles.
+                The seminal papers a healthcare-AI founder should know — foundation models in
+                clinical use, the imaging classics, LLM-in-medicine benchmarks, the failure-mode
+                papers. Indexed by clinical task and method, every entry sourced to its original
+                publication. Will live directly on this tab.
               </p>
             </div>
           </TabsContent>

@@ -14,7 +14,6 @@ import { domains } from '@/data/domains';
 import { openCallEntries } from '@/data/openCallEntries';
 import { conferences } from '@/data/conferences';
 import { launches } from '@/data/launches';
-import { ATLAS_NOTES_SUBSCRIBE_URL } from '@/data/constants';
 import { SearchModal } from '@/components/search/SearchModal';
 
 type NavLink = {
@@ -32,14 +31,15 @@ type NavLink = {
 
 // Intent-clustered primary navigation. Open Calls leads because it's the
 // largest inventory and the primary traffic driver. Founder Toolkit is a
-// vertical for one segment (founders) — it absorbs the former Context page
-// and adds Regulation + Dead Startups. Atlas Notes is external (LinkedIn).
+// vertical for one segment (founders). About anchors authorship + Atlas
+// Notes pointer (Atlas Notes is no longer a top-level item — it lives
+// contextually inside About).
 const navLinks: NavLink[] = [
   { key: 'nav.opencalls', path: '/discovery?section=opencalls', count: openCallEntries.length },
   { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
   { key: 'nav.events', path: '/discovery', count: conferences.length + launches.length },
   { key: 'nav.founders', path: '/founders' },
-  { key: 'nav.atlasnotes', path: ATLAS_NOTES_SUBSCRIBE_URL, external: true },
+  { key: 'nav.about', path: '/about' },
 ];
 
 // Per-domain player counts for the Domains dropdown.
@@ -174,9 +174,18 @@ export function Header() {
                     >
                       <ChevronDown className="h-3 w-3" />
                     </DropdownMenuTrigger>
+                    {/* alignOffset compensates for the trigger being the
+                        chevron (a small icon to the right of the label).
+                        Without it, the dropdown's left edge aligns with
+                        the chevron's left edge and the menu visually
+                        hangs off-axis from the "Domains" label. The
+                        offset (-80px) is tuned for the "Domains 4" label
+                        at text-sm — adjust if the label or count changes
+                        materially. */}
                     <DropdownMenuContent
                       align="start"
                       sideOffset={4}
+                      alignOffset={-80}
                       className="min-w-[260px] rounded-none"
                     >
                       {items.map((item) => (

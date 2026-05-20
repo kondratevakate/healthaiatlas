@@ -1,159 +1,311 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Globe, Menu, X, Mail, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { Globe, Menu, X, ChevronDown, Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { toast } from '@/hooks/use-toast';
 import { domains } from '@/data/domains';
+import { openCallEntries } from '@/data/openCallEntries';
+import { conferences } from '@/data/conferences';
+import { launches } from '@/data/launches';
+import { ATLAS_NOTES_SUBSCRIBE_URL } from '@/data/constants';
+import { SearchModal } from '@/components/search/SearchModal';
 
-type NavLink = { key: string; path: string; dropdown?: boolean };
+type NavLink = {
+  key: string;
+  // Internal route OR external URL. External entries are routed via <a>
+  // instead of react-router <Link>, and the count badge is suppressed.
+  path: string;
+  dropdown?: boolean;
+  external?: boolean;
+  // Static count displayed as a small mono-font badge next to the label.
+  // Pulled at module-load from the underlying data files (see below) so the
+  // navbar's scale stays honest as inventory grows.
+  count?: number;
+};
 
+// Intent-clustered primary navigation. Open Calls leads because it's the
+// largest inventory and the primary traffic driver. Founder Toolkit is a
+// vertical for one segment (founders) — it absorbs the former Context page
+// and adds Regulation + Dead Startups. Atlas Notes is external (LinkedIn).
 const navLinks: NavLink[] = [
-  { key: 'nav.home', path: '/' },
-  { key: 'nav.discovery', path: '/discovery', dropdown: true },
-  { key: 'nav.directory', path: '/directory', dropdown: true },
-  { key: 'nav.context', path: '/context' },
-  { key: 'nav.about', path: '/about' },
+  { key: 'nav.opencalls', path: '/discovery?section=opencalls', count: openCallEntries.length },
+  { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
+  { key: 'nav.events', path: '/discovery', count: conferences.length + launches.length },
+  { key: 'nav.founders', path: '/founders' },
+  { key: 'nav.atlasnotes', path: ATLAS_NOTES_SUBSCRIBE_URL, external: true },
 ];
 
-// Discovery section sub-nav — mirrors SECTION_NAV in pages/Discovery.tsx.
-// Kept in sync manually; if you add a section there, add it here too.
-const discoverySections: { id: string; label: string; subtitle: string; param: string }[] = [
-  { id: 'newsfeed', label: 'Newsfeed', subtitle: 'Events, launches, leaders, prompts', param: '' },
-  { id: 'opencalls', label: 'Open Calls', subtitle: 'Grants, fellowships, accelerators, prizes, sandboxes', param: 'section=opencalls' },
-];
+// Per-domain player counts for the Domains dropdown.
+const domainCounts: Record<string, number> = Object.fromEntries(
+  domains.filter((d) => d.id !== 'overview').map((d) => [d.id, d.playerIds.length]),
+);
+
+// Resolves whether a nav link is currently active. Open Calls and Events both
+// live on /discovery and are distinguished by the `section` query param; this
+// helper handles that and any future query-keyed sub-routes without needing a
+// dedicated branch per link.
+function matchesActive(link: NavLink, pathname: string, params: URLSearchParams): boolean {
+  if (link.external) return false;
+  const [linkPath, linkQuery] = link.path.split('?');
+  if (pathname !== linkPath) return false;
+  if (linkQuery) {
+    for (const [key, value] of new URLSearchParams(linkQuery)) {
+      if (params.get(key) !== value) return false;
+    }
+    return true;
+  }
+  // Bare /discovery should NOT light up when the visitor is on the opencalls
+  // section — only when no section param (or a non-opencalls one) is set.
+  if (linkPath === '/discovery') return params.get('section') !== 'opencalls';
+  return true;
+}
+
+function CountBadge({ count }: { count?: number }) {
+  if (typeof count !== 'number' || count <= 0) return null;
+  return <span className="text-[10px] text-muted-foreground font-mono">{count}</span>;
+}
 
 export function Header() {
   const { t, language, setLanguage } = useLanguage();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [subscribeOpen, setSubscribeOpen] = useState(false);
-  const [email, setEmail] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  // Global ⌘K / Ctrl+K shortcut opens the SearchModal. Ignored when an
+  // input/textarea/contenteditable is focused so users typing into forms
+  // (e.g. the subscribe modal) keep their keystrokes.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'k' || !(e.metaKey || e.ctrlKey)) return;
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || target?.isContentEditable) return;
+      e.preventDefault();
+      setSearchOpen((open) => !open);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const isActive = (link: NavLink) =>
+    matchesActive(link, location.pathname, searchParams);
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'ar' : 'en');
   };
 
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    // Privacy policy commits to not collecting PII in the browser.
-    // The Worker (when configured) is the only path that holds the address.
-    const url = import.meta.env.VITE_NEWSLETTER_SIGNUP_URL as string | undefined;
-    if (url) {
-      try {
-        await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, source: 'healthaiatlas/header' }),
-        });
-      } catch {
-        /* silent — Worker is the source of truth, no local fallback */
-      }
-    }
-    toast({ title: 'Thanks!', description: "We'll reach out when the newsletter launches." });
-    setEmail('');
-    setSubscribeOpen(false);
-  };
+  const renderLabel = (link: NavLink, active: boolean) => (
+    <span className="relative inline-flex items-baseline gap-1.5">
+      <span className={active ? 'text-foreground' : ''}>
+        {t(link.key)}
+        {active && (
+          <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary" />
+        )}
+      </span>
+      <CountBadge count={link.count} />
+      {link.external && <span aria-hidden className="text-xs">↗</span>}
+    </span>
+  );
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-background border-b border-border">
-        <div className="container flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center group">
-            <span className="text-lg font-bold tracking-tight text-foreground">
-              AI Health Directory
-            </span>
-          </Link>
+    <SearchModal open={searchOpen} onOpenChange={setSearchOpen} />
+    <header className="sticky top-0 z-50 w-full bg-background border-b border-border">
+      <div className="container flex h-16 items-center justify-between">
+        <Link to="/" className="flex items-center group">
+          <span className="text-lg font-bold tracking-tight text-foreground">
+            HealthAI Atlas
+          </span>
+        </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-7">
+          {navLinks.map((link) => {
+            const active = isActive(link);
+            const baseClass = cn(
+              'text-sm font-medium transition-colors py-1',
+              active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+            );
+
+            if (link.external) {
+              return (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={baseClass}
+                >
+                  {renderLabel(link, false)}
+                </a>
+              );
+            }
+
+            // Domains is the only dropdown — composes the 4 hubs under one label.
+            if (link.dropdown && link.path === '/directory') {
+              const items = domains
+                .filter((d) => d.id !== 'overview')
+                .map((d) => ({
+                  id: d.id,
+                  to: `/directory?domain=${d.id}`,
+                  label: d.name[language],
+                  subtitle: d.subtitle?.[language],
+                  count: domainCounts[d.id],
+                }));
+              return (
+                <div key={link.path} className="relative inline-flex items-center">
+                  <Link to={link.path} className={baseClass}>
+                    {renderLabel(link, active)}
+                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      className={cn(
+                        'ml-1 p-1 outline-none transition-colors',
+                        active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+                      )}
+                      aria-label={`Open ${t(link.key)} sub-sections`}
+                    >
+                      <ChevronDown className="h-3 w-3" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="start"
+                      sideOffset={4}
+                      className="min-w-[260px] rounded-none"
+                    >
+                      {items.map((item) => (
+                        <DropdownMenuItem key={item.id} asChild className="rounded-none">
+                          <Link
+                            to={item.to}
+                            className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                          >
+                            <span className="text-xs font-medium text-left inline-flex items-baseline gap-1.5">
+                              {item.label}
+                              <CountBadge count={item.count} />
+                            </span>
+                            {item.subtitle && (
+                              <span className="text-[10px] text-muted-foreground line-clamp-1 text-left">
+                                {item.subtitle}
+                              </span>
+                            )}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              );
+            }
+
+            return (
+              <Link key={link.path} to={link.path} className={baseClass}>
+                {renderLabel(link, active)}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSearchOpen(true)}
+            className="text-muted-foreground hover:text-foreground"
+            aria-label="Search Atlas (⌘K)"
+            title="Search (⌘K)"
+          >
+            <Search className="h-4 w-4" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleLanguage}
+            className="text-muted-foreground hover:text-foreground"
+            aria-label="Toggle language"
+          >
+            <Globe className="h-4 w-4" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+        </div>
+      </div>
+
+      {mobileMenuOpen && (
+        <nav className="md:hidden border-t border-border bg-background">
+          <div className="container py-4 space-y-1">
             {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
+              const active = isActive(link);
+              const itemClass = cn(
+                'block px-4 py-3 text-sm font-medium transition-colors text-left',
+                active ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground',
+              );
 
-              if (link.dropdown) {
-                // Build the dropdown items for this nav link.
-                const items: { id: string; to: string; label: string; subtitle?: string }[] =
-                  link.path === '/directory'
-                    ? domains
-                        .filter((d) => d.id !== 'overview')
-                        .map((d) => ({
-                          id: d.id,
-                          to: `/directory?domain=${d.id}`,
-                          label: d.name[language],
-                          subtitle: d.subtitle?.[language],
-                        }))
-                    : link.path === '/discovery'
-                    ? discoverySections.map((s) => ({
-                        id: s.id,
-                        to: s.param ? `/discovery?${s.param}` : '/discovery',
-                        label: s.label,
-                        subtitle: s.subtitle,
-                      }))
-                    : [];
-
+              if (link.external) {
                 return (
-                  <div key={link.path} className="relative inline-flex items-center">
-                    {/* Main label — clickable, navigates to the section's overview */}
+                  <a
+                    key={link.path}
+                    href={link.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={itemClass}
+                  >
+                    {t(link.key)} ↗
+                  </a>
+                );
+              }
+
+              if (link.dropdown && link.path === '/directory') {
+                const items = domains
+                  .filter((d) => d.id !== 'overview')
+                  .map((d) => ({
+                    id: d.id,
+                    to: `/directory?domain=${d.id}`,
+                    label: d.name[language],
+                    count: domainCounts[d.id],
+                  }));
+                return (
+                  <div key={link.path} className="space-y-0.5">
                     <Link
                       to={link.path}
-                      className={cn(
-                        "text-sm font-medium transition-colors relative py-1",
-                        isActive
-                          ? "text-foreground"
-                          : "text-muted-foreground hover:text-foreground"
-                      )}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={itemClass}
                     >
-                      {t(link.key)}
-                      {isActive && (
-                        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
-                      )}
+                      <span className="inline-flex items-baseline gap-1.5">
+                        {t(link.key)}
+                        <CountBadge count={link.count} />
+                      </span>
                     </Link>
-                    {/* Chevron — opens sub-section dropdown */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        className={cn(
-                          "ml-1 p-1 outline-none transition-colors",
-                          isActive
-                            ? "text-foreground"
-                            : "text-muted-foreground hover:text-foreground"
-                        )}
-                        aria-label={`Open ${t(link.key)} sub-sections`}
-                      >
-                        <ChevronDown className="h-3 w-3" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" sideOffset={4} className="min-w-[240px] rounded-none">
-                        {items.map((item) => (
-                          <DropdownMenuItem key={item.id} asChild className="rounded-none">
-                            <Link
-                              to={item.to}
-                              className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
-                            >
-                              <span className="text-xs font-medium text-left">{item.label}</span>
-                              {item.subtitle && (
-                                <span className="text-[10px] text-muted-foreground line-clamp-1 text-left">
-                                  {item.subtitle}
-                                </span>
-                              )}
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="pl-4 border-l-2 border-border ml-4 space-y-0.5">
+                      {items.map((item) => (
+                        <Link
+                          key={item.id}
+                          to={item.to}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors text-left"
+                        >
+                          <span className="inline-flex items-baseline gap-1.5">
+                            {item.label}
+                            <CountBadge count={item.count} />
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 );
               }
@@ -162,166 +314,20 @@ export function Header() {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={cn(
-                    "text-sm font-medium transition-colors relative py-1",
-                    isActive
-                      ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={itemClass}
                 >
-                  {t(link.key)}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
-                  )}
+                  <span className="inline-flex items-baseline gap-1.5">
+                    {t(link.key)}
+                    <CountBadge count={link.count} />
+                  </span>
                 </Link>
               );
             })}
-          </nav>
-
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSubscribeOpen(true)}
-              className="hidden sm:flex text-muted-foreground hover:text-foreground"
-            >
-              <Mail className="h-4 w-4 mr-1" />
-              {t('header.subscribe')}
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleLanguage}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Globe className="h-4 w-4" />
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
           </div>
-        </div>
-
-        {mobileMenuOpen && (
-          <nav className="md:hidden border-t border-border bg-background">
-            <div className="container py-4 space-y-1">
-              {navLinks.map((link) => {
-                const isActive = location.pathname === link.path;
-
-                if (link.dropdown) {
-                  const items: { id: string; to: string; label: string }[] =
-                    link.path === '/directory'
-                      ? domains
-                          .filter((d) => d.id !== 'overview')
-                          .map((d) => ({
-                            id: d.id,
-                            to: `/directory?domain=${d.id}`,
-                            label: d.name[language],
-                          }))
-                      : link.path === '/discovery'
-                      ? discoverySections.map((s) => ({
-                          id: s.id,
-                          to: s.param ? `/discovery?${s.param}` : '/discovery',
-                          label: s.label,
-                        }))
-                      : [];
-
-                  return (
-                    <div key={link.path} className="space-y-0.5">
-                      <Link
-                        to={link.path}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={cn(
-                          "block px-4 py-3 text-sm font-medium transition-colors text-left",
-                          isActive
-                            ? "text-primary bg-primary/5"
-                            : "text-muted-foreground hover:text-foreground"
-                        )}
-                      >
-                        {t(link.key)}
-                      </Link>
-                      <div className="pl-4 border-l-2 border-border ml-4 space-y-0.5">
-                        {items.map((item) => (
-                          <Link
-                            key={item.id}
-                            to={item.to}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors text-left"
-                          >
-                            {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                }
-
-                return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "block px-4 py-3 text-sm font-medium transition-colors",
-                      isActive
-                        ? "text-primary bg-primary/5"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {t(link.key)}
-                  </Link>
-                );
-              })}
-              <div className="px-4 pt-4 border-t border-border mt-4">
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setSubscribeOpen(true);
-                  }}
-                >
-                  <Mail className="h-4 w-4 mr-2" />
-                  {t('header.subscribe')}
-                </Button>
-              </div>
-            </div>
-          </nav>
-        )}
-      </header>
-
-      <Dialog open={subscribeOpen} onOpenChange={setSubscribeOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Get Notified</DialogTitle>
-            <DialogDescription>
-              Newsletter coming soon. We'll save your interest and reach out when it launches.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubscribe} className="flex flex-col gap-4">
-            <Input
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Button type="submit" className="w-full">
-              Notify Me
-            </Button>
-            <p className="text-xs text-muted-foreground text-center">
-              No emails sent yet — we're building this feature.
-            </p>
-          </form>
-        </DialogContent>
-      </Dialog>
+        </nav>
+      )}
+    </header>
     </>
   );
 }

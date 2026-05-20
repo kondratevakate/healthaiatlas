@@ -1,4 +1,4 @@
-// AI Health Directory — Knowledge Bank
+// HealthAI Atlas — Knowledge Bank
 // Core data models for the platform
 
 export type LocalizedString = {

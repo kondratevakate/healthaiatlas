@@ -10,10 +10,21 @@ interface Translations {
 }
 
 const translations: Translations = {
-  // Navigation
+  // Navigation — primary nav follows intent clusters (aisafety.com pattern):
+  // Opportunities first (Open Calls = grants/funds/hackathons/etc — main traffic driver),
+  // then analytical depth (Domains), then time-bound items (Events),
+  // then the founder vertical (Toolkit), then the editorial channel (Atlas Notes).
   'nav.home': { en: 'Home', ar: 'الرئيسية' },
-  'nav.directory': { en: 'Directory', ar: 'الدليل' },
+  'nav.opencalls': { en: 'Open Calls', ar: 'دعوات مفتوحة' },
+  'nav.domains': { en: 'Domains', ar: 'المجالات' },
+  'nav.events': { en: 'Events', ar: 'الفعاليات' },
+  'nav.founders': { en: 'Founder Toolkit', ar: 'أدوات المؤسس' },
+  'nav.atlasnotes': { en: 'Atlas Notes', ar: 'مذكرات الأطلس' },
   'nav.about': { en: 'About', ar: 'حول' },
+
+  // Legacy nav keys — retained while older pages still reference them.
+  // Remove once Directory / Discovery / Context routes are fully renamed.
+  'nav.directory': { en: 'Directory', ar: 'الدليل' },
   'nav.discovery': { en: 'Discovery', ar: 'اكتشاف' },
   'nav.context': { en: 'Context', ar: 'السياق' },
 

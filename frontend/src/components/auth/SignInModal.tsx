@@ -82,7 +82,7 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
             {mode === 'signin' ? t('auth.signInTo') : t('auth.createAccount')}
           </DialogTitle>
           <p className="text-sm text-muted-foreground mt-1">
-            AI Health Directory
+            HealthAI Atlas
           </p>
         </DialogHeader>
 

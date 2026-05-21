@@ -32,8 +32,8 @@ export function HeroSection() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="rounded-none font-medium">
-                <Link to="/maps">
-                  {t('hero.viewMaps')}
+                <Link to="/discovery">
+                  {t('nav.discovery')}
                   <ArrowIcon className="w-4 h-4 ml-2" />
                 </Link>
               </Button>

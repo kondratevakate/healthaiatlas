@@ -132,34 +132,34 @@ Please note your knowledge cutoff and recommend official sources for verificatio
     variables: []
   },
 
-  // Clinician prompts
+  // Student / Researcher prompts
   {
-    id: 'clinician-perplexity',
+    id: 'student-perplexity',
     llm: 'perplexity',
-    role: 'clinician',
-    template: `I'm a clinician interested in AI tools for my practice in UAE.
+    role: 'student',
+    template: `I'm a graduate student / postdoc researching AI tools in healthcare.
 
 Research and provide sources for:
-1. Current hospital policies on AI diagnostic tools in UAE
-2. Regulatory framework for clinical AI use (DHA, DOH guidelines)
-3. Approved/registered AI medical devices in UAE
-4. Professional liability considerations for AI-assisted diagnosis
+1. Recent (2024-2026) peer-reviewed papers on the modality I'm studying — please ask me to specify if I haven't said
+2. Active research labs and PIs publishing in this space, with university affiliations
+3. Open datasets and benchmarks for healthcare AI in this area
+4. Grant programs and fellowships for early-career healthcare-AI researchers
 
-For each point, cite official or institutional sources.
+For each point, cite primary sources (PubMed, arXiv, lab pages).
 Flag any information that cannot be verified.`,
     variables: []
   },
   {
-    id: 'clinician-chatgpt',
+    id: 'student-chatgpt',
     llm: 'chatgpt',
-    role: 'clinician',
-    template: `I'm a healthcare professional in UAE interested in using AI tools.
+    role: 'student',
+    template: `I'm a student / researcher building a research line in healthcare AI.
 
 Help me understand:
-1. What AI tools are currently approved for clinical use in UAE?
-2. What are the liability implications of using AI in diagnosis?
-3. How do I evaluate AI tools for my practice?
-4. What training or certification might be relevant?
+1. How do I evaluate which papers in this field are methodologically strong vs. hype?
+2. What labs / PIs should I follow to track the frontier?
+3. How do I cold-email a PI for a postdoc or collaboration without sounding generic?
+4. What evidence standards do top venues (NEJM AI, Nature Medicine, MICCAI, NeurIPS Health) actually expect?
 
 Please indicate limitations of your knowledge and suggest where to verify.`,
     variables: []

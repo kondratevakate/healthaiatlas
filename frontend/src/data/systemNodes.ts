@@ -6,410 +6,354 @@ export interface SystemMapNode {
   layer: SystemLayer;
   category: SystemNodeCategory;
   description: LocalizedString;
-  angle: number; // degrees from top (0-360)
+  angle: number;
 }
 
-// Category configuration - MONOCHROME grays (coral accent on hover only)
 export const categoryConfig: Record<SystemNodeCategory, { color: string; label: LocalizedString }> = {
-  human: {
-    color: 'hsl(0, 0%, 35%)',
-    label: { en: 'Human', ar: 'بشري' }
-  },
-  social: {
-    color: 'hsl(0, 0%, 40%)',
-    label: { en: 'Social', ar: 'اجتماعي' }
-  },
-  cultural: {
-    color: 'hsl(0, 0%, 45%)',
-    label: { en: 'Cultural', ar: 'ثقافي' }
-  },
-  financial: {
-    color: 'hsl(0, 0%, 50%)',
-    label: { en: 'Financial', ar: 'مالي' }
-  },
-  built: {
-    color: 'hsl(0, 0%, 55%)',
-    label: { en: 'Built', ar: 'بنية تحتية' }
-  },
-  data: {
-    color: 'hsl(0, 0%, 60%)',
-    label: { en: 'Data', ar: 'بيانات' }
-  },
-  political: {
-    color: 'hsl(0, 0%, 65%)',
-    label: { en: 'Political', ar: 'سياسي' }
-  },
-  natural: {
-    color: 'hsl(0, 0%, 70%)',
-    label: { en: 'Natural', ar: 'طبيعي' }
-  },
+  human: { color: 'hsl(0, 0%, 35%)', label: { en: 'Human', ar: 'بشري' } },
+  social: { color: 'hsl(0, 0%, 40%)', label: { en: 'Social', ar: 'اجتماعي' } },
+  cultural: { color: 'hsl(0, 0%, 45%)', label: { en: 'Cultural', ar: 'ثقافي' } },
+  financial: { color: 'hsl(0, 0%, 50%)', label: { en: 'Financial', ar: 'مالي' } },
+  built: { color: 'hsl(0, 0%, 55%)', label: { en: 'Built', ar: 'بنية تحتية' } },
+  data: { color: 'hsl(0, 0%, 60%)', label: { en: 'Data', ar: 'بيانات' } },
+  political: { color: 'hsl(0, 0%, 65%)', label: { en: 'Political', ar: 'سياسي' } },
+  natural: { color: 'hsl(0, 0%, 70%)', label: { en: 'Natural', ar: 'طبيعي' } },
 };
 
-// Layer configuration
 export const layerConfig: Record<SystemLayer, { radius: number; label: LocalizedString }> = {
-  purpose: {
-    radius: 0.15,
-    label: { en: 'PURPOSE', ar: 'الهدف' }
-  },
-  impacts: {
-    radius: 0.35,
-    label: { en: 'IMPACTS', ar: 'التأثيرات' }
-  },
-  activities: {
-    radius: 0.6,
-    label: { en: 'ACTIVITIES', ar: 'الأنشطة' }
-  },
-  components: {
-    radius: 0.85,
-    label: { en: 'COMPONENTS', ar: 'المكونات' }
-  },
+  purpose: { radius: 0.15, label: { en: 'PURPOSE', ar: 'الهدف' } },
+  impacts: { radius: 0.35, label: { en: 'IMPACTS', ar: 'التأثيرات' } },
+  activities: { radius: 0.6, label: { en: 'ACTIVITIES', ar: 'الأنشطة' } },
+  components: { radius: 0.85, label: { en: 'COMPONENTS', ar: 'المكونات' } },
 };
 
-// System map nodes for UAE Healthcare AI ecosystem
+// Cross-context healthcare AI ecosystem — multi-region.
+// Components layer mixes US, UAE, UK, EU, and generic actors so the map reads as global.
 export const systemNodes: SystemMapNode[] = [
-  // PURPOSE (center) - Core goals
+  // PURPOSE (center) — universal goals
   {
     id: 'purpose-health',
     label: { en: 'Improve Population Health', ar: 'تحسين صحة السكان' },
     layer: 'purpose',
     category: 'human',
-    description: { en: 'Core goal of enhancing health outcomes for UAE residents', ar: 'الهدف الأساسي لتحسين النتائج الصحية لسكان الإمارات' },
-    angle: 0
+    description: { en: 'Better outcomes across populations and demographics', ar: 'نتائج أفضل عبر السكان والفئات الديموغرافية' },
+    angle: 0,
   },
   {
     id: 'purpose-access',
-    label: { en: 'Universal Access', ar: 'وصول شامل' },
+    label: { en: 'Equitable Access', ar: 'وصول عادل' },
     layer: 'purpose',
     category: 'social',
-    description: { en: 'Ensuring healthcare access for all', ar: 'ضمان الوصول للرعاية الصحية للجميع' },
-    angle: 120
+    description: { en: 'Healthcare reach independent of geography or income', ar: 'وصول الرعاية الصحية بمعزل عن الجغرافيا أو الدخل' },
+    angle: 120,
   },
   {
-    id: 'purpose-innovation',
-    label: { en: 'Lead in AI Innovation', ar: 'الريادة في الابتكار' },
+    id: 'purpose-evidence',
+    label: { en: 'Evidence-Grade AI', ar: 'ذكاء اصطناعي قائم على الأدلة' },
     layer: 'purpose',
     category: 'data',
-    description: { en: 'Position UAE as global AI healthcare leader', ar: 'وضع الإمارات كقائد عالمي في الذكاء الاصطناعي الصحي' },
-    angle: 240
+    description: { en: 'AI deployed with the same rigor as any other clinical intervention', ar: 'الذكاء الاصطناعي بنفس صرامة أي تدخل سريري آخر' },
+    angle: 240,
   },
 
-  // IMPACTS - What happens
+  // IMPACTS — what changes when the system works
   {
     id: 'impact-diagnosis',
     label: { en: 'Faster Diagnosis', ar: 'تشخيص أسرع' },
     layer: 'impacts',
     category: 'human',
-    description: { en: 'AI-powered faster and more accurate diagnosis', ar: 'تشخيص أسرع وأدق بالذكاء الاصطناعي' },
-    angle: 0
+    description: { en: 'AI-assisted detection at population scale', ar: 'الكشف المدعوم بالذكاء الاصطناعي على نطاق السكان' },
+    angle: 0,
   },
   {
     id: 'impact-cost',
-    label: { en: 'Reduced Costs', ar: 'تخفيض التكاليف' },
+    label: { en: 'Lower Cost of Care', ar: 'خفض تكلفة الرعاية' },
     layer: 'impacts',
     category: 'financial',
-    description: { en: 'Lower healthcare costs through efficiency', ar: 'تخفيض التكاليف من خلال الكفاءة' },
-    angle: 45
+    description: { en: 'Efficiency gains in admin, imaging, triage', ar: 'مكاسب الكفاءة في الإدارة والتصوير والفرز' },
+    angle: 51,
   },
   {
     id: 'impact-research',
-    label: { en: 'Accelerated Research', ar: 'تسريع البحث' },
+    label: { en: 'Accelerated R&D', ar: 'تسريع البحث والتطوير' },
     layer: 'impacts',
     category: 'data',
-    description: { en: 'Faster medical discoveries through AI', ar: 'اكتشافات طبية أسرع بالذكاء الاصطناعي' },
-    angle: 90
+    description: { en: 'Drug discovery and trial design at new speeds', ar: 'اكتشاف الأدوية وتصميم التجارب بسرعات جديدة' },
+    angle: 102,
   },
   {
     id: 'impact-personalized',
     label: { en: 'Personalized Care', ar: 'رعاية شخصية' },
     layer: 'impacts',
     category: 'human',
-    description: { en: 'Tailored treatments based on individual data', ar: 'علاجات مخصصة بناء على البيانات الفردية' },
-    angle: 135
+    description: { en: 'Treatment tuned to individual biology and history', ar: 'علاج مضبوط على بيولوجيا الفرد وتاريخه' },
+    angle: 153,
   },
   {
     id: 'impact-prevention',
-    label: { en: 'Disease Prevention', ar: 'الوقاية من الأمراض' },
+    label: { en: 'Earlier Prevention', ar: 'وقاية مبكرة' },
     layer: 'impacts',
     category: 'social',
-    description: { en: 'Predictive analytics for early intervention', ar: 'تحليلات تنبؤية للتدخل المبكر' },
-    angle: 180
+    description: { en: 'Predictive risk stratification before disease onset', ar: 'تصنيف المخاطر التنبؤي قبل بداية المرض' },
+    angle: 204,
   },
   {
     id: 'impact-workforce',
-    label: { en: 'Enhanced Workforce', ar: 'تعزيز القوى العاملة' },
+    label: { en: 'Augmented Workforce', ar: 'قوى عاملة معززة' },
     layer: 'impacts',
     category: 'human',
-    description: { en: 'AI augmenting healthcare professionals', ar: 'الذكاء الاصطناعي يعزز المهنيين الصحيين' },
-    angle: 225
+    description: { en: 'AI as a colleague — not a replacement — for clinicians', ar: 'الذكاء الاصطناعي كزميل لا بديل عن الأطباء' },
+    angle: 255,
   },
   {
     id: 'impact-trust',
     label: { en: 'Public Trust', ar: 'الثقة العامة' },
     layer: 'impacts',
     category: 'cultural',
-    description: { en: 'Building confidence in AI healthcare', ar: 'بناء الثقة في الرعاية الصحية بالذكاء الاصطناعي' },
-    angle: 270
-  },
-  {
-    id: 'impact-economy',
-    label: { en: 'Economic Growth', ar: 'النمو الاقتصادي' },
-    layer: 'impacts',
-    category: 'financial',
-    description: { en: 'Healthcare AI sector growth', ar: 'نمو قطاع الذكاء الاصطناعي الصحي' },
-    angle: 315
+    description: { en: 'Transparency that earns user and patient confidence', ar: 'الشفافية التي تكسب ثقة المستخدمين والمرضى' },
+    angle: 306,
   },
 
-  // ACTIVITIES - What we do
+  // ACTIVITIES — the work the ecosystem does
   {
     id: 'activity-imaging',
-    label: { en: 'Medical Imaging', ar: 'التصوير الطبي' },
+    label: { en: 'Medical Imaging AI', ar: 'الذكاء الاصطناعي للتصوير الطبي' },
     layer: 'activities',
     category: 'data',
-    description: { en: 'AI-powered radiology and imaging analysis', ar: 'تحليل الأشعة والتصوير بالذكاء الاصطناعي' },
-    angle: 0
+    description: { en: 'Radiology, pathology, ophthalmology models', ar: 'نماذج الأشعة وعلم الأمراض وطب العيون' },
+    angle: 0,
   },
   {
     id: 'activity-genomics',
-    label: { en: 'Genomics Analysis', ar: 'تحليل الجينوم' },
+    label: { en: 'Genomics & Multi-omics', ar: 'الجينوميات والأوميات المتعددة' },
     layer: 'activities',
     category: 'data',
-    description: { en: 'DNA sequencing and genetic analysis', ar: 'تسلسل الحمض النووي والتحليل الجيني' },
-    angle: 30
+    description: { en: 'Sequencing, variant calling, multi-omics integration', ar: 'التسلسل، استدعاء المتغيرات، تكامل الأوميات المتعددة' },
+    angle: 36,
   },
   {
-    id: 'activity-telemedicine',
-    label: { en: 'Telemedicine', ar: 'الطب عن بعد' },
+    id: 'activity-drug-discovery',
+    label: { en: 'Drug Discovery', ar: 'اكتشاف الأدوية' },
     layer: 'activities',
-    category: 'built',
-    description: { en: 'Remote healthcare consultations', ar: 'الاستشارات الصحية عن بعد' },
-    angle: 60
+    category: 'data',
+    description: { en: 'Generative chemistry, target ID, AlphaFold-class structure', ar: 'الكيمياء التوليدية، تحديد الأهداف، البنية بفئة AlphaFold' },
+    angle: 72,
   },
   {
     id: 'activity-monitoring',
     label: { en: 'Patient Monitoring', ar: 'مراقبة المرضى' },
     layer: 'activities',
     category: 'human',
-    description: { en: 'Continuous health tracking', ar: 'تتبع الصحة المستمر' },
-    angle: 90
-  },
-  {
-    id: 'activity-training',
-    label: { en: 'AI Training', ar: 'تدريب الذكاء الاصطناعي' },
-    layer: 'activities',
-    category: 'data',
-    description: { en: 'Model development and training', ar: 'تطوير وتدريب النماذج' },
-    angle: 120
+    description: { en: 'Wearables, remote monitoring, ICU prediction', ar: 'الأجهزة القابلة للارتداء، المراقبة عن بعد، التنبؤ في العناية المركزة' },
+    angle: 108,
   },
   {
     id: 'activity-regulation',
-    label: { en: 'Regulation', ar: 'التنظيم' },
+    label: { en: 'Regulation & Approval', ar: 'التنظيم والاعتماد' },
     layer: 'activities',
     category: 'political',
-    description: { en: 'Policy and compliance frameworks', ar: 'أطر السياسات والامتثال' },
-    angle: 150
+    description: { en: 'Clearance pathways: 510(k), De Novo, EU MDR, regional sandboxes', ar: 'مسارات الاعتماد: 510(k)، De Novo، EU MDR، الصناديق التجريبية الإقليمية' },
+    angle: 144,
   },
   {
     id: 'activity-funding',
-    label: { en: 'Investment', ar: 'الاستثمار' },
+    label: { en: 'Funding & Investment', ar: 'التمويل والاستثمار' },
     layer: 'activities',
     category: 'financial',
-    description: { en: 'Funding and grants for AI health', ar: 'التمويل والمنح للصحة بالذكاء الاصطناعي' },
-    angle: 180
-  },
-  {
-    id: 'activity-education',
-    label: { en: 'Education', ar: 'التعليم' },
-    layer: 'activities',
-    category: 'cultural',
-    description: { en: 'Training healthcare AI professionals', ar: 'تدريب المحترفين في الذكاء الاصطناعي الصحي' },
-    angle: 210
+    description: { en: 'Public grants, VC, sovereign capital', ar: 'المنح العامة، رأس المال المخاطر، رأس المال السيادي' },
+    angle: 180,
   },
   {
     id: 'activity-trials',
     label: { en: 'Clinical Trials', ar: 'التجارب السريرية' },
     layer: 'activities',
     category: 'human',
-    description: { en: 'AI-assisted clinical research', ar: 'البحث السريري بمساعدة الذكاء الاصطناعي' },
-    angle: 240
+    description: { en: 'AI-assisted recruitment, synthetic arms, decentralized trials', ar: 'التجنيد بمساعدة الذكاء الاصطناعي، الأذرع الاصطناعية، التجارب اللامركزية' },
+    angle: 216,
   },
   {
     id: 'activity-records',
-    label: { en: 'Health Records', ar: 'السجلات الصحية' },
+    label: { en: 'Health Records & Interop', ar: 'السجلات الصحية والتشغيل البيني' },
     layer: 'activities',
     category: 'data',
-    description: { en: 'Electronic health record systems', ar: 'أنظمة السجلات الصحية الإلكترونية' },
-    angle: 270
+    description: { en: 'EHR integration, FHIR, terminology, longitudinal records', ar: 'تكامل السجل الصحي الإلكتروني، FHIR، المصطلحات، السجلات الطولية' },
+    angle: 252,
   },
   {
-    id: 'activity-robotics',
-    label: { en: 'Surgical Robotics', ar: 'الروبوتات الجراحية' },
+    id: 'activity-education',
+    label: { en: 'Education & Training', ar: 'التعليم والتدريب' },
     layer: 'activities',
-    category: 'built',
-    description: { en: 'AI-assisted robotic surgery', ar: 'الجراحة الروبوتية بمساعدة الذكاء الاصطناعي' },
-    angle: 300
+    category: 'cultural',
+    description: { en: 'Curricula, fellowships, continuing medical education', ar: 'المناهج، الزمالات، التعليم الطبي المستمر' },
+    angle: 288,
   },
   {
     id: 'activity-partnerships',
-    label: { en: 'Partnerships', ar: 'الشراكات' },
+    label: { en: 'Cross-sector Partnerships', ar: 'شراكات عبر القطاعات' },
     layer: 'activities',
     category: 'social',
-    description: { en: 'Cross-sector collaborations', ar: 'التعاون عبر القطاعات' },
-    angle: 330
+    description: { en: 'Pharma + tech, academia + industry, government + private', ar: 'الأدوية + التكنولوجيا، الأكاديميا + الصناعة، الحكومة + القطاع الخاص' },
+    angle: 324,
   },
 
-  // COMPONENTS - Infrastructure and players
+  // COMPONENTS — multi-region actors
+  // Regulators (political)
   {
-    id: 'component-mohap',
-    label: { en: 'MOHAP', ar: 'وزارة الصحة' },
+    id: 'component-fda',
+    label: { en: 'FDA', ar: 'إدارة الغذاء والدواء (الولايات المتحدة)' },
     layer: 'components',
     category: 'political',
-    description: { en: 'Ministry of Health and Prevention', ar: 'وزارة الصحة ووقاية المجتمع' },
-    angle: 0
+    description: { en: 'US Food & Drug Administration — 510(k), De Novo, AI/ML SaMD pathway', ar: 'إدارة الغذاء والدواء الأمريكية — مسار 510(k) و De Novo و AI/ML SaMD' },
+    angle: 0,
   },
   {
-    id: 'component-doh',
-    label: { en: 'DOH Abu Dhabi', ar: 'دائرة الصحة أبوظبي' },
+    id: 'component-ema',
+    label: { en: 'EMA', ar: 'وكالة الأدوية الأوروبية' },
     layer: 'components',
     category: 'political',
-    description: { en: 'Department of Health Abu Dhabi', ar: 'دائرة الصحة في أبوظبي' },
-    angle: 20
+    description: { en: 'European Medicines Agency — EU MDR / IVDR oversight', ar: 'وكالة الأدوية الأوروبية — الإشراف على EU MDR / IVDR' },
+    angle: 22,
   },
   {
-    id: 'component-dha',
-    label: { en: 'DHA Dubai', ar: 'هيئة الصحة دبي' },
+    id: 'component-mhra',
+    label: { en: 'MHRA', ar: 'هيئة الأدوية والمنتجات الصحية (المملكة المتحدة)' },
     layer: 'components',
     category: 'political',
-    description: { en: 'Dubai Health Authority', ar: 'هيئة الصحة بدبي' },
-    angle: 40
+    description: { en: 'UK Medicines & Healthcare products Regulatory Agency', ar: 'هيئة تنظيم الأدوية والمنتجات الصحية في المملكة المتحدة' },
+    angle: 44,
   },
   {
-    id: 'component-seha',
-    label: { en: 'SEHA', ar: 'صحة' },
+    id: 'component-uae-regulators',
+    label: { en: 'MOHAP / DHA / DOH', ar: 'وزارة الصحة / DHA / DOH' },
+    layer: 'components',
+    category: 'political',
+    description: { en: 'UAE federal + Dubai + Abu Dhabi regulators', ar: 'الجهات التنظيمية الاتحادية في الإمارات + دبي + أبوظبي' },
+    angle: 66,
+  },
+  // Hospitals & care delivery (built)
+  {
+    id: 'component-mayo',
+    label: { en: 'Mayo Clinic', ar: 'مايو كلينيك' },
     layer: 'components',
     category: 'built',
-    description: { en: 'Abu Dhabi Health Services Company', ar: 'شركة أبوظبي للخدمات الصحية' },
-    angle: 60
+    description: { en: 'Integrated US health system; AI Lab and platform partnerships', ar: 'نظام صحي أمريكي متكامل؛ مختبر الذكاء الاصطناعي وشراكات المنصات' },
+    angle: 90,
+  },
+  {
+    id: 'component-nhs',
+    label: { en: 'NHS Trusts', ar: 'مؤسسات NHS' },
+    layer: 'components',
+    category: 'built',
+    description: { en: 'UK National Health Service — AI Lab, AI Diagnostic Fund', ar: 'هيئة الخدمات الصحية البريطانية — مختبر الذكاء الاصطناعي وصندوق التشخيص' },
+    angle: 110,
   },
   {
     id: 'component-cleveland',
     label: { en: 'Cleveland Clinic', ar: 'كليفلاند كلينك' },
     layer: 'components',
     category: 'built',
-    description: { en: 'Cleveland Clinic Abu Dhabi', ar: 'كليفلاند كلينك أبوظبي' },
-    angle: 80
+    description: { en: 'US + Abu Dhabi presence — AI imaging and cardiology', ar: 'وجود في الولايات المتحدة + أبوظبي — التصوير وأمراض القلب بالذكاء الاصطناعي' },
+    angle: 130,
   },
   {
-    id: 'component-g42',
-    label: { en: 'G42 Healthcare', ar: 'G42 الصحية' },
+    id: 'component-seha',
+    label: { en: 'SEHA / M42', ar: 'صحة / M42' },
+    layer: 'components',
+    category: 'built',
+    description: { en: 'Abu Dhabi Health Services + M42 health-tech umbrella', ar: 'خدمات الصحة في أبوظبي + مظلة M42 للتكنولوجيا الصحية' },
+    angle: 150,
+  },
+  // Data infrastructure (data)
+  {
+    id: 'component-fhir',
+    label: { en: 'HL7 / FHIR', ar: 'HL7 / FHIR' },
     layer: 'components',
     category: 'data',
-    description: { en: 'AI and genomics company', ar: 'شركة الذكاء الاصطناعي والجينوميات' },
-    angle: 100
+    description: { en: 'Interoperability standard underpinning modern EHR APIs', ar: 'معيار التشغيل البيني الذي تعتمد عليه واجهات السجلات الصحية الحديثة' },
+    angle: 170,
   },
   {
-    id: 'component-mbzuai',
-    label: { en: 'MBZUAI', ar: 'جامعة محمد بن زايد' },
+    id: 'component-allofus',
+    label: { en: 'All of Us / UK Biobank', ar: 'All of Us / UK Biobank' },
     layer: 'components',
     category: 'data',
-    description: { en: 'AI research university', ar: 'جامعة بحث الذكاء الاصطناعي' },
-    angle: 120
+    description: { en: 'Population-scale longitudinal cohorts (NIH, UK)', ar: 'مجموعات سكانية طولية واسعة (NIH، المملكة المتحدة)' },
+    angle: 190,
   },
   {
     id: 'component-nabidh',
     label: { en: 'NABIDH', ar: 'نبض' },
     layer: 'components',
     category: 'data',
-    description: { en: 'Dubai health information exchange', ar: 'تبادل المعلومات الصحية في دبي' },
-    angle: 140
+    description: { en: 'Dubai health information exchange', ar: 'منصة تبادل المعلومات الصحية في دبي' },
+    angle: 210,
   },
+  // Research institutions (data)
   {
-    id: 'component-doctors',
-    label: { en: 'Physicians', ar: 'الأطباء' },
+    id: 'component-research-labs',
+    label: { en: 'Research Labs', ar: 'مختبرات البحث' },
     layer: 'components',
-    category: 'human',
-    description: { en: 'Healthcare professionals', ar: 'المهنيين الصحيين' },
-    angle: 160
+    category: 'data',
+    description: { en: 'NIH, Stanford, MIT, MBZUAI, Crick, Karolinska, ETH Zurich', ar: 'NIH، ستانفورد، MIT، MBZUAI، Crick، Karolinska، ETH Zurich' },
+    angle: 230,
   },
-  {
-    id: 'component-nurses',
-    label: { en: 'Nursing Staff', ar: 'التمريض' },
-    layer: 'components',
-    category: 'human',
-    description: { en: 'Nursing and care workers', ar: 'العاملون في التمريض والرعاية' },
-    angle: 180
-  },
-  {
-    id: 'component-patients',
-    label: { en: 'Patients', ar: 'المرضى' },
-    layer: 'components',
-    category: 'human',
-    description: { en: 'Healthcare recipients', ar: 'متلقو الرعاية الصحية' },
-    angle: 200
-  },
+  // Founders & capital (financial)
   {
     id: 'component-startups',
-    label: { en: 'AI Startups', ar: 'الشركات الناشئة' },
+    label: { en: 'Healthcare AI Startups', ar: 'الشركات الناشئة في الذكاء الاصطناعي الصحي' },
     layer: 'components',
     category: 'financial',
-    description: { en: 'Health tech startups', ar: 'الشركات الناشئة للتقنية الصحية' },
-    angle: 220
+    description: { en: 'Tempus, Paige, HeartFlow, IDx, Cleerly, Aidoc, Lunit, and the long tail', ar: 'Tempus, Paige, HeartFlow, IDx, Cleerly, Aidoc, Lunit وغيرها الكثير' },
+    angle: 252,
   },
   {
     id: 'component-investors',
-    label: { en: 'Investors', ar: 'المستثمرون' },
+    label: { en: 'VCs & Sovereign Capital', ar: 'رأس المال المخاطر والسيادي' },
     layer: 'components',
     category: 'financial',
-    description: { en: 'Venture capital and funds', ar: 'رأس المال المخاطر والصناديق' },
-    angle: 240
+    description: { en: 'a16z Bio, GV, Khosla Ventures, Mubadala, ADQ, Hub71+', ar: 'a16z Bio، GV، Khosla Ventures، مبادلة، ADQ، Hub71+' },
+    angle: 274,
   },
   {
     id: 'component-pharma',
-    label: { en: 'Pharma', ar: 'الأدوية' },
-    layer: 'components',
-    category: 'built',
-    description: { en: 'Pharmaceutical companies', ar: 'شركات الأدوية' },
-    angle: 260
-  },
-  {
-    id: 'component-cloud',
-    label: { en: 'Cloud Infrastructure', ar: 'البنية السحابية' },
-    layer: 'components',
-    category: 'built',
-    description: { en: 'Data centers and cloud services', ar: 'مراكز البيانات والخدمات السحابية' },
-    angle: 280
-  },
-  {
-    id: 'component-insurance',
-    label: { en: 'Insurance', ar: 'التأمين' },
+    label: { en: 'Pharma & MedTech', ar: 'الأدوية والتكنولوجيا الطبية' },
     layer: 'components',
     category: 'financial',
-    description: { en: 'Health insurance providers', ar: 'مقدمو التأمين الصحي' },
-    angle: 300
+    description: { en: 'Pfizer, Roche, Novartis, J&J, Siemens Healthineers, GE HealthCare', ar: 'Pfizer, Roche, Novartis, J&J, Siemens Healthineers, GE HealthCare' },
+    angle: 296,
+  },
+  // Cloud & compute (built)
+  {
+    id: 'component-cloud',
+    label: { en: 'Cloud & Compute', ar: 'السحابة والحوسبة' },
+    layer: 'components',
+    category: 'built',
+    description: { en: 'AWS, Azure, GCP — plus regional providers (G42, OVH, Alibaba)', ar: 'AWS، Azure، GCP — بالإضافة إلى المزودين الإقليميين (G42، OVH، Alibaba)' },
+    angle: 318,
+  },
+  // Patients & professionals (human)
+  {
+    id: 'component-clinicians',
+    label: { en: 'Clinicians', ar: 'الأطباء' },
+    layer: 'components',
+    category: 'human',
+    description: { en: 'Physicians, nurses, allied health — the deployment surface', ar: 'الأطباء والممرضون والمهنيون الصحيون — سطح النشر' },
+    angle: 340,
   },
   {
-    id: 'component-community',
-    label: { en: 'Community', ar: 'المجتمع' },
+    id: 'component-patients',
+    label: { en: 'Patients & Communities', ar: 'المرضى والمجتمعات' },
     layer: 'components',
     category: 'social',
-    description: { en: 'Local communities and NGOs', ar: 'المجتمعات المحلية والمنظمات غير الحكومية' },
-    angle: 320
-  },
-  {
-    id: 'component-media',
-    label: { en: 'Media', ar: 'الإعلام' },
-    layer: 'components',
-    category: 'cultural',
-    description: { en: 'Health communication channels', ar: 'قنوات الاتصال الصحي' },
-    angle: 340
+    description: { en: 'End-users, advocacy groups, patient registries', ar: 'المستخدمون النهائيون، مجموعات المناصرة، سجلات المرضى' },
+    angle: 12,
   },
 ];
 
-// Get nodes by layer
 export function getNodesByLayer(layer: SystemLayer): SystemMapNode[] {
-  return systemNodes.filter(node => node.layer === layer);
+  return systemNodes.filter((n) => n.layer === layer);
 }
 
-// Get nodes by category
 export function getNodesByCategory(category: SystemNodeCategory): SystemMapNode[] {
-  return systemNodes.filter(node => node.category === category);
+  return systemNodes.filter((n) => n.category === category);
 }

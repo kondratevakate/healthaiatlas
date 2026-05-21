@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { SOURCES, DESTINATIONS, CORRIDORS } from '@/data/medicalTourism';
+import { BubbleMap } from './BubbleMap';
 
 interface Props {
   specialty: string;
@@ -37,33 +38,38 @@ export function CorridorsView({ specialty }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-start">
-        {/* Sources column */}
-        <div className="space-y-1">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 font-mono">Sources</div>
-          {sources.map((s, i) => {
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+        {/* Sources column — origin countries (filter on click) */}
+        <div className="space-y-1 bg-secondary/30 border border-border p-3">
+          <div className="flex items-baseline justify-between mb-2">
+            <div className="text-[11px] uppercase tracking-widest text-foreground font-mono font-semibold">
+              ← Sources
+            </div>
+            <div className="text-[9px] text-muted-foreground font-mono">click to filter</div>
+          </div>
+          {sources.map((s) => {
             const active = selSrc === s.id;
             return (
               <button
                 key={s.id}
                 onClick={() => setSelSrc(active ? null : s.id)}
                 style={{ height: rowH }}
+                title={`${s.label}: ~${s.vol},000 patients travelling abroad annually · ${s.growth} year-over-year growth · click to filter corridors`}
                 className={cn(
-                  'w-full flex items-center gap-2 px-2 border text-left transition-colors',
-                  active ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/40'
+                  'w-full flex items-center gap-2 px-2 border text-left transition-colors bg-background',
+                  active ? 'border-foreground bg-foreground/10' : 'border-border hover:border-foreground/40'
                 )}
               >
                 <span
                   className="rounded-full bg-foreground/15 border border-foreground/30 shrink-0"
                   style={{ width: sizeFor(s.vol), height: sizeFor(s.vol) }}
-                  title={`${s.vol}K patients/yr`}
                 />
                 <div className="min-w-0 flex-1">
                   <div className="text-xs font-medium text-foreground truncate">
                     {s.flag} {s.label}
                   </div>
                   <div className="text-[10px] text-muted-foreground font-mono">
-                    {s.vol}K · {s.growth}
+                    {s.vol}K/yr · {s.growth} YoY
                   </div>
                 </div>
               </button>
@@ -72,7 +78,7 @@ export function CorridorsView({ specialty }: Props) {
         </div>
 
         {/* Flow lines */}
-        <div className="hidden md:block">
+        <div className="hidden md:block pt-9">
           <svg width="180" height={svgH} className="overflow-visible">
             {corridors.map((c, idx) => {
               const si = srcIdx(c.from);
@@ -100,9 +106,14 @@ export function CorridorsView({ specialty }: Props) {
           </svg>
         </div>
 
-        {/* Destinations column */}
-        <div className="space-y-1">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 font-mono">Destinations</div>
+        {/* Destinations column — receiving countries (filter on click) */}
+        <div className="space-y-1 bg-primary/5 border border-primary/20 p-3">
+          <div className="flex items-baseline justify-between mb-2">
+            <div className="text-[11px] uppercase tracking-widest text-foreground font-mono font-semibold">
+              Destinations →
+            </div>
+            <div className="text-[9px] text-muted-foreground font-mono">click to filter</div>
+          </div>
           {dests.map((d) => {
             const active = selDst === d.id;
             return (
@@ -110,15 +121,15 @@ export function CorridorsView({ specialty }: Props) {
                 key={d.id}
                 onClick={() => setSelDst(active ? null : d.id)}
                 style={{ height: rowH }}
+                title={`${d.label}: ${d.jci} JCI-accredited facilities · strengths: ${d.strength} · click to filter corridors`}
                 className={cn(
-                  'w-full flex items-center gap-2 px-2 border text-left transition-colors',
-                  active ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/40'
+                  'w-full flex items-center gap-2 px-2 border text-left transition-colors bg-background',
+                  active ? 'border-foreground bg-foreground/10' : 'border-border hover:border-foreground/40'
                 )}
               >
                 <span
                   className="rounded-full bg-foreground/25 border border-foreground/40 shrink-0"
                   style={{ width: sizeFor(d.jci * 2), height: sizeFor(d.jci * 2) }}
-                  title={`${d.jci} JCI-accredited facilities`}
                 />
                 <div className="min-w-0 flex-1">
                   <div className="text-xs font-medium text-foreground truncate">
@@ -134,6 +145,13 @@ export function CorridorsView({ specialty }: Props) {
         </div>
       </div>
 
+      {/* Legend explaining what numbers mean */}
+      <div className="text-[10px] text-muted-foreground font-mono flex flex-wrap gap-x-4 gap-y-1 pt-1">
+        <span><strong className="text-foreground">K/yr</strong> = thousand outbound medical tourists per year</span>
+        <span><strong className="text-foreground">YoY</strong> = year-over-year growth</span>
+        <span><strong className="text-foreground">JCI</strong> = Joint Commission International accredited facilities</span>
+      </div>
+
       {(selSrc || selDst) && (
         <button
           onClick={() => { setSelSrc(null); setSelDst(null); }}
@@ -143,35 +161,9 @@ export function CorridorsView({ specialty }: Props) {
         </button>
       )}
 
-      {/* Corridor detail list */}
+      {/* Bubble map — replaces the old corridor card grid */}
       <div className="border-t border-border pt-4">
-        <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 font-mono">
-          {corridors.length} corridor{corridors.length !== 1 ? 's' : ''}
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          {corridors.map((c, idx) => {
-            const src = SOURCES.find(s => s.id === c.from);
-            const dst = DESTINATIONS.find(d => d.id === c.to);
-            return (
-              <div
-                key={idx}
-                onMouseEnter={() => setHovCor(idx)}
-                onMouseLeave={() => setHovCor(null)}
-                className={cn(
-                  'border p-3 transition-colors',
-                  hovCor === idx ? 'border-foreground bg-foreground/5' : 'border-border'
-                )}
-              >
-                <div className="flex items-center justify-between text-xs font-medium text-foreground mb-1">
-                  <span>{src?.flag} {src?.label} → {dst?.flag} {dst?.label}</span>
-                  <span className="font-mono text-muted-foreground">{c.vol}K</span>
-                </div>
-                <div className="text-[10px] text-muted-foreground mb-1 font-mono">{c.channel}</div>
-                <div className="text-xs text-muted-foreground">{c.note}</div>
-              </div>
-            );
-          })}
-        </div>
+        <BubbleMap specialty={specialty} selSrc={selSrc} selDst={selDst} />
       </div>
     </div>
   );

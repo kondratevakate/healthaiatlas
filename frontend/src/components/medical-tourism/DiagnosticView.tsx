@@ -48,14 +48,42 @@ export function DiagnosticView() {
   const scoreLevel = (s: number) =>
     s >= 75 ? 'text-foreground' : s >= 50 ? 'text-foreground/70' : s >= 25 ? 'text-foreground/50' : 'text-muted-foreground';
 
+  const totalQuestions = STAGES.reduce((a, s) => a + s.questions.length, 0);
+  const answeredCount = Object.keys(answers).length;
+
   return (
     <div className="space-y-4">
+      {/* Intro / framing */}
+      <div className="border-l-4 border-primary bg-secondary/30 p-4 space-y-2">
+        <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+          Self-Assessment for clinics
+        </div>
+        <h3 className="text-base font-semibold tracking-tight">
+          Is your clinic ready to receive international patients?
+        </h3>
+        <p className="text-xs text-muted-foreground max-w-2xl">
+          {totalQuestions} questions across {STAGES.length} stages of the international patient
+          journey — from how patients first find you, through inquiry, estimate, trust-building,
+          logistics, and post-care. Answer each as <em className="text-foreground not-italic">Yes</em>,{' '}
+          <em className="text-foreground not-italic">Partial</em>, or{' '}
+          <em className="text-foreground not-italic">No</em>. Once complete, you'll see a prioritized
+          list of buy-or-build recommendations ranked by impact and effort.
+        </p>
+        <p className="text-[11px] text-muted-foreground">
+          Your answers stay in your browser — nothing is sent anywhere.
+        </p>
+      </div>
+
       {/* Overall */}
       <div className="border border-border p-4 flex items-center justify-between">
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">Overall readiness</div>
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+            Overall readiness for international patients
+          </div>
           <div className="text-xs text-muted-foreground mt-1">
-            {allDone ? 'Complete — recommendations below' : `${Object.keys(answers).length} / ${STAGES.reduce((a, s) => a + s.questions.length, 0)} answered`}
+            {allDone
+              ? 'Complete — recommendations below'
+              : `${answeredCount} of ${totalQuestions} answered`}
           </div>
         </div>
         <div className={cn('text-4xl font-mono font-semibold', scoreLevel(overall))}>{overall}%</div>

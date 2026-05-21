@@ -1,0 +1,1 @@
+export { AiLifeSciencesHub } from './AiLifeSciencesHub';

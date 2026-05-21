@@ -62,6 +62,12 @@ export function TimelineView() {
         ))}
       </div>
 
+      <div className="sm:hidden text-[10px] text-muted-foreground font-mono mb-2 flex items-center gap-1">
+        <span aria-hidden>←</span>
+        <span>Swipe through years</span>
+        <span aria-hidden>→</span>
+      </div>
+
       {/* Year columns — flex-1 on desktop fills width; horizontal scroll if narrower than min */}
       <div className="overflow-x-auto">
         <div className="flex items-start gap-0">

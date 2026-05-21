@@ -1,12 +1,14 @@
 import { Layout } from '@/components/layout';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { analysisTools } from '@/data/tools';
+import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { Mail, ExternalLink } from 'lucide-react';
+import { BookOpen, Heart, Mail, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
-
-const RETHINKING_SYSTEMS_URL = 'https://www.rethinkingsystems.design/';
+import {
+  ATLAS_NOTES_SUBSCRIBE_URL,
+  MANIFUND_PROJECT_URL,
+  SUGGEST_ENTRY_URL,
+} from '@/data/constants';
 
 const LinkedInMark = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
@@ -21,14 +23,14 @@ const GitHubMark = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const About = () => {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <Layout>
       <div className="container py-12 md:py-16">
         <PageHeader
           title={t('nav.about')}
-          subtitle="Research and code by Kate Kondratieva — an independent mapping of the UAE healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
+          subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
         />
 
         {/* 1. Contacts first */}
@@ -38,13 +40,6 @@ const About = () => {
             <CardContent className="pt-6 space-y-5">
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="mailto:kondratevakate@gmail.com"
-                  className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
-                >
-                  <Mail className="w-4 h-4" />
-                  kondratevakate@gmail.com
-                </a>
-                <a
                   href="https://linkedin.com/in/kondratevakate"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -52,6 +47,15 @@ const About = () => {
                 >
                   <LinkedInMark className="w-4 h-4" />
                   LinkedIn
+                </a>
+                <a
+                  href={SUGGEST_ENTRY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  Get in touch
                 </a>
               </div>
 
@@ -82,56 +86,43 @@ const About = () => {
           </Card>
         </section>
 
-        {/* 2. Tools used — frameworks from rethinkingsystems.design */}
-        <section className="mb-16">
-          <h2 className="heading-lg mb-3">Tools & frameworks used</h2>
-          <p className="text-body text-muted-foreground mb-8 max-w-2xl">
-            The Atlas is built on the{' '}
-            <a
-              href={RETHINKING_SYSTEMS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline inline-flex items-center gap-1"
-            >
-              ReThinking Systems
-              <ExternalLink className="w-3 h-3" />
-            </a>{' '}
-            frameworks (IIT Institute of Design), adapted for the AI-in-healthcare ecosystem. Each card
-            links to the original source.
+{/* 3. Atlas Notes — editorial companion newsletter on LinkedIn.
+            Was previously a top-level nav item; demoted to a contextual
+            link inside About so the primary nav stays directory-focused
+            and Atlas Notes lives next to the authorship context that
+            explains why it exists. */}
+        <section className="mb-16 max-w-3xl">
+          <h2 className="heading-lg mb-3">Atlas Notes — the newsletter</h2>
+          <p className="text-body text-muted-foreground mb-5">
+            Atlas Notes is the editorial companion to this directory — long-form analysis of where
+            healthcare AI is moving, what the methods can and cannot do clinically, and the read-
+            across between regulatory shifts and founder strategy. Author voice (Kate Kondratieva),
+            with named takes you can argue with. Published on LinkedIn for distribution; cited back
+            into Atlas entries where the analysis becomes structured data.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {analysisTools.slice(0, 6).map((tool) => (
-              <a
-                key={tool.id}
-                href={RETHINKING_SYSTEMS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block group"
-              >
-                <Card className="card-hover h-full border-border/50 bg-card/50 group-hover:border-primary/60 transition-colors">
-                  <CardHeader>
-                    <CardTitle className="text-base flex items-start justify-between gap-2">
-                      <span>{tool.name[language]}</span>
-                      <ExternalLink className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5 group-hover:text-primary transition-colors" />
-                    </CardTitle>
-                    <CardDescription className="text-sm">{tool.shortDescription[language]}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </a>
-            ))}
-          </div>
+          <a
+            href={ATLAS_NOTES_SUBSCRIBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
+          >
+            <BookOpen className="w-4 h-4" />
+            Subscribe on LinkedIn
+            <ExternalLink className="w-3 h-3 opacity-60" />
+          </a>
         </section>
 
-        {/* 3. Mission — canonical About copy (independent project statement) */}
+        {/* 4. Mission — canonical About copy (independent project statement) */}
         <section className="max-w-3xl space-y-5 text-body text-foreground/90">
           <h2 className="heading-lg mb-6">{t('about.mission')}</h2>
 
           <p>
             HealthAI Atlas is an independent project founded by Dr. Ekaterina Kondrateva to provide open,
             structured knowledge about the global healthcare AI ecosystem. The project exists to make
-            ecosystem intelligence accessible to those who need it most: practicing clinicians integrating
-            AI tools into care, students learning to evaluate medical AI critically, researchers seeking
-            collaborators and context, and founders navigating an increasingly complex landscape.
+            ecosystem intelligence accessible to those who need it most: students and researchers
+            building evidence-based judgment about medical AI, founders navigating an increasingly
+            complex landscape, businesses searching for talent and partnerships, and job seekers
+            finding their lane in the ecosystem.
           </p>
 
           <p>
@@ -159,6 +150,36 @@ const About = () => {
             See also: <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link>
             {' · '}
             <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
+          </p>
+        </section>
+
+        {/* Support — sits at the bottom rather than the top so it doesn't
+            dilute the analytical/B2B positioning of the project. Funding
+            flows through Manifund — their 501(c)(3) acts as fiscal sponsor,
+            so the Atlas doesn't need to spin up its own legal entity or
+            payment stack. Enterprise needs go through the commercial path
+            described in the mission section above. */}
+        <section className="mt-16 max-w-3xl">
+          <h2 className="heading-lg mb-3">Support the Atlas</h2>
+          <p className="text-body text-muted-foreground mb-5">
+            The directory and Atlas Notes are free to read. If the work has helped you and you'd like
+            to contribute toward continued source verification and geographic expansion, funding flows
+            through Manifund — a fiscal-sponsorship platform for AI-ecosystem projects, where their
+            registered 501(c)(3) receives funds and disburses them as grants.
+          </p>
+          <a
+            href={MANIFUND_PROJECT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
+          >
+            <Heart className="w-4 h-4" />
+            Fund on Manifund
+            <ExternalLink className="w-3 h-3 opacity-60" />
+          </a>
+          <p className="text-xs text-muted-foreground mt-3">
+            Enterprise users (investment firms, healthcare organizations, consultancies) — see the
+            commercial-tooling note above and reach out via <Link to="/contact" className="text-primary hover:underline">/contact</Link>.
           </p>
         </section>
       </div>

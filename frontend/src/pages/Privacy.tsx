@@ -17,12 +17,15 @@ const Privacy = () => {
           <section>
             <h2 className="heading-lg mb-3">Who we are</h2>
             <p className="text-muted-foreground">
-              Health AI Atlas is an independent research project run by Kate Kondratieva
-              (<a href="https://atelic.ai" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">atelic.ai</a>).
-              Contact for any data or privacy inquiry: {' '}
-              <a href="mailto:kondratevakate@gmail.com" className="text-primary hover:underline">
-                kondratevakate@gmail.com
-              </a>.
+              HealthAI Atlas is an independent research and educational project owned and operated
+              by Dr. Ekaterina Kondrateva in personal capacity. The project is not affiliated with,
+              owned by, or operated under the authority of any other organisation, employer, or
+              commercial entity. Contact for any data or privacy inquiry:{' '}
+              <a href="https://airtable.com/shrkedcsqRIdT60o3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                the project contact form
+              </a>
+              . See also <Link to="/about" className="text-primary hover:underline">About</Link> and{' '}
+              <Link to="/terms" className="text-primary hover:underline">Terms</Link>.
             </p>
           </section>
 
@@ -82,8 +85,8 @@ const Privacy = () => {
             </p>
             <p className="text-muted-foreground">
               For any other request, email {' '}
-              <a href="mailto:kondratevakate@gmail.com" className="text-primary hover:underline">
-                kondratevakate@gmail.com
+              <a href="https://airtable.com/shrkedcsqRIdT60o3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                the project contact form
               </a>{' '}
               and we will respond within 30 days.
             </p>
@@ -126,8 +129,8 @@ const Privacy = () => {
             <h2 className="heading-lg mb-3">Contact</h2>
             <p className="text-muted-foreground">
               Kate Kondratieva · {' '}
-              <a href="mailto:kondratevakate@gmail.com" className="text-primary hover:underline">
-                kondratevakate@gmail.com
+              <a href="https://airtable.com/shrkedcsqRIdT60o3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                the project contact form
               </a>{' '}
               · See also <Link to="/contact" className="text-primary hover:underline">Contact</Link>.
             </p>

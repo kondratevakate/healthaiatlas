@@ -1,7 +1,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowRight, ArrowLeft, Layers, Map, Clock, Wrench } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Layers, Compass, Calendar } from 'lucide-react';
 import { getFeaturedPlayers } from '@/data/players';
 import { cn } from '@/lib/utils';
 
@@ -14,25 +14,18 @@ const entryPoints = [
     bgColor: 'bg-gold/10',
   },
   {
-    key: 'systemMaps',
-    path: '/maps',
-    icon: Map,
+    key: 'discovery',
+    path: '/discovery',
+    icon: Compass,
     color: 'text-coral',
     bgColor: 'bg-coral/10',
   },
   {
-    key: 'timeline',
-    path: '/timeline',
-    icon: Clock,
+    key: 'context',
+    path: '/context',
+    icon: Calendar,
     color: 'text-sage',
     bgColor: 'bg-sage/10',
-  },
-  {
-    key: 'tools',
-    path: '/tools',
-    icon: Wrench,
-    color: 'text-sky',
-    bgColor: 'bg-sky/10',
   },
 ];
 

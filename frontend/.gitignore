@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Smoke-test artifacts (Playwright screenshots, generated PNGs)
+.tmp/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

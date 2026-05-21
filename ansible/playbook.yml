@@ -6,7 +6,8 @@
 #
 # Override domain defaults on the command line:
 #   ansible-playbook -i ansible/inventory.yml ansible/playbook.yml \
-#     -e prod_domain=healthaiatlas.ae -e dev_domain=dev.healthaiatlas.ae
+#     -e prod_domain=healthaiatlas.ae -e dev_domain=dev.healthaiatlas.ae \
+#     -e letsencrypt_email=privacy@healthaiatlas.ae
 
 - hosts: healthaiatlas
   become: true
@@ -17,11 +18,28 @@
     prod_root: /var/www/healthaiatlas
     dev_root: /var/www/healthaiatlas-dev
     deploy_user: "{{ ansible_user }}"
+    # Override on the command line. Used for Let's Encrypt expiry notifications
+    # and as the contact in any future security.txt.
+    letsencrypt_email: ""
+    acme_webroot: /var/www/letsencrypt
+
+  pre_tasks:
+    - name: Fail fast if letsencrypt_email is not set
+      assert:
+        that:
+          - letsencrypt_email | length > 0
+          - "'@' in letsencrypt_email"
+        fail_msg: >
+          letsencrypt_email is required. Re-run with
+          `-e letsencrypt_email=privacy@your-domain` (mailbox must accept renewal notices).
 
   tasks:
-    - name: Ensure nginx is installed
+    - name: Ensure nginx and certbot are installed
       apt:
-        name: nginx
+        name:
+          - nginx
+          - certbot
+          - python3-certbot-nginx
         state: present
         update_cache: true
 
@@ -50,28 +68,38 @@
         - "{{ prod_root }}"
         - "{{ dev_root }}"
 
-    - name: Install nginx vhost for production
-      template:
-        src: templates/healthaiatlas.nginx.j2
-        dest: /etc/nginx/sites-available/healthaiatlas
+    - name: Ensure ACME challenge webroot exists
+      file:
+        path: "{{ acme_webroot }}/.well-known/acme-challenge"
+        state: directory
         owner: root
         group: root
-        mode: "0644"
-      vars:
-        server_name: "{{ prod_domain }}"
-        doc_root: "{{ prod_root }}"
-      notify: reload nginx
+        mode: "0755"
+        recurse: true
 
-    - name: Install nginx vhost for staging
-      template:
-        src: templates/healthaiatlas.nginx.j2
-        dest: /etc/nginx/sites-available/healthaiatlas-dev
+    # Bootstrap step: install a minimal HTTP-only vhost so certbot can answer the
+    # http-01 challenge before any real cert exists. This vhost is overwritten by
+    # the final TLS-enabled template a few tasks later.
+    - name: Install bootstrap HTTP-only vhost (for ACME challenge)
+      copy:
+        dest: "/etc/nginx/sites-available/{{ item.name }}"
         owner: root
         group: root
         mode: "0644"
-      vars:
-        server_name: "{{ dev_domain }}"
-        doc_root: "{{ dev_root }}"
+        content: |
+          server {
+              listen 80;
+              listen [::]:80;
+              server_name {{ item.domain }};
+              location /.well-known/acme-challenge/ {
+                  root {{ acme_webroot }};
+              }
+              location / { return 404; }
+          }
+      loop:
+        - { name: healthaiatlas, domain: "{{ prod_domain }}" }
+        - { name: healthaiatlas-dev, domain: "{{ dev_domain }}" }
+      when: not (cert_present_check is defined and cert_present_check.results[0].stat.exists)
       notify: reload nginx
 
     - name: Enable vhosts
@@ -89,6 +117,59 @@
         path: /etc/nginx/sites-enabled/default
         state: absent
       notify: reload nginx
+
+    # Force handlers to run so nginx is reloaded before certbot tries to use it.
+    - meta: flush_handlers
+
+    - name: Check whether Let's Encrypt cert already exists
+      stat:
+        path: "/etc/letsencrypt/live/{{ item }}/fullchain.pem"
+      register: cert_present
+      loop:
+        - "{{ prod_domain }}"
+        - "{{ dev_domain }}"
+
+    - name: Request Let's Encrypt cert via webroot (only if missing)
+      command: >
+        certbot certonly --webroot
+        --webroot-path {{ acme_webroot }}
+        --non-interactive --agree-tos
+        --email {{ letsencrypt_email }}
+        -d {{ item.item }}
+      loop: "{{ cert_present.results }}"
+      when: not item.stat.exists
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Install nginx vhost for production (TLS-enabled)
+      template:
+        src: templates/healthaiatlas.nginx.j2
+        dest: /etc/nginx/sites-available/healthaiatlas
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        server_name: "{{ prod_domain }}"
+        doc_root: "{{ prod_root }}"
+      notify: reload nginx
+
+    - name: Install nginx vhost for staging (TLS-enabled)
+      template:
+        src: templates/healthaiatlas.nginx.j2
+        dest: /etc/nginx/sites-available/healthaiatlas-dev
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        server_name: "{{ dev_domain }}"
+        doc_root: "{{ dev_root }}"
+      notify: reload nginx
+
+    - name: Ensure certbot renewal timer is enabled
+      systemd:
+        name: certbot.timer
+        state: started
+        enabled: true
 
     - name: Validate nginx config
       command: nginx -t

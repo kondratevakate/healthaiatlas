@@ -23,11 +23,11 @@ function arcPath(cx: number, cy: number, r: number, startAngle: number, endAngle
 }
 
 const nodes = [
-  { id: 'regulators', label: 'Regulators', sublabel: 'MOHAP · DHA · DoH', ringIdx: 1, angle: -60 },
-  { id: 'hospitals', label: 'Hospitals', sublabel: 'SEHA · Cleveland', ringIdx: 2, angle: 10 },
-  { id: 'startups', label: 'Startups', sublabel: 'AI Health', ringIdx: 3, angle: 70 },
-  { id: 'research', label: 'Research', sublabel: 'MBZUAI', ringIdx: 2, angle: 150 },
-  { id: 'data', label: 'Data', sublabel: 'NABIDH', ringIdx: 4, angle: 210 },
+  { id: 'regulators', label: 'Regulators', sublabel: 'FDA · DHA · EMA', ringIdx: 1, angle: -60 },
+  { id: 'hospitals', label: 'Hospitals', sublabel: 'Mayo · NHS · SEHA', ringIdx: 2, angle: 10 },
+  { id: 'startups', label: 'Startups', sublabel: 'Tempus · Paige', ringIdx: 3, angle: 70 },
+  { id: 'research', label: 'Research', sublabel: 'NIH · MBZUAI', ringIdx: 2, angle: 150 },
+  { id: 'data', label: 'Data', sublabel: 'FHIR · NABIDH', ringIdx: 4, angle: 210 },
   { id: 'investors', label: 'Investors', sublabel: 'VC · PE', ringIdx: 3, angle: -30 },
 ];
 
@@ -101,20 +101,20 @@ export function HeroDiagram() {
           );
         })}
 
-        {/* Traveling pulses along connections */}
+        {/* Traveling pulses along connections — animate via transform on a
+            wrapping <g> so Framer Motion never has to write SVG cx/cy attrs
+            (which leak `undefined` on the first frame for keyframed values). */}
         {connections.map((conn, i) => {
           const a = nodePos(conn.from);
           const b = nodePos(conn.to);
           const size = 0.4 + conn.weight * 0.4;
           return (
-            <motion.circle
+            <motion.g
               key={`pulse-${i}`}
-              r={size}
-              fill={`hsl(var(--foreground) / 0.5)`}
-              initial={{ opacity: 0 }}
+              initial={{ x: a.x, y: a.y, opacity: 0 }}
               animate={{
-                cx: [a.x, b.x],
-                cy: [a.y, b.y],
+                x: [a.x, b.x],
+                y: [a.y, b.y],
                 opacity: [0, 0.8, 0.8, 0],
               }}
               transition={{
@@ -124,7 +124,9 @@ export function HeroDiagram() {
                 repeatDelay: 8 + i * 0.5,
                 ease: 'easeInOut',
               }}
-            />
+            >
+              <circle r={size} fill={`hsl(var(--foreground) / 0.5)`} />
+            </motion.g>
           );
         })}
 
@@ -139,25 +141,25 @@ export function HeroDiagram() {
           transition={{ type: 'spring', stiffness: 120, damping: 14, delay: 0.2 }}
         />
         <motion.text
-          x={CX} y={CY - 1}
+          x={CX} y={CY - 0.5}
           textAnchor="middle" dominantBaseline="middle"
           className="font-serif font-semibold"
-          style={{ fontSize: '3px', fill: 'hsl(var(--foreground))' }}
+          style={{ fontSize: '2.6px', fill: 'hsl(var(--foreground))' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          UAE
+          Health AI
         </motion.text>
         <motion.text
-          x={CX} y={CY + 2.2}
+          x={CX} y={CY + 2.4}
           textAnchor="middle" dominantBaseline="middle"
-          style={{ fontSize: '1.7px', fill: 'hsl(var(--foreground) / 0.6)' }}
+          style={{ fontSize: '1.5px', fill: 'hsl(var(--foreground) / 0.6)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          Health AI
+          Global Atlas
         </motion.text>
 
         {/* Nodes on different ring levels */}

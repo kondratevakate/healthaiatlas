@@ -7,19 +7,20 @@ import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { MapPin, Users, Calendar, ExternalLink, Building2, Rocket, FlaskConical, Landmark, Briefcase, ShieldCheck } from 'lucide-react';
+import { MapPin, Users, Calendar, ExternalLink, Building2, Rocket, FlaskConical, Landmark, Briefcase, ShieldCheck, Network, Database } from 'lucide-react';
 import { SystemDiagram } from '@/components/home/SystemDiagram';
-import { SystemMapOverview } from '@/components/home/SystemMapOverview';
+import { SystemMapOverview, type DomainPin } from '@/components/home/SystemMapOverview';
+import { HealthcareAIMarketComparison } from '@/components/home/HealthcareAIMarketComparison';
 import { MedicalTourismHub } from '@/components/medical-tourism';
 import { ProcessMiningHub } from '@/components/process-mining';
 import { OncologyHub } from '@/components/oncology';
+import { AiLifeSciencesHub } from '@/components/ai-life-sciences';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { ClaimCard } from '@/components/claims';
-import { SUGGEST_ENTRY_URL, HUB_DOMAIN_IDS } from '@/data/constants';
+import { SUGGEST_ENTRY_URL, HUB_DOMAIN_IDS, AIRTABLE_PROVENANCE_URL } from '@/data/constants';
 import { Player } from '@/types';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const typeIcons: Record<string, React.ElementType> = {
   startup: Rocket,
@@ -29,12 +30,14 @@ const typeIcons: Record<string, React.ElementType> = {
   enterprise: Briefcase,
 };
 
+// Monochrome scale, all dark enough for white text to pass WCAG 2.1 AA (4.5:1).
+// Lightness range 20–43% — anything ≥46% with white text fails AA.
 const typeColors: Record<string, string> = {
-  startup: 'bg-[hsl(0,0%,45%)] text-white group-hover:bg-primary',
-  hospital: 'bg-[hsl(0,0%,50%)] text-white group-hover:bg-primary',
-  government: 'bg-[hsl(0,0%,55%)] text-white group-hover:bg-primary',
-  research: 'bg-[hsl(0,0%,60%)] text-white group-hover:bg-primary',
-  enterprise: 'bg-[hsl(0,0%,65%)] text-white group-hover:bg-primary',
+  startup: 'bg-[hsl(0,0%,20%)] text-white group-hover:bg-primary',
+  hospital: 'bg-[hsl(0,0%,28%)] text-white group-hover:bg-primary',
+  government: 'bg-[hsl(0,0%,33%)] text-white group-hover:bg-primary',
+  research: 'bg-[hsl(0,0%,38%)] text-white group-hover:bg-primary',
+  enterprise: 'bg-[hsl(0,0%,43%)] text-white group-hover:bg-primary',
 };
 
 const roleColors: Record<string, string> = {
@@ -43,6 +46,17 @@ const roleColors: Record<string, string> = {
   activities: 'bg-secondary text-foreground border-border',
   components: 'bg-secondary text-foreground border-border',
 };
+
+// Clickable entry points overlaid on the System Map. Angles measured from top,
+// clockwise, chosen to sit on the ACTIVITIES band near a semantic neighbour
+// (oncology↔imaging, ai-life-sciences↔drug-discovery, process-mining↔records,
+// medical-tourism↔partnerships).
+const DOMAIN_PINS: DomainPin[] = [
+  { id: 'oncology',         label: 'Oncology',          angle: 18 },
+  { id: 'ai-life-sciences', label: 'AI Life Sciences',  angle: 54 },
+  { id: 'process-mining',   label: 'Process Mining',    angle: 270 },
+  { id: 'medical-tourism',  label: 'Medical Tourism',   angle: 342 },
+];
 
 const Directory = () => {
   const { t, language } = useLanguage();
@@ -78,36 +92,104 @@ const Directory = () => {
   return (
     <Layout>
       <div className="container py-12 md:py-16">
+        {!isOverview && (
+          <button
+            type="button"
+            onClick={() => setActiveDomainId('overview')}
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group border border-border bg-background px-3 py-1.5 hover:border-foreground/40"
+          >
+            <span className="text-base transition-transform group-hover:-translate-x-0.5">←</span>
+            <span className="font-medium">Back to Directory</span>
+          </button>
+        )}
+
         <PageHeader
-          title={isOverview ? t('nav.directory') : activeDomain?.name[language]}
+          title={isOverview ? t('nav.domains') : activeDomain?.name[language]}
           subtitle={isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}
         />
 
-        {/* Domain Tabs — inviting strip */}
-        <div className="mb-10">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-3">
-            {language === 'en' ? 'Tab through domains →' : 'تنقل بين المجالات →'}
-          </div>
-          <Tabs value={activeDomainId} onValueChange={setActiveDomainId}>
-            <TabsList className="h-auto flex-wrap gap-1 bg-secondary/50 border border-border rounded-none p-1.5">
-              {domains.map((domain) => (
-                <TabsTrigger
-                  key={domain.id}
-                  value={domain.id}
-                  className="rounded-none px-4 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  {domain.name[language]}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-        </div>
-
-        {/* System map as the Overview centrepiece */}
+        {/* Domain entry chips — primary navigation, sits right under PageHeader */}
         {isOverview && (
-          <div className="mb-16">
-            <SystemMapOverview />
+          <div className="mb-8 flex flex-wrap gap-2">
+            {domains
+              .filter((d) => d.id !== 'overview')
+              .map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setActiveDomainId(d.id)}
+                  className="group inline-flex items-baseline gap-2 border border-border bg-background hover:border-primary hover:bg-primary/5 px-3 py-2 transition-all"
+                >
+                  <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                    {d.name[language]}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground font-mono">
+                    →
+                  </span>
+                </button>
+              ))}
           </div>
+        )}
+
+        {/* Overview: market scale first, then system map.
+            The market chart anchors expectations — healthcare AI revenue sits
+            two-to-four orders of magnitude below frontier AI / GPU compute. */}
+        {isOverview && (
+          <section className="mb-16">
+            <div className="max-w-2xl mb-10">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
+                Market scale
+              </p>
+              <div className="h-0.5 w-12 bg-primary mb-4" />
+              <h2 className="text-2xl md:text-3xl font-semibold mb-3">
+                Healthcare AI market comparison
+              </h2>
+              <p className="text-muted-foreground">
+                Annualized revenue across AI sectors, plotted as planets on a log axis.
+                Healthcare leaders are in the tens-to-low-hundreds of millions; coding,
+                frontier, and GPU compute are 1–3 orders of magnitude larger.
+              </p>
+            </div>
+            <HealthcareAIMarketComparison />
+          </section>
+        )}
+
+        {/* Overview: cross-context system map with clickable domain pins */}
+        {isOverview && (
+          <section className="mb-16">
+            <div className="max-w-2xl mb-10">
+              <div className="flex items-center gap-2 mb-2">
+                <Network className="h-5 w-5 text-primary" />
+                <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                  System Map
+                </p>
+              </div>
+              <div className="h-0.5 w-12 bg-primary mb-4" />
+              <h2 className="text-2xl md:text-3xl font-semibold mb-3">
+                Healthcare AI as a system, not a list
+              </h2>
+              <p className="text-muted-foreground">
+                A four-layer view of the global healthcare AI ecosystem — purpose, impacts,
+                activities, components. Methodologically grounded in the{' '}
+                <a
+                  href="https://www.rethinkingsystems.design/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline inline-flex items-center gap-0.5"
+                >
+                  ReThinking Systems
+                  <ExternalLink className="w-3 h-3" />
+                </a>{' '}
+                tradition from IIT Institute of Design — actors, affordances, and feedback
+                loops, mapped with evidence rather than vibes. Coral pins are research
+                domains: click to open the dedicated hub.
+              </p>
+            </div>
+            <SystemMapOverview
+              domainPins={DOMAIN_PINS}
+              onDomainClick={(id) => setActiveDomainId(id)}
+            />
+          </section>
         )}
 
         {/* Per-domain diagram for non-hub, non-overview tabs (placeholder domains) */}
@@ -126,9 +208,12 @@ const Directory = () => {
         {activeDomainId === 'oncology' && (
           <div className="mb-16"><OncologyHub /></div>
         )}
+        {activeDomainId === 'ai-life-sciences' && (
+          <div className="mb-16"><AiLifeSciencesHub /></div>
+        )}
 
-        {/* Players Grid — hidden on custom hub tabs */}
-        {!hasCustomHub && (
+        {/* Players Grid — hidden on overview (replaced by System Map) and on custom hub tabs */}
+        {!hasCustomHub && !isOverview && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {filteredPlayers.map((player) => {
@@ -233,7 +318,36 @@ const Directory = () => {
           </div>
         )}
 
-        <div className="mt-16 pt-8 border-t border-border">
+        {/* Provenance footer — every player / claim above is held in a
+            Zero-Trust Airtable base. Frontend TS data is derived from
+            it via scripts/zerotrust/from_airtable.py; the base is
+            canonical. Same footer appears under Founders → Context. */}
+        <div className="mt-16 border border-border/60 bg-secondary/30 p-5">
+          <div className="flex items-start gap-3 max-w-3xl">
+            <Database className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-1">
+                Primary sources
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                {language === 'en'
+                  ? 'Every domain and player row is held in a Zero-Trust Airtable base — each entry carries a primary src URL on the issuer\'s domain plus a verifiedAt stamp. The frontend data is regenerated from the base; the base is canonical.'
+                  : 'كل صف للمجالات واللاعبين محفوظ في قاعدة بيانات Airtable Zero-Trust — كل إدخال يحمل عنوان URL أساسي على نطاق الجهة المُصدِرة مع طابع verifiedAt. بيانات الواجهة الأمامية يتم توليدها من القاعدة؛ القاعدة هي المصدر الرسمي.'}
+              </p>
+              <a
+                href={AIRTABLE_PROVENANCE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+              >
+                {language === 'en' ? 'Open the canonical Airtable base' : 'افتح قاعدة بيانات Airtable الرسمية'}
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 pt-8 border-t border-border">
           <SuggestActions />
         </div>
       </div>

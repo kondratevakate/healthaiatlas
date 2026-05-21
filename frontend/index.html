@@ -8,37 +8,59 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
 
-    <title>Health AI Atlas — UAE Healthcare AI Navigator</title>
-    <meta name="description" content="Research-driven navigator for the UAE healthcare AI ecosystem. Paths for founders, job seekers, businesses, and clinicians." />
+    <title>HealthAI Atlas — Global Healthcare AI Navigator</title>
+    <meta name="description" content="Research-driven navigator for the global healthcare AI ecosystem. A directory, system map, talent hub, and open-calls feed for founders, businesses, students and researchers, and job seekers." />
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="Health AI Atlas — UAE Healthcare AI Navigator" />
-    <meta property="og:description" content="Research-driven navigator for the UAE healthcare AI ecosystem." />
+    <!-- Open Graph — PNG required because LinkedIn/X/Slack do not render SVG OG images.
+         Source SVG kept at /og-image.svg; regenerate via `node scripts/generate-og-image.mjs`. -->
+    <meta property="og:title" content="HealthAI Atlas — Global Healthcare AI Navigator" />
+    <meta property="og:description" content="Research-driven navigator for the global healthcare AI ecosystem — directory, system map, talent hub, open calls." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og-image.svg" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Health AI Atlas — UAE Healthcare AI Navigator" />
-    <meta name="twitter:description" content="Research-driven navigator for the UAE healthcare AI ecosystem." />
-    <meta name="twitter:image" content="/og-image.svg" />
+    <meta name="twitter:title" content="HealthAI Atlas — Global Healthcare AI Navigator" />
+    <meta name="twitter:description" content="Research-driven navigator for the global healthcare AI ecosystem — directory, system map, talent hub, open calls." />
+    <meta name="twitter:image" content="/og-image.png" />
 
-    <!-- Google Analytics -->
+    <!--
+      Google Analytics with Consent Mode v2.
+      All storage is denied by default; the React CookieBanner calls
+      window.gtag('consent','update', ...) once the user accepts. Until then,
+      gtag.js loads but cannot read or write cookies, satisfying ePrivacy Art.
+      5(3) and GDPR Art. 7 (no tracking before consent).
+    -->
     <script>
       (function () {
         var gaId = "%VITE_GA_ID%";
         if (!gaId || gaId.indexOf("VITE_GA_ID") !== -1) return;
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ window.dataLayer.push(arguments); }
+        window.gtag = gtag;
+
+        // Consent Mode v2 — DENY everything until the banner records a choice.
+        // Read prior choice synchronously so accepted users don't see a flicker.
+        var prior = null;
+        try { prior = localStorage.getItem("cookie-consent"); } catch (e) {}
+        var granted = prior === "granted";
+        gtag("consent", "default", {
+          ad_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied",
+          analytics_storage: granted ? "granted" : "denied",
+          wait_for_update: 500
+        });
+
         var s = document.createElement("script");
         s.async = true;
         s.src = "https://www.googletagmanager.com/gtag/js?id=" + gaId;
         document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ window.dataLayer.push(arguments); }
         gtag("js", new Date());
-        gtag("config", gaId);
-        window.gtag = gtag;
+        gtag("config", gaId, { anonymize_ip: true });
       })();
     </script>
   </head>

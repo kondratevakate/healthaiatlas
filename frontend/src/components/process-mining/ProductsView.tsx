@@ -12,33 +12,18 @@ const STR_STYLES: Record<string, { label: string; cls: string }> = {
 
 export function ProductsView() {
   const [activeCat, setActiveCat] = useState<string>('all');
-  const [search, setSearch] = useState('');
 
   const filtered = useMemo(() => {
-    const q = search.toLowerCase();
     return PM_CATEGORIES.map(cat => {
       if (activeCat !== 'all' && activeCat !== cat.id) return null;
-      const items = cat.items.filter(item => {
-        if (!q) return true;
-        return (item.uc + ' ' + item.desc + ' ' + item.vendors.join(' ') +
-          item.evidence.map(e => e.client + ' ' + e.kpi).join(' ')).toLowerCase().includes(q);
-      });
-      if (!items.length) return null;
-      return { ...cat, items };
+      return cat;
     }).filter(Boolean) as typeof PM_CATEGORIES;
-  }, [activeCat, search]);
+  }, [activeCat]);
 
   return (
     <div>
-      {/* Filters */}
+      {/* Category filter */}
       <div className="flex flex-wrap gap-1 mb-4 items-center">
-        <input
-          type="text"
-          placeholder="Search use cases…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="bg-secondary border border-border px-3 py-1.5 text-xs w-56 max-w-full focus:outline-none focus:border-primary"
-        />
         <button
           onClick={() => setActiveCat('all')}
           className={cn(

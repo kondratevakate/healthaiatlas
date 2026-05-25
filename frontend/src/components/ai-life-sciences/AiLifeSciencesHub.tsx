@@ -1,6 +1,7 @@
 import { HubShell } from '@/components/shared/HubShell';
 import { LandscapeView } from './LandscapeView';
-import { ModalityMatrixView } from './ModalityMatrixView';
+// ModalityMatrixView archived 2026-05-25 — pipeline-stage taxonomy underdeveloped.
+// File remains on disk; re-enable by restoring the import + tab below.
 import { ClusterTreemapView } from './ClusterTreemapView';
 import { RecentSignalsView } from './RecentSignalsView';
 
@@ -29,13 +30,6 @@ export function AiLifeSciencesHub() {
           description:
             'Time-series view of AI × life-sciences milestones — Y-axis groups by cluster, bubble size scales with disclosed $, color encodes the cluster family (care delivery / discovery / therapeutic / infra / meta).',
           render: () => <LandscapeView />,
-        },
-        {
-          id: 'matrix',
-          label: 'Modality × Pipeline Stage',
-          description:
-            'Drug-discovery cross-tab: modalities (protein structure, generative design, RNA, genomics) against pipeline decision points. Hatched cells are uncovered combinations.',
-          render: () => <ModalityMatrixView />,
         },
       ]}
     />

@@ -7,6 +7,7 @@ import {
   REGION_HEADLINE,
   type Region,
 } from '@/data/comparativeMatrix';
+import { MarketScalePlanets } from './MarketScalePlanets';
 
 const REGIONS: Region[] = ['us', 'eu', 'ch', 'uae', 'uk'];
 
@@ -22,7 +23,7 @@ export function ComparativeMatrix() {
 
         <div className="flex items-center gap-2 mb-2">
           <GitCompare className="h-5 w-5" style={{ color: 'hsl(180 70% 40%)' }} />
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
+          <h2 className="heading-editorial">
             US · EU · Switzerland · UAE · UK
           </h2>
         </div>
@@ -33,6 +34,11 @@ export function ComparativeMatrix() {
           visible at a glance.
         </p>
       </header>
+
+      {/* Market scale planets — visual scale-anchor before the verbal comparison.
+          Two parallel orbits (healthcare total / medical-AI) on a shared log
+          axis make the AI-is-a-thin-slice story visceral in one glance. */}
+      <MarketScalePlanets />
 
       {/* Region headline diagnostics */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">

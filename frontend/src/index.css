@@ -204,6 +204,14 @@
     @apply font-serif text-sm font-bold text-foreground;
   }
 
+  /* Frame-card titles: softer-weight variant used in *Frame components
+     (UK/EU FounderFrame, MarketReality entity cards). Distinct from
+     .heading-editorial-card by intent: this is a hint/label, not a primary
+     card identity. */
+  .heading-editorial-frame {
+    @apply font-serif text-base font-semibold text-foreground leading-tight;
+  }
+
   /* Sans headings for UI */
   .heading-xl {
     @apply text-2xl md:text-3xl font-semibold tracking-tight leading-tight;

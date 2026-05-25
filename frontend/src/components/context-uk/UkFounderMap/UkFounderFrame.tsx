@@ -9,7 +9,7 @@ export function UkFounderFrame() {
             <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
               {String(i + 1).padStart(2, '0')}
             </span>
-            <h4 className="font-serif text-base font-semibold text-foreground leading-tight">
+            <h4 className="heading-editorial-frame">
               {t.title}
             </h4>
           </div>

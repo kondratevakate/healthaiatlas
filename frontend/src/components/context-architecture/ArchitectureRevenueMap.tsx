@@ -61,7 +61,7 @@ export function ArchitectureRevenueMap({
         <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
           AI Architecture × Revenue Map · 2026·05
         </div>
-        <h2 className="font-serif text-2xl md:text-3xl font-semibold leading-tight text-foreground max-w-3xl">
+        <h2 className="heading-editorial font-semibold leading-tight max-w-3xl">
           What got written vs what got attributed
         </h2>
         <p className="text-sm text-muted-foreground mt-3 max-w-3xl leading-relaxed">

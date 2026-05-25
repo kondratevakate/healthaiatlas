@@ -6,8 +6,8 @@ Automated daily research routine. Surfaces currently-open application calls
 ## How it runs
 
 A scheduled remote Claude agent runs every day at **09:07 Asia/Dubai** and
-opens a pull request titled `Daily open calls digest <YYYY-MM-DD>` against `main`.
-If zero new verified calls are found, no PR is opened (no-noise rule).
+commits the digest directly to `main` (`routine: open calls digest <YYYY-MM-DD>`).
+If zero new verified calls are found, nothing is committed (no-noise rule).
 
 - Routine config: https://claude.ai/code/routines/trig_01SR4rdtLYQxd7Gprhg4ht9Q
 - Minimum interval between runs: 1 hour (Anthropic platform limit)
@@ -25,7 +25,7 @@ Each seed URL from `SOURCES.md` is fetched with a two-attempt strategy:
 If both attempts fail, the URL is listed in a `Sources that failed to fetch`
 footer in that day's digest. This makes recurring failures visible so they
 can be cleaned out of `SOURCES.md`. The routine never silently drops a
-source — every failure surfaces in the PR.
+source — every failure surfaces in the commit.
 
 ## Files in this directory
 
@@ -37,16 +37,12 @@ source — every failure surfaces in the PR.
 
 ## Reviewing a digest
 
-PRs land with the `routine` label. Triage:
+Digests land directly on `main`. To review:
 
-1. Open the digest markdown.
-2. Drop entries that look wrong or off-topic (the agent is instructed not to
-   invent details, but verification can be wrong).
-3. Manually port the remaining calls into Airtable (`Programs` table, base
-   `appiYen6pEW5tSVrn`) — the routine deliberately does **not** write to
-   Airtable; that's a human decision.
-4. Merge or close the PR. Merging keeps the digest in `inbox/` for the 7-day
-   dedup window. Closing discards it; future runs won't see it.
+1. Open `routines/open-calls/inbox/<date>.md` in the repo.
+2. If an entry looks wrong, edit the file and commit directly to main.
+3. To port a call into Airtable (`Programs` table, base `appiYen6pEW5tSVrn`) —
+   that's a manual step; the routine deliberately does **not** write to Airtable.
 
 ## Adjusting cadence or scope
 

@@ -130,7 +130,9 @@ describe('page-render smoke', () => {
 
   for (const file of pageFiles) {
     const name = file.replace(/\.tsx$/, '');
-    it(`${name} mounts without throwing`, async () => {
+    // 15s budget: heavy pages (Context = Founder Toolkit landing) routinely
+    // need 3-5s alone; in a full parallel suite they brush 5s and flake.
+    it(`${name} mounts without throwing`, { timeout: 15000 }, async () => {
       // Dynamic import so a syntax/module-resolution error in one page
       // doesn't blow up the whole test file at load time.
       const mod = await import(`../pages/${name}.tsx`);

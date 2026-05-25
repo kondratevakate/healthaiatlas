@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/components/auth";
 
@@ -18,7 +18,6 @@ import NotFound from "./pages/NotFound";
 import Discovery from "./pages/Discovery";
 import Share from "./pages/Share";
 import PersonaPage from "./pages/PersonaPage";
-import Founders from "./pages/Founders";
 import FoundersContext from "./pages/FoundersContext";
 import FoundersDeadValley from "./pages/FoundersDeadValley";
 
@@ -42,7 +41,10 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/discovery" element={<Discovery />} />
-              <Route path="/founders" element={<Founders />} />
+              {/* Founder Toolkit landing now goes straight to Context — the
+                  two-card landing felt like an extra step. Dead Valley lives
+                  inside Context's Healthcare → Country histories region tabs. */}
+              <Route path="/founders" element={<Navigate to="/founders/context" replace />} />
               <Route path="/founders/context" element={<FoundersContext />} />
               <Route path="/founders/dead-valley" element={<FoundersDeadValley />} />
               <Route path="/share/:id" element={<Share />} />

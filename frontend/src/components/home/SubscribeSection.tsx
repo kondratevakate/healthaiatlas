@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -119,7 +120,7 @@ export function SubscribeSection() {
           </span>
         </div>
 
-        <h2 className="heading-display text-3xl md:text-4xl">
+        <h2 className="heading-serif-sm">
           {t('subscribe.title')}
         </h2>
 

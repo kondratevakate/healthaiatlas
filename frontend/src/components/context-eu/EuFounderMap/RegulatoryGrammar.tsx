@@ -7,7 +7,7 @@ export function RegulatoryGrammar() {
       {EU_REGULATORY_LAYERS.map((l) => (
         <article key={l.id} className="border border-border bg-background p-4 space-y-2.5">
           <div className="flex items-baseline justify-between gap-2">
-            <h3 className="font-serif text-base font-bold text-foreground">{l.name}</h3>
+            <h3 className="heading-editorial-card">{l.name}</h3>
             <span className="text-[10px] font-mono text-muted-foreground shrink-0">
               {l.enteredForce}
             </span>

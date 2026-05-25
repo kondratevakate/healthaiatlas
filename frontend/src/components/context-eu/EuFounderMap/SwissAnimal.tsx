@@ -54,7 +54,7 @@ export function SwissAnimal() {
         {SWISS_PROFILE.map((n) => (
           <article key={n.id} className="border border-border bg-background p-3 space-y-1.5">
             <div className="flex items-baseline justify-between gap-2">
-              <h4 className="font-serif text-sm font-bold text-foreground">{n.title}</h4>
+              <h4 className="heading-editorial-card-sm">{n.title}</h4>
               <span
                 className={cn(
                   'text-[9px] font-mono uppercase tracking-widest px-1.5 py-0.5 border shrink-0',

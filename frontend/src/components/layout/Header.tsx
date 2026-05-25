@@ -35,9 +35,9 @@ type NavLink = {
 // Notes pointer (Atlas Notes is no longer a top-level item — it lives
 // contextually inside About).
 const navLinks: NavLink[] = [
+  { key: 'nav.home', path: '/', count: conferences.length + launches.length },
   { key: 'nav.opencalls', path: '/discovery?section=opencalls', count: openCallEntries.length },
   { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
-  { key: 'nav.events', path: '/discovery', count: conferences.length + launches.length },
   { key: 'nav.founders', path: '/founders' },
   { key: 'nav.about', path: '/about' },
 ];

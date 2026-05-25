@@ -41,7 +41,7 @@ export function EuFounderMap() {
 
         <div className="flex items-center gap-2 mb-2">
           <Map className="h-5 w-5" style={{ color: 'hsl(180 70% 40%)' }} />
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
+          <h2 className="heading-editorial">
             EU + Switzerland Founder Map
           </h2>
         </div>

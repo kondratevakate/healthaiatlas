@@ -9,7 +9,8 @@ import { useSearchParams } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { MapPin, Users, Calendar, ExternalLink, Building2, Rocket, FlaskConical, Landmark, Briefcase, ShieldCheck, Network, Database } from 'lucide-react';
 import { SystemDiagram } from '@/components/home/SystemDiagram';
-import { SystemMapOverview } from '@/components/home/SystemMapOverview';
+import { SystemMapOverview, type DomainPin } from '@/components/home/SystemMapOverview';
+import { HealthcareAIMarketComparison } from '@/components/home/HealthcareAIMarketComparison';
 import { MedicalTourismHub } from '@/components/medical-tourism';
 import { ProcessMiningHub } from '@/components/process-mining';
 import { OncologyHub } from '@/components/oncology';
@@ -45,6 +46,17 @@ const roleColors: Record<string, string> = {
   activities: 'bg-secondary text-foreground border-border',
   components: 'bg-secondary text-foreground border-border',
 };
+
+// Clickable entry points overlaid on the System Map. Angles measured from top,
+// clockwise, chosen to sit on the ACTIVITIES band near a semantic neighbour
+// (oncology↔imaging, ai-life-sciences↔drug-discovery, process-mining↔records,
+// medical-tourism↔partnerships).
+const DOMAIN_PINS: DomainPin[] = [
+  { id: 'oncology',         label: 'Oncology',          angle: 18 },
+  { id: 'ai-life-sciences', label: 'AI Life Sciences',  angle: 54 },
+  { id: 'process-mining',   label: 'Process Mining',    angle: 270 },
+  { id: 'medical-tourism',  label: 'Medical Tourism',   angle: 342 },
+];
 
 const Directory = () => {
   const { t, language } = useLanguage();
@@ -92,7 +104,7 @@ const Directory = () => {
         )}
 
         <PageHeader
-          title={isOverview ? t('nav.directory') : activeDomain?.name[language]}
+          title={isOverview ? t('nav.domains') : activeDomain?.name[language]}
           subtitle={isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}
         />
 
@@ -119,7 +131,30 @@ const Directory = () => {
           </div>
         )}
 
-        {/* Overview: cross-context system map (replaces the legacy player grid) */}
+        {/* Overview: market scale first, then system map.
+            The market chart anchors expectations — healthcare AI revenue sits
+            two-to-four orders of magnitude below frontier AI / GPU compute. */}
+        {isOverview && (
+          <section className="mb-16">
+            <div className="max-w-2xl mb-10">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
+                Market scale
+              </p>
+              <div className="h-0.5 w-12 bg-primary mb-4" />
+              <h2 className="text-2xl md:text-3xl font-semibold mb-3">
+                Healthcare AI market comparison
+              </h2>
+              <p className="text-muted-foreground">
+                Annualized revenue across AI sectors, plotted as planets on a log axis.
+                Healthcare leaders are in the tens-to-low-hundreds of millions; coding,
+                frontier, and GPU compute are 1–3 orders of magnitude larger.
+              </p>
+            </div>
+            <HealthcareAIMarketComparison />
+          </section>
+        )}
+
+        {/* Overview: cross-context system map with clickable domain pins */}
         {isOverview && (
           <section className="mb-16">
             <div className="max-w-2xl mb-10">
@@ -134,11 +169,26 @@ const Directory = () => {
                 Healthcare AI as a system, not a list
               </h2>
               <p className="text-muted-foreground">
-                A four-layer view of the global healthcare AI ecosystem — purpose, impacts, activities,
-                components — with multi-region actors. Click a category to filter; hover a node for context.
+                A four-layer view of the global healthcare AI ecosystem — purpose, impacts,
+                activities, components. Methodologically grounded in the{' '}
+                <a
+                  href="https://www.rethinkingsystems.design/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline inline-flex items-center gap-0.5"
+                >
+                  ReThinking Systems
+                  <ExternalLink className="w-3 h-3" />
+                </a>{' '}
+                tradition from IIT Institute of Design — actors, affordances, and feedback
+                loops, mapped with evidence rather than vibes. Coral pins are research
+                domains: click to open the dedicated hub.
               </p>
             </div>
-            <SystemMapOverview />
+            <SystemMapOverview
+              domainPins={DOMAIN_PINS}
+              onDomainClick={(id) => setActiveDomainId(id)}
+            />
           </section>
         )}
 

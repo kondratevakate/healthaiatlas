@@ -31,7 +31,7 @@ export function PharmaGravity() {
         {EU_PHARMA_GRAVITY.map((c) => (
           <article key={c.id} className="border border-border bg-background p-3 space-y-2">
             <div className="flex items-baseline justify-between gap-3">
-              <h4 className="font-serif text-sm font-bold text-foreground">{c.name}</h4>
+              <h4 className="heading-editorial-card-sm">{c.name}</h4>
               <div className="flex items-center gap-2 shrink-0">
                 <span
                   className={cn(

@@ -28,7 +28,7 @@ export function AcceleratorGrid() {
             className="border border-border bg-background p-4 space-y-2"
           >
             <div className="flex items-baseline justify-between gap-2">
-              <h3 className="font-serif text-base font-bold text-foreground">{p.name}</h3>
+              <h3 className="heading-editorial-card">{p.name}</h3>
               <span
                 className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 border shrink-0"
                 style={{ borderColor: accent, color: accent }}

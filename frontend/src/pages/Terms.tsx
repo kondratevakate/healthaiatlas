@@ -75,8 +75,8 @@ const Terms = () => {
             <p className="text-muted-foreground">
               HealthAI Atlas welcomes corrections, additions, and feedback from the community.
               Contact:{' '}
-              <a href="mailto:kondratevakate@gmail.com" className="text-primary hover:underline">
-                kondratevakate@gmail.com
+              <a href="https://airtable.com/shrkedcsqRIdT60o3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                the project contact form
               </a>
               . The project commits to transparent error correction and methodology evolution based
               on community input.

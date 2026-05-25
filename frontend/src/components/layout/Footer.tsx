@@ -58,10 +58,10 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
-                    to="/discovery"
+                    to="/"
                     className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
                   >
-                    {t('nav.events')}
+                    {t('nav.home')}
                   </Link>
                 </li>
               </ul>

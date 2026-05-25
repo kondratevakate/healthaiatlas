@@ -28,10 +28,10 @@ interface ContactLink {
 
 const links: ContactLink[] = [
   {
-    label: 'Email',
-    value: 'kondratevakate@gmail.com',
-    href: 'mailto:kondratevakate@gmail.com',
-    role: 'personal',
+    label: 'Suggest an entry or correction',
+    value: 'Open the Airtable form',
+    href: 'https://airtable.com/shrkedcsqRIdT60o3',
+    role: 'contribute',
     icon: Mail,
   },
   {

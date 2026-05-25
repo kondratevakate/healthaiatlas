@@ -23,7 +23,7 @@ export function AlzheimersBridge() {
         {EU_ALZHEIMERS_BRIDGE.map((c) => (
           <article key={c.id} className="border border-border bg-background p-4">
             <header className="mb-3 pb-3 border-b border-border">
-              <h3 className="font-serif text-base font-bold text-foreground">{c.drug}</h3>
+              <h3 className="heading-editorial-card">{c.drug}</h3>
               <div className="text-[11px] text-muted-foreground">{c.manufacturer}</div>
               <p className="text-[12px] text-foreground/85 italic mt-2 leading-relaxed">
                 {c.finalState}

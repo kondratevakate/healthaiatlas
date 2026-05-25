@@ -10,7 +10,6 @@ import {
   openCallEntries,
   OPEN_CALL_REGIONS,
   categoryLabel,
-  categoryGlyph,
   type OpenCallCategory,
   type GrantRegion,
 } from '@/data/openCallEntries';
@@ -99,11 +98,6 @@ const ROLE_FILTER_OPTIONS: { value: RoleFilter; label: string }[] = [
   { value: 'jobseeker', label: 'Job seeker' },
 ];
 
-const SECTION_NAV: { id: Section; label: string }[] = [
-  { id: 'newsfeed', label: 'Newsfeed' },
-  { id: 'opencalls', label: 'Open Calls' },
-];
-
 // Default sub-tab per section. Only Newsfeed has tabs; Open Calls is a single
 // grid, but a sentinel value keeps the URL handling uniform.
 const DEFAULT_TAB_FOR_SECTION: Record<Section, string> = {
@@ -120,11 +114,17 @@ const NEWSFEED_TABS = ['calendar', 'launches', 'leaders', 'prompts'];
 // "Hackathon · 0 calls" reads as broken product. Both categories are
 // preserved in the data layer (OpenCallCategory type) and will resurface
 // here automatically if/when entries land.
+// All categories surface in the filter, including hackathon and research-lab
+// even when they have zero entries — visitors expect to see the full taxonomy
+// up front, and the empty state for a chosen filter is self-explanatory.
 const VISIBLE_OPEN_CALL_CATEGORIES: OpenCallCategory[] = [
   'grant',
   'fellowship',
   'accelerator',
   'prize',
+  'sandbox',
+  'hackathon',
+  'research-lab',
 ];
 
 const MS_PER_DAY = 86_400_000;
@@ -143,14 +143,6 @@ export default function Discovery() {
   // retired `talent` value) falls through to Newsfeed.
   const sectionParam = searchParams.get('section');
   const section: Section = sectionParam === 'opencalls' ? 'opencalls' : 'newsfeed';
-
-  const setSection = (next: Section) => {
-    const params = new URLSearchParams(searchParams);
-    if (next === 'newsfeed') params.delete('section');
-    else params.set('section', next);
-    params.delete('tab');
-    setSearchParams(params);
-  };
 
   // Sub-tab applies only inside Newsfeed.
   const tabParam = searchParams.get('tab');
@@ -257,36 +249,6 @@ export default function Discovery() {
             }
             className="mb-6"
           />
-
-          {/* Section nav */}
-          <div className="mb-8 flex flex-wrap gap-2">
-            {SECTION_NAV.map((s) => {
-              const isActive = section === s.id;
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => setSection(s.id)}
-                  className={cn(
-                    'group inline-flex items-baseline gap-2 border px-3 py-2 transition-all',
-                    isActive
-                      ? 'border-primary bg-primary/10'
-                      : 'border-border bg-background hover:border-primary hover:bg-primary/5',
-                  )}
-                >
-                  <span
-                    className={cn(
-                      'text-sm font-medium transition-colors',
-                      isActive ? 'text-primary' : 'text-foreground group-hover:text-primary',
-                    )}
-                  >
-                    .{s.label}
-                  </span>
-                  <span className="text-[11px] text-muted-foreground font-mono">→</span>
-                </button>
-              );
-            })}
-          </div>
 
           {/* Newsfeed role filter */}
           {section === 'newsfeed' && (
@@ -701,49 +663,6 @@ export default function Discovery() {
 
                 {section === 'opencalls' && (
                   <>
-                    <div className="mb-6">
-                      <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
-                        Open Calls
-                      </p>
-                      <div className="h-0.5 w-12 bg-primary mb-4" />
-                      <p className="text-muted-foreground">
-                        Grants, fellowships, accelerators, prizes, sandboxes, and hackathons —
-                        sorted by deadline. Every entry links to the issuer's primary page.
-                      </p>
-                    </div>
-
-                    {/* Category quick-pick cards. Bigger, more discoverable
-                        surface than the chip-row above; both write to the
-                        same `openCallsCategory` state. Click a card to
-                        filter to that sub-category; click again to clear. */}
-                    <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      {VISIBLE_OPEN_CALL_CATEGORIES.map((c) => {
-                        const count = openCallEntries.filter((e) => e.category === c).length;
-                        const isActive = openCallsCategory === c;
-                        return (
-                          <button
-                            key={c}
-                            type="button"
-                            onClick={() => setOpenCallsCategory(isActive ? 'all' : c)}
-                            className={cn(
-                              'group border bg-background p-4 flex flex-col items-start gap-2 transition-all text-left',
-                              isActive
-                                ? 'border-primary shadow-sm'
-                                : 'border-border hover:border-foreground/40 hover:shadow-sm',
-                            )}
-                          >
-                            <span className={cn('font-mono text-2xl leading-none', isActive ? 'text-primary' : 'text-foreground')}>
-                              {categoryGlyph[c]}
-                            </span>
-                            <span className="text-xs font-medium">{categoryLabel[c]}</span>
-                            <span className="text-[10px] text-muted-foreground font-mono">
-                              {count} {count === 1 ? 'call' : 'calls'}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-
                     {filteredOpenCalls.length > 0 ? (
                       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredOpenCalls.map((entry) => (

@@ -33,7 +33,7 @@ export function BabylonCase() {
                   <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <h4 className="font-serif text-sm font-bold text-foreground">{s.title}</h4>
+                  <h4 className="heading-editorial-card-sm">{s.title}</h4>
                   <span className="font-mono text-[10px] text-muted-foreground border border-border px-1.5 py-0.5">
                     {s.period}
                   </span>

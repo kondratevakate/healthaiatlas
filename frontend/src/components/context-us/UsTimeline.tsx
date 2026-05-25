@@ -126,7 +126,7 @@ function EraSection({ era, events }: { era: (typeof US_ERAS)[number]; events: US
         style={{ borderColor: `hsl(${accent})` }}
       >
         <div className="flex items-baseline justify-between gap-4 mb-2">
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground leading-tight">
+          <h2 className="heading-editorial leading-tight">
             {era.label}
           </h2>
           <span

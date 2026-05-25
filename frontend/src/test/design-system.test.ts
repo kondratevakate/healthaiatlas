@@ -250,8 +250,11 @@ describe('design-system: color palette', () => {
   // 2b. Raw Tailwind palette classes (text-red-500, bg-emerald-100, etc.)
   // bypass the semantic tokens. Allowlist captures current status-indicator
   // components that genuinely need traffic-light colors; they should migrate
-  // to the named tokens (--green, --pink, --yellow, --orange, --purple) over
-  // time. New files MUST use semantic tokens.
+  // to semantic status tokens (--success, --warning, --info, --destructive)
+  // per docs/design-decisions/2026-05-palette-strategy.md.
+  // Named domain-color tokens (--pink, --yellow etc.) are NOT the migration
+  // target — those variables are undefined in index.css. New files MUST use
+  // semantic tokens only.
   const RAW_PALETTE_ALLOWLIST = new Set<string>([
     'components/claims/ConfidenceBadge.tsx',
     'components/research/RiskScoreCard.tsx',
@@ -288,8 +291,47 @@ describe('design-system: color palette', () => {
       offenders,
       `Raw Tailwind palette classes break dark mode and the brand palette.\n` +
         `Use semantic shadcn tokens (text-foreground, text-muted-foreground, ` +
-        `bg-primary, border-border) or named tokens (text-green, bg-pink-light) ` +
-        `from tailwind.config.ts.\n\n` +
+        `bg-primary, border-border) or semantic status tokens (bg-success/10, ` +
+        `text-warning, text-destructive) from tailwind.config.ts.\n\n` +
+        offenders.join('\n'),
+    ).toEqual([]);
+  });
+
+  // 2c. Named-token classes that reference CSS variables not defined in
+  // index.css resolve to hsl() with an empty argument → render transparent.
+  // Specifically: --pink, --yellow, --orange, --blue, --green, --purple are
+  // declared in tailwind.config.ts but NOT defined in index.css.
+  // Decision: these tokens will be removed, not defined. Categories use
+  // icon + border differentiation only (see 2026-05-palette-strategy.md).
+  // This test catches any re-introduction of broken named-token classes.
+  const UNDEFINED_DOMAIN_TOKENS = ['pink', 'yellow', 'orange', 'blue', 'green', 'purple'];
+  const BROKEN_NAMED_TOKEN_RE = new RegExp(
+    `\\b(?:(?:hover|focus|group-hover|active|disabled)\\:)?` +
+      `(?:text|bg|border|ring|fill|stroke|from|to|via)-` +
+      `(?:${UNDEFINED_DOMAIN_TOKENS.join('|')})` +
+      `(?:[/-](?!\\d)|\\b(?!-)(?!light\\b))`,
+  );
+  // Exception: the `-light` variant (e.g. bg-pink-light) follows the same
+  // variable naming so is equally broken — intentionally not exempted here.
+
+  it('no named-token classes referencing undefined CSS variables (--pink, --yellow, --orange, --blue, --green, --purple)', () => {
+    const offenders: string[] = [];
+    for (const f of allTsx) {
+      const src = stripCommentsOnly(readFileSync(f, 'utf8'));
+      const lines = src.split('\n');
+      lines.forEach((line, i) => {
+        if (BROKEN_NAMED_TOKEN_RE.test(line)) {
+          offenders.push(`${rel(f)}:${i + 1}  ${line.trim().slice(0, 140)}`);
+        }
+      });
+    }
+    expect(
+      offenders,
+      `Named-token classes (bg-pink, text-yellow, hover:border-orange, …) reference\n` +
+        `CSS variables (--pink, --yellow, --orange, --blue, --green, --purple) that are\n` +
+        `NOT defined in index.css — they render as transparent.\n` +
+        `Fix: use semantic tokens (text-foreground, bg-success/10, border-border)\n` +
+        `or differentiate by icon/border-style per the palette strategy decision.\n\n` +
         offenders.join('\n'),
     ).toEqual([]);
   });

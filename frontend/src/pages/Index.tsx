@@ -70,7 +70,7 @@ export default function Index() {
           <div className="container">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
               <div>
-                <h1 className="font-serif text-5xl md:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
+                <h1 className="heading-display mb-6">
                   HealthAI
                   <br />
                   Atlas

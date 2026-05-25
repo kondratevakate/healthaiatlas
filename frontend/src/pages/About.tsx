@@ -4,9 +4,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { BookOpen, Heart, Mail, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
-import { ATLAS_NOTES_SUBSCRIBE_URL, MANIFUND_PROJECT_URL } from '@/data/constants';
-
-const RETHINKING_SYSTEMS_URL = 'https://www.rethinkingsystems.design/';
+import {
+  ATLAS_NOTES_SUBSCRIBE_URL,
+  MANIFUND_PROJECT_URL,
+  SUGGEST_ENTRY_URL,
+} from '@/data/constants';
 
 const LinkedInMark = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
@@ -38,13 +40,6 @@ const About = () => {
             <CardContent className="pt-6 space-y-5">
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="mailto:kondratevakate@gmail.com"
-                  className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
-                >
-                  <Mail className="w-4 h-4" />
-                  kondratevakate@gmail.com
-                </a>
-                <a
                   href="https://linkedin.com/in/kondratevakate"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -52,6 +47,15 @@ const About = () => {
                 >
                   <LinkedInMark className="w-4 h-4" />
                   LinkedIn
+                </a>
+                <a
+                  href={SUGGEST_ENTRY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  Get in touch
                 </a>
               </div>
 
@@ -82,26 +86,7 @@ const About = () => {
           </Card>
         </section>
 
-        {/* 2. Methodological grounding — Thinking Systems tradition */}
-        <section className="mb-16 max-w-3xl">
-          <h2 className="heading-lg mb-3">Methodological grounding</h2>
-          <p className="text-body text-muted-foreground">
-            The Atlas builds on the{' '}
-            <a
-              href={RETHINKING_SYSTEMS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline inline-flex items-center gap-1"
-            >
-              ReThinking Systems
-              <ExternalLink className="w-3 h-3" />
-            </a>{' '}
-            tradition from IIT Institute of Design — treating an ecosystem as a system of actors,
-            affordances and feedback loops, then mapping it with evidence rather than vibes.
-          </p>
-        </section>
-
-        {/* 3. Atlas Notes — editorial companion newsletter on LinkedIn.
+{/* 3. Atlas Notes — editorial companion newsletter on LinkedIn.
             Was previously a top-level nav item; demoted to a contextual
             link inside About so the primary nav stays directory-focused
             and Atlas Notes lives next to the authorship context that

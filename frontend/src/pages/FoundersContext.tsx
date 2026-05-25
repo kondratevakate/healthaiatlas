@@ -14,8 +14,9 @@
 //   uae/eu/uk/us → MarketReality / EuFounderMap / UkFounderMap / FounderMatrix
 // AI side is pointer-layered onto medRxiv + arXiv — no duplicate content.
 
-import { useSearchParams, Link } from 'react-router-dom';
-import { ArrowLeft, Cpu, Stethoscope, ExternalLink, GitCompare, Database } from 'lucide-react';
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Cpu, Stethoscope, ExternalLink, GitCompare, Database, Skull } from 'lucide-react';
 
 import { Layout } from '@/components/layout';
 import { PageHeader } from '@/components/shared/PageHeader';
@@ -29,10 +30,20 @@ import { MarketReality } from '@/components/context-uae';
 import { EuFounderMap, SwissAnimal } from '@/components/context-eu';
 import { UkFounderMap } from '@/components/context-uk';
 import { ComparativeMatrix } from '@/components/context-compare';
+import { DeadValleyView } from '@/components/dead-valley';
+import {
+  ArchitectureRevenueMap,
+  ArchitectureSidebar,
+} from '@/components/context-architecture';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable';
 import { PM_GEO } from '@/data/processMining';
 
 type Side = 'ai' | 'healthcare';
-type RegionId = 'compare' | 'uae' | 'eu' | 'ch' | 'uk' | 'us' | 'cn';
+type RegionId = 'compare' | 'uae' | 'eu' | 'ch' | 'uk' | 'us' | 'cn' | 'dead-valley';
 
 const SIDES: { id: Side; label: string; icon: typeof Cpu; oneLiner: string }[] = [
   {
@@ -59,6 +70,7 @@ const REGIONS: { id: RegionId; label: string; oneLiner: string }[] = [
   { id: 'uk', label: 'UK', oneLiner: 'NHS gravity well — one payer, slow procurement, brutal exit ramp (Babylon).' },
   { id: 'uae', label: 'UAE', oneLiner: 'The floor is too low for any spoke to matter at venture scale.' },
   { id: 'cn', label: 'China', oneLiner: 'NMPA pathway + JD/Alibaba/iFLYTEK gravity + Yiducloud as the cautionary IPO. Strong tailwinds, restricted access for non-resident founders.' },
+  { id: 'dead-valley', label: 'Dead Valley', oneLiner: 'Every shutdown, SPAC collapse and fire-sale the Atlas tracks — read for patterns, not nostalgia. $50B+ value destroyed across four classes of death.' },
 ];
 
 // China data lives on the PM_GEO row today — extracted here for the
@@ -148,6 +160,7 @@ function ChinaStub() {
 
 const FoundersContext = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedArchId, setSelectedArchId] = useState<string | null>(null);
   const side: Side = (searchParams.get('side') as Side | null) === 'ai' ? 'ai' : 'healthcare';
   const region: RegionId = ((): RegionId => {
     const r = searchParams.get('region') as RegionId | null;
@@ -163,16 +176,8 @@ const FoundersContext = () => {
   return (
     <Layout>
       <div className="container py-12 md:py-16">
-        <Link
-          to="/founders"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group border border-border bg-background px-3 py-1.5 hover:border-foreground/40"
-        >
-          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-          <span className="font-medium">Back to Founder Toolkit</span>
-        </Link>
-
         <PageHeader
-          eyebrow="Founder Toolkit · Context"
+          eyebrow="Founder Toolkit"
           title="The world your AI is going into"
           subtitle="Two sides — the AI you're building, and the healthcare system that receives it. Pick the side you need to understand right now."
         />
@@ -218,6 +223,7 @@ const FoundersContext = () => {
                     className="rounded-none px-5 py-3 data-[state=active]:bg-secondary data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-sm font-medium inline-flex items-center gap-2"
                   >
                     {r.id === 'compare' && <GitCompare className="w-3.5 h-3.5" />}
+                    {r.id === 'dead-valley' && <Skull className="w-3.5 h-3.5" />}
                     {r.label}
                   </TabsTrigger>
                 ))}
@@ -247,6 +253,7 @@ const FoundersContext = () => {
                     </div>
                   )}
                   {r.id === 'cn' && <ChinaStub />}
+                  {r.id === 'dead-valley' && <DeadValleyView />}
                 </TabsContent>
               ))}
             </Tabs>
@@ -286,76 +293,70 @@ const FoundersContext = () => {
           <TabsContent value="ai" className="mt-8">
             <div className="max-w-3xl mb-8 border-l-4 border-primary/60 pl-4">
               <p className="text-base italic text-foreground/80">
-                {SIDES.find((s) => s.id === 'ai')!.oneLiner}
+                AI architectures plotted against the revenue actually attributed to
+                them. Bubble area = visible $ tied to the architecture; vertical
+                position = research-paper visibility. Click a bubble for methodology
+                notes and sources.
               </p>
             </div>
 
-            {/* AI side — pointer layer to academic literature. medRxiv is
-                where new clinical-AI methods land before peer review;
-                arXiv is where the foundation-model and ML-method papers
-                develop. The Atlas doesn't duplicate paper feeds — it
-                frames where to look. A curated papers atlas (key
-                healthcare-AI papers indexed by clinical task) is in
-                preparation and will live directly on this tab. */}
-            <div className="grid md:grid-cols-2 gap-6 mb-12">
+            {/* AI side now leads with the Architecture × Revenue map — the actual
+                dataset the Atlas ships, not pointer cards to medRxiv/arXiv. The
+                two-pane resizable layout mirrors how this view is rendered on
+                /context, so the canonical UX is identical regardless of the
+                entry point a founder uses. */}
+            <ResizablePanelGroup
+              direction="horizontal"
+              className="min-h-[700px] rounded-none border border-border bg-background"
+            >
+              <ResizablePanel defaultSize={68} minSize={50}>
+                <div className="p-6 md:p-8 overflow-y-auto h-full">
+                  <ArchitectureRevenueMap
+                    selectedArchId={selectedArchId}
+                    onSelect={setSelectedArchId}
+                  />
+                </div>
+              </ResizablePanel>
+
+              <ResizableHandle withHandle />
+
+              <ResizablePanel defaultSize={32} minSize={25} maxSize={45}>
+                <div className="h-full overflow-y-auto bg-secondary/20">
+                  <div className="sticky top-0 bg-secondary/80 backdrop-blur-sm p-4 border-b z-10">
+                    <h2 className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                      {selectedArchId ? 'Architecture detail' : 'Methodology & legend'}
+                    </h2>
+                  </div>
+                  <ArchitectureSidebar
+                    selectedArchId={selectedArchId}
+                    onClose={() => setSelectedArchId(null)}
+                  />
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+
+            {/* Pointer footer — readers who want the raw research stream still
+                get there in one click, but they're not the headline anymore. */}
+            <div className="mt-8 flex flex-wrap gap-3 text-sm">
+              <span className="text-muted-foreground">Raw research streams:</span>
               <a
                 href="https://www.medrxiv.org/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group border border-border bg-background p-6 hover:border-primary hover:shadow-md transition-all flex flex-col"
+                className="text-primary hover:underline inline-flex items-center gap-1"
               >
-                <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
-                  Health preprints
-                </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                  medRxiv
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4 flex-1">
-                  The preprint server for the health sciences. Where new methods, validation studies
-                  and clinical deployment papers land before peer review. The freshest signal in
-                  healthcare AI — read for what's being attempted right now.
-                </p>
-                <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform">
-                  Browse medRxiv
-                  <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                </div>
+                medRxiv
+                <ExternalLink className="w-3 h-3" />
               </a>
-
               <a
                 href="https://arxiv.org/list/cs.LG/recent"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group border border-border bg-background p-6 hover:border-primary hover:shadow-md transition-all flex flex-col"
+                className="text-primary hover:underline inline-flex items-center gap-1"
               >
-                <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
-                  ML method papers
-                </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                  arXiv (cs.LG · q-bio)
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4 flex-1">
-                  Foundation-model architectures, transformer variants, quantitative-biology methods.
-                  Read for what's technically possible; medRxiv for what's clinically validated. Most
-                  healthcare-AI methods originate here months before they appear on medRxiv.
-                </p>
-                <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform">
-                  Browse arXiv
-                  <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                </div>
+                arXiv cs.LG
+                <ExternalLink className="w-3 h-3" />
               </a>
-            </div>
-
-            <div className="border border-border/60 bg-secondary/30 p-6 max-w-3xl">
-              <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-2">
-                In preparation
-              </div>
-              <h3 className="text-base font-semibold mb-2">A curated papers atlas — coming next</h3>
-              <p className="text-sm text-muted-foreground">
-                The seminal papers a healthcare-AI founder should know — foundation models in
-                clinical use, the imaging classics, LLM-in-medicine benchmarks, the failure-mode
-                papers. Indexed by clinical task and method, every entry sourced to its original
-                publication. Will live directly on this tab.
-              </p>
             </div>
           </TabsContent>
         </Tabs>

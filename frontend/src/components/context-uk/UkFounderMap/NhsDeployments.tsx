@@ -19,7 +19,7 @@ export function NhsDeployments() {
           <article key={d.id} className="border border-border bg-background p-4 space-y-2">
             <div className="flex items-baseline justify-between gap-3 flex-wrap">
               <div className="flex items-baseline gap-2">
-                <h4 className="font-serif text-base font-bold text-foreground">{d.vendor}</h4>
+                <h4 className="heading-editorial-card">{d.vendor}</h4>
                 <span className="font-mono text-[10px] text-muted-foreground">
                   ({d.vendorHq})
                 </span>

@@ -16,7 +16,7 @@ export function AirlockCohort() {
           <article key={p.id} className="border border-border bg-background p-4 space-y-2">
             <div className="flex items-baseline justify-between gap-2">
               <div>
-                <h4 className="font-serif text-base font-bold text-foreground">{p.organisation}</h4>
+                <h4 className="heading-editorial-card">{p.organisation}</h4>
                 <div className="text-[11px] text-muted-foreground italic">{p.name}</div>
               </div>
               <a

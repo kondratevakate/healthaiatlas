@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatCountdown, countdownSortKey } from '../countdown';
+import { formatCountdown, countdownSortKey, isArchivedNow } from '../countdown';
 
 const NOW = new Date(Date.UTC(2026, 4, 6, 12, 0, 0));
 
@@ -86,5 +86,29 @@ describe('countdownSortKey', () => {
     expect(c).toBeLessThan(d);
     expect(d).toBeLessThan(e);
     expect(e).toBeLessThan(f);
+  });
+});
+
+describe('isArchivedNow', () => {
+  // Pins the four branches of the helper so the Archive toggle behaves
+  // predictably regardless of future tweaks to other countdown logic.
+  it('explicit closed → archived', () => {
+    expect(isArchivedNow({ kind: 'closed' }, NOW)).toBe(true);
+    expect(isArchivedNow({ kind: 'closed', nextExpected: 'Q3' }, NOW)).toBe(true);
+  });
+
+  it('deadline in past → archived', () => {
+    expect(isArchivedNow({ kind: 'deadline', date: new Date(Date.UTC(2026, 0, 27)) }, NOW)).toBe(true);
+  });
+
+  it('deadline today or future → NOT archived', () => {
+    expect(isArchivedNow({ kind: 'deadline', date: NOW }, NOW)).toBe(false);
+    expect(isArchivedNow({ kind: 'deadline', date: new Date(Date.UTC(2026, 11, 31)) }, NOW)).toBe(false);
+  });
+
+  it('rolling and annual → never archived', () => {
+    expect(isArchivedNow({ kind: 'rolling' }, NOW)).toBe(false);
+    expect(isArchivedNow({ kind: 'annual' }, NOW)).toBe(false);
+    expect(isArchivedNow({ kind: 'annual', nextWindow: 'Sep 2026' }, NOW)).toBe(false);
   });
 });

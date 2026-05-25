@@ -41,7 +41,7 @@ import { LastUpdated } from '@/components/shared/LastUpdated';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { SUGGEST_ENTRY_URL } from '@/data/constants';
-import { countdownSortKey } from '@/lib/countdown';
+import { countdownSortKey, isArchivedNow } from '@/lib/countdown';
 import { cn } from '@/lib/utils';
 import { isToday, isThisMonth, isThisWeek } from 'date-fns';
 
@@ -199,11 +199,16 @@ export default function Discovery() {
   const [openCallsRegion, setOpenCallsRegion] = useState<GrantRegion | 'all'>('all');
   const [openCallsCategory, setOpenCallsCategory] = useState<OpenCallCategory | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<'' | 'closing' | 'coming'>('');
+  // Archive = entries that are no longer actionable today (past deadline or
+  // explicitly closed). Hidden by default so the page is action-oriented;
+  // toggle reveals them as historical reference. See isArchivedNow().
+  const [showArchive, setShowArchive] = useState(false);
   const CLOSING_WINDOW_DAYS = 90;
 
   const filteredOpenCalls = useMemo(() => {
     const now = new Date();
     return [...openCallEntries]
+      .filter((e) => showArchive || !isArchivedNow(e.countdown, now))
       .filter((e) => openCallsRegion === 'all' || e.region === openCallsRegion)
       .filter((e) => openCallsCategory === 'all' || e.category === openCallsCategory)
       .filter((e) => {
@@ -217,7 +222,14 @@ export default function Discovery() {
         return e.countdown.kind === 'annual';
       })
       .sort((a, b) => countdownSortKey(a.countdown, now) - countdownSortKey(b.countdown, now));
-  }, [openCallsRegion, openCallsCategory, statusFilter]);
+  }, [openCallsRegion, openCallsCategory, statusFilter, showArchive]);
+
+  // Count of entries currently hidden by the archive filter, surfaced on the
+  // toggle button so visitors know how much is behind the curtain.
+  const archivedCount = useMemo(() => {
+    const now = new Date();
+    return openCallEntries.filter((e) => isArchivedNow(e.countdown, now)).length;
+  }, []);
 
   const copyPrompt = (prompt: string) => {
     navigator.clipboard.writeText(prompt);
@@ -347,6 +359,21 @@ export default function Discovery() {
                   >
                     Coming soon (annual)
                   </button>
+                  {archivedCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowArchive((v) => !v)}
+                      className={cn(
+                        'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
+                        showArchive
+                          ? 'bg-foreground text-background border-foreground'
+                          : 'border-dashed border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                      )}
+                      title="Closed programs and past 2026 deadlines — kept as historical reference"
+                    >
+                      {showArchive ? 'Hide archive' : `Show archive (${archivedCount})`}
+                    </button>
+                  )}
                   <span className="ml-auto text-[10px] text-muted-foreground font-mono self-center">
                     {filteredOpenCalls.length}{' '}
                     {filteredOpenCalls.length === 1 ? 'call' : 'calls'}

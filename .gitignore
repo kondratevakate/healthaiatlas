@@ -46,6 +46,7 @@ pnpm-debug.log*
 # local tooling
 .claude/settings.local.json
 .claude/risk-reports/
+.claude/scheduled_tasks.lock
 
 # typescript
 *.tsbuildinfo

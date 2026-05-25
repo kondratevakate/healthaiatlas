@@ -51,12 +51,12 @@ const config: Record<Level, { icon: React.ElementType; label: string; className:
   high: {
     icon: ShieldCheck,
     label: 'High',
-    className: 'border-green-700/30 text-green-800 bg-green-50',
+    className: 'border-success/30 text-success bg-success/10',
   },
   medium: {
     icon: ShieldAlert,
     label: 'Medium',
-    className: 'border-yellow-700/30 text-yellow-800 bg-yellow-50',
+    className: 'border-warning/30 text-warning bg-warning/10',
   },
   low: {
     icon: Shield,

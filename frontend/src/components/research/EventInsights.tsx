@@ -798,9 +798,9 @@ export function EventInsights({ variant = 'card' }: Props) {
           </div>
         </div>
       ) : !disclosureAcked ? (
-        <div className="border border-amber-500/40 bg-amber-50 dark:bg-amber-950/20 p-4 space-y-2">
+        <div className="border border-warning/40 bg-warning/10 p-4 space-y-2">
           <div className="flex items-start gap-2">
-            <ShieldAlert className="h-4 w-4 mt-0.5 text-amber-600 shrink-0" />
+            <ShieldAlert className="h-4 w-4 mt-0.5 text-warning shrink-0" />
             <div className="space-y-1">
               <div className="text-sm font-medium">Heads up — free public model</div>
               <p className="text-xs text-muted-foreground">

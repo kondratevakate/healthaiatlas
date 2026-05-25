@@ -10,15 +10,16 @@ interface PersonaCardProps {
   className?: string;
 }
 
-const personaConfig: Record<UserPersona, {
-  icon: React.ElementType;
-  colorClass: string;
-}> = {
-  patient: { icon: User, colorClass: 'hover:border-pink group-hover:text-pink' },
-  doctor: { icon: Stethoscope, colorClass: 'hover:border-primary group-hover:text-primary' },
-  business: { icon: Building2, colorClass: 'hover:border-yellow group-hover:text-yellow' },
-  startup: { icon: Rocket, colorClass: 'hover:border-orange group-hover:text-orange' },
-  leader: { icon: Lightbulb, colorClass: 'hover:border-blue group-hover:text-blue' },
+// No per-persona color classes — categories differentiated by icon only.
+// Hover uses a unified semantic border; icon already applies
+// group-hover:text-foreground inline (see below).
+// See docs/design-decisions/2026-05-palette-strategy.md.
+const personaConfig: Record<UserPersona, { icon: React.ElementType }> = {
+  patient:  { icon: User },
+  doctor:   { icon: Stethoscope },
+  business: { icon: Building2 },
+  startup:  { icon: Rocket },
+  leader:   { icon: Lightbulb },
 };
 
 export function PersonaCard({ persona, className }: PersonaCardProps) {
@@ -34,8 +35,7 @@ export function PersonaCard({ persona, className }: PersonaCardProps) {
     <Link
       to={`/${persona}`}
       className={cn(
-        "group flex flex-col p-6 border border-border transition-all duration-300",
-        config.colorClass,
+        "group flex flex-col p-6 border border-border hover:border-foreground/50 transition-all duration-300",
         className
       )}
     >

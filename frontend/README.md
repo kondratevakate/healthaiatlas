@@ -1,6 +1,6 @@
 # healthaiatlas — frontend
 
-Vite + React 18 + Tailwind v3 + shadcn/ui SPA. Source of truth for the Health AI Atlas public site.
+Vite + React 18 + Tailwind v3 + shadcn/ui SPA. Source of truth for the HealthAI Atlas public site.
 
 ## Local development
 

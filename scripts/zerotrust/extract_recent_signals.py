@@ -47,7 +47,7 @@ DOMAIN_TAG = "ai_lifesci_recent"
 def load_ts_module() -> dict:
     proc = subprocess.run(
         ["node", "--experimental-strip-types", str(DUMPER), str(TS_FILE)],
-        capture_output=True, text=True, check=False,
+        capture_output=True, text=True, encoding='utf-8', check=False,
     )
     if proc.returncode != 0:
         sys.stderr.write(proc.stderr)
@@ -168,6 +168,7 @@ def extract(data, url_status, wayback_replacements=None):
             jurisdiction=sig.get("geo", ""),
             confidence=confidence, source_ids=sid, domain_tags=DOMAIN_TAG,
             tags=",".join(tags),
+            notes=sig.get("qualitySignal", "") or "",
             extracted_from=f"aiLifeSciencesRecentSignals.ts#RECENT_SIGNALS[id={sig_id}]",
             extracted_at=today(),
         ))

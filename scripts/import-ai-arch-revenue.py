@@ -1,4 +1,28 @@
-"""Import AI Architecture x Revenue zero-trust dataset into typed TypeScript.
+"""DEPRECATED: Import AI Architecture x Revenue dataset into typed TypeScript.
+
+⚠️ This script writes directly from xlsx → TS, bypassing the canonical
+Airtable store. That breaks the architecture goal documented in
+memory/feedback_zerotrust_is_canonical.md:
+
+  xlsx → scripts/zerotrust/extract_*.py → CSV → to_airtable → Airtable
+                                                                   ↓
+                                                          from_airtable
+                                                                   ↓
+                                                  scripts/zerotrust/regen_*.py
+                                                                   ↓
+                                                       frontend/src/data/*.ts
+
+Migration path (to be completed):
+  1. The xlsx is already extracted via scripts/zerotrust/extract_ai_arch_revenue.py
+     and loaded into Airtable as the ai_arch_revenue domain.
+  2. Write `scripts/zerotrust/regen_arch_revenue.py` (analogous to
+     regen_oncology.py / regen_us_timeline.py) that pulls from Airtable
+     and reconstructs the AIArchitecture + AIRevenueProduct shapes plus
+     the editorial overlay (AI_REVENUE_DISCLAIMER, FAMILY_COLORS).
+  3. Delete this script; switch CI / docs to invoke the regen instead.
+
+Until that migration lands, this script remains functional for
+back-compatibility but should NOT be considered the source of truth.
 
 Source:  C:/Projects/data/aiatls/ai_arch_revenue_data_final.xlsx
 Target:  frontend/src/data/aiArchitectureRevenue.ts

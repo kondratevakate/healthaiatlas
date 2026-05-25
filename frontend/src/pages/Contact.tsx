@@ -63,7 +63,7 @@ const Contact = () => {
       <div className="container py-12 md:py-16 max-w-2xl">
         <PageHeader
           title="Contact"
-          subtitle="Research and code by Kate Kondratieva. Health AI Atlas is an independent research project mapping the global healthcare AI ecosystem."
+          subtitle="Research and code by Kate Kondratieva. HealthAI Atlas is an independent research project mapping the global healthcare AI ecosystem."
         />
 
         <div className="border border-border divide-y divide-border mb-10">

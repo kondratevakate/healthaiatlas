@@ -2,8 +2,9 @@ import { Layout } from '@/components/layout';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { Mail, ExternalLink } from 'lucide-react';
+import { BookOpen, Heart, Mail, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { ATLAS_NOTES_SUBSCRIBE_URL, MANIFUND_PROJECT_URL } from '@/data/constants';
 
 const RETHINKING_SYSTEMS_URL = 'https://www.rethinkingsystems.design/';
 
@@ -100,7 +101,33 @@ const About = () => {
           </p>
         </section>
 
-        {/* 3. Mission — canonical About copy (independent project statement) */}
+        {/* 3. Atlas Notes — editorial companion newsletter on LinkedIn.
+            Was previously a top-level nav item; demoted to a contextual
+            link inside About so the primary nav stays directory-focused
+            and Atlas Notes lives next to the authorship context that
+            explains why it exists. */}
+        <section className="mb-16 max-w-3xl">
+          <h2 className="heading-lg mb-3">Atlas Notes — the newsletter</h2>
+          <p className="text-body text-muted-foreground mb-5">
+            Atlas Notes is the editorial companion to this directory — long-form analysis of where
+            healthcare AI is moving, what the methods can and cannot do clinically, and the read-
+            across between regulatory shifts and founder strategy. Author voice (Kate Kondratieva),
+            with named takes you can argue with. Published on LinkedIn for distribution; cited back
+            into Atlas entries where the analysis becomes structured data.
+          </p>
+          <a
+            href={ATLAS_NOTES_SUBSCRIBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
+          >
+            <BookOpen className="w-4 h-4" />
+            Subscribe on LinkedIn
+            <ExternalLink className="w-3 h-3 opacity-60" />
+          </a>
+        </section>
+
+        {/* 4. Mission — canonical About copy (independent project statement) */}
         <section className="max-w-3xl space-y-5 text-body text-foreground/90">
           <h2 className="heading-lg mb-6">{t('about.mission')}</h2>
 
@@ -138,6 +165,36 @@ const About = () => {
             See also: <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link>
             {' · '}
             <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
+          </p>
+        </section>
+
+        {/* Support — sits at the bottom rather than the top so it doesn't
+            dilute the analytical/B2B positioning of the project. Funding
+            flows through Manifund — their 501(c)(3) acts as fiscal sponsor,
+            so the Atlas doesn't need to spin up its own legal entity or
+            payment stack. Enterprise needs go through the commercial path
+            described in the mission section above. */}
+        <section className="mt-16 max-w-3xl">
+          <h2 className="heading-lg mb-3">Support the Atlas</h2>
+          <p className="text-body text-muted-foreground mb-5">
+            The directory and Atlas Notes are free to read. If the work has helped you and you'd like
+            to contribute toward continued source verification and geographic expansion, funding flows
+            through Manifund — a fiscal-sponsorship platform for AI-ecosystem projects, where their
+            registered 501(c)(3) receives funds and disburses them as grants.
+          </p>
+          <a
+            href={MANIFUND_PROJECT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
+          >
+            <Heart className="w-4 h-4" />
+            Fund on Manifund
+            <ExternalLink className="w-3 h-3 opacity-60" />
+          </a>
+          <p className="text-xs text-muted-foreground mt-3">
+            Enterprise users (investment firms, healthcare organizations, consultancies) — see the
+            commercial-tooling note above and reach out via <Link to="/contact" className="text-primary hover:underline">/contact</Link>.
           </p>
         </section>
       </div>

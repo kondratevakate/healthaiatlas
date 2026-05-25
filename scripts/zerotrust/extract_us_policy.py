@@ -49,7 +49,7 @@ DOMAIN_TAG = "us_policy"
 def load_ts_module(path: Path) -> dict:
     proc = subprocess.run(
         ["node", "--experimental-strip-types", str(DUMPER), str(path)],
-        capture_output=True, text=True, check=False,
+        capture_output=True, text=True, encoding='utf-8', check=False,
     )
     if proc.returncode != 0:
         sys.stderr.write(proc.stderr)
@@ -73,6 +73,7 @@ def _build_record(
     entity_name: str, extra_tags: list[str],
     url_status: dict, wayback_replacements: dict,
     extracted_from: str,
+    notes: str = "",
 ):
     """Common path: emit (entity, claim, source) or a QuarantineRow."""
     if not src:
@@ -118,6 +119,7 @@ def _build_record(
         value=value[:500], period=period, jurisdiction="US",
         confidence=confidence, source_ids=sid, domain_tags=DOMAIN_TAG,
         tags=",".join(tags),
+        notes=notes,
         extracted_from=extracted_from,
         extracted_at=today(),
     )

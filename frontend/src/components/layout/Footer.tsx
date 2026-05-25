@@ -1,5 +1,11 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
+import {
+  SUGGEST_ENTRY_URL,
+  SUGGEST_CORRECTION_URL,
+  ATLAS_NOTES_SUBSCRIBE_URL,
+  MANIFUND_PROJECT_URL,
+} from '@/data/constants';
 
 export function Footer() {
   const { t, language } = useLanguage();
@@ -13,9 +19,9 @@ export function Footer() {
           <div>
             <Link to="/" className="block">
               <span className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-none">
-                AI Health
+                HealthAI
                 <br />
-                Directory
+                Atlas
               </span>
             </Link>
             <p className="text-sm text-[hsl(var(--footer-foreground))]/70 mt-6 max-w-sm">
@@ -23,21 +29,67 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Right: Links in columns */}
-          <div className="grid grid-cols-2 gap-8 md:justify-end">
-            {/* Navigation */}
+          {/* Right: Links in three columns mirroring the primary nav clusters.
+              Browse = the directory's main inventory surfaces.
+              Learn  = the editorial / contextual layer.
+              Contribute = correction / extension surface (aisafety.com pattern). */}
+          <div className="grid grid-cols-3 gap-8 md:justify-end">
+            {/* Browse — the primary inventory surfaces */}
             <div>
               <h3 className="text-xs uppercase tracking-wider font-semibold mb-4 text-[hsl(var(--footer-foreground))]/50">
-                {language === 'en' ? 'Navigate' : 'تصفح'}
+                {language === 'en' ? 'Browse' : 'تصفح'}
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <Link 
-                    to="/" 
+                  <Link
+                    to="/discovery?section=opencalls"
                     className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
                   >
-                    {t('nav.home')}
+                    {t('nav.opencalls')}
                   </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/directory"
+                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
+                  >
+                    {t('nav.domains')}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/discovery"
+                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
+                  >
+                    {t('nav.events')}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Learn — editorial + founder-vertical content */}
+            <div>
+              <h3 className="text-xs uppercase tracking-wider font-semibold mb-4 text-[hsl(var(--footer-foreground))]/50">
+                {language === 'en' ? 'Learn' : 'تعلم'}
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link
+                    to="/founders"
+                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
+                  >
+                    {t('nav.founders')}
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href={ATLAS_NOTES_SUBSCRIBE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
+                  >
+                    {t('nav.atlasnotes')} ↗
+                  </a>
                 </li>
                 <li>
                   <Link
@@ -47,53 +99,51 @@ export function Footer() {
                     {t('nav.about')}
                   </Link>
                 </li>
+              </ul>
+            </div>
+
+            {/* Contribute — every page has this surface (aisafety.com pattern) */}
+            <div>
+              <h3 className="text-xs uppercase tracking-wider font-semibold mb-4 text-[hsl(var(--footer-foreground))]/50">
+                {language === 'en' ? 'Contribute' : 'ساهم'}
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <a
+                    href={SUGGEST_ENTRY_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
+                  >
+                    {language === 'en' ? 'Suggest entry' : 'اقترح إدراجاً'}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={SUGGEST_CORRECTION_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
+                  >
+                    {language === 'en' ? 'Suggest correction' : 'اقترح تصحيحاً'}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={MANIFUND_PROJECT_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
+                  >
+                    {language === 'en' ? 'Fund on Manifund ↗' : 'مَوِّل عبر Manifund ↗'}
+                  </a>
+                </li>
                 <li>
                   <Link
                     to="/contact"
                     className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
                   >
                     {language === 'en' ? 'Contact' : 'تواصل'}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/directory"
-                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
-                  >
-                    {t('nav.directory')}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Explore */}
-            <div>
-              <h3 className="text-xs uppercase tracking-wider font-semibold mb-4 text-[hsl(var(--footer-foreground))]/50">
-                {language === 'en' ? 'Explore' : 'استكشف'}
-              </h3>
-              <ul className="space-y-3">
-                <li>
-                  <Link 
-                    to="/discovery" 
-                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
-                  >
-                    {language === 'en' ? 'Discovery' : 'الاستكشاف'}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/discovery?tab=launches"
-                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
-                  >
-                    {language === 'en' ? 'Launches' : 'إطلاقات'}
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    to="/context" 
-                    className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
-                  >
-                    {language === 'en' ? 'Context' : 'السياق'}
                   </Link>
                 </li>
               </ul>
@@ -103,7 +153,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-[hsl(var(--footer-foreground))]/20 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[hsl(var(--footer-foreground))]/60">
-          <p>© {currentYear} AI Health Directory. {t('footer.rights')}.</p>
+          <p>© {currentYear} HealthAI Atlas. {t('footer.rights')}.</p>
           <div className="flex gap-6">
             <Link
               to="/privacy"

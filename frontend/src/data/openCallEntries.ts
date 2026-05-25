@@ -20,7 +20,8 @@ export type OpenCallCategory =
   | 'fellowship'   // Named fellowships, residencies
   | 'accelerator'  // Cohort-based accelerators / incubators
   | 'prize'        // Prize competitions, hiring contests
-  | 'sandbox';     // Regulatory sandboxes, pilot calls
+  | 'sandbox'      // Regulatory sandboxes, pilot calls
+  | 'hackathon';   // Time-bound coding/clinical-data competitions (Kaggle, NHS, MIT, etc.)
 
 export type CountdownStatus =
   | { kind: 'deadline'; date: Date }
@@ -1045,7 +1046,7 @@ export const openCallEntries: OpenCallEntry[] = [
 ];
 
 export const OPEN_CALL_REGIONS: GrantRegion[] = ['US', 'EU', 'UK', 'UAE', 'Global'];
-export const OPEN_CALL_CATEGORIES: OpenCallCategory[] = ['grant', 'fellowship', 'accelerator', 'prize', 'sandbox'];
+export const OPEN_CALL_CATEGORIES: OpenCallCategory[] = ['grant', 'fellowship', 'accelerator', 'prize', 'sandbox', 'hackathon'];
 
 export const categoryLabel: Record<OpenCallCategory, string> = {
   grant: 'Grant',
@@ -1053,6 +1054,7 @@ export const categoryLabel: Record<OpenCallCategory, string> = {
   accelerator: 'Accelerator',
   prize: 'Prize',
   sandbox: 'Sandbox',
+  hackathon: 'Hackathon',
 };
 
 export const categoryGlyph: Record<OpenCallCategory, string> = {
@@ -1061,4 +1063,5 @@ export const categoryGlyph: Record<OpenCallCategory, string> = {
   accelerator: 'A',
   prize: '★',
   sandbox: '⌗',
+  hackathon: '⚡',
 };

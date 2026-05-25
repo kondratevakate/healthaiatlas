@@ -15,9 +15,9 @@ export function CompactRedFlagItem({ flag, onClick }: CompactRedFlagItemProps) {
       case 'official':
         return 'text-destructive';
       case 'observed':
-        return 'text-orange-500';
+        return 'text-warning';
       case 'anecdotal':
-        return 'text-yellow-500';
+        return 'text-warning/70';
       default:
         return 'text-muted-foreground';
     }

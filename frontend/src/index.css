@@ -43,6 +43,14 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
+    /* Status / traffic-light tokens — evidence badges, risk scores, regulatory
+       labels. NOT for category differentiation (categories use monochrome).
+       Calibrated to match emerald-600 / amber-600 / blue-500 visually.
+       See docs/design-decisions/2026-05-palette-strategy.md */
+    --success: 142 72% 36%;
+    --warning:  32 95% 44%;
+    --info:    213 94% 52%;
+
     --border: 0 0% 0%;
     --input: 0 0% 0%;
     --ring: 0 0% 0%;
@@ -114,6 +122,11 @@
 
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 100%;
+
+    /* Status tokens — dark mode variants (≈ emerald-400 / amber-400 / blue-400) */
+    --success: 142 76% 57%;
+    --warning:  38 92% 65%;
+    --info:    213 94% 68%;
 
     --border: 0 0% 100%;
     --input: 0 0% 100%;

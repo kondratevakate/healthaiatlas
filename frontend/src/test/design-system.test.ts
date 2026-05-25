@@ -248,19 +248,21 @@ describe('design-system: color palette', () => {
   });
 
   // 2b. Raw Tailwind palette classes (text-red-500, bg-emerald-100, etc.)
-  // bypass the semantic tokens. Allowlist captures current status-indicator
-  // components that genuinely need traffic-light colors; they should migrate
-  // to semantic status tokens (--success, --warning, --info, --destructive)
-  // per docs/design-decisions/2026-05-palette-strategy.md.
-  // Named domain-color tokens (--pink, --yellow etc.) are NOT the migration
-  // target — those variables are undefined in index.css. New files MUST use
-  // semantic tokens only.
+  // bypass the semantic tokens. The allowlist below contains ONLY:
+  //
+  //   a) shadcn boilerplate (toast.tsx) — do not touch
+  //   b) Data-visualisation / editorial context components that encode
+  //      categorical data in color (drug identity, event type, funding stage).
+  //      These use emerald/amber/blue for data encoding, NOT status indication,
+  //      so migrating to --success/--warning/--info would be semantically wrong.
+  //      They may be migrated once the data-viz layer has its own token system.
+  //
+  // Core status-indicator components (ConfidenceBadge, RiskScoreCard,
+  // EvidenceLabel, CompactRedFlagItem, EventInsights) have been migrated to
+  // semantic tokens (--success, --warning, --info, --destructive) and are
+  // no longer in this list. New files MUST use semantic tokens only.
   const RAW_PALETTE_ALLOWLIST = new Set<string>([
-    'components/claims/ConfidenceBadge.tsx',
-    'components/research/RiskScoreCard.tsx',
-    'components/research/EvidenceLabel.tsx',
-    'components/research/CompactRedFlagItem.tsx',
-    'components/research/EventInsights.tsx',
+    // Context data-visualisation — categorical color encoding, not status
     'components/context-uk/UkFounderMap/NiceRejection.tsx',
     'components/context-uk/UkFounderMap/NhsDeployments.tsx',
     'components/context-uk/UkFounderMap/FundingRounds.tsx',
@@ -269,7 +271,8 @@ describe('design-system: color palette', () => {
     'components/context-eu/EuFounderMap/PharmaGravity.tsx',
     'components/context-us/UsSidebar.tsx',
     'components/home/SubscribeSection.tsx',
-    'components/ui/toast.tsx',  // shadcn boilerplate (destructive variant)
+    // shadcn boilerplate — do not migrate
+    'components/ui/toast.tsx',
   ]);
 
   const RAW_PALETTE_RE =

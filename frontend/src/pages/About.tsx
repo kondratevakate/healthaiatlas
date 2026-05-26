@@ -279,6 +279,46 @@ const About = () => {
           </p>
         </section>
 
+        {/* Friends of the project */}
+        <section className="mb-8 max-w-2xl">
+          <h2 className="heading-lg mb-3">Friends of the project</h2>
+          <p className="text-sm text-muted-foreground mb-5">
+            Independent projects doing complementary work in the AI ecosystem.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <a
+              href="https://aisafety.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex-1 border border-border p-4 hover:border-foreground/40 transition-colors"
+            >
+              <div className="flex items-start justify-between gap-2 mb-1.5">
+                <span className="font-medium text-sm">AISafety.com</span>
+                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors flex-shrink-0 mt-0.5" />
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                The AI safety ecosystem directory — landscape of labs, researchers, and initiatives in the field.
+              </p>
+              <span className="font-mono text-[9px] text-muted-foreground/40 mt-2 block">aisafety.com</span>
+            </a>
+            <a
+              href="https://www.rethinkingsystems.design/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex-1 border border-border p-4 hover:border-foreground/40 transition-colors"
+            >
+              <div className="flex items-start justify-between gap-2 mb-1.5">
+                <span className="font-medium text-sm">Rethinking Systems</span>
+                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors flex-shrink-0 mt-0.5" />
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Design research at the intersection of systems thinking, technology, and organisations.
+              </p>
+              <span className="font-mono text-[9px] text-muted-foreground/40 mt-2 block">rethinkingsystems.design</span>
+            </a>
+          </div>
+        </section>
+
         {/* Support — sits at the bottom rather than the top so it doesn't
             dilute the analytical/B2B positioning of the project. Funding
             flows through Manifund — their 501(c)(3) acts as fiscal sponsor,

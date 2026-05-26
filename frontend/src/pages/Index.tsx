@@ -17,8 +17,7 @@ import { EcosystemCard } from '@/components/research/EcosystemCard';
 import { HeroDiagram } from '@/components/home/HeroDiagram';
 import { RiskAssessment } from '@/types/research';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Compass, CalendarDays, Rocket, MapPin } from 'lucide-react';
+import { ArrowRight, Compass, MapPin } from 'lucide-react';
 
 import { conferences } from '@/data/conferences';
 import { launches } from '@/data/launches';
@@ -88,112 +87,103 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Newsfeed — events + launches. Anchored as #events so the Events
-            nav item can deep-link here. Future iterations can add tweets,
-            market signals, leader spotlights as additional rows. */}
+        {/* Newsfeed — terminal/code style. Events + launches as log lines. */}
         <section id="events" className="py-12 md:py-16 border-b border-border scroll-mt-20">
           <div className="container">
-            <div className="flex items-baseline justify-between mb-8 flex-wrap gap-3">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <CalendarDays className="h-5 w-5 text-primary" />
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                    Newsfeed
-                  </p>
-                </div>
-                <div className="h-0.5 w-12 bg-primary mb-4" />
-                <h2 className="text-2xl md:text-3xl font-semibold">What's happening</h2>
-              </div>
-              <p className="text-sm text-muted-foreground max-w-md">
-                Upcoming events and recent launches in the healthcare AI ecosystem. Tweets and
-                market signals coming next.
+
+            <div className="flex items-baseline justify-between mb-6 flex-wrap gap-3">
+              <h2 className="heading-xl">What's happening</h2>
+              <p className="text-sm text-muted-foreground">
+                Upcoming events and recent launches in the healthcare AI ecosystem.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-10">
-              {/* Upcoming events */}
-              <div>
-                <div className="flex items-baseline justify-between mb-4">
-                  <h3 className="text-sm font-semibold inline-flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4" />
-                    Upcoming events
-                  </h3>
-                  <Link
-                    to="/discovery"
-                    className="text-xs text-primary hover:underline inline-flex items-center gap-1"
-                  >
-                    View all
-                    <ArrowRight className="h-3 w-3" />
+            {/* Terminal window */}
+            <div className="border border-border bg-card font-mono text-sm overflow-hidden">
+
+              {/* Chrome bar */}
+              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-secondary/40">
+                <div className="w-2.5 h-2.5 rounded-full bg-border" />
+                <div className="w-2.5 h-2.5 rounded-full bg-border" />
+                <div className="w-2.5 h-2.5 rounded-full bg-border" />
+                <span className="ml-3 text-[10px] tracking-widest uppercase text-muted-foreground/40">
+                  healthai.log
+                </span>
+                <div className="ml-auto flex gap-4">
+                  <Link to="/discovery" className="text-[10px] text-muted-foreground/40 hover:text-primary transition-colors">
+                    events →
+                  </Link>
+                  <Link to="/discovery?tab=launches" className="text-[10px] text-muted-foreground/40 hover:text-primary transition-colors">
+                    launches →
                   </Link>
                 </div>
-                <div className="space-y-3">
+              </div>
+
+              {/* Log body */}
+              <div className="grid md:grid-cols-2 divide-x divide-border">
+
+                {/* Events column */}
+                <div className="p-4 space-y-0">
+                  <div className="text-[10px] tracking-widest uppercase text-muted-foreground/30 mb-3 pb-2 border-b border-border/40">
+                    // upcoming_events
+                  </div>
                   {eventsToShow.map((c) => (
                     <Link
                       key={c.id}
                       to={`/discovery#${c.id}`}
-                      className="group block border border-border bg-background p-4 hover:border-primary hover:shadow-sm transition-all"
+                      className="group block py-2.5 border-b border-border/20 last:border-0 hover:bg-secondary/30 transition-colors px-1 -mx-1"
                     >
-                      <div className="flex items-start justify-between gap-3 mb-1.5">
-                        <h4 className="text-sm font-medium leading-snug group-hover:text-primary transition-colors">
-                          {c.name.en}
-                        </h4>
-                        <span className="text-[10px] text-muted-foreground font-mono shrink-0">
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        <span className="text-muted-foreground/40 text-xs shrink-0">
                           {c.date.slice(0, 7)}
                         </span>
-                      </div>
-                      <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-                        <span className="inline-flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {c.location}
-                        </span>
-                        <Badge variant="outline" className="rounded-none text-[10px] py-0">
+                        <span className="text-primary/70 text-[10px] uppercase tracking-wider shrink-0 w-20 truncate">
                           {c.type}
-                        </Badge>
+                        </span>
+                        <span className="text-foreground/80 text-xs group-hover:text-foreground transition-colors truncate">
+                          {c.name.en}
+                        </span>
+                      </div>
+                      <div className="text-[10px] text-muted-foreground/40 pl-[4.5rem] mt-0.5 flex items-center gap-1">
+                        <MapPin className="w-2.5 h-2.5 shrink-0" />
+                        {c.location}
                       </div>
                     </Link>
                   ))}
                 </div>
-              </div>
 
-              {/* Recent launches */}
-              <div>
-                <div className="flex items-baseline justify-between mb-4">
-                  <h3 className="text-sm font-semibold inline-flex items-center gap-2">
-                    <Rocket className="h-4 w-4" />
-                    Recent launches
-                  </h3>
-                  <Link
-                    to="/discovery?tab=launches"
-                    className="text-xs text-primary hover:underline inline-flex items-center gap-1"
-                  >
-                    View all
-                    <ArrowRight className="h-3 w-3" />
-                  </Link>
-                </div>
-                <div className="space-y-3">
+                {/* Launches column */}
+                <div className="p-4 space-y-0">
+                  <div className="text-[10px] tracking-widest uppercase text-muted-foreground/30 mb-3 pb-2 border-b border-border/40">
+                    // recent_launches
+                  </div>
                   {RECENT_LAUNCHES.map((l) => (
                     <Link
                       key={l.id}
                       to={`/discovery?tab=launches#${l.id}`}
-                      className="group block border border-border bg-background p-4 hover:border-primary hover:shadow-sm transition-all"
+                      className="group block py-2.5 border-b border-border/20 last:border-0 hover:bg-secondary/30 transition-colors px-1 -mx-1"
                     >
-                      <div className="flex items-start justify-between gap-3 mb-1.5">
-                        <h4 className="text-sm font-medium leading-snug group-hover:text-primary transition-colors inline-flex items-baseline gap-1.5">
-                          <span aria-hidden>{l.logo}</span>
-                          {l.name}
-                        </h4>
-                        <span className="text-[10px] text-muted-foreground font-mono shrink-0">
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        <span className="text-muted-foreground/40 text-xs shrink-0">
                           {l.launchDate?.toISOString().slice(0, 7)}
                         </span>
+                        <span className="text-muted-foreground/50 text-xs shrink-0" aria-hidden>
+                          {l.logo}
+                        </span>
+                        <span className="text-foreground/80 text-xs group-hover:text-foreground transition-colors truncate">
+                          {l.name}
+                        </span>
                       </div>
-                      <p className="text-[11px] text-muted-foreground line-clamp-2">
+                      <div className="text-[10px] text-muted-foreground/40 pl-[4.5rem] mt-0.5 truncate">
                         {l.tagline}
-                      </p>
+                      </div>
                     </Link>
                   ))}
                 </div>
+
               </div>
             </div>
+
           </div>
         </section>
 

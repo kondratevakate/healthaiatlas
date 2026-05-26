@@ -133,6 +133,7 @@ describe('design-system: typography', () => {
     'components/home/SubscribeSection.tsx',   // intentional override of heading-display
     'components/dead-valley/DeadValleyView.tsx', // failure-stat numbers
     'pages/FoundersDeadValley.tsx',           // failure-stat numbers
+    'pages/Founders.tsx',                     // module stat counters ($14T, 29, 6, 5)
     'pages/NotFound.tsx',                     // 404 numeral
   ]);
 
@@ -188,7 +189,50 @@ describe('design-system: typography', () => {
     'pages/NotFound.tsx',  // 404 numeral, intentionally bespoke
     'pages/Share.tsx',     // assessment-summary page, custom hero
     'pages/Index.tsx',     // home hero, custom layout
+    'pages/Founders.tsx',        // tight editorial masthead replaces PageHeader intentionally
+    'pages/FoundersMarkets.tsx', // chart-first layout, minimal caption heading
   ]);
+
+  // 1e. Heading elements must not bypass the brand type scale.
+  // If you write `<h1 className="text-3xl font-bold">` you get sans-serif at an
+  // arbitrary size — losing the font-serif axis that .heading-editorial sets.
+  // The fix is always to pick a heading utility from index.css.
+  //
+  // Catches lines where a heading tag AND a raw text-Nxl coexist without a
+  // heading-* utility on the same line. Multi-line classNames are rare in this
+  // codebase so single-line matching is sufficient.
+  const RAW_HEADING_SIZE_ALLOWLIST = new Set<string>([
+    'pages/NotFound.tsx',       // intentionally bespoke 404 numeral
+    'pages/Share.tsx',          // assessment-summary custom hero
+    'pages/Index.tsx',          // home hero — uses heading-display elsewhere but has inline overrides
+    'components/ui/card.tsx',   // shadcn CardTitle boilerplate — do not modify
+  ]);
+
+  it('heading elements use heading utilities, not raw text-Nxl classes', () => {
+    // Matches: tag opens with h1/h2/h3, AND a `text-Nxl` size class appears,
+    // AND no heading-* utility appears — all on the same source line.
+    const HEADING_TAG_RE    = /<h[123]\b/;
+    const RAW_SIZE_RE       = /\btext-[2-9]xl\b/;
+    const UTILITY_RE        = /\bheading-(?:display|serif|editorial|xl|lg|md)\b/;
+
+    const offenders: string[] = [];
+    for (const f of allTsx) {
+      if (RAW_HEADING_SIZE_ALLOWLIST.has(rel(f))) continue;
+      const src = stripCommentsOnly(readFileSync(f, 'utf8'));
+      src.split('\n').forEach((line, i) => {
+        if (HEADING_TAG_RE.test(line) && RAW_SIZE_RE.test(line) && !UTILITY_RE.test(line)) {
+          offenders.push(`${rel(f)}:${i + 1}  ${line.trim().slice(0, 120)}`);
+        }
+      });
+    }
+    expect(
+      offenders,
+      `Heading elements must use brand utilities from index.css — not raw text-Nxl.\n` +
+        `Replace with: heading-display, heading-serif, heading-serif-sm, heading-editorial,\n` +
+        `heading-xl, heading-lg, or heading-md.\n\n` +
+        offenders.join('\n'),
+    ).toEqual([]);
+  });
 
   it('every page uses PageHeader or a known hero for its h1', () => {
     const offenders: string[] = [];
@@ -263,6 +307,8 @@ describe('design-system: color palette', () => {
   // no longer in this list. New files MUST use semantic tokens only.
   const RAW_PALETTE_ALLOWLIST = new Set<string>([
     // Context data-visualisation — categorical color encoding, not status
+    'pages/Founders.tsx',                 // editorial card signal-type accents (blue=tech, red=dead-valley, green=region)
+    'pages/FoundersDevRel.tsx',           // timeline event-type legend (hire/move/launch/content/gap)
     'components/context-uk/UkFounderMap/NiceRejection.tsx',
     'components/context-uk/UkFounderMap/NhsDeployments.tsx',
     'components/context-uk/UkFounderMap/FundingRounds.tsx',

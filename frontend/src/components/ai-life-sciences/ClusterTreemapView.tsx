@@ -113,8 +113,11 @@ function toSlug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-// Map from slug -> revenue_m (latest figure per company).
-const REVENUE_BY_SLUG = new Map(LS_REVENUE.map((r) => [r.slug, r.revenue_m]));
+// Only AI-product revenue (scope="product"). Company-scope entries are total
+// company revenue where AI is a small component (Intuitive Surgical, Epic, etc.).
+const REVENUE_BY_SLUG = new Map(
+  LS_REVENUE.filter((r) => r.scope === 'product').map((r) => [r.slug, r.revenue_m]),
+);
 
 // Compute a cluster's value for the given signal.
 function computeSignal(cluster: LSCluster, sig: SignalDef): number {
@@ -235,20 +238,25 @@ export function ClusterTreemapView() {
         <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mr-2">
           Size by:
         </span>
-        {SIGNALS.map((s) => (
-          <button
-            key={s.key}
-            onClick={() => setSignal(s.key)}
-            className={cn(
-              'px-2 py-1 text-[11px] font-mono border transition-colors',
-              signal === s.key
-                ? 'bg-foreground text-background border-foreground'
-                : 'border-border text-muted-foreground hover:text-foreground',
-            )}
-          >
-            {s.short}
-          </button>
-        ))}
+        {SIGNALS.map((s) => {
+          const isCapitalBreakdown = ['vc', 'ma', 'pharma_deals'].includes(s.key);
+          return (
+            <button
+              key={s.key}
+              onClick={() => setSignal(s.key)}
+              className={cn(
+                'px-2 py-1 text-[11px] font-mono border transition-colors',
+                signal === s.key
+                  ? 'bg-foreground text-background border-foreground'
+                  : 'border-border text-muted-foreground hover:text-foreground',
+                // Capital breakdown buttons are visually indented under Capital
+                isCapitalBreakdown && signal !== s.key && 'opacity-60 text-[10px]',
+              )}
+            >
+              {isCapitalBreakdown && signal !== s.key ? `↳ ${s.short}` : s.short}
+            </button>
+          );
+        })}
       </div>
 
       <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">

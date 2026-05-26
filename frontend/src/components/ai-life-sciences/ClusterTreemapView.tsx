@@ -10,6 +10,7 @@ import {
   type LSClusterFamily,
 } from '@/data/aiLifeSciences';
 import { LS_REVENUE } from '@/data/aiLifeSciencesRevenue';
+import { LS_CPT_CODES } from '@/data/aiLifeSciencesCPT';
 import { squarifiedTreemap } from '@/lib/squarifiedTreemap';
 import { cn } from '@/lib/utils';
 
@@ -446,6 +447,36 @@ function ClusterDetail({
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* CPT / insurance codes for this cluster */}
+        {(() => {
+          const cpts = LS_CPT_CODES.filter((c) => c.cluster === clusterId && !c.deleted);
+          if (cpts.length === 0) return null;
+          return (
+            <div className="border-b border-border px-4 py-3 bg-muted/20">
+              <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+                Insurance billing codes (CPT · CMS 2026)
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {cpts.map((c) => (
+                  <a
+                    key={c.code}
+                    href={c.src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex flex-col border border-border bg-background px-2 py-1 hover:border-primary transition-colors"
+                  >
+                    <span className="text-[11px] font-mono font-bold text-foreground">{c.code}</span>
+                    <span className="text-[10px] text-muted-foreground leading-tight max-w-[160px] truncate">{c.short}</span>
+                    {c.rateUsd && (
+                      <span className="text-[10px] font-mono text-primary">${c.rateUsd.toLocaleString()}</span>
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         <div className="overflow-y-auto flex-1 divide-y divide-border">
           {entries.length === 0 ? (

@@ -9,12 +9,15 @@ import {
   type LSCluster,
   type LSClusterFamily,
 } from '@/data/aiLifeSciences';
+import { LS_REVENUE } from '@/data/aiLifeSciencesRevenue';
 import { squarifiedTreemap } from '@/lib/squarifiedTreemap';
 import { cn } from '@/lib/utils';
 
-// Every metric here is computed directly from the verified LS_BUBBLES set —
-// no editorial overlays. Each cluster's value is an aggregate of its own bubbles.
+// Metrics are computed from verified sources only:
+// - Capital/Players/VC/M&A/Pharma/FDA: aggregated from 218 verified LS_BUBBLES
+// - Revenue: from LS_REVENUE (SEC filings + ARR disclosures, 63 companies)
 type SignalKey =
+  | 'revenue'
   | 'capital_total'
   | 'players'
   | 'vc'
@@ -34,6 +37,15 @@ interface SignalDef {
 }
 
 const SIGNALS: SignalDef[] = [
+  {
+    key: 'revenue',
+    label: 'Revenue / ARR (latest disclosed)',
+    short: 'Revenue',
+    unit: 'usd_m',
+    // Revenue is sourced from LS_REVENUE, not LS_BUBBLES — see computeSignal.
+    match: () => false,
+    weigh: () => 0,
+  },
   {
     key: 'capital_total',
     label: 'Total disclosed capital',
@@ -92,11 +104,28 @@ function formatValue(v: number, unit: 'usd_m' | 'count'): string {
   return v > 0 ? `<$1M` : '—';
 }
 
-// Compute a cluster's value for the given signal from LS_BUBBLES directly.
+// Slug-normalize company name to match LS_REVENUE slugs.
+function toSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+// Map from slug -> revenue_m (latest figure per company).
+const REVENUE_BY_SLUG = new Map(LS_REVENUE.map((r) => [r.slug, r.revenue_m]));
+
+// Compute a cluster's value for the given signal.
 function computeSignal(cluster: LSCluster, sig: SignalDef): number {
   const inCluster = LS_BUBBLES.filter((b) => b.cluster === cluster.id);
   if (sig.key === 'players') {
     return new Set(inCluster.map((b) => b.c)).size;
+  }
+  if (sig.key === 'revenue') {
+    // Sum latest revenue for each unique company in this cluster.
+    const companies = new Set(inCluster.map((b) => b.c));
+    let total = 0;
+    for (const name of companies) {
+      total += REVENUE_BY_SLUG.get(toSlug(name)) ?? 0;
+    }
+    return total;
   }
   return inCluster.filter(sig.match).reduce((s, b) => s + sig.weigh(b), 0);
 }
@@ -104,7 +133,7 @@ function computeSignal(cluster: LSCluster, sig: SignalDef): number {
 const FAMILY_ORDER: LSClusterFamily[] = ['care_delivery', 'discovery_rd', 'therapeutic', 'ai_infra', 'meta'];
 
 export function ClusterTreemapView() {
-  const [signal, setSignal] = useState<SignalKey>('capital_total');
+  const [signal, setSignal] = useState<SignalKey>('revenue');
   const [hovered, setHovered] = useState<string | null>(null);
   const [opened, setOpened] = useState<string | null>(null);
 

@@ -135,7 +135,7 @@ const About = () => {
       {/* Hero — diagram bleeds off the right edge, no divider line */}
       <section className="overflow-x-hidden">
         <div className="container py-12 md:py-16">
-          <div className="relative min-h-[400px] lg:min-h-[520px] flex items-center">
+          <div className="relative min-h-[200px] lg:min-h-[300px] flex items-center">
 
             {/* Orbit diagram — absolutely positioned, bleeds ~30% off the right viewport edge */}
             <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-[200px] pointer-events-none hidden lg:block w-[640px] h-[640px]">
@@ -156,10 +156,10 @@ const About = () => {
         </div>
       </section>
 
-      <div className="container py-12 md:py-16">
+      <div className="container pt-6 pb-12 md:pb-16">
         {/* 1. Contacts first */}
-        <section id="contact" className="mb-16 max-w-2xl">
-          <h2 className="heading-lg mb-6">{t('about.contact')}</h2>
+        <section id="contact" className="mb-8 max-w-2xl">
+          <h2 className="heading-lg mb-4">{t('about.contact')}</h2>
           <Card className="border-border/50 bg-card/50">
             <CardContent className="pt-6 space-y-5">
               <div className="flex flex-wrap gap-3">
@@ -215,7 +215,7 @@ const About = () => {
             link inside About so the primary nav stays directory-focused
             and Atlas Notes lives next to the authorship context that
             explains why it exists. */}
-        <section className="mb-16 max-w-3xl">
+        <section className="mb-8 max-w-2xl">
           <h2 className="heading-lg mb-3">Atlas Notes — the newsletter</h2>
           <p className="text-body text-muted-foreground mb-5">
             Atlas Notes is the editorial companion to this directory — long-form analysis of where
@@ -237,8 +237,8 @@ const About = () => {
         </section>
 
         {/* 4. Mission — canonical About copy (independent project statement) */}
-        <section className="max-w-3xl space-y-5 text-body text-foreground/90">
-          <h2 className="heading-lg mb-6">{t('about.mission')}</h2>
+        <section className="mb-8 max-w-2xl space-y-4 text-body text-foreground/90">
+          <h2 className="heading-lg mb-4">{t('about.mission')}</h2>
 
           <p>
             HealthAI Atlas is an independent project founded by Dr. Ekaterina Kondrateva to provide open,
@@ -283,7 +283,7 @@ const About = () => {
             so the Atlas doesn't need to spin up its own legal entity or
             payment stack. Enterprise needs go through the commercial path
             described in the mission section above. */}
-        <section className="mt-16 max-w-3xl">
+        <section className="max-w-2xl">
           <h2 className="heading-lg mb-3">Support the Atlas</h2>
           <p className="text-body text-muted-foreground mb-5">
             The directory and Atlas Notes are free to read. If the work has helped you and you'd like

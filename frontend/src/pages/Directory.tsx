@@ -141,7 +141,7 @@ const Directory = () => {
                 Market scale
               </p>
               <div className="h-0.5 w-12 bg-primary mb-4" />
-              <h2 className="text-2xl md:text-3xl font-semibold mb-3">
+              <h2 className="heading-xl mb-3">
                 Healthcare AI market comparison
               </h2>
               <p className="text-muted-foreground">
@@ -165,7 +165,7 @@ const Directory = () => {
                 </p>
               </div>
               <div className="h-0.5 w-12 bg-primary mb-4" />
-              <h2 className="text-2xl md:text-3xl font-semibold mb-3">
+              <h2 className="heading-xl mb-3">
                 Healthcare AI as a system, not a list
               </h2>
               <p className="text-muted-foreground">

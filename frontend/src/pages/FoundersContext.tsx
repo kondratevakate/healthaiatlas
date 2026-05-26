@@ -20,6 +20,7 @@ import { Cpu, Stethoscope, ExternalLink, GitCompare, Database, Skull } from 'luc
 
 import { Layout } from '@/components/layout';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { FounderToolkitNav } from '@/components/shared/FounderToolkitNav';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LastUpdated } from '@/components/shared/LastUpdated';
@@ -176,6 +177,8 @@ const FoundersContext = () => {
   return (
     <Layout>
       <div className="container py-12 md:py-16">
+        <FounderToolkitNav />
+
         <PageHeader
           eyebrow="Founder Toolkit"
           title="The world your AI is going into"

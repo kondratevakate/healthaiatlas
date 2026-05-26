@@ -18,8 +18,12 @@ import NotFound from "./pages/NotFound";
 import Discovery from "./pages/Discovery";
 import Share from "./pages/Share";
 import PersonaPage from "./pages/PersonaPage";
+import Founders from "./pages/Founders";
 import FoundersContext from "./pages/FoundersContext";
 import FoundersDeadValley from "./pages/FoundersDeadValley";
+import FoundersDevRel from "./pages/FoundersDevRel";
+import FoundersMarkets from "./pages/FoundersMarkets";
+import FoundersArchitectures from "./pages/FoundersArchitectures";
 
 const queryClient = new QueryClient();
 
@@ -41,12 +45,20 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/discovery" element={<Discovery />} />
-              {/* Founder Toolkit landing now goes straight to Context — the
-                  two-card landing felt like an extra step. Dead Valley lives
-                  inside Context's Healthcare → Country histories region tabs. */}
-              <Route path="/founders" element={<Navigate to="/founders/context" replace />} />
-              <Route path="/founders/context" element={<FoundersContext />} />
+              {/* Founder Toolkit — editorial home + 4 context modules.
+                  /founders renders the magazine cover; deep pages live under
+                  /founders/<module>. /founders/context is deprecated and
+                  redirects to the new home. */}
+              <Route path="/founders" element={<Founders />} />
+              <Route path="/founders/markets" element={<FoundersMarkets />} />
+              {/* Regulatory merged into Markets — same page, one click */}
+              <Route path="/founders/regulatory" element={<Navigate to="/founders/markets" replace />} />
+              <Route path="/founders/architectures" element={<FoundersArchitectures />} />
+              <Route path="/founders/tech" element={<FoundersDevRel />} />
+              <Route path="/founders/devrel" element={<Navigate to="/founders/tech" replace />} />
               <Route path="/founders/dead-valley" element={<FoundersDeadValley />} />
+              {/* Legacy deep page — kept until contents migrate to new modules. */}
+              <Route path="/founders/context" element={<FoundersContext />} />
               <Route path="/share/:id" element={<Share />} />
 
               {/* Persona landing pages — single PersonaPage dispatches on :id */}

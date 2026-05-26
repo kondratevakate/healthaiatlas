@@ -133,7 +133,7 @@ const About = () => {
   return (
     <Layout>
       {/* Hero — diagram bleeds off the right edge, no divider line */}
-      <section className="overflow-x-hidden">
+      <section className="overflow-x-clip">
         <div className="container py-12 md:py-16">
           <div className="relative flex items-start">
 

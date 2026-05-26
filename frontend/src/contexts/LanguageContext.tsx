@@ -70,6 +70,7 @@ const translations: Translations = {
   // Actions
   'action.viewAll': { en: 'View All', ar: 'عرض الكل' },
   'action.explore': { en: 'Explore', ar: 'استكشف' },
+  'action.back': { en: 'Back to', ar: 'العودة إلى' },
 
   // About
   'about.mission': { en: 'Our Mission', ar: 'مهمتنا' },

@@ -4,12 +4,9 @@ import {
   LS_BUBBLES,
   LS_CLUSTERS,
   LS_FAMILY_LABELS,
-  LS_TEMPERATURE_COLORS,
-  LS_TEMPERATURE_LABELS,
   LS_ET_LABELS,
   LS_RELIABILITY,
   type LSClusterFamily,
-  type LSTemperature,
 } from '@/data/aiLifeSciences';
 import { cn } from '@/lib/utils';
 import { ExternalLink } from 'lucide-react';
@@ -25,41 +22,26 @@ const ORDERED_CLUSTERS = [...LS_CLUSTERS].sort((a, b) => {
   return a.id.localeCompare(b.id);
 });
 
-const TEMPERATURE_ORDER: LSTemperature[] = ['red', 'orange', 'blue', 'neutral'];
-
 export function LandscapeView() {
-  const [colorBy, setColorBy] = useState<'family' | 'temperature'>('family');
-  // Single filter state; the meaning of the value depends on colorBy mode.
-  // When colorBy=family: 'all' | LSClusterFamily.
-  // When colorBy=temperature: 'all' | LSTemperature.
-  const [filter, setFilter] = useState<string>('all');
+  // Filter by cluster family; 'all' = no filter.
+  const [filter, setFilter] = useState<'all' | LSClusterFamily>('all');
   const [hovered, setHovered] = useState<number | null>(null);
-
-  // Reset filter to 'all' whenever the color axis flips so a stale family
-  // filter doesn't survive a switch to temperature mode (and vice versa).
-  const setColorByAndReset = (next: 'family' | 'temperature') => {
-    setColorBy(next);
-    setFilter('all');
-  };
 
   const matchesFilter = (clusterId: string): boolean => {
     if (filter === 'all') return true;
     const cluster = LS_CLUSTERS.find((c) => c.id === clusterId);
-    if (!cluster) return false;
-    return colorBy === 'family' ? cluster.family === filter : cluster.temperature === filter;
+    return !!cluster && cluster.family === filter;
   };
 
   const filtered = useMemo(
     () => LS_BUBBLES.filter((b) => matchesFilter(b.cluster)),
-    [filter, colorBy],
+    [filter],
   );
 
   const visibleClusters = useMemo(() => {
     if (filter === 'all') return ORDERED_CLUSTERS;
-    return ORDERED_CLUSTERS.filter((c) =>
-      colorBy === 'family' ? c.family === filter : c.temperature === filter,
-    );
-  }, [filter, colorBy]);
+    return ORDERED_CLUSTERS.filter((c) => c.family === filter);
+  }, [filter]);
 
   const { ref: containerRef, width: containerW } = useResponsiveSvgWidth(900);
 
@@ -87,37 +69,7 @@ export function LandscapeView() {
 
   return (
     <div>
-      {/* Color-mode toggle: family vs. wave market-temperature (Kondrateva-Seregina 2026) */}
-      <div className="flex flex-wrap gap-1 mb-2 items-center">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mr-2">
-          Color by
-        </span>
-        <button
-          onClick={() => setColorByAndReset('family')}
-          className={cn(
-            'px-2 py-1 text-[11px] font-mono border transition-colors',
-            colorBy === 'family'
-              ? 'bg-foreground text-background border-foreground'
-              : 'border-border text-muted-foreground hover:text-foreground',
-          )}
-        >
-          Family
-        </button>
-        <button
-          onClick={() => setColorByAndReset('temperature')}
-          className={cn(
-            'px-2 py-1 text-[11px] font-mono border transition-colors',
-            colorBy === 'temperature'
-              ? 'bg-foreground text-background border-foreground'
-              : 'border-border text-muted-foreground hover:text-foreground',
-          )}
-        >
-          Market temperature
-        </button>
-      </div>
-
-      {/* Filter row — adapts to colorBy: family chips when colorBy=family,
-          wave-temperature chips (red/orange/blue/neutral) when colorBy=temperature. */}
+      {/* Family filter chips */}
       <div className="flex flex-wrap gap-1 mb-4 items-center">
         <button
           onClick={() => setFilter('all')}
@@ -128,49 +80,27 @@ export function LandscapeView() {
               : 'border-border text-muted-foreground hover:text-foreground',
           )}
         >
-          {colorBy === 'family' ? 'All families' : 'All waves'}
+          All families
         </button>
-        {colorBy === 'family' ? (
-          FAMILY_ORDER.map((f) => {
-            const sample = LS_CLUSTERS.find((c) => c.family === f);
-            if (!sample) return null;
-            return (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={cn(
-                  'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
-                  filter === f
-                    ? 'bg-foreground text-background border-foreground'
-                    : 'border-border text-muted-foreground hover:text-foreground',
-                )}
-              >
-                <span aria-hidden="true" className="inline-block w-2 h-2" style={{ background: sample.color }} />
-                {LS_FAMILY_LABELS[f]}
-              </button>
-            );
-          })
-        ) : (
-          TEMPERATURE_ORDER.map((t) => (
+        {FAMILY_ORDER.map((f) => {
+          const sample = LS_CLUSTERS.find((c) => c.family === f);
+          if (!sample) return null;
+          return (
             <button
-              key={t}
-              onClick={() => setFilter(t)}
+              key={f}
+              onClick={() => setFilter(f)}
               className={cn(
                 'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
-                filter === t
+                filter === f
                   ? 'bg-foreground text-background border-foreground'
                   : 'border-border text-muted-foreground hover:text-foreground',
               )}
             >
-              <span
-                aria-hidden="true"
-                className="inline-block w-2 h-2 border border-border"
-                style={{ background: LS_TEMPERATURE_COLORS[t] }}
-              />
-              {LS_TEMPERATURE_LABELS[t]}
+              <span aria-hidden="true" className="inline-block w-2 h-2" style={{ background: sample.color }} />
+              {LS_FAMILY_LABELS[f]}
             </button>
-          ))
-        )}
+          );
+        })}
       </div>
 
       {/* Swimlane chart */}
@@ -222,7 +152,7 @@ export function LandscapeView() {
                   y={y - 6}
                   width={8}
                   height={12}
-                  fill={colorBy === 'temperature' ? LS_TEMPERATURE_COLORS[cluster.temperature] : cluster.color}
+                  fill={cluster.color}
                 />
                 <text x={20} y={y + 4} className="fill-foreground text-[10px] font-medium">
                   {cluster.label.length > 30 ? cluster.label.substring(0, 28) + '…' : cluster.label}
@@ -240,7 +170,7 @@ export function LandscapeView() {
             const x = leftW + ((b.d - minYear) / yearRange) * chartW;
             if (x < leftW || x > svgW) return null;
             const r = b.a > 0 ? Math.max(4, Math.min(22, Math.sqrt(b.a) * 0.85)) : 3.5;
-            const color = colorBy === 'temperature' ? LS_TEMPERATURE_COLORS[cluster.temperature] : cluster.color;
+            const color = cluster.color;
             const hasSrc = !!b.src;
             const isHighRisk = b.reliability && b.reliability >= 4;
 

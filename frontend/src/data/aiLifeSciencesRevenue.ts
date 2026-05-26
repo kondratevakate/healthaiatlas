@@ -1,17 +1,13 @@
 // Revenue data for AI Life Sciences companies.
 // Generated from scripts/zerotrust/revenue_research_clean.csv — DO NOT EDIT BY HAND.
 //
-// scope: "product" = AI product / platform revenue
-//         "company" = total company revenue (AI is a component, not the whole business)
-// Revenue signal in ClusterTreemapView only sums scope="product" entries.
+// scope: "product" = AI product / platform revenue (counts toward cluster Revenue signal)
+//         "company" = total company revenue — AI is a component, not the whole business
+//           (big pharma, Intuitive Surgical, OpenAI/Anthropic as general AI platforms)
 
 export interface LSRevenue {
-  slug: string;
-  name: string;
-  year: number;
-  revenue_m: number;
-  unit: "usd_m" | "arr_usd_m";
-  confidence: "high" | "medium" | "low";
+  slug: string; name: string; year: number; revenue_m: number;
+  unit: "usd_m" | "arr_usd_m"; confidence: "high" | "medium" | "low";
   scope: "product" | "company";
 }
 
@@ -20,7 +16,7 @@ export const LS_REVENUE: LSRevenue[] = [
   { slug: 'absci', name: 'Absci', year: 2024, revenue_m: 4.5, unit: 'usd_m', confidence: 'high', scope: 'product' },
   { slug: 'aidoc', name: 'Aidoc', year: 2024, revenue_m: 120.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'ambience-healthcare', name: 'Ambience Healthcare', year: 2025, revenue_m: 30.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
-  { slug: 'anthropic', name: 'Anthropic', year: 2025, revenue_m: 9000.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
+  { slug: 'anthropic', name: 'Anthropic', year: 2025, revenue_m: 9000.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'company' },
   { slug: 'assort-health', name: 'Assort Health', year: 2025, revenue_m: 3.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'astrazeneca', name: 'AstraZeneca', year: 2025, revenue_m: 58700.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
   { slug: 'atomwise', name: 'Atomwise', year: 2024, revenue_m: 15.0, unit: 'usd_m', confidence: 'medium', scope: 'product' },
@@ -50,16 +46,15 @@ export const LS_REVENUE: LSRevenue[] = [
   { slug: 'insilico-medicine', name: 'Insilico Medicine', year: 2024, revenue_m: 85.8, unit: 'usd_m', confidence: 'high', scope: 'product' },
   { slug: 'insitro', name: 'insitro', year: 2024, revenue_m: 30.0, unit: 'usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'intuitive-surgical', name: 'Intuitive Surgical', year: 2025, revenue_m: 10064.7, unit: 'usd_m', confidence: 'high', scope: 'company' },
-  { slug: 'isomorphic-labs', name: 'Isomorphic Labs', year: 2024, revenue_m: 2100.0, unit: 'usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'lila-sciences', name: 'Lila Sciences', year: 2024, revenue_m: 50.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'lumexa-imaging', name: 'Lumexa Imaging', year: 2025, revenue_m: 1000.0, unit: 'usd_m', confidence: 'high', scope: 'product' },
   { slug: 'lunit', name: 'Lunit', year: 2024, revenue_m: 37.2, unit: 'usd_m', confidence: 'high', scope: 'product' },
   { slug: 'medra', name: 'Medra', year: 2024, revenue_m: 3.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
-  { slug: 'microsoft-dragon-copilot', name: 'Microsoft Dragon Copilot', year: 2024, revenue_m: 500.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
+  { slug: 'microsoft-dragon-copilot', name: 'Microsoft Dragon Copilot', year: 2024, revenue_m: 500.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'company' },
   { slug: 'nabla', name: 'Nabla', year: 2025, revenue_m: 27.8, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'novartis', name: 'Novartis', year: 2025, revenue_m: 54500.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
   { slug: 'nvidia', name: 'NVIDIA', year: 2026, revenue_m: 215900.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
-  { slug: 'openai', name: 'OpenAI', year: 2025, revenue_m: 20000.0, unit: 'arr_usd_m', confidence: 'high', scope: 'product' },
+  { slug: 'openai', name: 'OpenAI', year: 2025, revenue_m: 20000.0, unit: 'arr_usd_m', confidence: 'high', scope: 'company' },
   { slug: 'openevidence', name: 'OpenEvidence', year: 2025, revenue_m: 150.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'owkin', name: 'Owkin', year: 2024, revenue_m: 30.0, unit: 'usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'pathai', name: 'PathAI', year: 2024, revenue_m: 60.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },

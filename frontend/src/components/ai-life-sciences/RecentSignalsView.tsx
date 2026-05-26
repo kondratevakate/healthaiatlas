@@ -193,13 +193,6 @@ export function RecentSignalsView() {
     return [...sized, ...unsized];
   }, [filtered]);
 
-  const totals = useMemo(() => ({
-    count: filtered.length,
-    disclosedSum: filtered.reduce((s, r) => s + (r.dealSizeUsdM || 0), 0),
-    acquisitions: filtered.filter((s) => s.action === 'acquisition').length,
-    pharmaDeals: filtered.filter((s) => s.lens.includes('pharma')).length,
-  }), [filtered]);
-
   // Counts per type for badge
   const typeCounts = useMemo(() => {
     const m: Partial<Record<SignalType, number>> = {};
@@ -234,13 +227,6 @@ export function RecentSignalsView() {
     if (!m || m <= 0) return 14;
     return Math.max(2, (Math.log10(1 + m) / Math.log10(1 + maxUsdM)) * chartW * 0.95);
   };
-
-  // Capital sub-lens signals
-  const anthropicSignals = useMemo(() => RECENT_SIGNALS.filter((s) => s.lens.includes('anthropic')).sort((a,b) => b.date.localeCompare(a.date)), []);
-  const openaiSignals    = useMemo(() => RECENT_SIGNALS.filter((s) => s.lens.includes('openai')).sort((a,b) => b.date.localeCompare(a.date)), []);
-  const pharmaSignals    = useMemo(() => RECENT_SIGNALS.filter((s) => s.lens.includes('pharma')).sort((a,b) => b.date.localeCompare(a.date)), []);
-  const publicResearch   = useMemo(() => RECENT_SIGNALS.filter((s) => s.lens.includes('public-research')).sort((a,b) => b.date.localeCompare(a.date)), []);
-  const frontierLab      = useMemo(() => RECENT_SIGNALS.filter((s) => s.lens.includes('frontier-lab')).sort((a,b) => b.date.localeCompare(a.date)), []);
 
   return (
     <div>
@@ -333,57 +319,8 @@ export function RecentSignalsView() {
         </svg>
       </div>
 
-      {/* Type-specific content below the chart */}
-      {(type === 'all' || type === 'capital') && (
-        <>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-            Capital lenses
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 mb-2">
-            <LensCard title="Anthropic acquires" caption="Two acquisitions in 6 weeks (Vercept Feb · Coefficient Bio Apr). Frontier-lab → biotech specialist talent buy. ~$40M per-head valuation on Coefficient — strategic IP play, not aqui-hire." signals={anthropicSignals} />
-            <LensCard title="OpenAI plays" caption="One health-records consumer acquisition (Torch) + one BCI investment (Merge Labs). Sam Altman personal stake + corporate OpenAI overlap = governance optics worth tracking." signals={openaiSignals} />
-            <LensCard title="Pharma × AI" caption="Big pharma standardising compute infra (NVIDIA × Lilly $1B) and paying twice for the same AI biotech (Sanofi × Earendil $2.5B total). Generate IPOs with Amgen + Novartis already as paying partners." signals={pharmaSignals} />
-            <LensCard title="Public research" caption="Clinical validation + open preprints — where AI-in-life-science methodology becomes legible without VC framing." signals={publicResearch} />
-            <LensCard title="Frontier-lab pattern" caption="Frontier-AI labs spinning out / acqui-hiring biotech specialist teams. Latent Labs stealth, Edison Scientific spinout, Mira Murati Thinking Machines." signals={frontierLab} />
-          </div>
-        </>
-      )}
-
-      {(type === 'research') && (
-        <>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-            Research signals
-          </div>
-          <SignalList signals={filtered} />
-        </>
-      )}
-
-      {(type === 'talent') && (
-        <>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-            Talent moves
-          </div>
-          <SignalList signals={filtered} />
-        </>
-      )}
-
-      {(type === 'regulatory') && (
-        <>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-            Regulatory signals
-          </div>
-          <SignalList signals={filtered} />
-        </>
-      )}
-
-      {(type === 'clinical') && (
-        <>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-            Clinical validation
-          </div>
-          <SignalList signals={filtered} />
-        </>
-      )}
+      {/* Newsfeed */}
+      <SignalList signals={filtered} />
     </div>
   );
 }

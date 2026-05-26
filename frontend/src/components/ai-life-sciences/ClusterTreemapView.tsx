@@ -254,26 +254,28 @@ export function ClusterTreemapView() {
         ))}
       </div>
 
-      {/* Capital breakdown row — secondary, visually quiet */}
-      <div className="flex flex-wrap gap-1 mb-3 items-center pl-[72px]">
-        <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/60 mr-1">
-          capital by:
-        </span>
-        {SIGNALS.filter((s) => ['vc', 'ma', 'pharma_deals'].includes(s.key)).map((s) => (
-          <button
-            key={s.key}
-            onClick={() => setSignal(s.key)}
-            className={cn(
-              'px-1.5 py-0.5 text-[10px] font-mono border transition-colors',
-              signal === s.key
-                ? 'bg-foreground text-background border-foreground'
-                : 'border-border/50 text-muted-foreground/60 hover:text-muted-foreground hover:border-border',
-            )}
-          >
-            {s.short}
-          </button>
-        ))}
-      </div>
+      {/* Capital breakdown — only visible when Capital is active */}
+      {['capital_total', 'vc', 'ma', 'pharma_deals'].includes(signal) && (
+        <div className="flex flex-wrap gap-1 mb-3 items-center pl-[72px]">
+          <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/60 mr-1">
+            capital by:
+          </span>
+          {SIGNALS.filter((s) => ['vc', 'ma', 'pharma_deals'].includes(s.key)).map((s) => (
+            <button
+              key={s.key}
+              onClick={() => setSignal(s.key)}
+              className={cn(
+                'px-1.5 py-0.5 text-[10px] font-mono border transition-colors',
+                signal === s.key
+                  ? 'bg-foreground text-background border-foreground'
+                  : 'border-border/50 text-muted-foreground/60 hover:text-muted-foreground hover:border-border',
+              )}
+            >
+              {s.short}
+            </button>
+          ))}
+        </div>
+      )}
 
       <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
         Every value is aggregated directly from the {LS_BUBBLES.length} verified bubbles —

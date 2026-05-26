@@ -135,15 +135,16 @@ const About = () => {
       {/* Hero — diagram bleeds off the right edge, no divider line */}
       <section className="overflow-x-hidden">
         <div className="container py-12 md:py-16">
-          <div className="relative min-h-[200px] lg:min-h-[300px] flex items-center">
+          <div className="relative flex items-start">
 
-            {/* Orbit diagram — absolutely positioned, bleeds ~30% off the right viewport edge */}
-            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-[200px] pointer-events-none hidden lg:block w-[640px] h-[640px]">
+            {/* Orbit diagram — 2× larger, centre pushed well past the right edge.
+                Only the outer arc edges peek in — a sliver of the outermost rings. */}
+            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-[900px] pointer-events-none hidden lg:block w-[1280px] h-[1280px]">
               <AboutDiagram />
             </div>
 
-            {/* Text — z-10, capped width so it doesn't overlap the diagram's visible arc */}
-            <div className="relative z-10 max-w-lg">
+            {/* Text — z-10, narrow column */}
+            <div className="relative z-10 max-w-md">
               <PageHeader
                 eyebrow="HealthAI Atlas"
                 title={t('nav.about')}
@@ -156,7 +157,7 @@ const About = () => {
         </div>
       </section>
 
-      <div className="container pt-6 pb-12 md:pb-16">
+      <div className="container pt-2 pb-12 md:pb-16">
         {/* 1. Contacts first */}
         <section id="contact" className="mb-8 max-w-2xl">
           <h2 className="heading-lg mb-4">{t('about.contact')}</h2>

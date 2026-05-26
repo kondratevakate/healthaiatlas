@@ -37,8 +37,8 @@ interface SignalDef {
 const SIGNALS: SignalDef[] = [
   {
     key: 'players',
-    label: 'Players (unique companies)',
-    short: 'Players',
+    label: 'Tracked companies (AI-native startups in this dataset)',
+    short: 'Tracked',
     unit: 'count',
     match: () => true,
     weigh: () => 1,

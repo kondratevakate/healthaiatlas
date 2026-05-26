@@ -117,13 +117,19 @@ export function RegulatoryView() {
         {LS_FDA_BY_SPECIALTY.map((s) => (
           <div key={s.specialty}
             className={cn(
-              'border px-2 py-1 text-[10px] font-mono',
+              'border px-2 py-1 text-[10px] font-mono flex flex-col',
               s.hasCptCoverage
                 ? 'border-border text-foreground'
                 : 'border-border/50 text-muted-foreground/60',
             )}>
-            {s.specialty} <span className="font-bold">{s.count}</span>
-            {s.hasCptCoverage && <span className="ml-1 text-primary opacity-80">CPT</span>}
+            <span>{s.specialty}</span>
+            <span>
+              <span className="font-bold">{s.devices}</span>
+              <span className="opacity-60"> devices · </span>
+              <span className="font-bold">{s.companies}</span>
+              <span className="opacity-60"> co.</span>
+              {s.hasCptCoverage && <span className="ml-1 text-primary opacity-80"> CPT</span>}
+            </span>
           </div>
         ))}
       </div>

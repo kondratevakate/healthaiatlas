@@ -8,6 +8,7 @@ import {
   type LSClusterFamily,
 } from '@/data/aiLifeSciences';
 import { LS_CPT_CODES } from '@/data/aiLifeSciencesCPT';
+import { LS_FDA_TOTAL, LS_FDA_CPT_COVERED, LS_FDA_UPDATED, LS_FDA_BY_SPECIALTY } from '@/data/aiLifeSciencesFDA';
 import { squarifiedTreemap } from '@/lib/squarifiedTreemap';
 import { cn } from '@/lib/utils';
 
@@ -79,8 +80,54 @@ export function RegulatoryView() {
     return () => window.removeEventListener('keydown', onKey);
   }, [opened]);
 
+  const activeCpts = LS_CPT_CODES.filter((c) => !c.deleted).length;
+  const cptWithRate = LS_CPT_CODES.filter((c) => !c.deleted && c.rateUsd).length;
+
   return (
     <div>
+      {/* FDA × CPT coverage banner */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+        <div className="border border-border p-3">
+          <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">FDA AI devices</div>
+          <div className="text-xl font-bold font-mono text-foreground mt-0.5">{LS_FDA_TOTAL.toLocaleString()}</div>
+          <div className="text-[10px] text-muted-foreground mt-0.5">cleared · as of {LS_FDA_UPDATED}</div>
+        </div>
+        <div className="border border-border p-3">
+          <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">With CPT billing code</div>
+          <div className="text-xl font-bold font-mono text-foreground mt-0.5">{LS_FDA_CPT_COVERED.toLocaleString()}</div>
+          <div className="text-[10px] text-muted-foreground mt-0.5">{Math.round(LS_FDA_CPT_COVERED / LS_FDA_TOTAL * 100)}% of cleared devices</div>
+        </div>
+        <div className="border border-border p-3">
+          <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">Active CPT codes</div>
+          <div className="text-xl font-bold font-mono text-foreground mt-0.5">{activeCpts}</div>
+          <div className="text-[10px] text-muted-foreground mt-0.5">AI-specific billing codes 2026</div>
+        </div>
+        <div className="border border-border p-3">
+          <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">With Medicare rate</div>
+          <div className="text-xl font-bold font-mono text-foreground mt-0.5">{cptWithRate}</div>
+          <div className="text-[10px] text-muted-foreground mt-0.5">published CMS 2026 rates</div>
+        </div>
+      </div>
+
+      {/* Specialty breakdown */}
+      <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
+        FDA clearances by specialty
+      </div>
+      <div className="flex flex-wrap gap-1.5 mb-5">
+        {LS_FDA_BY_SPECIALTY.map((s) => (
+          <div key={s.specialty}
+            className={cn(
+              'border px-2 py-1 text-[10px] font-mono',
+              s.hasCptCoverage
+                ? 'border-border text-foreground'
+                : 'border-border/50 text-muted-foreground/60',
+            )}>
+            {s.specialty} <span className="font-bold">{s.count}</span>
+            {s.hasCptCoverage && <span className="ml-1 text-primary opacity-80">CPT</span>}
+          </div>
+        ))}
+      </div>
+
       {/* Treemap sized by regulatory milestones */}
       <div
         ref={containerRef}

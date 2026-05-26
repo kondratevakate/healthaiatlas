@@ -62,6 +62,7 @@ const Contact = () => {
     <Layout>
       <div className="container py-12 md:py-16 max-w-2xl">
         <PageHeader
+          eyebrow="HealthAI Atlas"
           title="Contact"
           subtitle="Research and code by Kate Kondratieva. HealthAI Atlas is an independent research project mapping the global healthcare AI ecosystem."
         />

@@ -462,3 +462,160 @@ describe('design-system: token integrity', () => {
     ).toEqual([]);
   });
 });
+
+// ─── 7. HUB SHELL INTEGRITY ─────────────────────────────────────────────────
+
+describe('design-system: hub tabs', () => {
+  // All domain hub components that wrap <HubShell views={[...]}>. Extend when
+  // a new hub is added. Each entry is relative to COMPONENTS_DIR.
+  const HUB_FILES = [
+    'ai-life-sciences/AiLifeSciencesHub.tsx',
+    'oncology/OncologyHub.tsx',
+    'medical-tourism/MedicalTourismHub.tsx',
+    'process-mining/ProcessMiningHub.tsx',
+  ];
+
+  // Extracts id: '...' or id: "..." values from a TSX source.
+  // Scoped to the views prop by ignoring anything before `views={[`.
+  function extractViewIds(src: string): string[] {
+    const viewsStart = src.indexOf('views={[');
+    if (viewsStart === -1) return [];
+    const viewsSection = src.slice(viewsStart);
+    const ids: string[] = [];
+    for (const m of viewsSection.matchAll(/\bid:\s*['"]([^'"]*)['"]/g)) {
+      ids.push(m[1]);
+    }
+    return ids;
+  }
+
+  function extractViewLabels(src: string): string[] {
+    const viewsStart = src.indexOf('views={[');
+    if (viewsStart === -1) return [];
+    const viewsSection = src.slice(viewsStart);
+    const labels: string[] = [];
+    for (const m of viewsSection.matchAll(/\blabel:\s*['"]([^'"]*)['"]/g)) {
+      labels.push(m[1]);
+    }
+    return labels;
+  }
+
+  it('every hub declares at least one view with id and label', () => {
+    const offenders: string[] = [];
+    for (const relPath of HUB_FILES) {
+      const full = join(COMPONENTS_DIR, relPath);
+      if (!existsSync(full)) {
+        offenders.push(`${relPath} — FILE NOT FOUND`);
+        continue;
+      }
+      const src = readFileSync(full, 'utf8');
+      const ids = extractViewIds(src);
+      const labels = extractViewLabels(src);
+      if (ids.length === 0)
+        offenders.push(`${relPath} — no view ids found (views={[...]} missing or empty?)`);
+      if (labels.length === 0)
+        offenders.push(`${relPath} — no view labels found`);
+      if (ids.length !== labels.length)
+        offenders.push(`${relPath} — id count (${ids.length}) ≠ label count (${labels.length})`);
+    }
+    expect(
+      offenders,
+      `Hub files must declare at least one view with both id and label.\n\n` +
+        offenders.join('\n'),
+    ).toEqual([]);
+  });
+
+  it('no hub has duplicate view ids', () => {
+    const offenders: string[] = [];
+    for (const relPath of HUB_FILES) {
+      const full = join(COMPONENTS_DIR, relPath);
+      if (!existsSync(full)) continue;
+      const src = readFileSync(full, 'utf8');
+      const ids = extractViewIds(src);
+      const seen = new Set<string>();
+      for (const id of ids) {
+        if (seen.has(id))
+          offenders.push(`${relPath} — duplicate view id: '${id}'`);
+        seen.add(id);
+      }
+    }
+    expect(
+      offenders,
+      `HubShell uses view.id as the Tabs value key — duplicate ids cause ` +
+        `two tabs to share state and one never renders.\n\n` +
+        offenders.join('\n'),
+    ).toEqual([]);
+  });
+
+  it('no hub view has an empty id or empty label', () => {
+    const offenders: string[] = [];
+    for (const relPath of HUB_FILES) {
+      const full = join(COMPONENTS_DIR, relPath);
+      if (!existsSync(full)) continue;
+      const src = readFileSync(full, 'utf8');
+      const ids = extractViewIds(src);
+      const labels = extractViewLabels(src);
+      ids.forEach((id, i) => {
+        if (!id.trim())
+          offenders.push(`${relPath} — view[${i}] has empty id`);
+      });
+      labels.forEach((label, i) => {
+        if (!label.trim())
+          offenders.push(`${relPath} — view[${i}] has empty label`);
+      });
+    }
+    expect(
+      offenders,
+      `Empty id causes the tab to never be selectable. ` +
+        `Empty label renders a blank tab trigger.\n\n` +
+        offenders.join('\n'),
+    ).toEqual([]);
+  });
+});
+
+// ─── 8. PAGE HEADER CONSISTENCY ─────────────────────────────────────────────
+
+describe('design-system: page headers', () => {
+  // 8a. Every page that uses <PageHeader> must pass a subtitle prop.
+  //     Subtitle is the one-sentence description that sets context for the
+  //     visitor. Pages without subtitle are exempt if they have a deliberate
+  //     reason (dynamic content assembled from data, not static strings).
+  const SUBTITLE_EXEMPT = new Set<string>([
+    'pages/Share.tsx',   // assessment result — content is dynamic, no static subtitle
+    'pages/NotFound.tsx', // 404 page — no PageHeader
+    'pages/Index.tsx',    // custom hero — no PageHeader
+  ]);
+
+  it('every PageHeader has a subtitle prop', () => {
+    const offenders: string[] = [];
+    for (const f of pageTsx) {
+      if (SUBTITLE_EXEMPT.has(rel(f))) continue;
+      const src = readFileSync(f, 'utf8');
+      if (!/<PageHeader\b/.test(src)) continue; // no PageHeader → not applicable
+      // Check that every <PageHeader ...> block contains subtitle=
+      // We look for PageHeader blocks without subtitle by scanning
+      // the string between consecutive <PageHeader and the closing />
+      const blocks = src.split('<PageHeader');
+      for (let i = 1; i < blocks.length; i++) {
+        const block = blocks[i].split('/>')[0];
+        if (!/\bsubtitle\s*=/.test(block)) {
+          offenders.push(`${rel(f)} — <PageHeader> missing subtitle prop`);
+        }
+      }
+    }
+    expect(
+      offenders,
+      `PageHeader subtitle is the one-sentence context line visible below the title.\n` +
+        `Add a subtitle, or add the page to SUBTITLE_EXEMPT with a comment.\n\n` +
+        offenders.join('\n'),
+    ).toEqual([]);
+  });
+
+  // 8b. The "Back to Domains" button in Directory.tsx must use the
+  //     t('nav.domains') translation key — not a hardcoded "Directory" string.
+  //     This prevents label drift when the nav label is updated.
+  it('Directory back-button uses t(\'nav.domains\') not hardcoded "Directory"', () => {
+    const src = readFileSync(join(PAGES_DIR, 'Directory.tsx'), 'utf8');
+    expect(src).not.toMatch(/Back to Directory/);
+    expect(src).toMatch(/nav\.domains/);
+  });
+});

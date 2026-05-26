@@ -29,6 +29,7 @@ const About = () => {
     <Layout>
       <div className="container py-12 md:py-16">
         <PageHeader
+          eyebrow="HealthAI Atlas"
           title={t('nav.about')}
           subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
         />

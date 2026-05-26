@@ -9,6 +9,7 @@ const Privacy = () => {
     <Layout>
       <div className="container py-12 md:py-16 max-w-3xl">
         <PageHeader
+          eyebrow="Legal"
           title="Privacy Policy"
           subtitle={<span className="text-sm">Last updated: {LAST_UPDATED}</span>}
         />

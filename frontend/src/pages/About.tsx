@@ -73,7 +73,7 @@ function AboutDiagram() {
   `).join('');
 
   return (
-    <div className="relative w-full aspect-square max-w-sm mx-auto">
+    <div className="w-full h-full">
       <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" aria-hidden="true">
         <defs><style>{css}</style></defs>
 
@@ -132,11 +132,18 @@ const About = () => {
 
   return (
     <Layout>
-      {/* Hero — two-column grid matching Home page layout */}
-      <section className="border-b border-border">
+      {/* Hero — diagram bleeds off the right edge, no divider line */}
+      <section className="overflow-x-hidden">
         <div className="container py-12 md:py-16">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div>
+          <div className="relative min-h-[400px] lg:min-h-[520px] flex items-center">
+
+            {/* Orbit diagram — absolutely positioned, bleeds ~30% off the right viewport edge */}
+            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-[200px] pointer-events-none hidden lg:block w-[640px] h-[640px]">
+              <AboutDiagram />
+            </div>
+
+            {/* Text — z-10, capped width so it doesn't overlap the diagram's visible arc */}
+            <div className="relative z-10 max-w-lg">
               <PageHeader
                 eyebrow="HealthAI Atlas"
                 title={t('nav.about')}
@@ -144,9 +151,7 @@ const About = () => {
                 className="mb-0"
               />
             </div>
-            <div className="flex justify-center lg:justify-end">
-              <AboutDiagram />
-            </div>
+
           </div>
         </div>
       </section>

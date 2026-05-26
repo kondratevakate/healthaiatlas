@@ -233,30 +233,46 @@ export function ClusterTreemapView() {
 
   return (
     <div>
-      {/* Signal toggle */}
-      <div className="flex flex-wrap gap-1 mb-3 items-center">
+      {/* Primary signal row */}
+      <div className="flex flex-wrap gap-1 mb-1 items-center">
         <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mr-2">
           Size by:
         </span>
-        {SIGNALS.map((s) => {
-          const isCapitalBreakdown = ['vc', 'ma', 'pharma_deals'].includes(s.key);
-          return (
-            <button
-              key={s.key}
-              onClick={() => setSignal(s.key)}
-              className={cn(
-                'px-2 py-1 text-[11px] font-mono border transition-colors',
-                signal === s.key
-                  ? 'bg-foreground text-background border-foreground'
-                  : 'border-border text-muted-foreground hover:text-foreground',
-                // Capital breakdown buttons are visually indented under Capital
-                isCapitalBreakdown && signal !== s.key && 'opacity-60 text-[10px]',
-              )}
-            >
-              {isCapitalBreakdown && signal !== s.key ? `↳ ${s.short}` : s.short}
-            </button>
-          );
-        })}
+        {SIGNALS.filter((s) => !['vc', 'ma', 'pharma_deals'].includes(s.key)).map((s) => (
+          <button
+            key={s.key}
+            onClick={() => setSignal(s.key)}
+            className={cn(
+              'px-2 py-1 text-[11px] font-mono border transition-colors',
+              signal === s.key
+                ? 'bg-foreground text-background border-foreground'
+                : 'border-border text-muted-foreground hover:text-foreground',
+            )}
+          >
+            {s.short}
+          </button>
+        ))}
+      </div>
+
+      {/* Capital breakdown row — secondary, visually quiet */}
+      <div className="flex flex-wrap gap-1 mb-3 items-center pl-[72px]">
+        <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/60 mr-1">
+          capital by:
+        </span>
+        {SIGNALS.filter((s) => ['vc', 'ma', 'pharma_deals'].includes(s.key)).map((s) => (
+          <button
+            key={s.key}
+            onClick={() => setSignal(s.key)}
+            className={cn(
+              'px-1.5 py-0.5 text-[10px] font-mono border transition-colors',
+              signal === s.key
+                ? 'bg-foreground text-background border-foreground'
+                : 'border-border/50 text-muted-foreground/60 hover:text-muted-foreground hover:border-border',
+            )}
+          >
+            {s.short}
+          </button>
+        ))}
       </div>
 
       <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">

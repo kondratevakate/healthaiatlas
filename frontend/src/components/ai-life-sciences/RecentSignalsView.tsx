@@ -272,14 +272,6 @@ export function RecentSignalsView() {
         })}
       </div>
 
-      {/* Headline metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-        <Metric label="Signals" value={String(totals.count)} sub={type === 'all' ? 'last ~12 months' : SIGNAL_TYPES.find(t=>t.key===type)?.label ?? ''} />
-        <Metric label="Disclosed value" value={formatUsd(totals.disclosedSum)} sub="sum of priced deals" />
-        <Metric label="Acquisitions" value={String(totals.acquisitions)} sub="Anthropic ×2 · OpenAI ×1" />
-        <Metric label="Pharma × AI" value={String(totals.pharmaDeals)} sub="Sanofi · Lilly · Amgen · J&J" />
-      </div>
-
       {/* Bar chart */}
       <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
         Scale of deals (log scale · click bar for source)

@@ -9,22 +9,19 @@ import {
   type LSCluster,
   type LSClusterFamily,
 } from '@/data/aiLifeSciences';
-import { LS_REVENUE } from '@/data/aiLifeSciencesRevenue';
 import { LS_CPT_CODES } from '@/data/aiLifeSciencesCPT';
 import { squarifiedTreemap } from '@/lib/squarifiedTreemap';
 import { cn } from '@/lib/utils';
 
-// Metrics are computed from verified sources only:
-// - Capital/Players/VC/M&A/Pharma/FDA: aggregated from 218 verified LS_BUBBLES
-// - Revenue: from LS_REVENUE (SEC filings + ARR disclosures, 63 companies)
+// Metrics aggregated from 218 verified LS_BUBBLES.
+// Revenue has its own dedicated tab (RevenueView).
+// Regulatory has its own dedicated tab (RegulatoryView).
 type SignalKey =
-  | 'revenue'
   | 'capital_total'
   | 'players'
   | 'vc'
   | 'ma'
-  | 'pharma_deals'
-  | 'fda_clearances';
+  | 'pharma_deals';
 
 interface SignalDef {
   key: SignalKey;
@@ -45,14 +42,6 @@ const SIGNALS: SignalDef[] = [
     unit: 'count',
     match: () => true,
     weigh: () => 1,
-  },
-  {
-    key: 'revenue',
-    label: 'Revenue / ARR (latest disclosed)',
-    short: 'Revenue',
-    unit: 'usd_m',
-    match: () => false,
-    weigh: () => 0,
   },
   {
     key: 'capital_total',
@@ -86,18 +75,6 @@ const SIGNALS: SignalDef[] = [
     match: (b) => b.et === 'Pharma_Deal' && (b.a ?? 0) > 0,
     weigh: (b) => b.a ?? 0,
   },
-  {
-    key: 'fda_clearances',
-    label: 'Regulatory milestones',
-    short: 'Regulatory',
-    unit: 'count',
-    match: (b) =>
-      b.et === 'FDA_Clearance' ||
-      b.et === 'Regulatory_Milestone' ||
-      b.et === 'Regulatory' ||
-      (b.et === 'Event' && /fda|510.k|de novo|clearance|ema|nmpa|pmda|approved|approval/i.test(b.desc ?? '')),
-    weigh: () => 1,
-  },
 ];
 
 function formatValue(v: number, unit: 'usd_m' | 'count'): string {
@@ -107,37 +84,11 @@ function formatValue(v: number, unit: 'usd_m' | 'count'): string {
   return v > 0 ? `<$1M` : '—';
 }
 
-// Slug-normalize company name to match LS_REVENUE slugs.
-function toSlug(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
-
-// Only AI-product revenue (scope="product"). Company-scope entries are total
-// company revenue where AI is a small component (Intuitive Surgical, Epic, etc.).
-const REVENUE_BY_SLUG = new Map(
-  LS_REVENUE.filter((r) => r.scope === 'product').map((r) => [r.slug, r.revenue_m]),
-);
-
 // Compute a cluster's value for the given signal.
 function computeSignal(cluster: LSCluster, sig: SignalDef): number {
   const inCluster = LS_BUBBLES.filter((b) => b.cluster === cluster.id);
   if (sig.key === 'players') {
     return new Set(inCluster.map((b) => b.c)).size;
-  }
-  if (sig.key === 'revenue') {
-    // Only AI-native companies: exclude all pharma* and regulator entityTypes
-    // whose revenue figures represent total company turnover, not AI product revenue.
-    // pharma_transaction / pharma_infrastructure / pharma_asset etc. all excluded.
-    const isExcluded = (t: string) => t === 'regulator' || t.startsWith('pharma');
-    const seen = new Set<string>();
-    let total = 0;
-    for (const b of inCluster) {
-      if (isExcluded(b.entityType ?? '')) continue;
-      if (seen.has(b.c)) continue;
-      seen.add(b.c);
-      total += REVENUE_BY_SLUG.get(toSlug(b.c)) ?? 0;
-    }
-    return total;
   }
   return inCluster.filter(sig.match).reduce((s, b) => s + sig.weigh(b), 0);
 }

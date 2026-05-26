@@ -22,71 +22,108 @@ const GitHubMark = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-// Full-bleed radar decoration.
-// Centre sits near the top-right of the SVG canvas; rings expand to r=340
-// so they extend well beyond the SVG bounds. The parent container clips them
-// at the viewport edge via overflow-hidden — giving the "circles disappearing
-// off the page" effect without triggering a horizontal scrollbar.
-// SVG uses currentColor → inherits theme colour; aria-hidden (decorative).
-const CX = 460; // centre x — pushed right so rings bleed off the right edge
-const CY = 140; // centre y — upper area so rings bleed off the top too
-const MAX_R = 340;
+// Orbit diagram — same visual language as HeroDiagram on the Home page:
+// rotating partial arcs + lightweight node dots. No framer-motion; pure CSS.
+// Simpler than HeroDiagram (no labels) — a "zoomed-out atlas" feel.
 
-function AtlasRadar() {
+const ABOUT_CX = 50;
+const ABOUT_CY = 50;
+
+const aboutRings = [
+  { r: 13, width: 4.5, opacity: 0.22, arc: 300, speed: 58,  dir:  1 },
+  { r: 21, width: 3.5, opacity: 0.15, arc: 250, speed: 72,  dir: -1 },
+  { r: 29, width: 2.5, opacity: 0.10, arc: 280, speed: 48,  dir:  1 },
+  { r: 37, width: 2,   opacity: 0.06, arc: 210, speed: 88,  dir: -1 },
+];
+
+// Small entity nodes — circles only, no labels. 5 players in the orbit.
+const aboutNodes = [
+  { ringIdx: 0, angle:   40 },
+  { ringIdx: 1, angle:  -55 },
+  { ringIdx: 2, angle:  125 },
+  { ringIdx: 3, angle:  205 },
+  { ringIdx: 1, angle:  195 },
+];
+
+function aboutArcPath(cx: number, cy: number, r: number, startDeg: number, endDeg: number) {
+  const toRad = (d: number) => ((d - 90) * Math.PI) / 180;
+  const x1 = cx + r * Math.cos(toRad(startDeg));
+  const y1 = cy + r * Math.sin(toRad(startDeg));
+  const x2 = cx + r * Math.cos(toRad(endDeg));
+  const y2 = cy + r * Math.sin(toRad(endDeg));
+  return `M ${x1} ${y1} A ${r} ${r} 0 ${endDeg - startDeg > 180 ? 1 : 0} 1 ${x2} ${y2}`;
+}
+
+function aboutNodePos(node: { ringIdx: number; angle: number }) {
+  const r = aboutRings[node.ringIdx].r;
+  const rad = ((node.angle - 90) * Math.PI) / 180;
+  return { x: ABOUT_CX + r * Math.cos(rad), y: ABOUT_CY + r * Math.sin(rad) };
+}
+
+function AboutDiagram() {
+  const css = aboutRings.map((ring, i) => `
+    @keyframes about-orbit-${i} {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(${ring.dir * 360}deg); }
+    }
+    .about-orbit-${i} {
+      animation: about-orbit-${i} ${ring.speed}s linear infinite;
+      transform-origin: ${ABOUT_CX}px ${ABOUT_CY}px;
+    }
+  `).join('');
+
   return (
-    <svg
-      width="560" height="400"
-      viewBox="0 0 560 400"
-      className="text-foreground"
-      fill="none"
-      aria-hidden="true"
-    >
-      {/* Static guide rings — very faint skeleton that persists between pulses */}
-      {[90, 180, 270, 360].map((r, i) => (
-        <circle
-          key={r}
-          cx={CX} cy={CY} r={r}
-          stroke="currentColor"
-          strokeWidth="0.4"
-          opacity={Math.max(0.03, 0.07 - i * 0.015)}
+    <div className="relative w-full aspect-square max-w-sm mx-auto">
+      <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" aria-hidden="true">
+        <defs><style>{css}</style></defs>
+
+        {/* Rotating partial arc rings */}
+        {aboutRings.map((ring, i) => (
+          <path
+            key={i}
+            className={`about-orbit-${i}`}
+            d={aboutArcPath(ABOUT_CX, ABOUT_CY, ring.r, 0, ring.arc)}
+            fill="none"
+            stroke={`hsl(var(--foreground) / ${ring.opacity})`}
+            strokeWidth={ring.width}
+            strokeLinecap="round"
+          />
+        ))}
+
+        {/* Faint connection lines between adjacent nodes */}
+        {[[0,1],[1,2],[2,3],[3,4],[0,4]].map(([a, b], i) => {
+          const pa = aboutNodePos(aboutNodes[a]);
+          const pb = aboutNodePos(aboutNodes[b]);
+          return (
+            <line key={i}
+              x1={pa.x} y1={pa.y} x2={pb.x} y2={pb.y}
+              stroke={`hsl(var(--foreground) / 0.06)`}
+              strokeWidth="0.25"
+            />
+          );
+        })}
+
+        {/* Centre hub */}
+        <circle cx={ABOUT_CX} cy={ABOUT_CY} r={5.5}
+          fill={`hsl(var(--foreground) / 0.08)`}
+          stroke={`hsl(var(--foreground) / 0.28)`}
+          strokeWidth="0.5"
         />
-      ))}
 
-      {/* Crosshair lines from centre */}
-      <line x1={CX} y1={-60} x2={CX} y2={CY + MAX_R + 20}
-        stroke="currentColor" strokeWidth="0.3" strokeDasharray="2 10" opacity="0.08" />
-      <line x1={-40} y1={CY} x2={CX + MAX_R + 20} y2={CY}
-        stroke="currentColor" strokeWidth="0.3" strokeDasharray="2 10" opacity="0.08" />
-
-      {/* Three animated rings — staggered so one is always expanding */}
-      {[
-        { delay: '0s',    strokeWidth: 1.2 },
-        { delay: '1.33s', strokeWidth: 0.8 },
-        { delay: '2.67s', strokeWidth: 0.5 },
-      ].map(({ delay, strokeWidth }, i) => (
-        <circle
-          key={i}
-          cx={CX} cy={CY} r={MAX_R}
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          className="atlas-radar-ring"
-          style={{ animationDelay: delay, animationDuration: '4s' }}
-        />
-      ))}
-
-      {/* Centre dot */}
-      <circle cx={CX} cy={CY} r={4} fill="currentColor" opacity="0.65" />
-
-      {/* Entity dots — scattered, asymmetric, suggest detected ecosystem players */}
-      <circle cx={200} cy={60}  r={2.2} fill="currentColor" opacity="0.28" />
-      <circle cx={310} cy={40}  r={2.2} fill="currentColor" opacity="0.28" />
-      <circle cx={150} cy={180} r={2.2} fill="currentColor" opacity="0.28" />
-      <circle cx={280} cy={220} r={2.2} fill="currentColor" opacity="0.28" />
-      <circle cx={370} cy={300} r={1.5} fill="currentColor" opacity="0.2"  />
-      <circle cx={100} cy={280} r={1.5} fill="currentColor" opacity="0.2"  />
-      <circle cx={420} cy={200} r={1.5} fill="currentColor" opacity="0.2"  />
-      <circle cx={240} cy={320} r={1.2} fill="currentColor" opacity="0.15" />
-    </svg>
+        {/* Entity nodes — unlabeled dots */}
+        {aboutNodes.map((node, i) => {
+          const pos = aboutNodePos(node);
+          return (
+            <circle key={i}
+              cx={pos.x} cy={pos.y} r={3.5}
+              fill={`hsl(var(--background))`}
+              stroke={`hsl(var(--foreground) / 0.25)`}
+              strokeWidth="0.4"
+            />
+          );
+        })}
+      </svg>
+    </div>
   );
 }
 
@@ -95,27 +132,26 @@ const About = () => {
 
   return (
     <Layout>
-      {/* Header zone — overflow-hidden clips the radar at the viewport edge
-          without adding a horizontal scrollbar. The radar is absolutely
-          positioned so it doesn't affect the document flow. */}
-      <div className="relative overflow-hidden">
-        {/* Radar: anchored top-right, bleeds off the right and top edges */}
-        <div className="absolute top-0 right-0 pointer-events-none hidden md:block opacity-70"
-             style={{ transform: 'translate(100px, -40px)' }}>
-          <AtlasRadar />
+      {/* Hero — two-column grid matching Home page layout */}
+      <section className="border-b border-border">
+        <div className="container py-12 md:py-16">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div>
+              <PageHeader
+                eyebrow="HealthAI Atlas"
+                title={t('nav.about')}
+                subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
+                className="mb-0"
+              />
+            </div>
+            <div className="flex justify-center lg:justify-end">
+              <AboutDiagram />
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div className="container pt-12 md:pt-16 pb-0">
-          <PageHeader
-            eyebrow="HealthAI Atlas"
-            title={t('nav.about')}
-            subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
-            className="max-w-xl relative z-10 mb-0"
-          />
-        </div>
-      </div>
-
-      <div className="container pt-10 pb-12 md:pb-16">
+      <div className="container py-12 md:py-16">
         {/* 1. Contacts first */}
         <section id="contact" className="mb-16 max-w-2xl">
           <h2 className="heading-lg mb-6">{t('about.contact')}</h2>

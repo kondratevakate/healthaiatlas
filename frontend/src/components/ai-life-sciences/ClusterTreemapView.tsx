@@ -275,10 +275,6 @@ export function ClusterTreemapView() {
         </div>
       )}
 
-      <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
-        Every value is aggregated directly from the {LS_BUBBLES.length} verified bubbles —
-        no editorial overlay. Click any cluster to read every entry inside.
-      </p>
 
       {/* In-frame treemap */}
       <div

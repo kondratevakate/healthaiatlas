@@ -89,10 +89,15 @@ const SIGNALS: SignalDef[] = [
   },
   {
     key: 'fda_clearances',
-    label: 'FDA clearances',
+    label: 'FDA clearances & regulatory milestones',
     short: 'FDA',
     unit: 'count',
-    match: (b) => b.et === 'FDA_Clearance',
+    // Most FDA events in the dataset are tagged et=Event or Regulatory_Milestone,
+    // not FDA_Clearance — broadening the match catches IDx, Aidoc, Paige etc.
+    match: (b) =>
+      b.et === 'FDA_Clearance' ||
+      b.et === 'Regulatory_Milestone' ||
+      (b.et === 'Event' && /fda|510.k|de novo|clearance/i.test(b.desc ?? '')),
     weigh: () => 1,
   },
 ];
@@ -119,11 +124,17 @@ function computeSignal(cluster: LSCluster, sig: SignalDef): number {
     return new Set(inCluster.map((b) => b.c)).size;
   }
   if (sig.key === 'revenue') {
-    // Sum latest revenue for each unique company in this cluster.
-    const companies = new Set(inCluster.map((b) => b.c));
+    // Only AI-native companies: exclude all pharma* and regulator entityTypes
+    // whose revenue figures represent total company turnover, not AI product revenue.
+    // pharma_transaction / pharma_infrastructure / pharma_asset etc. all excluded.
+    const isExcluded = (t: string) => t === 'regulator' || t.startsWith('pharma');
+    const seen = new Set<string>();
     let total = 0;
-    for (const name of companies) {
-      total += REVENUE_BY_SLUG.get(toSlug(name)) ?? 0;
+    for (const b of inCluster) {
+      if (isExcluded(b.entityType ?? '')) continue;
+      if (seen.has(b.c)) continue;
+      seen.add(b.c);
+      total += REVENUE_BY_SLUG.get(toSlug(b.c)) ?? 0;
     }
     return total;
   }

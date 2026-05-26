@@ -89,15 +89,14 @@ const SIGNALS: SignalDef[] = [
   },
   {
     key: 'fda_clearances',
-    label: 'FDA clearances & regulatory milestones',
-    short: 'FDA',
+    label: 'Regulatory milestones',
+    short: 'Regulatory',
     unit: 'count',
-    // Most FDA events in the dataset are tagged et=Event or Regulatory_Milestone,
-    // not FDA_Clearance — broadening the match catches IDx, Aidoc, Paige etc.
     match: (b) =>
       b.et === 'FDA_Clearance' ||
       b.et === 'Regulatory_Milestone' ||
-      (b.et === 'Event' && /fda|510.k|de novo|clearance/i.test(b.desc ?? '')),
+      b.et === 'Regulatory' ||
+      (b.et === 'Event' && /fda|510.k|de novo|clearance|ema|nmpa|pmda|approved|approval/i.test(b.desc ?? '')),
     weigh: () => 1,
   },
 ];

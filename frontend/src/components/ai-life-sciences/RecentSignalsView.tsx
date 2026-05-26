@@ -6,10 +6,47 @@ import {
   type RecentSignal,
   type RSAction,
 } from '@/data/aiLifeSciencesRecentSignals';
+import rawJobs from '@/data/jobsData.json';
 import { cn } from '@/lib/utils';
 
+// ── Hiring board data ────────────────────────────────────────────────────────
+interface JobEntry {
+  company: string; category: string; count: number | null;
+  count_raw: string; roles: string; location: string;
+  remote: string; url: string; status: string; active: boolean;
+}
+const ALL_JOBS = rawJobs as JobEntry[];
+
+// Life-sciences-relevant categories shown in the hub
+const LS_CATS = new Set([
+  'AI Research', 'AI Drug Discovery', 'AI Lab Automation', 'Pharma AI',
+  'AI Biotech', 'Genomic AI', 'Brain-Computer Interface', 'Pathology AI',
+  'Radiology AI', 'Surgical Robotics', 'Cardiovascular AI',
+]);
+
+// Companies active in the life sciences landscape that are hiring
+const LS_HIRING = ALL_JOBS.filter(j =>
+  j.active && (LS_CATS.has(j.category) || j.category === 'Other'),
+).sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
+
+// Category colour dots for the board
+const CAT_DOT: Record<string, string> = {
+  'AI Research':            'bg-violet-400',
+  'AI Drug Discovery':      'bg-blue-400',
+  'Pharma AI':              'bg-sky-400',
+  'AI Lab Automation':      'bg-lime-400',
+  'Genomic AI':             'bg-teal-400',
+  'AI Biotech':             'bg-emerald-400',
+  'Brain-Computer Interface':'bg-fuchsia-400',
+  'Pathology AI':           'bg-orange-400',
+  'Radiology AI':           'bg-amber-400',
+  'Surgical Robotics':      'bg-rose-400',
+  'Cardiovascular AI':      'bg-red-400',
+  'Other':                  'bg-foreground/20',
+};
+
 // ── Signal type taxonomy ────────────────────────────────────────────────────
-type SignalType = 'all' | 'capital' | 'research' | 'talent' | 'regulatory' | 'clinical';
+type SignalType = 'all' | 'capital' | 'research' | 'talent' | 'regulatory' | 'clinical' | 'hiring';
 
 interface SignalTypeDef {
   key: SignalType;
@@ -25,6 +62,7 @@ const SIGNAL_TYPES: SignalTypeDef[] = [
   { key: 'talent',    label: 'Talent',     icon: '', actions: ['strategic_hire', 'cohort'] },
   { key: 'regulatory',label: 'Regulatory', icon: '', actions: ['regulatory'] as RSAction[] },
   { key: 'clinical',  label: 'Clinical',   icon: '', actions: ['clinical_validation'] },
+  { key: 'hiring',   label: 'Hiring',     icon: '', actions: [] },
 ];
 
 function getSignalType(s: RecentSignal): SignalType {
@@ -145,6 +183,77 @@ function SignalList({ signals }: { signals: RecentSignal[] }) {
   );
 }
 
+// ── Hiring board ─────────────────────────────────────────────────────────────
+function HiringBoard() {
+  const total = LS_HIRING.length;
+  const knownRoles = LS_HIRING.filter(j => j.count).reduce((s, j) => s + (j.count ?? 0), 0);
+
+  return (
+    <div>
+      {/* Summary row */}
+      <div className="flex gap-4 mb-4 text-[11px] font-mono text-muted-foreground">
+        <span><span className="text-foreground font-semibold">{total}</span> companies hiring</span>
+        <span><span className="text-foreground font-semibold">{knownRoles}+</span> verified open roles</span>
+      </div>
+
+      {/* Board */}
+      <div className="border border-border divide-y divide-border">
+        {LS_HIRING.map(j => {
+          const roles = j.roles
+            ? j.roles.split(/[;,]/).map(r => r.trim()).filter(Boolean).slice(0, 3)
+            : [];
+          const dot = CAT_DOT[j.category] ?? CAT_DOT['Other'];
+
+          return (
+            <div key={j.company}
+              className="flex items-start gap-3 px-3 py-2.5 hover:bg-muted/30 transition-colors"
+            >
+              {/* Category dot */}
+              <div className={cn('w-1.5 h-1.5 rounded-full mt-1.5 shrink-0', dot)} />
+
+              {/* Main content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xs font-semibold text-foreground">{j.company}</span>
+                  <span className="text-[10px] text-muted-foreground">{j.category}</span>
+                  {j.count !== null && (
+                    <span className="text-[10px] font-mono text-primary">
+                      {j.count} roles
+                    </span>
+                  )}
+                </div>
+                {roles.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {roles.map(r => (
+                      <span key={r}
+                        className="text-[9px] px-1 py-0.5 border border-border text-muted-foreground bg-secondary">
+                        {r}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Link */}
+              {j.url && (
+                <a href={j.url} target="_blank" rel="noopener noreferrer"
+                  className="shrink-0 text-muted-foreground hover:text-foreground transition-colors mt-0.5"
+                  aria-label={`${j.company} careers`}>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-3 text-[10px] text-muted-foreground/60">
+        Snapshot May 2026 · <a href="/jobs" className="underline underline-offset-2 hover:text-foreground">Full jobs board →</a>
+      </div>
+    </div>
+  );
+}
+
 // ── Main view ────────────────────────────────────────────────────────────────
 export function RecentSignalsView() {
   const [type, setType] = useState<SignalType>('all');
@@ -203,7 +312,9 @@ export function RecentSignalsView() {
       {/* Type filter */}
       <div className="flex flex-wrap gap-1 mb-4 items-center">
         {SIGNAL_TYPES.map((t) => {
-          const count = t.key === 'all' ? RECENT_SIGNALS.length : (typeCounts[t.key] ?? 0);
+          const count = t.key === 'hiring'
+            ? LS_HIRING.length
+            : t.key === 'all' ? RECENT_SIGNALS.length : (typeCounts[t.key] ?? 0);
           return (
             <button
               key={t.key}
@@ -224,69 +335,76 @@ export function RecentSignalsView() {
         })}
       </div>
 
+      {/* Hiring board — replaces bar chart when hiring tab is active */}
+      {type === 'hiring' && <HiringBoard />}
+
       {/* Bar chart */}
-      <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-        Scale of deals (log scale · click bar for source)
-      </div>
-      <div ref={containerRef} className="border border-border mb-6 overflow-x-auto">
-        <svg width={labelW + chartW + valueW + 16} height={Math.max(svgH, 40)} className="block">
-          <defs>
-            <pattern id="hatch-undisclosed" patternUnits="userSpaceOnUse" width={6} height={6} patternTransform="rotate(45)">
-              <line x1={0} y1={0} x2={0} y2={6} stroke="hsl(var(--muted-foreground))" strokeWidth={1} strokeOpacity={0.4} />
-            </pattern>
-          </defs>
-          {barRows.map((s, i) => {
-            const y = i * rowH + 8;
-            const w = widthFor(s.dealSizeUsdM);
-            const color = ACTION_COLOR[s.action] || 'hsl(var(--muted-foreground))';
-            const undisclosed = !s.dealSizeUsdM;
-            const isHover = hovered === s.id;
-            return (
-              <g key={s.id} className="cursor-pointer"
-                onMouseEnter={() => setHovered(s.id)} onMouseLeave={() => setHovered(null)}
-                onClick={() => window.open(s.src, '_blank')}>
-                <rect x={0} y={y - rowH/2 + 4} width={labelW + chartW + valueW + 16} height={rowH - 6}
-                  fill={isHover ? 'hsl(var(--muted))' : 'transparent'} />
-                <text x={labelW - 6} y={y + 4} textAnchor="end" className="fill-foreground text-[10px]">
-                  <tspan className="font-semibold">{s.actor}</tspan>
-                  <tspan className="fill-muted-foreground"> → {s.target.length > 22 ? s.target.slice(0,20)+'…' : s.target}</tspan>
-                </text>
-                <rect x={labelW} y={y - 7} width={w} height={14}
-                  fill={undisclosed ? 'url(#hatch-undisclosed)' : color}
-                  fillOpacity={isHover ? 0.95 : 0.78}
-                  stroke={color} strokeWidth={undisclosed ? 1 : 0} />
-                <text x={labelW + chartW + 6} y={y - 1} className="fill-foreground text-[10px] font-mono font-semibold">
-                  {formatUsd(s.dealSizeUsdM)}
-                </text>
-                <text x={labelW + chartW + 6} y={y + 9} className="fill-muted-foreground text-[9px] font-mono">
-                  {formatDate(s.date)} · {RS_ACTION_LABELS[s.action]}
-                </text>
-                {isHover && (
-                  <foreignObject x={labelW + Math.min(w + 6, chartW - 280)} y={Math.max(0, y - 60)} width={300} height={170}>
-                    <div className="bg-background border border-border p-2 text-[10px] leading-tight shadow-lg">
-                      <div className="font-bold text-foreground">{s.actor} → {s.target}</div>
-                      <div className="text-primary text-[9px] mt-0.5">{s.dealSizeLabel}</div>
-                      <div className="text-muted-foreground mt-1 line-clamp-5">{s.qualitySignal}</div>
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        <span className="text-[9px] px-1 border border-border bg-secondary">{RS_ACTION_LABELS[s.action]}</span>
-                        {s.geo && <span className="text-[9px] px-1 border border-border text-muted-foreground">{s.geo}</span>}
-                        {!s.isBio && <span className="text-[9px] px-1 border border-border text-muted-foreground">non-bio</span>}
+      {type !== 'hiring' && (
+        <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
+          Scale of deals (log scale · click bar for source)
+        </div>
+      )}
+      {type !== 'hiring' && (
+        <div ref={containerRef} className="border border-border mb-6 overflow-x-auto">
+          <svg width={labelW + chartW + valueW + 16} height={Math.max(svgH, 40)} className="block">
+            <defs>
+              <pattern id="hatch-undisclosed" patternUnits="userSpaceOnUse" width={6} height={6} patternTransform="rotate(45)">
+                <line x1={0} y1={0} x2={0} y2={6} stroke="hsl(var(--muted-foreground))" strokeWidth={1} strokeOpacity={0.4} />
+              </pattern>
+            </defs>
+            {barRows.map((s, i) => {
+              const y = i * rowH + 8;
+              const w = widthFor(s.dealSizeUsdM);
+              const color = ACTION_COLOR[s.action] || 'hsl(var(--muted-foreground))';
+              const undisclosed = !s.dealSizeUsdM;
+              const isHover = hovered === s.id;
+              return (
+                <g key={s.id} className="cursor-pointer"
+                  onMouseEnter={() => setHovered(s.id)} onMouseLeave={() => setHovered(null)}
+                  onClick={() => window.open(s.src, '_blank')}>
+                  <rect x={0} y={y - rowH/2 + 4} width={labelW + chartW + valueW + 16} height={rowH - 6}
+                    fill={isHover ? 'hsl(var(--muted))' : 'transparent'} />
+                  <text x={labelW - 6} y={y + 4} textAnchor="end" className="fill-foreground text-[10px]">
+                    <tspan className="font-semibold">{s.actor}</tspan>
+                    <tspan className="fill-muted-foreground"> → {s.target.length > 22 ? s.target.slice(0,20)+'…' : s.target}</tspan>
+                  </text>
+                  <rect x={labelW} y={y - 7} width={w} height={14}
+                    fill={undisclosed ? 'url(#hatch-undisclosed)' : color}
+                    fillOpacity={isHover ? 0.95 : 0.78}
+                    stroke={color} strokeWidth={undisclosed ? 1 : 0} />
+                  <text x={labelW + chartW + 6} y={y - 1} className="fill-foreground text-[10px] font-mono font-semibold">
+                    {formatUsd(s.dealSizeUsdM)}
+                  </text>
+                  <text x={labelW + chartW + 6} y={y + 9} className="fill-muted-foreground text-[9px] font-mono">
+                    {formatDate(s.date)} · {RS_ACTION_LABELS[s.action]}
+                  </text>
+                  {isHover && (
+                    <foreignObject x={labelW + Math.min(w + 6, chartW - 280)} y={Math.max(0, y - 60)} width={300} height={170}>
+                      <div className="bg-background border border-border p-2 text-[10px] leading-tight shadow-lg">
+                        <div className="font-bold text-foreground">{s.actor} → {s.target}</div>
+                        <div className="text-primary text-[9px] mt-0.5">{s.dealSizeLabel}</div>
+                        <div className="text-muted-foreground mt-1 line-clamp-5">{s.qualitySignal}</div>
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          <span className="text-[9px] px-1 border border-border bg-secondary">{RS_ACTION_LABELS[s.action]}</span>
+                          {s.geo && <span className="text-[9px] px-1 border border-border text-muted-foreground">{s.geo}</span>}
+                          {!s.isBio && <span className="text-[9px] px-1 border border-border text-muted-foreground">non-bio</span>}
+                        </div>
+                        <div className="text-primary text-[9px] mt-1 font-semibold">🔗 Click bar to open source</div>
                       </div>
-                      <div className="text-primary text-[9px] mt-1 font-semibold">🔗 Click bar to open source</div>
-                    </div>
-                  </foreignObject>
-                )}
-              </g>
-            );
-          })}
-          {barRows.length === 0 && (
-            <text x={20} y={28} className="fill-muted-foreground text-[11px]">No signals match this filter.</text>
-          )}
-        </svg>
-      </div>
+                    </foreignObject>
+                  )}
+                </g>
+              );
+            })}
+            {barRows.length === 0 && (
+              <text x={20} y={28} className="fill-muted-foreground text-[11px]">No signals match this filter.</text>
+            )}
+          </svg>
+        </div>
+      )}
 
       {/* Newsfeed */}
-      <SignalList signals={filtered} />
+      {type !== 'hiring' && <SignalList signals={filtered} />}
     </div>
   );
 }

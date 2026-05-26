@@ -71,6 +71,31 @@ export function formatCountdown(status: CountdownStatus, now: Date = new Date())
   }
 }
 
+/**
+ * "Archived" = not actionable today.
+ *
+ * Two conditions count as archived:
+ *   1. `kind === 'closed'`           — explicitly ended programs (Impetus
+ *                                      Grants Round 3, NIH Bridge2AI, etc.)
+ *   2. `kind === 'deadline'` in past — annual programs whose 2026 window
+ *                                      has passed and hasn't been re-dated
+ *                                      to 2027 yet.
+ *
+ * Annual + rolling are NEVER archived — they're either "check the website"
+ * or "submit anytime".
+ *
+ * Used by the Open Calls filter to hide archived entries behind a "Show
+ * archive" toggle. Centralised here so the same definition powers any
+ * future archive-count badges, sort tweaks, or analytics.
+ */
+export function isArchivedNow(status: CountdownStatus, now: Date = new Date()): boolean {
+  if (status.kind === 'closed') return true;
+  if (status.kind === 'deadline') {
+    return calendarDaysUntilUtc(status.date, now) < 0;
+  }
+  return false;
+}
+
 export function countdownSortKey(status: CountdownStatus, now: Date = new Date()): number {
   switch (status.kind) {
     case 'deadline': {

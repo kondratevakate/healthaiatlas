@@ -92,34 +92,11 @@ export default {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},
-  			green: {
-  				DEFAULT: 'hsl(var(--green))',
-  				light: 'hsl(var(--green-light))'
-  			},
-  			pink: {
-  				DEFAULT: 'hsl(var(--pink))',
-  				light: 'hsl(var(--pink-light))'
-  			},
-  			yellow: {
-  				DEFAULT: 'hsl(var(--yellow))',
-  				light: 'hsl(var(--yellow-light))'
-  			},
-  			blue: {
-  				DEFAULT: 'hsl(var(--blue))',
-  				light: 'hsl(var(--blue-light))'
-  			},
-  			orange: {
-  				DEFAULT: 'hsl(var(--orange))',
-  				light: 'hsl(var(--orange-light))'
-  			},
-  			purple: {
-  				DEFAULT: 'hsl(var(--purple))',
-  				light: 'hsl(var(--purple-light))'
-  			},
-  			gray: {
-  				DEFAULT: 'hsl(var(--gray))',
-  				light: 'hsl(var(--gray-light))'
-  			},
+  			// Status / traffic-light tokens — defined in index.css.
+  			// Used by evidence badges, risk scores, and regulatory labels only.
+  			success: 'hsl(var(--success))',
+  			warning: 'hsl(var(--warning))',
+  			info:    'hsl(var(--info))',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',

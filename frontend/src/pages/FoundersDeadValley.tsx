@@ -12,10 +12,11 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, AlertTriangle, ExternalLink, ArrowRight } from 'lucide-react';
+import { AlertTriangle, ExternalLink, ArrowRight } from 'lucide-react';
 
 import { Layout } from '@/components/layout';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { FounderToolkitNav } from '@/components/shared/FounderToolkitNav';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { LastUpdated } from '@/components/shared/LastUpdated';
 import { Badge } from '@/components/ui/badge';
@@ -47,13 +48,7 @@ const FoundersDeadValley = () => {
   return (
     <Layout>
       <div className="container py-12 md:py-16">
-        <Link
-          to="/founders"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group border border-border bg-background px-3 py-1.5 hover:border-foreground/40"
-        >
-          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-          <span className="font-medium">Back to Founder Toolkit</span>
-        </Link>
+        <FounderToolkitNav />
 
         <PageHeader
           eyebrow="Founder Toolkit · Dead Valley"

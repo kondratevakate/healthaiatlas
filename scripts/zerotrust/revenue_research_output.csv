@@ -1,0 +1,160 @@
+entity_slug,entity_name,period_year,revenue_usd_m,value_unit,confidence,source_url,source_publisher,source_published_at,source_type,notes
+academic-studies,Academic Studies,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+anthropic-healthcare-and-life-sciences,Anthropic Healthcare & Life Sciences,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+arc-institute-evo2,Arc Institute / Evo2,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+astrazeneca-cspc,AstraZeneca / CSPC,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+bidmc-physionet,BIDMC / PhysioNet,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+bindingdb,BindingDB,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+boltz-project,Boltz project,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+buttenschoen-et-al-oxford,Buttenschoen et al. / Oxford,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+china-ai-biotech-aggregate,China AI biotech (aggregate),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+cms,CMS,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+embl-ebi,EMBL-EBI,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+embl-ebi-wellcome-sanger-gsk,EMBL-EBI / Wellcome Sanger / GSK,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+epoch-ai-arc-institute,Epoch AI / Arc Institute,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+european-commission,European Commission,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+fda,FDA,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+frontier-ai-labs-aggregate,Frontier AI labs (aggregate),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+future-house,Future House,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+future-house-fellowship,Future House Fellowship,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+future-house-robin,Future House (Robin),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+google-deepmind-isomorphic-labs,Google DeepMind / Isomorphic Labs,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+harvard-mit-pfizer-tdc,Harvard / MIT / Pfizer (TDC),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+healthcare-ai-sector-aggregate,Healthcare AI sector (aggregate),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+hippocratic-ai-bcg,Hippocratic AI / BCG,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+instadeep-embl-ebi,InstaDeep / EMBL-EBI,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+isensee-et-al-dkfz,Isensee et al. / DKFZ,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+jama-network-open-ambient-scribe-qi-study,JAMA Network Open / ambient scribe QI study,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+longevity-biotech-fellowship,Longevity Biotech Fellowship,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+mappa-research-framework,MAPPA (research framework),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+mayo-clinic,Mayo Clinic,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+medhallu-benchmark,MedHallu benchmark,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+medsam-team,MedSAM team,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+meta-czi-biohub,Meta / CZI Biohub,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+mfds-korea,MFDS (Korea),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+microsoft-ai,Microsoft AI,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+microsoft-dragon-copilot,Microsoft Dragon Copilot,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+nejm-ai-ambient-scribe-rct,NEJM AI / ambient scribe RCT,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+nmpa-china,NMPA (China),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+novartis-isomorphic-labs,Novartis / Isomorphic Labs,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+npj-digital-medicine-summarisation-study,npj Digital Medicine summarisation study,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+openai-los-alamos-national-laboratory,OpenAI / Los Alamos National Laboratory,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+pharma-corporate-ai-randd-aggregate,Pharma corporate AI R&D (aggregate),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+pmda-japan,PMDA (Japan),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+public-market-ai-biotech-aggregate,Public market AI biotech (aggregate),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+rajpurkar-et-al-stanford,Rajpurkar et al. / Stanford,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+reuters-ambient-scribe-legal-risks,Reuters / ambient scribe legal risks,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+roche-genentech,Roche / Genentech,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+schr-dinger-nimbus-takeda,SchrÃ¶dinger / Nimbus / Takeda,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+sinclair-lab-agarwal-et-al-k-dense,Sinclair lab / Agarwal et al. (K-Dense),,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+south-park-commons,South Park Commons,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+stanford-bmir,Stanford BMIR,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+stanford-crfm,Stanford CRFM,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+stanford-harvard,Stanford / Harvard,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+switzerland-techbio-sector,Switzerland TechBio sector,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+uk-government-ai-for-science-strategy,UK Government AI for Science Strategy,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+university-hospital-basel-totalsegmentator,University Hospital Basel / TotalSegmentator,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+unreasonable-labs,Unreasonable Labs,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+us-white-house-genesis-mission,US White House Genesis Mission,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+veterans-health-administration,Veterans Health Administration,,,,,,,,,"not-applicable: non-commercial entity (academic group, regulator, research initiative, dataset, or aggregate label)"
+nvidia,NVIDIA,2026,215900,usd_m,high,https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-fourth-quarter-and-fiscal-2026,NVIDIA,2026-02-26,press_release,FY2026 ended Jan 25 2026; total revenue $215.9B
+intuitive-surgical,Intuitive Surgical,2025,10064.7,usd_m,high,https://www.sec.gov/Archives/edgar/data/0001035267/000103526726000010/isrg-20251231.htm,SEC EDGAR,2026-02-01,filing,"10-K FY2025 revenue $10,064.7M"
+pfizer,Pfizer,2025,62600,usd_m,high,https://www.sec.gov/Archives/edgar/data/0000078003/000007800326000026/pfe-20251231.htm,SEC EDGAR,2026-02-26,filing,10-K FY2025 revenue $62.6B
+eli-lilly,Eli Lilly,2025,65179,usd_m,high,https://www.sec.gov/Archives/edgar/data/0000059478/000005947826000013/lly-20251231.htm,SEC EDGAR,2026-02-01,filing,10-K FY2025 revenue $65.179B
+novartis,Novartis,2025,54500,usd_m,high,https://www.novartis.com/news/media-releases/novartis-delivered-high-single-digit-sales-growth-achieved-40-core-margin-and-further-advanced-pipeline-2025,Novartis,2026-02-04,press_release,FY2025 net sales $54.5B
+roche,Roche,2025,67200,usd_m,high,https://www.roche.com/investors/updates/inv-update-2026-01-29,Roche,2026-01-29,press_release,FY2025 sales CHF 61.5B (~$67.2B at avg 2025 USD/CHF ~1.10); reported in CHF
+astrazeneca,AstraZeneca,2025,58700,usd_m,high,https://www.astrazeneca.com/content/dam/az/PDF/2025/Q4-FY/Full-year-Q4-2025-results-announcement.pdf,AstraZeneca,2026-02-06,press_release,FY2025 total revenue $58.7B
+takeda,Takeda,2024,30500,usd_m,high,https://www.takeda.com/newsroom/newsreleases/2025/takeda-announces-fy2024-full-year-results-and-fy2025-outlook/,Takeda,2025-05-08,press_release,"FY2024 (ended Mar 31 2025) revenue JPY 4,581.6B (~$30.5B at JPY/USD 150)"
+recursion-pharmaceuticals,Recursion Pharmaceuticals,2024,58.8,usd_m,high,https://www.stocktitan.net/sec-filings/RXRX/10-k-recursion-pharmaceuticals-inc-files-annual-report-d55f2a332239.html,SEC EDGAR,2025-02-27,filing,10-K FY2024 revenue $58.8M
+ginkgo-bioworks,Ginkgo Bioworks,2024,227.04,usd_m,high,https://www.prnewswire.com/news-releases/ginkgo-bioworks-reports-fourth-quarter-and-full-year-2024-financial-results-302385247.html,Ginkgo Bioworks,2025-02-26,press_release,FY2024 revenue $227M; SEC 10-K
+sophia-genetics,SOPHiA GENETICS,2024,65.17,usd_m,high,https://www.sec.gov/Archives/edgar/data/0001840706/000184070625000009/soph-20241231.htm,SEC EDGAR,2025-03-04,filing,20-F FY2024 revenue $65.17M
+lunit,Lunit,2024,37.2,usd_m,high,https://www.lunit.io/en/wp-content/uploads/2025/10/IR-Letter-Lunit_IRL_2025.1Q.pdf,Lunit,2025-04-01,press_release,FY2024 revenue KRW 54.2B (~$37.2M)
+xtalpi,XtalPi,2024,37.0,usd_m,high,https://ir.xtalpi.com/media/1sxbieyn/2025040702143.pdf,HKEX,2025-04-07,filing,FY2024 revenue RMB 266.43M (~$37M); HKEX 2228 annual report
+insilico-medicine,Insilico Medicine,2024,85.8,usd_m,high,https://www.fiercebiotech.com/medtech/ai-drug-designer-insilico-medicine-aims-generate-300m-hong-kong-ipo,FierceBiotech,2025-12-15,news,FY2024 revenue $85.8M per HKEX IPO prospectus
+caris-life-sciences,Caris Life Sciences,2024,412.3,usd_m,high,https://www.sec.gov/Archives/edgar/data/2019410/000201941025000011/cai_ex99-1.htm,SEC EDGAR,2025-08-12,filing,S-1/10-Q FY2024 revenue $412.3M
+benevolentai,BenevolentAI,2024,7.0,usd_m,medium,https://www.businesswire.com/news/home/20240918083461/en/BenevolentAI-Interim-Results-for-the-Six-Months-Ended-30-June-2024,BenevolentAI,2024-09-18,press_release,H1 2024 revenue £2.8M; FY2024 est ~£5.5M (~$7M); annualized from interim
+heartflow,Heartflow,2024,125.8,usd_m,high,https://www.sec.gov/Archives/edgar/data/1464521/000162828025035242/heartflowinc-sx1.htm,SEC EDGAR,2025-08-01,filing,S-1 FY2024 revenue $125.8M
+abridge,Abridge,2025,117,arr_usd_m,medium,https://sacra.com/c/abridge/,Sacra,2025-06-24,news,Q1 2025 contracted ARR $117M per Sacra/Series E reporting
+openevidence,OpenEvidence,2025,150,arr_usd_m,medium,https://techcrunch.com/2025/10/20/openevidence-the-chatgpt-for-doctors-raises-200m-at-6b-valuation/,TechCrunch,2025-10-20,news,2025 annualized revenue ~$150M per Sacra/funding round disclosure
+innovaccer,Innovaccer,2025,250,arr_usd_m,medium,https://techcrunch.com/2025/01/09/innovaccer-aims-to-become-healthcares-ai-powerhouse-with-275m-series-f/,TechCrunch,2025-01-09,news,On track to $250M ARR per Series F disclosure
+commure,Commure,2025,200,arr_usd_m,medium,https://www.commure.com/press-releases/commure-raises-200m-in-growth-financing-from-general-catalysts-cvf-to-accelerate-ai-powered-rcm-platform,Commure,2025-06-23,press_release,>$200M contracted ARR per company disclosure
+hippocratic-ai,Hippocratic AI,,,,,,,,,undisclosed: usage-based pricing model; no public ARR/revenue disclosure as of Series C Nov 2025
+ambience-healthcare,Ambience Healthcare,2025,30,arr_usd_m,medium,https://sacra.com/c/ambience/,Sacra,2025-07-29,news,~$30M ARR May 2025 per Sacra (Series C reporting)
+suki-ai,Suki AI,,,,,,,,,undisclosed: company has stated 4x growth in 2024 but no public revenue/ARR figure
+tennr,Tennr,2025,11.4,arr_usd_m,medium,https://fortune.com/2025/06/18/tennr-health-tech-ai-patient-referral-ivp-a16z-lightspeed-iconiq-series-c/,Fortune,2025-06-18,news,"""Eight figures"" of revenue at Series C; tripled from prior Series B (~$3.8M); ~$11.4M ARR"
+qventus,Qventus,,,,,,,,,undisclosed: 3x growth disclosed at Series D Jan 2025; no specific revenue/ARR figure
+cohere-health,Cohere Health,2024,100,usd_m,low,https://getlatka.com/companies/cohere-health,Getlatka,2024-12-01,other,$100M FY2024 revenue per Getlatka; no primary company disclosure of revenue/ARR
+codametrix,CodaMetrix,,,,,,,,,undisclosed: Series B Mar 2024; no public revenue/ARR figure
+nabla,Nabla,2025,27.8,arr_usd_m,medium,https://www.prnewswire.com/news-releases/nabla-raises-70m-series-c-to-deliver-agentic-ai-to-the-heart-of-clinical-workflows-bringing-total-funding-to-120m-302483646.html,Nabla,2025-06-17,press_release,5x revenue growth at Series C; ~$27.8M ARR per Sacra/Latka
+anthropic,Anthropic,2025,9000,arr_usd_m,medium,https://venturebeat.com/technology/anthropic-says-it-hit-a-30-billion-revenue-run-rate-after-crazy-80x-growth,VentureBeat,2026-01-01,news,~$9B ARR end-2025 per company disclosure; reached $30B run rate by Apr 2026
+openai,OpenAI,2025,20000,arr_usd_m,high,https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/,OpenAI,2026-02-01,press_release,$20B+ ARR end-2025 per CFO Sarah Friar disclosure
+owkin,Owkin,,,,,,,,,undisclosed: private company; no primary revenue disclosure
+aidoc,Aidoc,,,,,,,,,undisclosed: private company; no primary revenue figure in 2024-2025 funding announcements
+viz-ai,Viz.ai,,,,,,,,,"undisclosed: 2024 Forbes article cited ""expected"" $100M ARR but not company-confirmed; no primary disclosure"
+truveta,Truveta,,,,,,,,,undisclosed: Series C Jan 2025 disclosed funding/valuation but no revenue/ARR figure
+heidi-health,Heidi Health,2025,21.9,arr_usd_m,low,https://getlatka.com/companies/heidihealth.com,Getlatka,2025-10-05,other,$21.9M ARR 2025 per Getlatka; Series B raise but no primary ARR disclosure
+synchron,Synchron,,,,,,,,,pre-revenue: clinical trial stage; first-gen BCI launch planned post-Series D Nov 2025
+atomwise,Atomwise,,,,,,,,,undisclosed: revenue from pharma partnerships (Sanofi $20M upfront in 2022) but no annual revenue disclosed
+exscientia,Exscientia,2024,20,usd_m,high,https://www.sec.gov/Archives/edgar/data/0001865408/000186540824000059/exai-20240930.htm,SEC EDGAR,2024-11-14,filing,"9M 2024 revenue $14.6M per 6-K; acquired by Recursion Nov 2024 — full-year ~$20M est, partial-year disclosure"
+pathai,PathAI,,,,,,,,,undisclosed: 2024 revenue per third-party estimates only; no primary disclosure since Series C 2021
+paige,Paige,2025,0,,,https://www.tempus.com/news/tempus-announces-the-acquisition-of-paige/,Tempus,2025-11-04,press_release,acquired-no-disclosure: Tempus acquired Paige Nov 2025 for $81.25M; no standalone revenue disclosed
+olive-ai,Olive AI,,,,,,,,,acquired-no-disclosure: wound down Oct 2023; sold assets to Waystar and Humata Health; no final revenue disclosed
+digital-diagnostics-idx,Digital Diagnostics / IDx,,,,,,,,,undisclosed: private; last funding Series B May 2022; no revenue disclosed
+radai,RadAI,,,,,,,,,undisclosed: tripled YoY at Series B but no specific revenue figure
+absci,Absci,2024,4.5,usd_m,high,https://investors.absci.com/news-releases/news-release-details/absci-reports-business-updates-and-fourth-quarter-and-full-0,Absci,2025-03-13,press_release,FY2024 revenue $4.5M
+eikon-therapeutics,Eikon Therapeutics,,,,,,,,,pre-revenue: clinical-stage; net loss $333.6M FY2025; IPO Feb 2026
+generate-biomedicines,Generate Biomedicines,2024,65,usd_m,medium,https://www.fiercebiotech.com/biotech/novartis-inks-1b-biobucks-deal-flagships-generate-biomedicines,FierceBiotech,2024-09-19,news,$65M upfront from Novartis Sep 2024; 2024 revenue ~$65M largely from this deal
+isomorphic-labs,Isomorphic Labs,,,,,,,,,undisclosed: 2024 Lilly $45M upfront + Novartis upfront; no consolidated revenue disclosed; subsidiary of Alphabet
+insitro,insitro,,,,,,,,,undisclosed: Series C 2021 last raise; 2024 BMS $25M milestone + Lilly deals; no primary revenue disclosure
+neuralink,Neuralink,,,,,,,,,pre-revenue: Bloomberg July 2025 reported internal projections of $1B by 2031; no current revenue disclosed
+precision-neuroscience,Precision Neuroscience,,,,,,,,,pre-revenue: clinical-stage BCI; Layer 7 in trials
+profluent-bio,Profluent Bio,,,,,,,,,undisclosed: $35M raise Mar 2024 + $106M; no revenue figure
+formation-bio,Formation Bio,,,,,,,,,undisclosed: Series D Jun 2024 $372M; no revenue/ARR disclosed by company
+xaira-therapeutics,Xaira Therapeutics,,,,,,,,,pre-revenue: launched Apr 2024 with $1B Series A; early-stage drug discovery
+chai-discovery,Chai Discovery,,,,,,,,,"undisclosed: Series B Dec 2025; founded 2024, no primary revenue disclosure"
+evolutionaryscale,EvolutionaryScale,,,,,,,,,undisclosed: $142M seed Jun 2024; revenue model partnerships/licensing — no disclosure
+lila-sciences,Lila Sciences,,,,,,,,,undisclosed: Series A 2025; project-based discovery services beginning first customer onboarding
+pathos-ai,Pathos AI,,,,,,,,,pre-revenue: clinical-stage oncology; Series D May 2025 $365M
+genesis-therapeutics,Genesis Therapeutics,,,,,,,,,undisclosed: Series B-II Nov 2024; no primary revenue disclosure (third-party $35M figure not company-confirmed)
+nimbus-therapeutics,Nimbus Therapeutics,2023,4000,usd_m,high,https://www.takeda.com/newsroom/newsreleases/2023/takeda-completes-acquisition-of-nimbus-therapeutics-tyk2-program-subsidiary/,Takeda,2023-02-08,press_release,$4B upfront proceeds from Takeda TYK2 subsidiary sale Feb 2023; not annual revenue but disclosed transaction value
+vividion-therapeutics,Vividion Therapeutics,,,,,,,,,acquired-no-disclosure: Bayer acquired Aug 2021 for $1.5B upfront + $500M milestones; operates as subsidiary
+araris-biotech,Araris Biotech,2025,400,usd_m,high,https://www.taiho.co.jp/en/release/files/pdf/20250317.pdf,Taiho Pharmaceutical,2025-03-17,press_release,"$400M closing payment from Taiho acquisition Mar 2025; up to $1.1B total; pre-clinical company, no operating revenue"
+glass-health,Glass Health,,,,,,,,,undisclosed: small seed/Series A only ($5.5M total); no revenue figure
+assort-health,Assort Health,2025,3,arr_usd_m,medium,https://techcrunch.com/2025/08/26/assort-health-nabs-50m-to-automate-patient-phone-calls-sources-say/,TechCrunch,2025-08-26,news,~$3M ARR Aug 2025 per TechCrunch reporting; 8x growth since Q4 2024
+iambic-therapeutics,Iambic Therapeutics,,,,,,,,,"pre-revenue: private, no IPO; $336M raised total; clinical-stage"
+terray-therapeutics,Terray Therapeutics,,,,,,,,,pre-revenue: Series B Oct 2024 $120M; pre-clinical
+retro-biosciences,Retro Biosciences,,,,,,,,,pre-revenue: research-stage; raising Series A 2025 at $1.8B valuation
+newlimit,NewLimit,,,,,,,,,"pre-revenue: pre-clinical; Series B 2025 $130M, follow-on $45M"
+adaptyv-biosystems,Adaptyv Biosystems,,,,,,,,,undisclosed: small seed-stage; ~$8M raised; no primary revenue disclosure
+aleph-surgical,Aleph Surgical,,,,,,,,,pre-revenue: early-stage autonomous surgery robotics; no public funding/revenue disclosure
+alp-bio,ALP Bio,,,,,,,,,pre-revenue: founded 2025; pre-seed EUR 1.9M Apr 2026
+altos-labs,Altos Labs,,,,,,,,,"pre-revenue: clinical-stage cellular rejuvenation; no regulatory approvals, no revenue per public reporting"
+ami-labs,AMI Labs,,,,,,,,,pre-revenue: founded by Yann LeCun; seed Mar 2026 $1.03B; partnership with Nabla for healthcare; no revenue
+aspect-health,Aspect Health,,,,,,,,,undisclosed: small seed-stage women metabolic health platform; no primary revenue disclosure
+bravely,Bravely,,,,,,,,,undisclosed: bootstrapped Singapore mental wellbeing app; no public revenue figure
+coefficient-bio,Coefficient Bio,2026,400,usd_m,high,https://www.fiercebiotech.com/biotech/anthropic-acquires-stealth-ai-startup-coefficient-bio-400m-deal,FierceBiotech,2026-04-01,news,$400M stock acquisition by Anthropic Apr 2026; stealth-stage no operating revenue; transaction value reported
+cradle,Cradle,,,,,,,,,undisclosed: Series B Nov 2024 $73M; 21 customers incl 4 of top 10 pharma but no revenue/ARR figure disclosed
+culture-biosciences,Culture Biosciences,2024,3,usd_m,low,https://getlatka.com/companies/culture-biosciences,Getlatka,2024-10-01,other,$3M revenue Oct 2024 per Getlatka; no primary company disclosure
+edison-scientific,Edison Scientific,,,,,,,,,pre-revenue: Future House commercial spinout Nov 2025; $70M seed Dec 2025
+emerald-cloud-lab,Emerald Cloud Lab,,,,,,,,,undisclosed: private; ECL pricing >$250k entry but no annual revenue figure disclosed
+endogena-therapeutics,Endogena Therapeutics,,,,,,,,,pre-revenue: clinical-stage ophthalmology; last major raise Series A 2021
+epic-systems,Epic Systems,2024,5700,usd_m,medium,https://www.beckershospitalreview.com/healthcare-information-technology/ehrs/epics-revenue-increases-to-5-7b/,Beckers Hospital Review,2025-02-01,news,FY2024 revenue $5.7B per Epic spokesperson confirmation to Beckers; private company no SEC filing
+figure,Figure,,,,,,,,,undisclosed: began commercial revenue Jan 2025; Series C Sep 2025 at $39B valuation; no revenue figure publicly disclosed
+google-deepmind,Google DeepMind,,,,,,,,,not-applicable: Alphabet subsidiary; no standalone revenue reported in Alphabet 10-K segment data
+haya-therapeutics,HAYA Therapeutics,,,,,,,,,pre-revenue: clinical-stage RNA therapeutics; Series A $65M May 2025 + Lilly upfront in $1B-potential deal Sep 2024
+jimini-health,Jimini Health,,,,,,,,,pre-revenue: launched Nov 2024 with $8M pre-seed + $17M seed; no revenue disclosed
+latent-labs,Latent Labs,,,,,,,,,pre-revenue: emerged from stealth Feb 2025 $50M; web-based protein design platform launched Jul 2025
+legion-health,Legion Health,,,,,,,,,undisclosed: seed-stage telehealth psychiatry; no revenue disclosed by company
+life-biosciences,Life Biosciences,,,,,,,,,pre-revenue: clinical-stage longevity; Series D $80M Apr 2026
+loyal,Loyal,,,,,,,,,pre-revenue: clinical-stage canine longevity; FDA reasonable expectation of effectiveness Feb 2025; products not yet commercially launched
+lumexa-imaging,Lumexa Imaging,2025,1000,usd_m,high,https://radiologybusiness.com/topics/healthcare-management/healthcare-economics/lumexa-imaging-announces-1st-earnings-results-44m-net-loss-2025,Radiology Business,2025-12-01,filing,TTM revenue $1B Sep 2025 per S-1/10-Q post-IPO; outpatient radiology network rebranded from US Radiology Specialists; LMRI ticker
+medra,Medra,,,,,,,,,pre-revenue: Series A $52M Dec 2025; building autonomous lab launching 2026
+nuclidium,NUCLIDIUM,,,,,,,,,pre-revenue: clinical-stage radiopharmaceutical; Series B EUR 84M Jul 2025
+numab-therapeutics,Numab Therapeutics,,,,,,,,,undisclosed: private; J&J acquired Numab spin-out Yellow Jersey for $1.25B in 2024 but no standalone Numab revenue figure
+periodic-labs,Periodic Labs,,,,,,,,,pre-revenue: $300M seed Sep/Oct 2025; building AI scientists for materials/science
+rarus-health,Rarus Health,,,,,,,,,undisclosed: early-stage rare disease platform; primarily ANID public funding
+reconnect-labs,Reconnect Labs,,,,,,,,,pre-revenue: clinical-stage Swiss psychedelics biotech; Phase II
+sakana-ai,Sakana AI,,,,,,,,,undisclosed: Series B Nov 2025 $135M at $2.65B; no public revenue figure
+strateos,Strateos,,,,,,,,,undisclosed: private cloud-lab; raised ~$108M total; entry pricing >$100k but no annual revenue disclosed
+thinking-machines-lab,Thinking Machines Lab,,,,,,,,,pre-revenue: $2B seed Jul 2025 at $12B valuation; reportedly raising at $50B Nov 2025; no product revenue disclosed
+zyphra,Zyphra,,,,,,,,,undisclosed: Series A 2025 at $1B; company projected $30M annualized by end-2025 but no actual realized revenue disclosed

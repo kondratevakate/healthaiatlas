@@ -23,7 +23,7 @@ export function ComparativeMatrix() {
 
         <div className="flex items-center gap-2 mb-2">
           <GitCompare className="h-5 w-5" style={{ color: 'hsl(180 70% 40%)' }} />
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
+          <h2 className="heading-editorial">
             US · EU · Switzerland · UAE · UK
           </h2>
         </div>

@@ -37,8 +37,9 @@ type NavLink = {
 const navLinks: NavLink[] = [
   { key: 'nav.home', path: '/', count: conferences.length + launches.length },
   { key: 'nav.opencalls', path: '/discovery?section=opencalls', count: openCallEntries.length },
+  { key: 'nav.jobs', path: '/jobs', count: 116 },
   { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
-  { key: 'nav.founders', path: '/founders' },
+  { key: 'nav.founders', path: '/founders', dropdown: true },
   { key: 'nav.about', path: '/about' },
 ];
 
@@ -148,7 +149,64 @@ export function Header() {
               );
             }
 
-            // Domains is the only dropdown — composes the 4 hubs under one label.
+            // Founder Toolkit dropdown — single trigger = label + chevron,
+            // so DropdownMenuContent align="start" anchors to the left edge
+            // of "Founder Toolkit", not to the chevron icon.
+            if (link.dropdown && link.path === '/founders') {
+              const founderItems = [
+                { to: '/founders/markets',       label: 'Markets',      sub: 'Market sizes + regulatory per country' },
+                { to: '/founders/architectures', label: 'SOTA',         sub: 'State of the art in revenue architectures' },
+                { to: '/founders/tech',          label: 'Tech Signals', sub: '29 DevRel · 21 acqui-hire deals · talent signals' },
+                { to: '/founders/dead-valley',   label: 'Dead Valley',  sub: '$50B+ destroyed — patterns, not nostalgia' },
+              ];
+              return (
+                <DropdownMenu key={link.path}>
+                  <DropdownMenuTrigger asChild>
+                    {/* Whole label + chevron is the trigger so the popup
+                        left-edge aligns with "Founder Toolkit" not the icon */}
+                    <button
+                      className={cn(
+                        baseClass,
+                        'inline-flex items-center gap-1 outline-none',
+                      )}
+                      aria-label="Open Founder Toolkit sub-sections"
+                    >
+                      {renderLabel(link, active)}
+                      <ChevronDown className="h-3 w-3 opacity-60" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="start"
+                    sideOffset={4}
+                    className="min-w-[260px] rounded-none"
+                  >
+                    {/* First item navigates to the home page */}
+                    <DropdownMenuItem asChild className="rounded-none">
+                      <Link
+                        to="/founders"
+                        className="cursor-pointer w-full flex items-center text-left py-1.5 text-xs text-muted-foreground"
+                      >
+                        All sections →
+                      </Link>
+                    </DropdownMenuItem>
+                    <div className="h-px bg-border mx-2 my-1" />
+                    {founderItems.map((item) => (
+                      <DropdownMenuItem key={item.to} asChild className="rounded-none">
+                        <Link
+                          to={item.to}
+                          className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                        >
+                          <span className="text-xs font-medium">{item.label}</span>
+                          <span className="text-[10px] text-muted-foreground line-clamp-1">{item.sub}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            }
+
+            // Domains dropdown — whole label + chevron as single trigger.
             if (link.dropdown && link.path === '/directory') {
               const items = domains
                 .filter((d) => d.id !== 'overview')
@@ -160,55 +218,41 @@ export function Header() {
                   count: domainCounts[d.id],
                 }));
               return (
-                <div key={link.path} className="relative inline-flex items-center">
-                  <Link to={link.path} className={baseClass}>
-                    {renderLabel(link, active)}
-                  </Link>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      className={cn(
-                        'ml-1 p-1 outline-none transition-colors',
-                        active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-                      )}
+                <DropdownMenu key={link.path}>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className={cn(baseClass, 'inline-flex items-center gap-1 outline-none')}
                       aria-label={`Open ${t(link.key)} sub-sections`}
                     >
-                      <ChevronDown className="h-3 w-3" />
-                    </DropdownMenuTrigger>
-                    {/* alignOffset compensates for the trigger being the
-                        chevron (a small icon to the right of the label).
-                        Without it, the dropdown's left edge aligns with
-                        the chevron's left edge and the menu visually
-                        hangs off-axis from the "Domains" label. The
-                        offset (-80px) is tuned for the "Domains 4" label
-                        at text-sm — adjust if the label or count changes
-                        materially. */}
-                    <DropdownMenuContent
-                      align="start"
-                      sideOffset={4}
-                      alignOffset={-80}
-                      className="min-w-[260px] rounded-none"
-                    >
-                      {items.map((item) => (
-                        <DropdownMenuItem key={item.id} asChild className="rounded-none">
-                          <Link
-                            to={item.to}
-                            className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
-                          >
-                            <span className="text-xs font-medium text-left inline-flex items-baseline gap-1.5">
-                              {item.label}
-                              <CountBadge count={item.count} />
+                      {renderLabel(link, active)}
+                      <ChevronDown className="h-3 w-3 opacity-60" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="start"
+                    sideOffset={4}
+                    className="min-w-[260px] rounded-none"
+                  >
+                    {items.map((item) => (
+                      <DropdownMenuItem key={item.id} asChild className="rounded-none">
+                        <Link
+                          to={item.to}
+                          className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                        >
+                          <span className="text-xs font-medium text-left inline-flex items-baseline gap-1.5">
+                            {item.label}
+                            <CountBadge count={item.count} />
+                          </span>
+                          {item.subtitle && (
+                            <span className="text-[10px] text-muted-foreground line-clamp-1 text-left">
+                              {item.subtitle}
                             </span>
-                            {item.subtitle && (
-                              <span className="text-[10px] text-muted-foreground line-clamp-1 text-left">
-                                {item.subtitle}
-                              </span>
-                            )}
-                          </Link>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                          )}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               );
             }
 
@@ -276,6 +320,34 @@ export function Header() {
                   >
                     {t(link.key)} ↗
                   </a>
+                );
+              }
+
+              if (link.dropdown && link.path === '/founders') {
+                const founderItems = [
+                  { to: '/founders/markets',       label: 'Markets' },
+                  { to: '/founders/architectures', label: 'SOTA' },
+                  { to: '/founders/tech',          label: 'Tech Signals' },
+                  { to: '/founders/dead-valley',   label: 'Dead Valley' },
+                ];
+                return (
+                  <div key={link.path} className="space-y-0.5">
+                    <Link to={link.path} onClick={() => setMobileMenuOpen(false)} className={itemClass}>
+                      {t(link.key)}
+                    </Link>
+                    <div className="pl-4 border-l-2 border-border ml-4 space-y-0.5">
+                      {founderItems.map((item) => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 );
               }
 

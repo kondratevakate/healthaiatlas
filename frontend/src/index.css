@@ -43,6 +43,14 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
+    /* Status / traffic-light tokens — evidence badges, risk scores, regulatory
+       labels. NOT for category differentiation (categories use monochrome).
+       Calibrated to match emerald-600 / amber-600 / blue-500 visually.
+       See docs/design-decisions/2026-05-palette-strategy.md */
+    --success: 142 72% 36%;
+    --warning:  32 95% 44%;
+    --info:    213 94% 52%;
+
     --border: 0 0% 0%;
     --input: 0 0% 0%;
     --ring: 0 0% 0%;
@@ -115,6 +123,11 @@
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 100%;
 
+    /* Status tokens — dark mode variants (≈ emerald-400 / amber-400 / blue-400) */
+    --success: 142 76% 57%;
+    --warning:  38 92% 65%;
+    --info:    213 94% 68%;
+
     --border: 0 0% 100%;
     --input: 0 0% 100%;
     --ring: 0 0% 100%;
@@ -186,6 +199,30 @@
 
   .heading-serif-sm {
     @apply font-sans text-2xl md:text-3xl font-semibold tracking-tight leading-tight;
+  }
+
+  /* Editorial headings — serif accent reserved for Context / Founder Toolkit
+     modules (regional histories, regulatory grammars, market scale narratives).
+     These collapse ~16 hand-rolled repetitions of `font-serif text-* font-bold
+     text-foreground` across context-* into three tiers. */
+  .heading-editorial {
+    @apply font-serif text-2xl md:text-3xl font-bold text-foreground;
+  }
+
+  .heading-editorial-card {
+    @apply font-serif text-base font-bold text-foreground;
+  }
+
+  .heading-editorial-card-sm {
+    @apply font-serif text-sm font-bold text-foreground;
+  }
+
+  /* Frame-card titles: softer-weight variant used in *Frame components
+     (UK/EU FounderFrame, MarketReality entity cards). Distinct from
+     .heading-editorial-card by intent: this is a hint/label, not a primary
+     card identity. */
+  .heading-editorial-frame {
+    @apply font-serif text-base font-semibold text-foreground leading-tight;
   }
 
   /* Sans headings for UI */
@@ -272,4 +309,19 @@
 .section-marker::before {
   content: '';
   @apply inline-block w-3 h-3 bg-primary mr-3;
+}
+
+/* Atlas radar animation — About page hero decoration.
+   Three rings radiate from center with staggered delays.
+   Uses transform-box: fill-box so transform-origin: center
+   resolves relative to the SVG element's own bounding box. */
+@keyframes atlas-radar-ring {
+  0%   { transform: scale(0.02); opacity: 0.55; }
+  100% { transform: scale(1);    opacity: 0; }
+}
+
+.atlas-radar-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: atlas-radar-ring 3.2s ease-out infinite;
 }

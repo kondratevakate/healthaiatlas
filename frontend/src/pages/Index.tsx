@@ -70,7 +70,7 @@ export default function Index() {
           <div className="container">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
               <div>
-                <h1 className="font-serif text-5xl md:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
+                <h1 className="heading-display mb-6">
                   HealthAI
                   <br />
                   Atlas
@@ -102,7 +102,7 @@ export default function Index() {
                   </p>
                 </div>
                 <div className="h-0.5 w-12 bg-primary mb-4" />
-                <h2 className="text-2xl md:text-3xl font-semibold">What's happening</h2>
+                <h2 className="heading-xl">What's happening</h2>
               </div>
               <p className="text-sm text-muted-foreground max-w-md">
                 Upcoming events and recent launches in the healthcare AI ecosystem. Tweets and

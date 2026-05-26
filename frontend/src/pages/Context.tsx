@@ -342,6 +342,7 @@ export default function Context() {
       <div className="min-h-screen">
         <div className="container py-12 md:py-16">
           <PageHeader
+            eyebrow="HealthAI Atlas"
             title={language === 'en' ? 'Context' : 'السياق'}
             subtitle={REGION_SUBTITLES[region][language]}
           />

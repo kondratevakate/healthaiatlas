@@ -20,22 +20,22 @@ const levelConfig: Record<EvidenceLevel, {
   official: {
     label: { en: 'Official', ar: 'رسمي' },
     icon: FileText,
-    className: 'bg-emerald-100 text-emerald-800 border-emerald-200'
+    className: 'bg-success/10 text-success border-success/30'
   },
   observed: {
     label: { en: 'Observed', ar: 'ملاحظ' },
     icon: Eye,
-    className: 'bg-blue-100 text-blue-800 border-blue-200'
+    className: 'bg-info/10 text-info border-info/30'
   },
   anecdotal: {
     label: { en: 'Anecdotal', ar: 'قصصي' },
     icon: MessageCircle,
-    className: 'bg-amber-100 text-amber-800 border-amber-200'
+    className: 'bg-warning/10 text-warning border-warning/30'
   },
   inference: {
     label: { en: 'Inference', ar: 'استنتاج' },
     icon: Lightbulb,
-    className: 'bg-purple-100 text-purple-800 border-purple-200'
+    className: 'bg-muted text-muted-foreground border-border'
   }
 };
 

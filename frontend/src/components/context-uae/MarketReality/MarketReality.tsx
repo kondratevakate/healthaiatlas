@@ -38,7 +38,7 @@ export function MarketReality() {
 
         <div className="flex items-center gap-2 mb-2">
           <Map className="h-5 w-5" style={{ color: 'hsl(180 70% 40%)' }} />
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
+          <h2 className="heading-editorial">
             Founder Reality Map
           </h2>
         </div>
@@ -93,7 +93,7 @@ export function MarketReality() {
                 <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <h4 className="font-serif text-base font-semibold text-foreground leading-tight">
+                <h4 className="heading-editorial-frame">
                   {t.title}
                 </h4>
               </div>

@@ -24,6 +24,7 @@ import FoundersDeadValley from "./pages/FoundersDeadValley";
 import FoundersDevRel from "./pages/FoundersDevRel";
 import FoundersMarkets from "./pages/FoundersMarkets";
 import FoundersArchitectures from "./pages/FoundersArchitectures";
+import Jobs from "./pages/Jobs";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,8 @@ const App = () => (
               <Route path="/founders/regulatory" element={<Navigate to="/founders/markets" replace />} />
               <Route path="/founders/architectures" element={<FoundersArchitectures />} />
               <Route path="/founders/tech" element={<FoundersDevRel />} />
+              {/* Acqui-hires lives inside /founders/tech (Acqui-hires tab) */}
+              <Route path="/founders/acquihires" element={<Navigate to="/founders/tech" replace />} />
               <Route path="/founders/devrel" element={<Navigate to="/founders/tech" replace />} />
               <Route path="/founders/dead-valley" element={<FoundersDeadValley />} />
               {/* Legacy deep page — kept until contents migrate to new modules. */}
@@ -67,6 +70,8 @@ const App = () => (
               <Route path="/business" element={<PersonaPage />} />
               <Route path="/startup" element={<PersonaPage />} />
               <Route path="/leader" element={<PersonaPage />} />
+
+              <Route path="/jobs" element={<Jobs />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

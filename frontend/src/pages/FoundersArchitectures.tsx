@@ -43,14 +43,14 @@ const FoundersArchitectures = () => {
             <ResizablePanel defaultSize={66} minSize={40}>
               <ArchitectureRevenueMap
                 selectedArchId={selectedArchId}
-                onSelectArch={setSelectedArchId}
+                onSelect={setSelectedArchId}
               />
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={34} minSize={25}>
               <ArchitectureSidebar
                 selectedArchId={selectedArchId}
-                onClearSelection={() => setSelectedArchId(null)}
+                onClose={() => setSelectedArchId(null)}
               />
             </ResizablePanel>
           </ResizablePanelGroup>

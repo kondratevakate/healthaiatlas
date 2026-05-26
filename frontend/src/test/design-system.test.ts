@@ -189,8 +189,10 @@ describe('design-system: typography', () => {
     'pages/NotFound.tsx',  // 404 numeral, intentionally bespoke
     'pages/Share.tsx',     // assessment-summary page, custom hero
     'pages/Index.tsx',     // home hero, custom layout
-    'pages/Founders.tsx',        // tight editorial masthead replaces PageHeader intentionally
-    'pages/FoundersMarkets.tsx', // chart-first layout, minimal caption heading
+    'pages/Founders.tsx',           // tight editorial masthead replaces PageHeader intentionally
+    'pages/FoundersMarkets.tsx',    // chart-first layout, minimal caption heading
+    'pages/FoundersAcquihires.tsx', // editorial masthead with stat strip
+    'pages/Jobs.tsx',               // data-density page, tight header above stat bar
   ]);
 
   // 1e. Heading elements must not bypass the brand type scale.
@@ -319,6 +321,9 @@ describe('design-system: color palette', () => {
     'components/home/SubscribeSection.tsx',
     // shadcn boilerplate — do not migrate
     'components/ui/toast.tsx',
+    // Categorical color encoding for domain taxonomy (not status indication)
+    'components/ai-life-sciences/RecentSignalsView.tsx',
+    'pages/Jobs.tsx',                  // domain category badges + remote-status pills
   ]);
 
   const RAW_PALETTE_RE =
@@ -397,6 +402,7 @@ describe('design-system: spacing', () => {
     'pages/Share.tsx',          // assessment summary, custom centering
     'pages/NotFound.tsx',       // full-screen vertical center
     'pages/PersonaPage.tsx',    // already uses container py-12 md:py-16 max-w-4xl
+    'pages/Jobs.tsx',           // max-w-7xl data-table layout — wider than standard container
   ]);
 
   const CONTAINER_SHELL_RE = /\bcontainer\s+py-12\s+md:py-16\b/;

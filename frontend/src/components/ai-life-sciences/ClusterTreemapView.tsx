@@ -233,9 +233,6 @@ export function ClusterTreemapView() {
     <div>
       {/* Primary signal row */}
       <div className="flex flex-wrap gap-1 mb-1 items-center">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mr-2">
-          Size by:
-        </span>
         {SIGNALS.filter((s) => !['vc', 'ma', 'pharma_deals'].includes(s.key)).map((s) => (
           <button
             key={s.key}
@@ -254,9 +251,9 @@ export function ClusterTreemapView() {
 
       {/* Capital breakdown — only visible when Capital is active */}
       {['capital_total', 'vc', 'ma', 'pharma_deals'].includes(signal) && (
-        <div className="flex flex-wrap gap-1 mb-3 items-center pl-[72px]">
+        <div className="flex flex-wrap gap-1 mb-3 items-center pl-2">
           <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/60 mr-1">
-            capital by:
+            breakdown:
           </span>
           {SIGNALS.filter((s) => ['vc', 'ma', 'pharma_deals'].includes(s.key)).map((s) => (
             <button

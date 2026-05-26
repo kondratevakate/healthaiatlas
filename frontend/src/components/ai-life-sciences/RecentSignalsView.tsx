@@ -19,42 +19,12 @@ interface SignalTypeDef {
 }
 
 const SIGNAL_TYPES: SignalTypeDef[] = [
-  {
-    key: 'all',
-    label: 'All',
-    icon: '',
-    actions: [],
-  },
-  {
-    key: 'capital',
-    label: 'Capital',
-    icon: '💰',
-    actions: ['acquisition', 'investment', 'pharma_deal', 'partnership', 'ipo', 'mega_raise', 'pre_seed'],
-  },
-  {
-    key: 'research',
-    label: 'Research',
-    icon: '📄',
-    actions: ['open_source', 'product_launch', 'stealth_launch', 'publication'] as RSAction[],
-  },
-  {
-    key: 'talent',
-    label: 'Talent',
-    icon: '👤',
-    actions: ['strategic_hire', 'cohort'],
-  },
-  {
-    key: 'regulatory',
-    label: 'Regulatory',
-    icon: '🏛',
-    actions: ['regulatory'] as RSAction[],
-  },
-  {
-    key: 'clinical',
-    label: 'Clinical',
-    icon: '💊',
-    actions: ['clinical_validation'],
-  },
+  { key: 'all',        label: 'All',        icon: '', actions: [] },
+  { key: 'capital',   label: 'Capital',    icon: '', actions: ['acquisition', 'investment', 'pharma_deal', 'partnership', 'ipo', 'mega_raise', 'pre_seed'] },
+  { key: 'research',  label: 'Research',   icon: '', actions: ['open_source', 'product_launch', 'stealth_launch', 'publication'] as RSAction[] },
+  { key: 'talent',    label: 'Talent',     icon: '', actions: ['strategic_hire', 'cohort'] },
+  { key: 'regulatory',label: 'Regulatory', icon: '', actions: ['regulatory'] as RSAction[] },
+  { key: 'clinical',  label: 'Clinical',   icon: '', actions: ['clinical_validation'] },
 ];
 
 function getSignalType(s: RecentSignal): SignalType {
@@ -239,18 +209,14 @@ export function RecentSignalsView() {
               key={t.key}
               onClick={() => setType(t.key)}
               className={cn(
-                'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1',
+                'px-2 py-1 text-[11px] font-mono border transition-colors',
                 type === t.key
                   ? 'bg-foreground text-background border-foreground'
                   : 'border-border text-muted-foreground hover:text-foreground',
               )}
             >
-              {t.icon && <span>{t.icon}</span>}
               {t.label}
-              <span className={cn(
-                'text-[9px] ml-0.5',
-                type === t.key ? 'text-background/70' : 'text-muted-foreground/60',
-              )}>
+              <span className={cn('text-[9px] ml-1', type === t.key ? 'opacity-60' : 'opacity-40')}>
                 {count}
               </span>
             </button>

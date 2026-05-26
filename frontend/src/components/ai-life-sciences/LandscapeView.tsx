@@ -4,15 +4,10 @@ import {
   LS_BUBBLES,
   LS_CLUSTERS,
   LS_FAMILY_LABELS,
-  LS_TEMPERATURE_COLORS,
-  LS_TEMPERATURE_LABELS,
   LS_ET_LABELS,
-  LS_RELIABILITY,
   type LSClusterFamily,
-  type LSTemperature,
 } from '@/data/aiLifeSciences';
 import { cn } from '@/lib/utils';
-import { ExternalLink } from 'lucide-react';
 
 const FAMILY_ORDER: LSClusterFamily[] = ['care_delivery', 'discovery_rd', 'therapeutic', 'ai_infra', 'meta'];
 
@@ -25,45 +20,28 @@ const ORDERED_CLUSTERS = [...LS_CLUSTERS].sort((a, b) => {
   return a.id.localeCompare(b.id);
 });
 
-const TEMPERATURE_ORDER: LSTemperature[] = ['red', 'orange', 'blue', 'neutral'];
-
 export function LandscapeView() {
-  const [colorBy, setColorBy] = useState<'family' | 'temperature'>('family');
-  // Single filter state; the meaning of the value depends on colorBy mode.
-  // When colorBy=family: 'all' | LSClusterFamily.
-  // When colorBy=temperature: 'all' | LSTemperature.
-  const [filter, setFilter] = useState<string>('all');
+  const [filter, setFilter] = useState<'all' | LSClusterFamily>('all');
   const [hovered, setHovered] = useState<number | null>(null);
-
-  // Reset filter to 'all' whenever the color axis flips so a stale family
-  // filter doesn't survive a switch to temperature mode (and vice versa).
-  const setColorByAndReset = (next: 'family' | 'temperature') => {
-    setColorBy(next);
-    setFilter('all');
-  };
 
   const matchesFilter = (clusterId: string): boolean => {
     if (filter === 'all') return true;
     const cluster = LS_CLUSTERS.find((c) => c.id === clusterId);
-    if (!cluster) return false;
-    return colorBy === 'family' ? cluster.family === filter : cluster.temperature === filter;
+    return !!cluster && cluster.family === filter;
   };
 
   const filtered = useMemo(
     () => LS_BUBBLES.filter((b) => matchesFilter(b.cluster)),
-    [filter, colorBy],
+    [filter],
   );
 
   const visibleClusters = useMemo(() => {
     if (filter === 'all') return ORDERED_CLUSTERS;
-    return ORDERED_CLUSTERS.filter((c) =>
-      colorBy === 'family' ? c.family === filter : c.temperature === filter,
-    );
-  }, [filter, colorBy]);
+    return ORDERED_CLUSTERS.filter((c) => c.family === filter);
+  }, [filter]);
 
   const { ref: containerRef, width: containerW } = useResponsiveSvgWidth(900);
 
-  // Date range derived from data
   const minYear = 2014;
   const maxYear = 2027;
   const yearRange = maxYear - minYear;
@@ -73,51 +51,9 @@ export function LandscapeView() {
   const svgW = leftW + chartW + 20;
   const svgH = visibleClusters.length * rowH + 50;
 
-  // Reliability counts for the strip below
-  const reliabilityCounts = useMemo(() => {
-    const c = [0, 0, 0, 0, 0, 0]; // index 0 unused; 1-5 used
-    for (const b of LS_BUBBLES) {
-      if (b.reliability && b.reliability >= 1 && b.reliability <= 5) {
-        c[b.reliability]++;
-      }
-    }
-    return c;
-  }, []);
-  const reliabilityTotal = reliabilityCounts.reduce((a, b) => a + b, 0);
-
   return (
     <div>
-      {/* Color-mode toggle: family vs. wave market-temperature (Kondrateva-Seregina 2026) */}
-      <div className="flex flex-wrap gap-1 mb-2 items-center">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mr-2">
-          Color by
-        </span>
-        <button
-          onClick={() => setColorByAndReset('family')}
-          className={cn(
-            'px-2 py-1 text-[11px] font-mono border transition-colors',
-            colorBy === 'family'
-              ? 'bg-foreground text-background border-foreground'
-              : 'border-border text-muted-foreground hover:text-foreground',
-          )}
-        >
-          Family
-        </button>
-        <button
-          onClick={() => setColorByAndReset('temperature')}
-          className={cn(
-            'px-2 py-1 text-[11px] font-mono border transition-colors',
-            colorBy === 'temperature'
-              ? 'bg-foreground text-background border-foreground'
-              : 'border-border text-muted-foreground hover:text-foreground',
-          )}
-        >
-          Market temperature
-        </button>
-      </div>
-
-      {/* Filter row — adapts to colorBy: family chips when colorBy=family,
-          wave-temperature chips (red/orange/blue/neutral) when colorBy=temperature. */}
+      {/* Family filter chips */}
       <div className="flex flex-wrap gap-1 mb-4 items-center">
         <button
           onClick={() => setFilter('all')}
@@ -128,49 +64,27 @@ export function LandscapeView() {
               : 'border-border text-muted-foreground hover:text-foreground',
           )}
         >
-          {colorBy === 'family' ? 'All families' : 'All waves'}
+          All families
         </button>
-        {colorBy === 'family' ? (
-          FAMILY_ORDER.map((f) => {
-            const sample = LS_CLUSTERS.find((c) => c.family === f);
-            if (!sample) return null;
-            return (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={cn(
-                  'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
-                  filter === f
-                    ? 'bg-foreground text-background border-foreground'
-                    : 'border-border text-muted-foreground hover:text-foreground',
-                )}
-              >
-                <span aria-hidden="true" className="inline-block w-2 h-2" style={{ background: sample.color }} />
-                {LS_FAMILY_LABELS[f]}
-              </button>
-            );
-          })
-        ) : (
-          TEMPERATURE_ORDER.map((t) => (
+        {FAMILY_ORDER.map((f) => {
+          const sample = LS_CLUSTERS.find((c) => c.family === f);
+          if (!sample) return null;
+          return (
             <button
-              key={t}
-              onClick={() => setFilter(t)}
+              key={f}
+              onClick={() => setFilter(f)}
               className={cn(
                 'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
-                filter === t
+                filter === f
                   ? 'bg-foreground text-background border-foreground'
                   : 'border-border text-muted-foreground hover:text-foreground',
               )}
             >
-              <span
-                aria-hidden="true"
-                className="inline-block w-2 h-2 border border-border"
-                style={{ background: LS_TEMPERATURE_COLORS[t] }}
-              />
-              {LS_TEMPERATURE_LABELS[t]}
+              <span aria-hidden="true" className="inline-block w-2 h-2" style={{ background: sample.color }} />
+              {LS_FAMILY_LABELS[f]}
             </button>
-          ))
-        )}
+          );
+        })}
       </div>
 
       {/* Swimlane chart */}
@@ -196,7 +110,6 @@ export function LandscapeView() {
             const y = i * rowH + 36;
             return (
               <g key={cluster.id}>
-                {/* row background tint */}
                 {cluster.offFrame && (
                   <rect
                     x={0}
@@ -216,13 +129,12 @@ export function LandscapeView() {
                   strokeWidth={0.5}
                   strokeDasharray={cluster.offFrame ? '1,3' : '2,4'}
                 />
-                {/* Cluster swatch */}
                 <rect
                   x={6}
                   y={y - 6}
                   width={8}
                   height={12}
-                  fill={colorBy === 'temperature' ? LS_TEMPERATURE_COLORS[cluster.temperature] : cluster.color}
+                  fill={cluster.color}
                 />
                 <text x={20} y={y + 4} className="fill-foreground text-[10px] font-medium">
                   {cluster.label.length > 30 ? cluster.label.substring(0, 28) + '…' : cluster.label}
@@ -240,9 +152,8 @@ export function LandscapeView() {
             const x = leftW + ((b.d - minYear) / yearRange) * chartW;
             if (x < leftW || x > svgW) return null;
             const r = b.a > 0 ? Math.max(4, Math.min(22, Math.sqrt(b.a) * 0.85)) : 3.5;
-            const color = colorBy === 'temperature' ? LS_TEMPERATURE_COLORS[cluster.temperature] : cluster.color;
+            const color = cluster.color;
             const hasSrc = !!b.src;
-            const isHighRisk = b.reliability && b.reliability >= 4;
 
             return (
               <g
@@ -258,8 +169,8 @@ export function LandscapeView() {
                   r={r}
                   fill={color}
                   fillOpacity={hovered === i ? 0.75 : 0.45}
-                  stroke={isHighRisk ? 'hsl(var(--destructive))' : color}
-                  strokeWidth={isHighRisk ? 2 : hasSrc ? 1.5 : 1}
+                  stroke={color}
+                  strokeWidth={hasSrc ? 1.5 : 1}
                   strokeDasharray={hasSrc ? undefined : '3,2'}
                 />
                 {b.a >= 250 && (
@@ -292,18 +203,6 @@ export function LandscapeView() {
                             ${b.a >= 1000 ? `${(b.a / 1000).toFixed(1)}B` : `${Math.round(b.a)}M`}
                           </span>
                         )}
-                        {b.reliability && (
-                          <span
-                            className={cn(
-                              'text-[9px] px-1 border',
-                              b.reliability >= 4
-                                ? 'border-destructive/40 text-destructive'
-                                : 'border-border text-muted-foreground',
-                            )}
-                          >
-                            risk {b.reliability}/5
-                          </span>
-                        )}
                         {b.geo && (
                           <span className="text-[9px] px-1 border border-border text-muted-foreground">
                             {b.geo}
@@ -322,65 +221,6 @@ export function LandscapeView() {
             );
           })}
         </svg>
-      </div>
-
-      {/* Reliability strip — quantitative */}
-      {reliabilityTotal > 0 && (
-        <div className="mb-4">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-            Reliability risk distribution ({reliabilityTotal} entries scored, 1 = FDA + high evidence · 5 = known reliability gap)
-          </div>
-          <div className="flex h-4 border border-border">
-            {[1, 2, 3, 4, 5].map((lvl) => {
-              const n = reliabilityCounts[lvl];
-              if (n === 0) return null;
-              const pct = (n / reliabilityTotal) * 100;
-              const colors = [
-                '',
-                'hsl(150 60% 35%)',
-                'hsl(90 50% 40%)',
-                'hsl(45 70% 45%)',
-                'hsl(20 70% 45%)',
-                'hsl(0 70% 40%)',
-              ];
-              return (
-                <div
-                  key={lvl}
-                  className="text-[9px] font-mono text-white text-center leading-4"
-                  style={{ width: `${pct}%`, background: colors[lvl] }}
-                  title={`Risk ${lvl}/5 — ${n} entries (${pct.toFixed(0)}%)`}
-                >
-                  {pct >= 6 ? `${lvl}: ${n}` : ''}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Reliability alerts */}
-      <div className="mb-4">
-        <h3 className="text-xs uppercase tracking-wider font-semibold text-foreground mb-3 pb-2 border-b border-border">
-          ⚡ Reliability Alerts (editorial)
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          {LS_RELIABILITY.map((r, i) => (
-            <div key={i} className="border border-destructive/20 bg-destructive/5 p-3">
-              <h4 className="text-xs font-semibold text-destructive mb-1">{r.c}</h4>
-              <p className="text-[11px] text-muted-foreground leading-relaxed mb-2">{r.d}</p>
-              {r.src && (
-                <a
-                  href={r.src}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline"
-                >
-                  <ExternalLink className="w-3 h-3" /> View source
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { HubShell } from '@/components/shared/HubShell';
 import { LandscapeView } from './LandscapeView';
-// ModalityMatrixView archived 2026-05-25 — pipeline-stage taxonomy underdeveloped.
+// ModalityMatrixView archived 2026-05-26 — pipeline-stage taxonomy underdeveloped.
 // File remains on disk; re-enable by restoring the import + tab below.
 import { ClusterTreemapView } from './ClusterTreemapView';
 import { RecentSignalsView } from './RecentSignalsView';
@@ -11,11 +11,11 @@ export function AiLifeSciencesHub() {
       domainId="ai-life-sciences"
       views={[
         {
-          id: 'recent-signals',
-          label: 'Recent Signals',
+          id: 'landscape',
+          label: 'Frontier Landscape',
           description:
-            'What just happened in AI × life sciences. Scale-of-deals bar chart over the last ~12 months, plus three narrative lenses: who Anthropic is acquiring, where OpenAI is placing healthcare bets, which pharma majors are paying for AI drug discovery.',
-          render: () => <RecentSignalsView />,
+            'Time-series view of AI × life-sciences milestones — Y-axis groups by cluster, bubble size scales with disclosed $, color encodes the cluster family (care delivery / discovery / therapeutic / infra / meta).',
+          render: () => <LandscapeView />,
         },
         {
           id: 'cluster-treemap',
@@ -25,11 +25,11 @@ export function AiLifeSciencesHub() {
           render: () => <ClusterTreemapView />,
         },
         {
-          id: 'landscape',
-          label: 'Frontier Landscape',
+          id: 'recent-signals',
+          label: 'Recent Signals',
           description:
-            'Time-series view of AI × life-sciences milestones — Y-axis groups by cluster, bubble size scales with disclosed $, color encodes the cluster family (care delivery / discovery / therapeutic / infra / meta).',
-          render: () => <LandscapeView />,
+            'What just happened in AI × life sciences. Scale-of-deals bar chart over the last ~12 months, plus three narrative lenses: who Anthropic is acquiring, where OpenAI is placing healthcare bets, which pharma majors are paying for AI drug discovery.',
+          render: () => <RecentSignalsView />,
         },
       ]}
     />

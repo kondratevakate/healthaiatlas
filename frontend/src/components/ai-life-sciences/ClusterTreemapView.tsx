@@ -38,11 +38,18 @@ interface SignalDef {
 
 const SIGNALS: SignalDef[] = [
   {
+    key: 'players',
+    label: 'Players (unique companies)',
+    short: 'Players',
+    unit: 'count',
+    match: () => true,
+    weigh: () => 1,
+  },
+  {
     key: 'revenue',
     label: 'Revenue / ARR (latest disclosed)',
     short: 'Revenue',
     unit: 'usd_m',
-    // Revenue is sourced from LS_REVENUE, not LS_BUBBLES — see computeSignal.
     match: () => false,
     weigh: () => 0,
   },
@@ -53,15 +60,6 @@ const SIGNALS: SignalDef[] = [
     unit: 'usd_m',
     match: (b) => (b.a ?? 0) > 0,
     weigh: (b) => b.a ?? 0,
-  },
-  {
-    key: 'players',
-    label: 'Players (unique companies)',
-    short: 'Players',
-    unit: 'count',
-    // Counted via distinct b.c per cluster — see computeSignal below.
-    match: () => true,
-    weigh: () => 1,
   },
   {
     key: 'vc',
@@ -146,7 +144,7 @@ function computeSignal(cluster: LSCluster, sig: SignalDef): number {
 const FAMILY_ORDER: LSClusterFamily[] = ['care_delivery', 'discovery_rd', 'therapeutic', 'ai_infra', 'meta'];
 
 export function ClusterTreemapView() {
-  const [signal, setSignal] = useState<SignalKey>('revenue');
+  const [signal, setSignal] = useState<SignalKey>('players');
   const [hovered, setHovered] = useState<string | null>(null);
   const [opened, setOpened] = useState<string | null>(null);
 

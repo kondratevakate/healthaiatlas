@@ -47,12 +47,11 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
               key={v.id}
               value={v.id}
               className={cn(
-                'rounded-none border-b-2 border-transparent bg-transparent px-5 py-3 -mb-px',
-                'text-sm font-semibold tracking-tight',
+                'rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 -mb-px',
+                'text-[13px] font-medium tracking-tight',
                 'text-muted-foreground hover:text-foreground transition-colors',
-                'data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent',
+                'data-[state=active]:border-foreground data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:font-semibold',
                 'data-[state=active]:shadow-none',
-                idx === 0 && 'data-[state=active]:font-bold',
               )}
             >
               {v.label}
@@ -62,9 +61,6 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
 
         {views.map((v) => (
           <TabsContent key={v.id} value={v.id} className="mt-0">
-            {v.description && (
-              <p className="text-xs text-muted-foreground mb-4 max-w-3xl">{v.description}</p>
-            )}
             {v.render()}
           </TabsContent>
         ))}

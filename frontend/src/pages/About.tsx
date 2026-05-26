@@ -22,17 +22,79 @@ const GitHubMark = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+// Radar decoration — three rings radiating from centre, staggered delays.
+// SVG uses currentColor so it inherits text-muted-foreground in both themes.
+// aria-hidden: purely decorative.
+function AtlasRadar() {
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      className="w-full h-full text-muted-foreground"
+      fill="none"
+      aria-hidden="true"
+    >
+      {/* Outer static border — suggests a radar screen frame */}
+      <circle cx="100" cy="100" r="86" stroke="currentColor" strokeWidth="0.5" opacity="0.18" />
+
+      {/* Crosshairs — thin dashed lines */}
+      <line x1="100" y1="18" x2="100" y2="182" stroke="currentColor" strokeWidth="0.35" strokeDasharray="2 6" opacity="0.18" />
+      <line x1="18" y1="100" x2="182" y2="100" stroke="currentColor" strokeWidth="0.35" strokeDasharray="2 6" opacity="0.18" />
+
+      {/* Diagonal guides (45°) */}
+      <line x1="40" y1="40" x2="160" y2="160" stroke="currentColor" strokeWidth="0.25" strokeDasharray="1 8" opacity="0.12" />
+      <line x1="160" y1="40" x2="40" y2="160" stroke="currentColor" strokeWidth="0.25" strokeDasharray="1 8" opacity="0.12" />
+
+      {/* Three animated rings — radiate from centre */}
+      {[
+        { delay: '0s',    width: 1 },
+        { delay: '1.07s', width: 0.7 },
+        { delay: '2.13s', width: 0.45 },
+      ].map(({ delay, width }, i) => (
+        <circle
+          key={i}
+          cx="100" cy="100" r="72"
+          stroke="currentColor"
+          strokeWidth={width}
+          className="atlas-radar-ring"
+          style={{ animationDelay: delay }}
+        />
+      ))}
+
+      {/* Centre dot */}
+      <circle cx="100" cy="100" r="3.5" fill="currentColor" opacity="0.75" />
+
+      {/* Small "entity" dots — scattered, represent detected players in the ecosystem */}
+      <circle cx="58"  cy="52"  r="1.8" fill="currentColor" opacity="0.35" />
+      <circle cx="148" cy="66"  r="1.8" fill="currentColor" opacity="0.35" />
+      <circle cx="158" cy="138" r="1.8" fill="currentColor" opacity="0.35" />
+      <circle cx="52"  cy="148" r="1.8" fill="currentColor" opacity="0.35" />
+      <circle cx="168" cy="100" r="1.2" fill="currentColor" opacity="0.25" />
+      <circle cx="78"  cy="172" r="1.2" fill="currentColor" opacity="0.25" />
+      <circle cx="122" cy="28"  r="1.2" fill="currentColor" opacity="0.25" />
+    </svg>
+  );
+}
+
 const About = () => {
   const { t } = useLanguage();
 
   return (
     <Layout>
       <div className="container py-12 md:py-16">
-        <PageHeader
-          eyebrow="HealthAI Atlas"
-          title={t('nav.about')}
-          subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
-        />
+        {/* Header row: text left, radar animation right (md+) */}
+        <div className="flex items-start gap-10 mb-10 md:gap-16">
+          <div className="flex-1 min-w-0">
+            <PageHeader
+              eyebrow="HealthAI Atlas"
+              title={t('nav.about')}
+              subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
+              className="mb-0"
+            />
+          </div>
+          <div className="hidden md:flex items-center justify-center flex-shrink-0 w-44 h-44 lg:w-52 lg:h-52 opacity-80">
+            <AtlasRadar />
+          </div>
+        </div>
 
         {/* 1. Contacts first */}
         <section id="contact" className="mb-16 max-w-2xl">

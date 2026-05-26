@@ -104,8 +104,15 @@ const MODULES: Module[] = [
     stat: '29',
     statLabel: 'named Developer Advocates across 14 vendors',
     title: 'Tech Signals',
-    preview: 'Where AI vendors are manufacturing developer demand. Talent moves lead product pushes by 6–12 months. AQVI hire signal coming next.',
+    preview: 'Where AI vendors are manufacturing developer demand. Talent moves lead product pushes by 6–12 months.',
     status: 'building',
+  },
+  {
+    to: '/founders/tech',
+    stat: '21',
+    statLabel: 'deals · what big AI couldn\'t build fast enough',
+    title: 'Acqui-hires',
+    preview: '8 capability clusters · 22 founders tracked · 5 acquirers. Each deal is a confession: the acquirer needed this and couldn\'t build it at market speed.',
   },
 ];
 

@@ -37,6 +37,7 @@ type NavLink = {
 const navLinks: NavLink[] = [
   { key: 'nav.home', path: '/', count: conferences.length + launches.length },
   { key: 'nav.opencalls', path: '/discovery?section=opencalls', count: openCallEntries.length },
+  { key: 'nav.jobs', path: '/jobs', count: 116 },
   { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
   { key: 'nav.founders', path: '/founders', dropdown: true },
   { key: 'nav.about', path: '/about' },
@@ -155,7 +156,7 @@ export function Header() {
               const founderItems = [
                 { to: '/founders/markets',       label: 'Markets',      sub: 'Market sizes + regulatory per country' },
                 { to: '/founders/architectures', label: 'SOTA',         sub: 'State of the art in revenue architectures' },
-                { to: '/founders/tech',          label: 'Tech Signals', sub: '29 DevRel advocates · 14 vendors · talent moves' },
+                { to: '/founders/tech',          label: 'Tech Signals', sub: '29 DevRel · 21 acqui-hire deals · talent signals' },
                 { to: '/founders/dead-valley',   label: 'Dead Valley',  sub: '$50B+ destroyed — patterns, not nostalgia' },
               ];
               return (

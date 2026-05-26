@@ -31,6 +31,7 @@ from .common import (
 )
 from .extract_ai_arch_revenue import extract as extract_ai_arch_revenue
 from .extract_lifesci_style import extract as extract_ai_lifesci
+from .extract_jobs import extract as extract_jobs
 from .schema import Claim, Entity, QuarantineRow, Source
 
 OUT_DIR = Path(r"C:\Projects\data\aiatls\zerotrust")
@@ -39,6 +40,7 @@ OUT_DIR = Path(r"C:\Projects\data\aiatls\zerotrust")
 XLSX_EXTRACTORS: list[tuple[str, object]] = [
     ("ai_arch_revenue", extract_ai_arch_revenue),
     ("ai_lifesci",      extract_ai_lifesci),
+    ("jobs_2026",       extract_jobs),
 ]
 
 # Tier 2: TS extractor domain prefixes. build.py looks for

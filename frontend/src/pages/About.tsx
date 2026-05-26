@@ -148,7 +148,7 @@ const About = () => {
               <PageHeader
                 eyebrow="HealthAI Atlas"
                 title={t('nav.about')}
-                subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
+                subtitle="Research and code by Kate Kondrateva — an independent mapping of the global healthcare AI ecosystem."
                 className="mb-0"
               />
             </div>
@@ -221,9 +221,10 @@ const About = () => {
           <p className="text-body text-muted-foreground mb-5">
             Atlas Notes is the editorial companion to this directory — long-form analysis of where
             healthcare AI is moving, what the methods can and cannot do clinically, and the read-
-            across between regulatory shifts and founder strategy. Author voice (Kate Kondratieva),
+            across between regulatory shifts and founder strategy. Author voice (Kate Kondrateva),
             with named takes you can argue with. Published on LinkedIn for distribution; cited back
             into Atlas entries where the analysis becomes structured data.
+
           </p>
           <a
             href={ATLAS_NOTES_SUBSCRIBE_URL}

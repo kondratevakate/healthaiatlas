@@ -129,7 +129,7 @@ const Privacy = () => {
           <section>
             <h2 className="heading-lg mb-3">Contact</h2>
             <p className="text-muted-foreground">
-              Kate Kondratieva · {' '}
+              Kate Kondrateva · {' '}
               <a href="https://airtable.com/shrkedcsqRIdT60o3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 the project contact form
               </a>{' '}

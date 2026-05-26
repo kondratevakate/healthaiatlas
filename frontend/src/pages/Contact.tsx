@@ -64,7 +64,7 @@ const Contact = () => {
         <PageHeader
           eyebrow="HealthAI Atlas"
           title="Contact"
-          subtitle="Research and code by Kate Kondratieva. HealthAI Atlas is an independent research project mapping the global healthcare AI ecosystem."
+          subtitle="Research and code by Kate Kondrateva. HealthAI Atlas is an independent research project mapping the global healthcare AI ecosystem."
         />
 
         <div className="border border-border divide-y divide-border mb-10">

@@ -22,55 +22,70 @@ const GitHubMark = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-// Radar decoration — three rings radiating from centre, staggered delays.
-// SVG uses currentColor so it inherits text-muted-foreground in both themes.
-// aria-hidden: purely decorative.
+// Full-bleed radar decoration.
+// Centre sits near the top-right of the SVG canvas; rings expand to r=340
+// so they extend well beyond the SVG bounds. The parent container clips them
+// at the viewport edge via overflow-hidden — giving the "circles disappearing
+// off the page" effect without triggering a horizontal scrollbar.
+// SVG uses currentColor → inherits theme colour; aria-hidden (decorative).
+const CX = 460; // centre x — pushed right so rings bleed off the right edge
+const CY = 140; // centre y — upper area so rings bleed off the top too
+const MAX_R = 340;
+
 function AtlasRadar() {
   return (
     <svg
-      viewBox="0 0 200 200"
-      className="w-full h-full text-muted-foreground"
+      width="560" height="400"
+      viewBox="0 0 560 400"
+      className="text-foreground"
       fill="none"
       aria-hidden="true"
     >
-      {/* Outer static border — suggests a radar screen frame */}
-      <circle cx="100" cy="100" r="86" stroke="currentColor" strokeWidth="0.5" opacity="0.18" />
+      {/* Static guide rings — very faint skeleton that persists between pulses */}
+      {[90, 180, 270, 360].map((r, i) => (
+        <circle
+          key={r}
+          cx={CX} cy={CY} r={r}
+          stroke="currentColor"
+          strokeWidth="0.4"
+          opacity={Math.max(0.03, 0.07 - i * 0.015)}
+        />
+      ))}
 
-      {/* Crosshairs — thin dashed lines */}
-      <line x1="100" y1="18" x2="100" y2="182" stroke="currentColor" strokeWidth="0.35" strokeDasharray="2 6" opacity="0.18" />
-      <line x1="18" y1="100" x2="182" y2="100" stroke="currentColor" strokeWidth="0.35" strokeDasharray="2 6" opacity="0.18" />
+      {/* Crosshair lines from centre */}
+      <line x1={CX} y1={-60} x2={CX} y2={CY + MAX_R + 20}
+        stroke="currentColor" strokeWidth="0.3" strokeDasharray="2 10" opacity="0.08" />
+      <line x1={-40} y1={CY} x2={CX + MAX_R + 20} y2={CY}
+        stroke="currentColor" strokeWidth="0.3" strokeDasharray="2 10" opacity="0.08" />
 
-      {/* Diagonal guides (45°) */}
-      <line x1="40" y1="40" x2="160" y2="160" stroke="currentColor" strokeWidth="0.25" strokeDasharray="1 8" opacity="0.12" />
-      <line x1="160" y1="40" x2="40" y2="160" stroke="currentColor" strokeWidth="0.25" strokeDasharray="1 8" opacity="0.12" />
-
-      {/* Three animated rings — radiate from centre */}
+      {/* Three animated rings — staggered so one is always expanding */}
       {[
-        { delay: '0s',    width: 1 },
-        { delay: '1.07s', width: 0.7 },
-        { delay: '2.13s', width: 0.45 },
-      ].map(({ delay, width }, i) => (
+        { delay: '0s',    strokeWidth: 1.2 },
+        { delay: '1.33s', strokeWidth: 0.8 },
+        { delay: '2.67s', strokeWidth: 0.5 },
+      ].map(({ delay, strokeWidth }, i) => (
         <circle
           key={i}
-          cx="100" cy="100" r="72"
+          cx={CX} cy={CY} r={MAX_R}
           stroke="currentColor"
-          strokeWidth={width}
+          strokeWidth={strokeWidth}
           className="atlas-radar-ring"
-          style={{ animationDelay: delay }}
+          style={{ animationDelay: delay, animationDuration: '4s' }}
         />
       ))}
 
       {/* Centre dot */}
-      <circle cx="100" cy="100" r="3.5" fill="currentColor" opacity="0.75" />
+      <circle cx={CX} cy={CY} r={4} fill="currentColor" opacity="0.65" />
 
-      {/* Small "entity" dots — scattered, represent detected players in the ecosystem */}
-      <circle cx="58"  cy="52"  r="1.8" fill="currentColor" opacity="0.35" />
-      <circle cx="148" cy="66"  r="1.8" fill="currentColor" opacity="0.35" />
-      <circle cx="158" cy="138" r="1.8" fill="currentColor" opacity="0.35" />
-      <circle cx="52"  cy="148" r="1.8" fill="currentColor" opacity="0.35" />
-      <circle cx="168" cy="100" r="1.2" fill="currentColor" opacity="0.25" />
-      <circle cx="78"  cy="172" r="1.2" fill="currentColor" opacity="0.25" />
-      <circle cx="122" cy="28"  r="1.2" fill="currentColor" opacity="0.25" />
+      {/* Entity dots — scattered, asymmetric, suggest detected ecosystem players */}
+      <circle cx={200} cy={60}  r={2.2} fill="currentColor" opacity="0.28" />
+      <circle cx={310} cy={40}  r={2.2} fill="currentColor" opacity="0.28" />
+      <circle cx={150} cy={180} r={2.2} fill="currentColor" opacity="0.28" />
+      <circle cx={280} cy={220} r={2.2} fill="currentColor" opacity="0.28" />
+      <circle cx={370} cy={300} r={1.5} fill="currentColor" opacity="0.2"  />
+      <circle cx={100} cy={280} r={1.5} fill="currentColor" opacity="0.2"  />
+      <circle cx={420} cy={200} r={1.5} fill="currentColor" opacity="0.2"  />
+      <circle cx={240} cy={320} r={1.2} fill="currentColor" opacity="0.15" />
     </svg>
   );
 }
@@ -80,22 +95,27 @@ const About = () => {
 
   return (
     <Layout>
-      <div className="container py-12 md:py-16">
-        {/* Header row: text left, radar animation right (md+) */}
-        <div className="flex items-start gap-10 mb-10 md:gap-16">
-          <div className="flex-1 min-w-0">
-            <PageHeader
-              eyebrow="HealthAI Atlas"
-              title={t('nav.about')}
-              subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
-              className="mb-0"
-            />
-          </div>
-          <div className="hidden md:flex items-center justify-center flex-shrink-0 w-44 h-44 lg:w-52 lg:h-52 opacity-80">
-            <AtlasRadar />
-          </div>
+      {/* Header zone — overflow-hidden clips the radar at the viewport edge
+          without adding a horizontal scrollbar. The radar is absolutely
+          positioned so it doesn't affect the document flow. */}
+      <div className="relative overflow-hidden">
+        {/* Radar: anchored top-right, bleeds off the right and top edges */}
+        <div className="absolute top-0 right-0 pointer-events-none hidden md:block opacity-70"
+             style={{ transform: 'translate(100px, -40px)' }}>
+          <AtlasRadar />
         </div>
 
+        <div className="container pt-12 md:pt-16 pb-0">
+          <PageHeader
+            eyebrow="HealthAI Atlas"
+            title={t('nav.about')}
+            subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
+            className="max-w-xl relative z-10 mb-0"
+          />
+        </div>
+      </div>
+
+      <div className="container pt-10 pb-12 md:pb-16">
         {/* 1. Contacts first */}
         <section id="contact" className="mb-16 max-w-2xl">
           <h2 className="heading-lg mb-6">{t('about.contact')}</h2>

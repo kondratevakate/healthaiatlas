@@ -76,16 +76,23 @@ function AtlasTab() {
 
   const main = DEVREL_CLUSTERS.filter((c) => !c.gap);
   const gaps = DEVREL_CLUSTERS.filter((c) => c.gap);
+  const clusterCount = main.length;
 
   const visible = (cos: string[]) =>
     vendorFilter === 'all' || cos.includes(vendorFilter);
 
   return (
     <div>
+      {/* Provenance */}
+      <div className="border border-border/60 bg-secondary/20 px-4 py-3 flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-muted-foreground mb-5">
+        <span><span className="text-foreground/70 font-medium">Source</span> — devrel_hub.html · editorial survey, May 2026</span>
+        <span><span className="text-foreground/70 font-medium">Coverage</span> — {clusterCount} active clusters · 29 named advocates · 14 vendors</span>
+        <span><span className="text-foreground/70 font-medium">Not automated</span> — manual content analysis, not Zero Trust pipeline</span>
+      </div>
       {/* legend */}
-      <div className="flex flex-wrap gap-4 mb-5 text-xs font-mono text-muted-foreground">
+      <div className="flex flex-wrap gap-4 mb-5 text-xs text-muted-foreground">
         <span>Intensity ●●● strong &nbsp;●●○ moderate &nbsp;●○○ weak</span>
-        <span className="text-red-400/70">Gap = significant investment, no named DevRel yet</span>
+        <span className="text-muted-foreground/60">Red border = notable gap (investment without named advocate)</span>
       </div>
 
       {/* vendor filter chips */}
@@ -626,24 +633,27 @@ function AcquihiresTab() {
   return (
     <div className="max-w-3xl space-y-10">
 
+      {/* ── Provenance banner ───────────────────────────────────────────── */}
+      <div className="border border-border/60 bg-secondary/20 px-4 py-3 flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-muted-foreground">
+        <span><span className="text-foreground/70 font-medium">Source</span> — ai_acquihire_dataset_updated.xlsx · public announcements only</span>
+        <span><span className="text-foreground/70 font-medium">Verification</span> — URLs extracted from source file; not yet uploaded to Airtable</span>
+        <span><span className="text-foreground/70 font-medium">Scope</span> — team acquisitions by AI companies, {ACQUIHIRE_STATS.dateRange}</span>
+        <span><span className="text-foreground/70 font-medium">Confidence</span> — shown per deal as rated in source file</span>
+      </div>
+
       {/* ── Stat strip ──────────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-6">
         {[
-          { n: ACQUIHIRE_STATS.totalDeals,    label: 'deals tracked' },
-          { n: ACQUIHIRE_STATS.totalFounders, label: 'founders moved' },
+          { n: ACQUIHIRE_STATS.totalDeals,    label: 'deals in dataset' },
+          { n: ACQUIHIRE_STATS.totalFounders, label: 'founders tracked' },
           { n: '8',                           label: 'capability clusters' },
-          { n: ACQUIHIRE_STATS.dateRange,     label: '' },
         ].map(({ n, label }) => (
-          <div key={label || String(n)}>
+          <div key={label}>
             <div className="text-2xl font-bold text-foreground leading-none">{n}</div>
-            {label && <div className="text-xs text-muted-foreground mt-0.5">{label}</div>}
+            <div className="text-xs text-muted-foreground mt-0.5">{label}</div>
           </div>
         ))}
       </div>
-      <p className="text-sm text-muted-foreground -mt-6 leading-relaxed">
-        Acqui-hire = what big AI <span className="text-foreground font-medium">couldn't build fast enough</span>.
-        Each deal is a capability confession — read the clusters to find the whitespace.
-      </p>
 
       {/* ── Capability clusters — first two open by default ─────────────── */}
       <div>
@@ -696,6 +706,10 @@ function AcquihiresTab() {
                             <span className="text-xs text-muted-foreground">{d.acquirer}</span>
                           </div>
                           <div className="text-xs text-muted-foreground/40">{d.date.slice(0, 7)}</div>
+                          {/* Confidence — shown as-is from source, not interpreted */}
+                          <span className="inline-block font-mono text-[9px] tracking-wide px-1.5 py-0.5 border border-border/50 text-muted-foreground/50">
+                            {d.confidence}
+                          </span>
                         </div>
 
                         {/* Right: capability + founders */}
@@ -707,6 +721,9 @@ function AcquihiresTab() {
                             <p className="text-xs text-muted-foreground/50">
                               {d.founders}
                             </p>
+                          )}
+                          {d.notes && (
+                            <p className="text-xs text-muted-foreground/35 italic">{d.notes}</p>
                           )}
                         </div>
 
@@ -830,28 +847,24 @@ const FoundersDevRel = () => (
 
       <PageHeader
         eyebrow="Founder Toolkit · Tech Signals"
-        title="Where AI talent is moving — and what that signals"
-        subtitle="Two lenses: DevRel atlas (what vendors are building demand for) + acqui-hire tracker (what they couldn't build fast enough). Together they give you 6–12 months of advance warning."
+        title="AI talent movements and developer platform signals"
+        subtitle="Two datasets: team acquisitions by AI companies (public announcements, 2023–2026) and Developer Advocate activity by vendor (editorial survey, May 2026)."
       />
 
       <Tabs defaultValue="acquihires" className="mt-8">
         <TabsList className="mb-6">
           <TabsTrigger value="acquihires">Acqui-hires · {ACQUIHIRE_STATS.totalDeals} deals</TabsTrigger>
-          <TabsTrigger value="atlas">DevRel Atlas · 10 clusters</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline · 2021–2026</TabsTrigger>
-          <TabsTrigger value="people">People · 29</TabsTrigger>
+          <TabsTrigger value="atlas">DevRel Atlas · 9 clusters</TabsTrigger>
         </TabsList>
 
         <TabsContent value="acquihires"><AcquihiresTab /></TabsContent>
         <TabsContent value="atlas"><AtlasTab /></TabsContent>
-        <TabsContent value="timeline"><TimelineTab /></TabsContent>
-        <TabsContent value="people"><PeopleTab /></TabsContent>
       </Tabs>
 
-      <div className="mt-12 border-t border-border pt-6 font-mono text-[10px] text-muted-foreground/40 leading-relaxed space-y-1">
-        <p><span className="text-muted-foreground/60">Methodology</span> — 29 named DevRel advocates across 14 vendors, 12–18 months of hands-on content. Down-weighted: quickstarts, keynotes. Up-weighted: architecture deep-dives, kernel-level posts, production deployment guides.</p>
-        <p><span className="text-muted-foreground/60">Gaps</span> — Databricks Mosaic AI and Meta Llama have no named advocate despite strong investment.</p>
-        <p><span className="text-muted-foreground/60">Structural gap</span> — Vertex AI MLOps: Priyanka Vergadia (former lead) departed Google for Microsoft Azure 2024, no replacement identified.</p>
+      <div className="mt-12 border-t border-border pt-6 text-xs text-muted-foreground/50 leading-relaxed space-y-1.5">
+        <p><span className="text-muted-foreground/70 font-medium">Acqui-hires methodology</span> — public announcements only. Confidence level is as rated in the source spreadsheet. Deals where structure is disputed are marked "needs review". Secondary sources linked where available.</p>
+        <p><span className="text-muted-foreground/70 font-medium">DevRel methodology</span> — 29 named advocates across 14 vendors surveyed over 12–18 months of published content. Editorial analysis, not automated. Down-weighted: quickstarts, keynotes. Up-weighted: architecture deep-dives, production deployment guides.</p>
+        <p><span className="text-muted-foreground/70 font-medium">Gaps noted</span> — Databricks Mosaic AI and Meta Llama have no named advocate with public technical content despite strong platform investment.</p>
       </div>
     </div>
   </Layout>

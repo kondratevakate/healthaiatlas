@@ -94,7 +94,8 @@ describe('design-system: typography', () => {
     'components/home/SystemDiagram.tsx',
   ];
   const FONT_SERIF_FILE_ALLOWLIST = new Set<string>([
-    'pages/Context.tsx',  // Founder Toolkit landing — serif headings by design
+    'pages/Context.tsx',           // Founder Toolkit landing — serif headings by design
+    'pages/FoundersArchitectures.tsx', // editorial stat numbers in Founder Toolkit SOTA page
   ]);
 
   function isFontSerifAllowed(r: string): boolean {

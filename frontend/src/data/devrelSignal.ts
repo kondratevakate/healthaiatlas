@@ -190,19 +190,6 @@ export const DEVREL_CLUSTERS: DevRelCluster[] = [
     color: '#a3e635', gap: false,
   },
   {
-    id: 'G', letter: 'G', label: 'Cluster G',
-    name: 'Production Multiplayer / Unity Netcode', domain: 'Networked Games', n: 2,
-    desc: 'Choosing between Netcode for GameObjects (casual co-op) and Netcode for Entities / DOTS (competitive action), shipping server-authoritative multiplayer via Unity Gaming Services.',
-    cos: ['Unity'],
-    stack: ['Netcode for GameObjects','Netcode for Entities','DOTS','Unity Transport','UGS Relay','Multiplay'],
-    follow: {
-      name: 'Esteban Maldonado Cabán', role: 'Senior Developer Advocate · Unity', co: 'Unity',
-      handle: 'blog.unity.com', url: 'https://blog.unity.com/games/building-a-multiplayer-game-first-time-netcode-for-gameobjects',
-      sig: 'Galactic Kittens (NGO) + Megacity Metro (NfE + DOTS) — production multiplayer samples',
-    },
-    color: '#f472b6', gap: false,
-  },
-  {
     id: 'GAPDB', letter: '?', label: 'Research gap',
     name: 'Databricks Mosaic AI / LLMOps-on-Lakehouse', domain: 'Lakehouse + GenAI', n: 3,
     desc: '3+ Sr. DevAdv roles open. Stack clear — no named advocate with public content yet. Biggest uncovered enterprise AI platform.',

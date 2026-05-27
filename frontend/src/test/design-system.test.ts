@@ -635,9 +635,10 @@ describe('design-system: page headers', () => {
   //     visitor. Pages without subtitle are exempt if they have a deliberate
   //     reason (dynamic content assembled from data, not static strings).
   const SUBTITLE_EXEMPT = new Set<string>([
-    'pages/Share.tsx',   // assessment result — content is dynamic, no static subtitle
-    'pages/NotFound.tsx', // 404 page — no PageHeader
-    'pages/Index.tsx',    // custom hero — no PageHeader
+    'pages/Share.tsx',         // assessment result — content is dynamic, no static subtitle
+    'pages/NotFound.tsx',      // 404 page — no PageHeader
+    'pages/Index.tsx',         // custom hero — no PageHeader
+    'pages/FoundersDevRel.tsx',// title is self-explanatory; tabs immediately show the two datasets
   ]);
 
   it('every PageHeader has a subtitle prop', () => {

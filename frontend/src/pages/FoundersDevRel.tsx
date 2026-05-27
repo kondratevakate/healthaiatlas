@@ -45,11 +45,11 @@ function AtlasTab() {
   return (
     <div>
       {/* cluster grid */}
-      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">
+      <div className="grid sm:grid-cols-2 gap-2">
         {main.map((c) => (
           <div
             key={c.id}
-            className="bg-card border border-border p-5 flex flex-col gap-3 hover:-translate-y-px transition-transform"
+            className="bg-card border border-border p-4 flex flex-col gap-2.5 hover:-translate-y-px transition-transform"
           >
             <div className="flex items-center justify-between">
               <span
@@ -70,7 +70,7 @@ function AtlasTab() {
             </div>
 
             <div>
-              <div className="text-base font-semibold leading-tight mb-0.5">{c.name}</div>
+              <div className="text-sm font-semibold leading-snug mb-0.5">{c.name}</div>
               <div className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground/60">{c.domain}</div>
             </div>
 
@@ -132,13 +132,13 @@ function AtlasTab() {
             {gaps.map((c) => (
               <div
                 key={c.id}
-                className="bg-card border border-dashed border-border/50 p-5 flex flex-col gap-3 opacity-60"
+                className="bg-card border border-dashed border-border/50 p-4 flex flex-col gap-2.5 opacity-60"
               >
                 <span className="font-mono text-[9px] tracking-wide uppercase px-2 py-0.5 border w-fit border-red-900/40 bg-red-950/30 text-red-500">
                   Research gap
                 </span>
                 <div>
-                  <div className="text-base font-semibold text-red-300/60 leading-tight mb-0.5">{c.name}</div>
+                  <div className="text-sm font-semibold text-red-300/60 leading-snug mb-0.5">{c.name}</div>
                   <div className="font-mono text-[9px] tracking-widest uppercase text-red-900">{c.domain}</div>
                 </div>
                 <div className="flex flex-wrap gap-1">
@@ -419,7 +419,7 @@ function AcquihiresTab() {
                 <AccordionContent className="px-4 pb-4 pt-2">
                   <div className="grid sm:grid-cols-2 gap-2">
                     {deals.map(d => (
-                      <div key={d.company} className="bg-background border border-border p-4 flex flex-col gap-2.5">
+                      <div key={d.company} className="bg-card border border-border p-4 flex flex-col gap-2.5">
                         {/* Header: company + acquirer + date */}
                         <div className="flex items-start justify-between gap-2">
                           <div className="space-y-0.5">
@@ -553,7 +553,6 @@ const FoundersDevRel = () => (
       <PageHeader
         eyebrow="Founder Toolkit · Tech"
         title="AI talent movements and Developer Advocate activity"
-        subtitle="Two datasets: team acquisitions by AI companies (public announcements, 2023–2026) and Developer Advocate content by vendor (editorial survey, May 2026)."
       />
 
       <Tabs defaultValue="acquihires" className="mt-8">

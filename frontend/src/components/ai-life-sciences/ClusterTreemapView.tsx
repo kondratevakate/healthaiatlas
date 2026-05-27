@@ -5,82 +5,81 @@ import {
   LS_CLUSTERS,
   LS_ET_LABELS,
   LS_FAMILY_LABELS,
-  LS_TEMPERATURE_COLORS,
-  LS_TEMPERATURE_LABELS,
   type LSBubble,
   type LSCluster,
-  type LSClusterFamily,
-  type LSTemperature,
 } from '@/data/aiLifeSciences';
+import { LS_CPT_CODES } from '@/data/aiLifeSciencesCPT';
 import { squarifiedTreemap } from '@/lib/squarifiedTreemap';
 import { cn } from '@/lib/utils';
 
+// Metrics aggregated from 218 verified LS_BUBBLES.
+// Revenue has its own dedicated tab (RevenueView).
+// Regulatory has its own dedicated tab (RegulatoryView).
 type SignalKey =
-  | 'revenue_usd_m'
-  | 'vc_disclosed_usd_m'
-  | 'ma_value_usd_m'
-  | 'fda_clearances'
-  | 'pharma_deal_value_usd_m'
-  | 'event_count';
+  | 'capital_total'
+  | 'vc'
+  | 'ma'
+  | 'pharma_deals';
 
 interface SignalDef {
   key: SignalKey;
   label: string;
   short: string;
   unit: 'usd_m' | 'count';
-  caption: string;
+  // Predicate over a bubble — bubbles passing it contribute to this metric.
+  match: (b: LSBubble) => boolean;
+  // How a passing bubble adds to the cluster total.
+  weigh: (b: LSBubble) => number;
 }
 
 const SIGNALS: SignalDef[] = [
   {
-    key: 'revenue_usd_m',
-    label: 'Commercial scale (revenue 2025)',
-    short: 'Revenue',
+    key: 'capital_total',
+    label: 'Total disclosed capital',
+    short: 'Capital',
     unit: 'usd_m',
-    caption:
-      'Diagnostics dominates revenue because ~75% of FDA-cleared AI medical devices live there. Drug discovery has very little revenue today — its signal lives on the VC tab.',
+    match: (b) => (b.a ?? 0) > 0,
+    weigh: (b) => b.a ?? 0,
   },
   {
-    key: 'vc_disclosed_usd_m',
-    label: 'VC raised 2022–26',
-    short: 'VC raised',
+    key: 'vc',
+    label: 'VC funding rounds',
+    short: 'VC',
     unit: 'usd_m',
-    caption:
-      'Where VC is going right now. Drug discovery, hospital ops/scribes and clinical AI agents pull the largest disclosed checks; mature segments (diagnostics, surgical robotics) raise far less per year despite owning most of today’s revenue.',
+    match: (b) => b.et === 'Funding_Round' && (b.a ?? 0) > 0,
+    weigh: (b) => b.a ?? 0,
   },
   {
-    key: 'ma_value_usd_m',
+    key: 'ma',
     label: 'M&A deal value',
     short: 'M&A',
     unit: 'usd_m',
-    caption:
-      'Where strategic buyers are placing bets early. Recursion–Exscientia and BioNTech–InstaDeep dominate the AI drug-discovery row.',
+    match: (b) => b.et === 'Acquisition' && (b.a ?? 0) > 0,
+    weigh: (b) => b.a ?? 0,
   },
   {
-    key: 'fda_clearances',
-    label: 'FDA clearances (count)',
-    short: 'FDA',
-    unit: 'count',
-    caption:
-      'Regulatory throughput. Diagnostics & imaging is the established beachhead; drug discovery clearances are still a 2025–26 story (Isomorphic ISM8969).',
-  },
-  {
-    key: 'pharma_deal_value_usd_m',
+    key: 'pharma_deals',
     label: 'Pharma partnership value',
     short: 'Pharma deals',
     unit: 'usd_m',
-    caption:
-      'Headline upfront + milestone value disclosed in pharma partnerships. Concentrates almost entirely in AI drug discovery — every other cluster underprices its bio-touch.',
-  },
-  {
-    key: 'event_count',
-    label: 'Events tracked',
-    short: 'Activity',
-    unit: 'count',
-    caption:
-      'Volume of milestones tracked in the dataset (sanity baseline). Larger box = more activity, regardless of dollars.',
+    match: (b) => b.et === 'Pharma_Deal' && (b.a ?? 0) > 0,
+    weigh: (b) => b.a ?? 0,
   },
 ];
+
+// Capital/count-proportional color. sqrt scale; blue ramp for capital, neutral for count.
+function signalColor(raw: number, maxRaw: number, unit: 'usd_m' | 'count'): string {
+  if (raw === 0) return 'hsl(220 8% 22%)';
+  const t = Math.sqrt(raw / maxRaw);
+  if (unit === 'count') {
+    const s = Math.round(20 + t * 30);
+    const l = Math.round(40 - t * 14);
+    return `hsl(220 ${s}% ${l}%)`;
+  }
+  const s = Math.round(30 + t * 40);
+  const l = Math.round(42 - t * 16);
+  return `hsl(215 ${s}% ${l}%)`;
+}
 
 function formatValue(v: number, unit: 'usd_m' | 'count'): string {
   if (unit === 'count') return v.toLocaleString();
@@ -89,17 +88,14 @@ function formatValue(v: number, unit: 'usd_m' | 'count'): string {
   return v > 0 ? `<$1M` : '—';
 }
 
-function getSignal(c: LSCluster, key: SignalKey): number | null {
-  const v = c.signals[key];
-  return v === null ? null : v;
+// Compute a cluster's value for the given signal.
+function computeSignal(cluster: LSCluster, sig: SignalDef): number {
+  const inCluster = LS_BUBBLES.filter((b) => b.cluster === cluster.id);
+  return inCluster.filter(sig.match).reduce((s, b) => s + sig.weigh(b), 0);
 }
 
-const FAMILY_ORDER: LSClusterFamily[] = ['care_delivery', 'discovery_rd', 'therapeutic', 'ai_infra', 'meta'];
-const TEMPERATURE_ORDER: LSTemperature[] = ['red', 'orange', 'blue', 'neutral'];
-
 export function ClusterTreemapView() {
-  const [signal, setSignal] = useState<SignalKey>('event_count');
-  const [colorBy, setColorBy] = useState<'family' | 'temperature'>('family');
+  const [signal, setSignal] = useState<SignalKey>('capital_total');
   const [hovered, setHovered] = useState<string | null>(null);
   const [opened, setOpened] = useState<string | null>(null);
 
@@ -119,68 +115,43 @@ export function ClusterTreemapView() {
 
   const sigDef = SIGNALS.find((s) => s.key === signal)!;
 
-  // Top entries by signal-of-the-day per cluster
+  // Per-cluster computed value for the active signal.
+  const clusterValues = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const c of LS_CLUSTERS) m.set(c.id, computeSignal(c, sigDef));
+    return m;
+  }, [sigDef]);
+
+  // Top entries per cluster for the active signal (most-funded / most-active first).
   const topEntries = useMemo(() => {
     const map = new Map<string, string[]>();
     for (const c of LS_CLUSTERS) {
-      const entries = LS_BUBBLES.filter((b) => b.cluster === c.id);
-      let scored: { c: string; score: number }[];
-      if (signal === 'event_count') {
-        const counts = new Map<string, number>();
-        for (const e of entries) counts.set(e.c, (counts.get(e.c) ?? 0) + 1);
-        scored = [...counts.entries()].map(([c, n]) => ({ c, score: n }));
-      } else if (signal === 'fda_clearances') {
-        const counts = new Map<string, number>();
-        for (const e of entries) {
-          if (e.et === 'FDA_Clearance' || /FDA_cleared|FDAcleared/.test(e.desc || '')) {
-            counts.set(e.c, (counts.get(e.c) ?? 0) + 1);
-          }
-        }
-        scored = [...counts.entries()].map(([c, n]) => ({ c, score: n }));
-      } else {
-        const sums = new Map<string, number>();
-        for (const e of entries) {
-          const matches =
-            (signal === 'vc_disclosed_usd_m' && e.et === 'Funding_Round') ||
-            (signal === 'ma_value_usd_m' && e.et === 'Acquisition') ||
-            (signal === 'pharma_deal_value_usd_m' && e.et === 'Pharma_Deal') ||
-            signal === 'revenue_usd_m';
-          if (matches) sums.set(e.c, (sums.get(e.c) ?? 0) + (e.a ?? 0));
-        }
-        scored = [...sums.entries()].map(([c, n]) => ({ c, score: n }));
+      const inCluster = LS_BUBBLES.filter((b) => b.cluster === c.id);
+      const sums = new Map<string, number>();
+      for (const b of inCluster.filter(sigDef.match)) {
+        sums.set(b.c, (sums.get(b.c) ?? 0) + sigDef.weigh(b));
       }
-      const top = scored.sort((a, b) => b.score - a.score).slice(0, 5).map((x) => x.c);
-      map.set(c.id, top);
+      map.set(c.id, [...sums.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([n]) => n));
     }
     return map;
-  }, [signal]);
+  }, [signal, sigDef]);
 
-  const inFrame = useMemo(() => LS_CLUSTERS.filter((c) => !c.offFrame), []);
-  const offFrame = useMemo(() => LS_CLUSTERS.filter((c) => c.offFrame), []);
+  // Capital Flow shows ALL clusters in one treemap — off-frame distinction is
+  // Revenue-specific (where general-purpose AI lacks isolated health revenue).
+  // For capital, $11B into OpenAI is just as real as $1B into Xaira.
+  const inFrame = useMemo(() => LS_CLUSTERS, []);
 
   // Treemap weights with a hard minimum so every cluster stays clickable.
-  // Floors:
-  //   - null signal (e.g. revenue for pre-revenue clusters): 18% of largest
-  //   - zero signal (no data of this type tracked): 8% of largest
-  //   - positive signal: floor at 5% of largest so the smallest is still legible
+  // A cluster with zero signal for this metric still gets a small placeholder box.
   const sized = useMemo(() => {
-    const raw = inFrame.map((c) => ({ id: c.id, raw: getSignal(c, signal) }));
-    const largest = Math.max(1, ...raw.map((r) => r.raw ?? 0));
+    const raw = inFrame.map((c) => ({ id: c.id, raw: clusterValues.get(c.id) ?? 0 }));
+    const largest = Math.max(1, ...raw.map((r) => r.raw));
     return raw.map(({ id, raw }) => {
-      let value: number;
-      let isPlaceholder = false;
-      if (raw === null) {
-        value = largest * 0.18;
-        isPlaceholder = true;
-      } else if (raw === 0) {
-        value = largest * 0.08;
-        isPlaceholder = true;
-      } else {
-        value = Math.max(raw, largest * 0.05);
-      }
+      const isPlaceholder = raw === 0;
+      const value = isPlaceholder ? largest * 0.08 : Math.max(raw, largest * 0.05);
       return { id, value, raw, isPlaceholder };
     });
-  }, [signal, inFrame]);
+  }, [clusterValues, inFrame]);
 
   const layout = useMemo(
     () => squarifiedTreemap(sized.map((s) => ({ id: s.id, value: s.value })), size.w, size.h),
@@ -193,10 +164,9 @@ export function ClusterTreemapView() {
     return m;
   }, [sized]);
 
-  // Off-frame as a horizontal strip (proportional widths)
-  const offTotal = offFrame.reduce((s, c) => s + Math.max(getSignal(c, signal) ?? 0, 5), 0);
+  const maxRaw = useMemo(() =>
+    Math.max(1, ...sized.map((s) => s.raw)), [sized]);
 
-  // Esc closes the detail modal
   useEffect(() => {
     if (!opened) return;
     const onKey = (e: KeyboardEvent) => {
@@ -208,12 +178,9 @@ export function ClusterTreemapView() {
 
   return (
     <div>
-      {/* Signal toggle */}
-      <div className="flex flex-wrap gap-1 mb-2 items-center">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mr-2">
-          Size by:
-        </span>
-        {SIGNALS.map((s) => (
+      {/* Primary signal row */}
+      <div className="flex flex-wrap gap-1 mb-1 items-center">
+        {SIGNALS.filter((s) => !['vc', 'ma', 'pharma_deals'].includes(s.key)).map((s) => (
           <button
             key={s.key}
             onClick={() => setSignal(s.key)}
@@ -229,39 +196,29 @@ export function ClusterTreemapView() {
         ))}
       </div>
 
-      {/* Color-mode toggle: family vs. wave market-temperature (Kondrateva-Seregina 2026) */}
-      <div className="flex flex-wrap gap-1 mb-3 items-center">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mr-2">
-          Color by:
-        </span>
-        <button
-          onClick={() => setColorBy('family')}
-          className={cn(
-            'px-2 py-1 text-[11px] font-mono border transition-colors',
-            colorBy === 'family'
-              ? 'bg-foreground text-background border-foreground'
-              : 'border-border text-muted-foreground hover:text-foreground',
-          )}
-        >
-          Family
-        </button>
-        <button
-          onClick={() => setColorBy('temperature')}
-          className={cn(
-            'px-2 py-1 text-[11px] font-mono border transition-colors',
-            colorBy === 'temperature'
-              ? 'bg-foreground text-background border-foreground'
-              : 'border-border text-muted-foreground hover:text-foreground',
-          )}
-        >
-          Market temperature
-        </button>
-      </div>
+      {/* Capital breakdown — only visible when Capital is active */}
+      {['capital_total', 'vc', 'ma', 'pharma_deals'].includes(signal) && (
+        <div className="flex flex-wrap gap-1 mb-3 items-center pl-2">
+          <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/60 mr-1">
+            breakdown:
+          </span>
+          {SIGNALS.filter((s) => ['vc', 'ma', 'pharma_deals'].includes(s.key)).map((s) => (
+            <button
+              key={s.key}
+              onClick={() => setSignal(s.key)}
+              className={cn(
+                'px-1.5 py-0.5 text-[10px] font-mono border transition-colors',
+                signal === s.key
+                  ? 'bg-foreground text-background border-foreground'
+                  : 'border-border/50 text-muted-foreground/60 hover:text-muted-foreground hover:border-border',
+              )}
+            >
+              {s.short}
+            </button>
+          ))}
+        </div>
+      )}
 
-      {/* Caption */}
-      <p className="text-[11px] text-muted-foreground leading-relaxed mb-3 italic">
-        {sigDef.caption} <span className="not-italic">Click any cluster to read every entry inside.</span>
-      </p>
 
       {/* In-frame treemap */}
       <div
@@ -271,7 +228,7 @@ export function ClusterTreemapView() {
       >
         {layout.map((rect) => {
           const cluster = inFrame.find((c) => c.id === rect.id)!;
-          const raw = getSignal(cluster, signal);
+          const raw = clusterValues.get(cluster.id) ?? 0;
           const isPlaceholder = placeholderById.get(cluster.id) ?? false;
           const top = topEntries.get(cluster.id) ?? [];
           const isHovered = hovered === cluster.id;
@@ -289,7 +246,7 @@ export function ClusterTreemapView() {
                 top: `${(rect.y / size.h) * 100}%`,
                 width: `${(rect.w / size.w) * 100}%`,
                 height: `${(rect.h / size.h) * 100}%`,
-                background: colorBy === 'temperature' ? LS_TEMPERATURE_COLORS[cluster.temperature] : cluster.color,
+                background: signalColor(raw, maxRaw, sigDef.unit),
                 opacity: isPlaceholder ? 0.55 : 1,
                 outline: isHovered ? '2px solid hsl(var(--primary))' : '1px solid rgba(0,0,0,0.25)',
                 outlineOffset: isHovered ? '-2px' : '0',
@@ -305,7 +262,7 @@ export function ClusterTreemapView() {
                 </div>
                 {!tiny && (
                   <div className="text-[10px] opacity-80 font-mono mt-0.5">
-                    {isPlaceholder ? 'no signal in this dataset' : formatValue(raw!, sigDef.unit)}
+                    {isPlaceholder ? 'no signal' : formatValue(raw, sigDef.unit)}
                   </div>
                 )}
                 {!compact && top.length > 0 && (
@@ -315,88 +272,41 @@ export function ClusterTreemapView() {
                     ))}
                   </ul>
                 )}
-                {!compact && cluster.highlights.length > 0 && (
-                  <ul className="text-[10px] mt-2 space-y-0.5 leading-tight opacity-70 border-t border-white/20 pt-1.5 mt-auto">
-                    {cluster.highlights.slice(0, 3).map((h, i) => (
-                      <li key={i} className="truncate">· {h}</li>
-                    ))}
-                  </ul>
-                )}
               </div>
             </button>
           );
         })}
       </div>
 
-      {/* Off-frame strip */}
-      <div className="mt-4">
-        <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-          Off-frame · capital not captured in the main count above
-        </div>
-        <div className="flex gap-2 border border-dashed border-border p-2">
-          {offFrame.map((c) => {
-            const raw = getSignal(c, signal);
-            const w = offTotal > 0 ? Math.max(12, (Math.max(raw ?? 0, 5) / offTotal) * 100) : 25;
-            const isPlaceholder = raw === null || raw === 0;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setOpened(c.id)}
-                className="text-white text-left p-2 overflow-hidden hover:ring-2 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary"
-                style={{
-                  width: `${w}%`,
-                  background: colorBy === 'temperature' ? LS_TEMPERATURE_COLORS[c.temperature] : c.color,
-                  opacity: isPlaceholder ? 0.55 : 1,
-                  transition: 'all 600ms cubic-bezier(.4,0,.2,1)',
-                }}
-              >
-                <div className="text-[11px] font-semibold leading-tight">{c.label}</div>
-                <div className="text-[10px] opacity-80 font-mono mt-0.5">
-                  {isPlaceholder ? '—' : formatValue(raw!, sigDef.unit)}
-                </div>
-                <ul className="text-[10px] mt-1 space-y-0.5 leading-tight opacity-90">
-                  {c.highlights.slice(0, 2).map((h, i) => (
-                    <li key={i} className="truncate">· {h}</li>
-                  ))}
-                </ul>
-              </button>
-            );
-          })}
-        </div>
+      {/* Signal scale legend */}
+      <div className="flex items-center gap-2 mt-4 text-[10px] font-mono text-muted-foreground">
+        <span>lower</span>
+        {[0.05, 0.2, 0.4, 0.65, 1].map((t) => (
+          <span
+            key={t}
+            className="inline-block w-5 h-3"
+            style={{
+              background: sigDef.unit === 'count'
+                ? `hsl(220 ${Math.round(20 + t * 30)}% ${Math.round(40 - t * 14)}%)`
+                : `hsl(215 ${Math.round(30 + t * 40)}% ${Math.round(42 - t * 16)}%)`,
+            }}
+          />
+        ))}
+        <span>higher</span>
+        <span className="ml-3 inline-flex items-center gap-1.5">
+          <span className="inline-block w-5 h-3" style={{ background: 'hsl(220 8% 22%)' }} />
+          no data
+        </span>
       </div>
 
-      {/* Legend — family OR temperature, depending on toggle */}
-      {colorBy === 'family' ? (
-        <div className="flex flex-wrap gap-3 mt-4 text-[10px] font-mono text-muted-foreground">
-          {FAMILY_ORDER.map((f) => {
-            const cluster = LS_CLUSTERS.find((c) => c.family === f);
-            if (!cluster) return null;
-            return (
-              <span key={f} className="inline-flex items-center gap-1.5">
-                <span aria-hidden="true" className="inline-block w-3 h-3" style={{ background: cluster.color }} />
-                {LS_FAMILY_LABELS[f]}
-              </span>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="flex flex-wrap gap-3 mt-4 text-[10px] font-mono text-muted-foreground">
-          {TEMPERATURE_ORDER.map((t) => (
-            <span key={t} className="inline-flex items-center gap-1.5">
-              <span
-                aria-hidden="true"
-                className="inline-block w-3 h-3 border border-border"
-                style={{ background: LS_TEMPERATURE_COLORS[t] }}
-              />
-              {LS_TEMPERATURE_LABELS[t]}
-            </span>
-          ))}
-        </div>
+      {opened && (
+        <ClusterDetail
+          clusterId={opened}
+          signal={signal}
+          value={clusterValues.get(opened) ?? 0}
+          onClose={() => setOpened(null)}
+        />
       )}
-
-      {/* Cluster detail modal */}
-      {opened && <ClusterDetail clusterId={opened} signal={signal} onClose={() => setOpened(null)} />}
     </div>
   );
 }
@@ -404,40 +314,27 @@ export function ClusterTreemapView() {
 function ClusterDetail({
   clusterId,
   signal,
+  value,
   onClose,
 }: {
   clusterId: string;
   signal: SignalKey;
+  value: number;
   onClose: () => void;
 }) {
   const cluster = LS_CLUSTERS.find((c) => c.id === clusterId);
   const sigDef = SIGNALS.find((s) => s.key === signal)!;
   if (!cluster) return null;
 
-  // Sort entries by signal-relevant value (most informative first), then date desc.
+  // Sort by relevance to active signal first (highest $ / matching events), then date desc.
   const entries = [...LS_BUBBLES.filter((b) => b.cluster === clusterId)].sort((a, b) => {
-    const score = (e: LSBubble) => {
-      if (signal === 'vc_disclosed_usd_m' && e.et === 'Funding_Round') return e.a ?? 0;
-      if (signal === 'ma_value_usd_m' && e.et === 'Acquisition') return e.a ?? 0;
-      if (signal === 'pharma_deal_value_usd_m' && e.et === 'Pharma_Deal') return e.a ?? 0;
-      if (signal === 'fda_clearances' && e.et === 'FDA_Clearance') return 1;
-      return 0;
-    };
-    const sa = score(a);
-    const sb = score(b);
-    if (sa !== sb) return sb - sa;
+    const score = (e: LSBubble) => (sigDef.match(e) ? sigDef.weigh(e) : 0);
+    const diff = score(b) - score(a);
+    if (diff !== 0) return diff;
     return (b.d ?? 0) - (a.d ?? 0);
   });
 
-  const sigVal = cluster.signals[signal];
-  const formatted =
-    sigVal === null
-      ? 'no signal'
-      : sigDef.unit === 'count'
-      ? sigVal.toLocaleString()
-      : sigVal >= 1000
-      ? `$${(sigVal / 1000).toFixed(1)}B`
-      : `$${sigVal.toFixed(0)}M`;
+  const players = new Set(entries.map((e) => e.c)).size;
 
   return (
     <div
@@ -448,18 +345,17 @@ function ClusterDetail({
         className="bg-background border border-border max-w-3xl w-full max-h-[85vh] overflow-hidden flex flex-col shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-start gap-3 p-4 border-b border-border" style={{ background: cluster.color }}>
+        <div className="flex items-start gap-3 p-4 border-b border-border" style={{ background: signalColor(value, Math.max(1, value), sigDef.unit) }}>
           <div className="flex-1 text-white">
             <div className="text-[10px] font-mono uppercase tracking-widest opacity-80">
               {LS_FAMILY_LABELS[cluster.family]}
               {cluster.offFrame && ' · off-frame'}
             </div>
-            <h3 className="text-lg font-semibold leading-tight mt-0.5">{cluster.label}</h3>
+            <h3 className="heading-md leading-tight mt-0.5">{cluster.label}</h3>
             <div className="text-[11px] opacity-90 mt-1 font-mono">
-              {sigDef.short}: <span className="font-bold">{formatted}</span>
+              {sigDef.short}: <span className="font-bold">{formatValue(value, sigDef.unit)}</span>
               <span className="mx-2 opacity-60">·</span>
-              {entries.length} {entries.length === 1 ? 'entry' : 'entries'} · {cluster.companyCount} companies
+              {entries.length} {entries.length === 1 ? 'entry' : 'entries'} · {players} {players === 1 ? 'company' : 'companies'}
             </div>
           </div>
           <button
@@ -472,21 +368,36 @@ function ClusterDetail({
           </button>
         </div>
 
-        {/* Highlights */}
-        {cluster.highlights.length > 0 && (
-          <div className="px-4 pt-3 pb-2 border-b border-border bg-muted/30">
-            <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
-              Editor’s notes
+        {/* CPT / insurance codes for this cluster */}
+        {(() => {
+          const cpts = LS_CPT_CODES.filter((c) => c.cluster === clusterId && !c.deleted);
+          if (cpts.length === 0) return null;
+          return (
+            <div className="border-b border-border px-4 py-3 bg-muted/20">
+              <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+                Insurance billing codes (CPT · CMS 2026)
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {cpts.map((c) => (
+                  <a
+                    key={c.code}
+                    href={c.src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex flex-col border border-border bg-background px-2 py-1 hover:border-primary transition-colors"
+                  >
+                    <span className="text-[11px] font-mono font-bold text-foreground">{c.code}</span>
+                    <span className="text-[10px] text-muted-foreground leading-tight max-w-[160px] truncate">{c.short}</span>
+                    {c.rateUsd && (
+                      <span className="text-[10px] font-mono text-primary">${c.rateUsd.toLocaleString()}</span>
+                    )}
+                  </a>
+                ))}
+              </div>
             </div>
-            <ul className="text-[12px] text-foreground space-y-0.5 leading-snug">
-              {cluster.highlights.map((h, i) => (
-                <li key={i}>· {h}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+          );
+        })()}
 
-        {/* Entry list */}
         <div className="overflow-y-auto flex-1 divide-y divide-border">
           {entries.length === 0 ? (
             <div className="p-6 text-center text-sm text-muted-foreground">
@@ -522,18 +433,6 @@ function ClusterDetail({
                     {amt && (
                       <span className="text-[10px] px-1.5 py-0.5 border border-primary/30 text-primary">
                         {amt}
-                      </span>
-                    )}
-                    {e.reliability && (
-                      <span
-                        className={cn(
-                          'text-[10px] px-1.5 py-0.5 border',
-                          e.reliability >= 4
-                            ? 'border-destructive/40 text-destructive'
-                            : 'border-border text-muted-foreground',
-                        )}
-                      >
-                        risk {e.reliability}/5
                       </span>
                     )}
                     {e.geo && (

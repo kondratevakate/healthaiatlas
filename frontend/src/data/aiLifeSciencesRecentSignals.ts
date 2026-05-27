@@ -57,6 +57,21 @@ export const RS_ACTION_LABELS: Record<RSAction, string> = {
 
 export const RECENT_SIGNALS: RecentSignal[] = [
   {
+    id: 'buck-thrive-arpa-h',
+    date: '2026-02-26',
+    actor: 'ARPA-H / Stanford / Buck Institute',
+    target: 'THRIVE (Intrinsic Capacity Score)',
+    action: 'investment',
+    dealSizeUsdM: 34.5,
+    dealSizeLabel: '$34.5M ARPA-H grant · FDA-grade aging biomarker',
+    geo: 'USA',
+    themeCluster: 'longevity_aging',
+    qualitySignal: 'First FDA-grade "Intrinsic Capacity Score" (PROSPR IC) predicting 20-year health outcomes — mortality, multimorbidity, hospitalization. Integrates multi-omics + wearables (Whoop) + functional data. Goal: at-home kit under $100. Partners: Stanford (Snyder lab), Buck Institute, Methuselah Foundation, YMCA, OpenCures. Could compress aging trial timelines from decades to years via surrogate endpoints.',
+    src: 'https://www.buckinstitute.org/news/thrive-transforming-health-reclaiming-intrinsic-vitality-for-everyone/',
+    lens: ['public-research'],
+    isBio: true,
+  },
+  {
     id: 'alp-bio-preseed',
     date: '2026-04-30',
     actor: 'ALP Bio',

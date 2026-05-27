@@ -99,7 +99,7 @@ const Directory = () => {
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group border border-border bg-background px-3 py-1.5 hover:border-foreground/40"
           >
             <span className="text-base transition-transform group-hover:-translate-x-0.5">←</span>
-            <span className="font-medium">Back to Directory</span>
+            <span className="font-medium">{t('action.back')} {t('nav.domains')}</span>
           </button>
         )}
 
@@ -141,7 +141,7 @@ const Directory = () => {
                 Market scale
               </p>
               <div className="h-0.5 w-12 bg-primary mb-4" />
-              <h2 className="text-2xl md:text-3xl font-semibold mb-3">
+              <h2 className="heading-xl mb-3">
                 Healthcare AI market comparison
               </h2>
               <p className="text-muted-foreground">
@@ -165,7 +165,7 @@ const Directory = () => {
                 </p>
               </div>
               <div className="h-0.5 w-12 bg-primary mb-4" />
-              <h2 className="text-2xl md:text-3xl font-semibold mb-3">
+              <h2 className="heading-xl mb-3">
                 Healthcare AI as a system, not a list
               </h2>
               <p className="text-muted-foreground">

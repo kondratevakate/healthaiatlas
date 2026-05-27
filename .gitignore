@@ -49,6 +49,7 @@ pnpm-debug.log*
 .claude/settings.local.json
 .claude/agents/
 .claude/risk-reports/
+.claude/scheduled_tasks.lock
 .claude/worktrees/
 .claude/launch.json
 

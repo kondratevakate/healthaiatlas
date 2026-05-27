@@ -51,8 +51,8 @@ export function OpenCallCard({ entry, className }: OpenCallCardProps) {
   return (
     <article
       className={cn(
-        'group relative flex flex-col border border-border bg-card p-5 transition-all',
-        'hover:border-foreground hover:-translate-y-0.5 hover:[box-shadow:4px_4px_0_0_hsl(var(--foreground))]',
+        'group relative flex flex-col border border-border bg-card rounded-lg p-4 transition-colors',
+        'hover:border-foreground/20',
         className,
       )}
     >

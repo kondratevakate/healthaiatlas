@@ -34,7 +34,7 @@ import {
   LinkIcon,
   Sparkles,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LastUpdated } from '@/components/shared/LastUpdated';
@@ -129,6 +129,50 @@ const VISIBLE_OPEN_CALL_CATEGORIES: OpenCallCategory[] = [
 
 const MS_PER_DAY = 86_400_000;
 
+function useCountUp(target: number, duration = 600) {
+  const [value, setValue] = useState(0);
+  const raf = useRef<number>(0);
+  useEffect(() => {
+    setValue(0);
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      setValue(Math.round((1 - Math.pow(1 - t, 3)) * target));
+      if (t < 1) raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf.current);
+  }, [target, duration]);
+  return value;
+}
+
+function OpenCallsStatBar({ activeCount, total }: { activeCount: number; total: number }) {
+  const animActive = useCountUp(activeCount);
+  const animTotal  = useCountUp(total);
+  return (
+    <div className="grid grid-cols-2 gap-3 mb-6 max-w-xs">
+      {[
+        { value: animActive, label: 'Open calls' },
+        { value: animTotal,  label: 'Total tracked' },
+      ].map(({ value, label }) => (
+        <div key={label} className="bg-card border border-border rounded-lg p-4 text-center">
+          <div className="text-2xl font-bold text-foreground tabular-nums">{value}</div>
+          <div className="text-xs text-muted-foreground mt-0.5">{label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AnimatedCallsCount({ count }: { count: number }) {
+  const animated = useCountUp(count);
+  return (
+    <span className="ml-auto text-[10px] text-muted-foreground font-mono self-center">
+      {animated} {count === 1 ? 'call' : 'calls'}
+    </span>
+  );
+}
+
 function daysUntilUtc(deadline: Date, now: Date): number {
   const dl = Date.UTC(deadline.getUTCFullYear(), deadline.getUTCMonth(), deadline.getUTCDate());
   const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
@@ -199,6 +243,7 @@ export default function Discovery() {
   const [openCallsRegion, setOpenCallsRegion] = useState<GrantRegion | 'all'>('all');
   const [openCallsCategory, setOpenCallsCategory] = useState<OpenCallCategory | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<'' | 'closing' | 'coming'>('');
+  const [visibleOpenCalls, setVisibleOpenCalls] = useState(12);
   // Archive = entries that are no longer actionable today (past deadline or
   // explicitly closed). Hidden by default so the page is action-oriented;
   // toggle reveals them as historical reference. See isArchivedNow().
@@ -253,10 +298,10 @@ export default function Discovery() {
               what the visitor actually navigated to (Open Calls vs Events),
               not the internal route name "Discovery". */}
           <PageHeader
-            title={section === 'opencalls' ? 'Open Calls' : 'Events'}
+            title={section === 'opencalls' ? 'Open Calls 2026' : 'Events'}
             subtitle={
               section === 'opencalls'
-                ? 'Grants, fellowships, accelerators, prizes — sorted by deadline. Every entry links to the issuer\'s primary page.'
+                ? 'Grants, fellowships, accelerators, prizes. Sorted by deadline.'
                 : 'Conferences, launches, leader spotlights, and verification prompts across the healthcare AI ecosystem.'
             }
             className="mb-6"
@@ -265,7 +310,7 @@ export default function Discovery() {
           {/* Newsfeed role filter */}
           {section === 'newsfeed' && (
             <div className="mb-8">
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-2">
+              <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider mb-2">
                 Show me content for
               </p>
               <div className="flex flex-wrap gap-2">
@@ -278,7 +323,7 @@ export default function Discovery() {
                       'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
                       roleFilter === opt.value
                         ? 'bg-foreground text-background border-foreground'
-                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                        : 'bg-card text-muted-foreground border-border hover:border-foreground/20',
                     )}
                   >
                     {opt.label}
@@ -288,46 +333,29 @@ export default function Discovery() {
             </div>
           )}
 
-          {/* Open Calls filter row — region + category + closing-soon toggle */}
+          {/* Open Calls stat bar */}
+          {section === 'opencalls' && (
+            <OpenCallsStatBar activeCount={openCallEntries.filter(e => !isArchivedNow(e.countdown, new Date())).length} total={openCallEntries.length} />
+          )}
+
+          {/* Open Calls filter row — category + region + closing-soon toggle */}
           {section === 'opencalls' && (
             <div className="mb-8 space-y-4">
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-2">
-                  Region
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {(['all', ...OPEN_CALL_REGIONS] as const).map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => setOpenCallsRegion(r as GrantRegion | 'all')}
-                      className={cn(
-                        'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
-                        openCallsRegion === r
-                          ? 'bg-foreground text-background border-foreground'
-                          : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
-                      )}
-                    >
-                      {r === 'all' ? 'All regions' : r}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-2">
+                <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider mb-2">
                   Category
                 </p>
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5">
                   {(['all', ...VISIBLE_OPEN_CALL_CATEGORIES] as const).map((c) => (
                     <button
                       key={c}
                       type="button"
-                      onClick={() => setOpenCallsCategory(c as OpenCallCategory | 'all')}
+                      onClick={() => { setOpenCallsCategory(c as OpenCallCategory | 'all'); setVisibleOpenCalls(12); }}
                       className={cn(
                         'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
                         openCallsCategory === c
                           ? 'bg-foreground text-background border-foreground'
-                          : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                          : 'bg-card text-muted-foreground border-border hover:border-foreground/20',
                       )}
                     >
                       {c === 'all' ? 'All categories' : categoryLabel[c as OpenCallCategory]}
@@ -336,24 +364,24 @@ export default function Discovery() {
                   <div className="h-4 w-px bg-border mx-1" />
                   <button
                     type="button"
-                    onClick={() => setStatusFilter((v) => (v === 'closing' ? '' : 'closing'))}
+                    onClick={() => { setStatusFilter((v) => (v === 'closing' ? '' : 'closing')); setVisibleOpenCalls(12); }}
                     className={cn(
                       'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
                       statusFilter === 'closing'
                         ? 'bg-foreground text-background border-foreground'
-                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                        : 'bg-card text-muted-foreground border-border hover:border-foreground/20',
                     )}
                   >
                     Closing soon (≤{CLOSING_WINDOW_DAYS}d)
                   </button>
                   <button
                     type="button"
-                    onClick={() => setStatusFilter((v) => (v === 'coming' ? '' : 'coming'))}
+                    onClick={() => { setStatusFilter((v) => (v === 'coming' ? '' : 'coming')); setVisibleOpenCalls(12); }}
                     className={cn(
                       'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
                       statusFilter === 'coming'
                         ? 'bg-foreground text-background border-foreground'
-                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                        : 'bg-card text-muted-foreground border-border hover:border-foreground/20',
                     )}
                     title="Annual cycles you can prepare for"
                   >
@@ -362,22 +390,41 @@ export default function Discovery() {
                   {archivedCount > 0 && (
                     <button
                       type="button"
-                      onClick={() => setShowArchive((v) => !v)}
+                      onClick={() => { setShowArchive((v) => !v); setVisibleOpenCalls(12); }}
                       className={cn(
                         'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
                         showArchive
                           ? 'bg-foreground text-background border-foreground'
-                          : 'border-dashed border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground',
+                          : 'bg-card text-muted-foreground border-dashed border-border hover:border-foreground/20',
                       )}
                       title="Closed programs and past 2026 deadlines — kept as historical reference"
                     >
                       {showArchive ? 'Hide archive' : `Show archive (${archivedCount})`}
                     </button>
                   )}
-                  <span className="ml-auto text-[10px] text-muted-foreground font-mono self-center">
-                    {filteredOpenCalls.length}{' '}
-                    {filteredOpenCalls.length === 1 ? 'call' : 'calls'}
-                  </span>
+                  <AnimatedCallsCount count={filteredOpenCalls.length} />
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider mb-2">
+                  Region
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {(['all', ...OPEN_CALL_REGIONS] as const).map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => { setOpenCallsRegion(r as GrantRegion | 'all'); setVisibleOpenCalls(12); }}
+                      className={cn(
+                        'inline-flex items-center px-3 py-1.5 text-xs font-mono border transition-colors',
+                        openCallsRegion === r
+                          ? 'bg-foreground text-background border-foreground'
+                          : 'bg-card text-muted-foreground border-border hover:border-foreground/20',
+                      )}
+                    >
+                      {r === 'all' ? 'All regions' : r}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -691,11 +738,24 @@ export default function Discovery() {
                 {section === 'opencalls' && (
                   <>
                     {filteredOpenCalls.length > 0 ? (
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {filteredOpenCalls.map((entry) => (
-                          <OpenCallCard key={entry.id} entry={entry} />
-                        ))}
-                      </div>
+                      <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                          {filteredOpenCalls.slice(0, visibleOpenCalls).map((entry) => (
+                            <OpenCallCard key={entry.id} entry={entry} />
+                          ))}
+                        </div>
+                        {visibleOpenCalls < filteredOpenCalls.length && (
+                          <div className="mt-6 flex justify-center">
+                            <button
+                              type="button"
+                              onClick={() => setVisibleOpenCalls(v => v + 12)}
+                              className="text-sm px-5 py-2 border border-border font-mono text-muted-foreground hover:border-foreground/40 hover:text-foreground transition-colors"
+                            >
+                              Load more · {filteredOpenCalls.length - visibleOpenCalls} remaining
+                            </button>
+                          </div>
+                        )}
+                      </>
                     ) : (
                       <div className="text-center py-16 border border-dashed border-border">
                         <p className="text-muted-foreground mb-2">

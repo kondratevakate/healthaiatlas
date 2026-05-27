@@ -140,3 +140,83 @@ def write_sources(path: Path, items: Iterable[Source]) -> int:
 
 def write_quarantine(path: Path, items: Iterable[QuarantineRow]) -> int:
     return write_csv(path, (as_row(q) for q in items), QUARANTINE_COLS)
+
+
+# ─── CSV readers ─────────────────────────────────────────────────────────────
+# Used by build.py to ingest pre-generated per-domain CSVs from TS extractors.
+# Writers are the source of truth for column order; readers must tolerate
+# missing optional columns (extrasaction-equivalent: .get with defaults).
+
+def _read_csv(path: Path) -> list[dict]:
+    with path.open(newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def read_entities(path: Path) -> list[Entity]:
+    out = []
+    for r in _read_csv(path):
+        fy = r.get("founded_year", "")
+        out.append(Entity(
+            entity_id=r["entity_id"],
+            name=r["name"],
+            type=r.get("type", "other"),
+            country=r.get("country", ""),
+            city=r.get("city", ""),
+            founded_year=int(fy) if fy else None,
+            website=r.get("website", ""),
+            domain_tags=r.get("domain_tags", ""),
+            aliases=r.get("aliases", ""),
+            notes=r.get("notes", ""),
+        ))
+    return out
+
+
+def read_claims(path: Path) -> list[Claim]:
+    out = []
+    for r in _read_csv(path):
+        out.append(Claim(
+            claim_id=r["claim_id"],
+            entity_id=r["entity_id"],
+            predicate=r["predicate"],
+            value=r.get("value", ""),
+            value_unit=r.get("value_unit", ""),
+            period=r.get("period", ""),
+            jurisdiction=r.get("jurisdiction", ""),
+            confidence=r.get("confidence", "medium"),
+            source_ids=r.get("source_ids", ""),
+            domain_tags=r.get("domain_tags", ""),
+            tags=r.get("tags", ""),
+            notes=r.get("notes", ""),
+            extracted_from=r.get("extracted_from", ""),
+            extracted_at=r.get("extracted_at", ""),
+        ))
+    return out
+
+
+def read_sources(path: Path) -> list[Source]:
+    out = []
+    for r in _read_csv(path):
+        out.append(Source(
+            source_id=r["source_id"],
+            url=r["url"],
+            url_raw=r.get("url_raw", ""),
+            publisher=r.get("publisher", ""),
+            title=r.get("title", ""),
+            published_at=r.get("published_at", ""),
+            retrieved_at=r.get("retrieved_at", ""),
+            access=r.get("access", "public"),
+            source_type=r.get("source_type", "other"),
+            excerpt=r.get("excerpt", ""),
+        ))
+    return out
+
+
+def read_quarantine(path: Path) -> list[QuarantineRow]:
+    out = []
+    for r in _read_csv(path):
+        out.append(QuarantineRow(
+            reason=r.get("reason", ""),
+            extracted_from=r.get("extracted_from", ""),
+            raw=r.get("raw", ""),
+        ))
+    return out

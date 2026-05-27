@@ -9,6 +9,7 @@ const Terms = () => {
     <Layout>
       <div className="container py-12 md:py-16 max-w-3xl">
         <PageHeader
+          eyebrow="Legal"
           title="Terms of Service"
           subtitle={<span className="text-sm">Last updated: {LAST_UPDATED}</span>}
         />

@@ -22,20 +22,145 @@ const GitHubMark = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+// Orbit diagram — same visual language as HeroDiagram on the Home page:
+// rotating partial arcs + lightweight node dots. No framer-motion; pure CSS.
+// Simpler than HeroDiagram (no labels) — a "zoomed-out atlas" feel.
+
+const ABOUT_CX = 50;
+const ABOUT_CY = 50;
+
+const aboutRings = [
+  { r: 13, width: 4.5, opacity: 0.22, arc: 300, speed: 58,  dir:  1 },
+  { r: 21, width: 3.5, opacity: 0.15, arc: 250, speed: 72,  dir: -1 },
+  { r: 29, width: 2.5, opacity: 0.10, arc: 280, speed: 48,  dir:  1 },
+  { r: 37, width: 2,   opacity: 0.06, arc: 210, speed: 88,  dir: -1 },
+];
+
+// Small entity nodes — circles only, no labels. 5 players in the orbit.
+const aboutNodes = [
+  { ringIdx: 0, angle:   40 },
+  { ringIdx: 1, angle:  -55 },
+  { ringIdx: 2, angle:  125 },
+  { ringIdx: 3, angle:  205 },
+  { ringIdx: 1, angle:  195 },
+];
+
+function aboutArcPath(cx: number, cy: number, r: number, startDeg: number, endDeg: number) {
+  const toRad = (d: number) => ((d - 90) * Math.PI) / 180;
+  const x1 = cx + r * Math.cos(toRad(startDeg));
+  const y1 = cy + r * Math.sin(toRad(startDeg));
+  const x2 = cx + r * Math.cos(toRad(endDeg));
+  const y2 = cy + r * Math.sin(toRad(endDeg));
+  return `M ${x1} ${y1} A ${r} ${r} 0 ${endDeg - startDeg > 180 ? 1 : 0} 1 ${x2} ${y2}`;
+}
+
+function aboutNodePos(node: { ringIdx: number; angle: number }) {
+  const r = aboutRings[node.ringIdx].r;
+  const rad = ((node.angle - 90) * Math.PI) / 180;
+  return { x: ABOUT_CX + r * Math.cos(rad), y: ABOUT_CY + r * Math.sin(rad) };
+}
+
+function AboutDiagram() {
+  const css = aboutRings.map((ring, i) => `
+    @keyframes about-orbit-${i} {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(${ring.dir * 360}deg); }
+    }
+    .about-orbit-${i} {
+      animation: about-orbit-${i} ${ring.speed}s linear infinite;
+      transform-origin: ${ABOUT_CX}px ${ABOUT_CY}px;
+    }
+  `).join('');
+
+  return (
+    <div className="w-full h-full">
+      <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" aria-hidden="true">
+        <defs><style>{css}</style></defs>
+
+        {/* Rotating partial arc rings */}
+        {aboutRings.map((ring, i) => (
+          <path
+            key={i}
+            className={`about-orbit-${i}`}
+            d={aboutArcPath(ABOUT_CX, ABOUT_CY, ring.r, 0, ring.arc)}
+            fill="none"
+            stroke={`hsl(var(--foreground) / ${ring.opacity})`}
+            strokeWidth={ring.width}
+            strokeLinecap="round"
+          />
+        ))}
+
+        {/* Faint connection lines between adjacent nodes */}
+        {[[0,1],[1,2],[2,3],[3,4],[0,4]].map(([a, b], i) => {
+          const pa = aboutNodePos(aboutNodes[a]);
+          const pb = aboutNodePos(aboutNodes[b]);
+          return (
+            <line key={i}
+              x1={pa.x} y1={pa.y} x2={pb.x} y2={pb.y}
+              stroke={`hsl(var(--foreground) / 0.06)`}
+              strokeWidth="0.25"
+            />
+          );
+        })}
+
+        {/* Centre hub */}
+        <circle cx={ABOUT_CX} cy={ABOUT_CY} r={5.5}
+          fill={`hsl(var(--foreground) / 0.08)`}
+          stroke={`hsl(var(--foreground) / 0.28)`}
+          strokeWidth="0.5"
+        />
+
+        {/* Entity nodes — unlabeled dots */}
+        {aboutNodes.map((node, i) => {
+          const pos = aboutNodePos(node);
+          return (
+            <circle key={i}
+              cx={pos.x} cy={pos.y} r={3.5}
+              fill={`hsl(var(--background))`}
+              stroke={`hsl(var(--foreground) / 0.25)`}
+              strokeWidth="0.4"
+            />
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
+
 const About = () => {
   const { t } = useLanguage();
 
   return (
     <Layout>
-      <div className="container py-12 md:py-16">
-        <PageHeader
-          title={t('nav.about')}
-          subtitle="Research and code by Kate Kondratieva — an independent mapping of the global healthcare AI ecosystem, built on the shoulders of the Thinking Systems tradition at IIT Institute of Design."
-        />
+      {/* Hero — diagram bleeds off the right edge, no divider line */}
+      <section className="overflow-x-clip">
+        <div className="container py-12 md:py-16">
+          <div className="relative flex items-start">
 
+            {/* Orbit diagram — 2× larger, centre pushed well past the right edge.
+                Only the outer arc edges peek in — a sliver of the outermost rings. */}
+            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-[900px] pointer-events-none hidden lg:block w-[1280px] h-[1280px]">
+              <AboutDiagram />
+            </div>
+
+            {/* Text — z-10, narrow column */}
+            <div className="relative z-10 max-w-md">
+              <PageHeader
+                eyebrow="HealthAI Atlas"
+                title={t('nav.about')}
+                subtitle="Research and code by Kate Kondrateva — an independent mapping of the global healthcare AI ecosystem."
+                className="mb-0"
+              />
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <div className="container pt-2 pb-12 md:pb-16">
         {/* 1. Contacts first */}
-        <section id="contact" className="mb-16 max-w-2xl">
-          <h2 className="heading-lg mb-6">{t('about.contact')}</h2>
+        <section id="contact" className="mb-8 max-w-2xl">
+          <h2 className="heading-lg mb-4">{t('about.contact')}</h2>
           <Card className="border-border/50 bg-card/50">
             <CardContent className="pt-6 space-y-5">
               <div className="flex flex-wrap gap-3">
@@ -91,14 +216,15 @@ const About = () => {
             link inside About so the primary nav stays directory-focused
             and Atlas Notes lives next to the authorship context that
             explains why it exists. */}
-        <section className="mb-16 max-w-3xl">
+        <section className="mb-8 max-w-2xl">
           <h2 className="heading-lg mb-3">Atlas Notes — the newsletter</h2>
           <p className="text-body text-muted-foreground mb-5">
             Atlas Notes is the editorial companion to this directory — long-form analysis of where
             healthcare AI is moving, what the methods can and cannot do clinically, and the read-
-            across between regulatory shifts and founder strategy. Author voice (Kate Kondratieva),
+            across between regulatory shifts and founder strategy. Author voice (Kate Kondrateva),
             with named takes you can argue with. Published on LinkedIn for distribution; cited back
             into Atlas entries where the analysis becomes structured data.
+
           </p>
           <a
             href={ATLAS_NOTES_SUBSCRIBE_URL}
@@ -113,8 +239,8 @@ const About = () => {
         </section>
 
         {/* 4. Mission — canonical About copy (independent project statement) */}
-        <section className="max-w-3xl space-y-5 text-body text-foreground/90">
-          <h2 className="heading-lg mb-6">{t('about.mission')}</h2>
+        <section className="mb-8 max-w-2xl space-y-4 text-body text-foreground/90">
+          <h2 className="heading-lg mb-4">{t('about.mission')}</h2>
 
           <p>
             HealthAI Atlas is an independent project founded by Dr. Ekaterina Kondrateva to provide open,
@@ -153,13 +279,53 @@ const About = () => {
           </p>
         </section>
 
+        {/* Friends of the project */}
+        <section className="mb-8 max-w-2xl">
+          <h2 className="heading-lg mb-3">Friends of the project</h2>
+          <p className="text-sm text-muted-foreground mb-5">
+            Independent projects doing complementary work in the AI ecosystem.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <a
+              href="https://aisafety.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex-1 border border-border p-4 hover:border-foreground/40 transition-colors"
+            >
+              <div className="flex items-start justify-between gap-2 mb-1.5">
+                <span className="font-medium text-sm">AISafety.com</span>
+                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors flex-shrink-0 mt-0.5" />
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                The AI safety ecosystem directory — landscape of labs, researchers, and initiatives in the field.
+              </p>
+              <span className="font-mono text-[9px] text-muted-foreground/40 mt-2 block">aisafety.com</span>
+            </a>
+            <a
+              href="https://www.rethinkingsystems.design/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex-1 border border-border p-4 hover:border-foreground/40 transition-colors"
+            >
+              <div className="flex items-start justify-between gap-2 mb-1.5">
+                <span className="font-medium text-sm">Rethinking Systems</span>
+                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors flex-shrink-0 mt-0.5" />
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Design research at the intersection of systems thinking, technology, and organisations.
+              </p>
+              <span className="font-mono text-[9px] text-muted-foreground/40 mt-2 block">rethinkingsystems.design</span>
+            </a>
+          </div>
+        </section>
+
         {/* Support — sits at the bottom rather than the top so it doesn't
             dilute the analytical/B2B positioning of the project. Funding
             flows through Manifund — their 501(c)(3) acts as fiscal sponsor,
             so the Atlas doesn't need to spin up its own legal entity or
             payment stack. Enterprise needs go through the commercial path
             described in the mission section above. */}
-        <section className="mt-16 max-w-3xl">
+        <section className="max-w-2xl">
           <h2 className="heading-lg mb-3">Support the Atlas</h2>
           <p className="text-body text-muted-foreground mb-5">
             The directory and Atlas Notes are free to read. If the work has helped you and you'd like

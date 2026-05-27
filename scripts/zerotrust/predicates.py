@@ -65,6 +65,14 @@ PREDICATES: dict[str, tuple[str, str]] = {
 
     # ── ecosystem / event ──
     "ecosystem_event":          ("text",   "Conference, regulation, market event with no clean predicate"),
+
+    # ── talent / jobs ──
+    "open_roles_count":         ("number", "Verified count of open roles at careers page snapshot"),
+    "open_roles_description":   ("text",   "Key AI/tech role titles at snapshot date"),
+    "careers_url":              ("url",    "Canonical careers page URL"),
+    "hiring_location":          ("text",   "Primary hiring location(s)"),
+    "remote_policy":            ("text",   "Remote policy: Yes / Partial / No"),
+    "hiring_status":            ("text",   "Active / No active roles / Acquired"),
 }
 
 VALID_PREDICATES = frozenset(PREDICATES.keys())

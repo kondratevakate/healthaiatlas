@@ -10,11 +10,13 @@ interface ConferenceCardProps {
   className?: string;
 }
 
-const typeColors: Record<Conference['type'], string> = {
+// Monochrome badge styles — categories are differentiated by label text,
+// not color (see docs/design-decisions/2026-05-palette-strategy.md).
+const typeBadgeClass: Record<Conference['type'], string> = {
   'conference': 'bg-primary text-primary-foreground',
-  'meetup': 'bg-pink text-white',
-  'workshop': 'bg-yellow text-foreground',
-  'demo-day': 'bg-orange text-white'
+  'meetup':     'bg-muted text-foreground',
+  'workshop':   'bg-muted text-muted-foreground',
+  'demo-day':   'bg-foreground text-background',
 };
 
 export function ConferenceCard({ conference, className }: ConferenceCardProps) {
@@ -42,7 +44,7 @@ export function ConferenceCard({ conference, className }: ConferenceCardProps) {
         <h3 className="font-semibold text-foreground leading-tight">
           {conference.name[language]}
         </h3>
-        <Badge className={cn("shrink-0 capitalize rounded-none text-xs", typeColors[conference.type])}>
+        <Badge className={cn("shrink-0 capitalize rounded-none text-xs", typeBadgeClass[conference.type])}>
           {conference.type.replace('-', ' ')}
         </Badge>
       </div>

@@ -20,6 +20,7 @@ const translations: Translations = {
   'nav.events': { en: 'Events', ar: 'الفعاليات' },
   'nav.founders': { en: 'Founder Toolkit', ar: 'أدوات المؤسس' },
   'nav.atlasnotes': { en: 'Atlas Notes', ar: 'مذكرات الأطلس' },
+  'nav.jobs': { en: 'Jobs', ar: 'وظائف' },
   'nav.about': { en: 'About', ar: 'حول' },
 
   // Legacy nav keys — retained while older pages still reference them.
@@ -70,6 +71,7 @@ const translations: Translations = {
   // Actions
   'action.viewAll': { en: 'View All', ar: 'عرض الكل' },
   'action.explore': { en: 'Explore', ar: 'استكشف' },
+  'action.back': { en: 'Back to', ar: 'العودة إلى' },
 
   // About
   'about.mission': { en: 'Our Mission', ar: 'مهمتنا' },

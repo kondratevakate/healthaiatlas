@@ -33,7 +33,7 @@ import {
 } from '@/data/acquihireSignal';
 
 import { DEVREL_CLUSTERS, DEVREL_PEOPLE } from '@/data/devrelSignal';
-import { AIRTABLE_PROVENANCE_URL } from '@/data/constants';
+import { SuggestActions } from '@/components/shared/SuggestActions';
 
 
 // ─── Atlas tab ──────────────────────────────────────────────────────────────
@@ -596,22 +596,7 @@ const FoundersDevRel = () => (
         <TabsContent value="atlas"><AtlasTab /></TabsContent>
       </Tabs>
 
-      <div className="mt-12 border-t border-border pt-6 text-xs text-muted-foreground/50 leading-relaxed space-y-1.5">
-        <p><span className="text-muted-foreground/70 font-medium">Acqui-hires methodology</span> — public announcements only. Confidence level is as rated in the source spreadsheet. Deals where structure is disputed are marked "needs review". Secondary sources linked where available.</p>
-        <p><span className="text-muted-foreground/70 font-medium">DevRel methodology</span> — 29 named advocates across 14 vendors surveyed over 12–18 months of published content. Editorial analysis, not automated. Down-weighted: quickstarts, keynotes. Up-weighted: architecture deep-dives, production deployment guides.</p>
-        <p><span className="text-muted-foreground/70 font-medium">Gaps noted</span> — Databricks Mosaic AI and Meta Llama have no named advocate with public technical content despite strong platform investment.</p>
-        <p>
-          <a
-            href={AIRTABLE_PROVENANCE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-          >
-            Source data in Airtable
-            <ExternalLink className="w-3 h-3" />
-          </a>
-        </p>
-      </div>
+      <SuggestActions className="mt-12" />
     </div>
   </Layout>
 );

@@ -13,7 +13,6 @@ import { ArchitectureTable } from '@/components/context-architecture/Architectur
 import { ArchitectureSidebar } from '@/components/context-architecture/ArchitectureSidebar';
 import {
   AI_ARCHITECTURES,
-  AI_REVENUE_PRODUCTS,
   ALL_FAMILIES,
   ALL_DOMAINS,
   FAMILY_COLORS,
@@ -29,12 +28,6 @@ import {
 } from '@/data/trendingPapers';
 import { cn } from '@/lib/utils';
 
-function fmtMoney(v: number): string {
-  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}T`;
-  if (v >= 1000) return `$${(v / 1000).toFixed(v >= 10000 ? 0 : 1)}B`;
-  if (v >= 1) return `$${v.toFixed(0)}M`;
-  return v > 0 ? '<$1M' : '$0';
-}
 
 interface FiltersProps {
   xMode: XMode;
@@ -248,11 +241,6 @@ const FoundersArchitectures = () => {
   );
   const [domainFilter, setDomainFilter] = useState<ProductDomain | 'all'>('all');
 
-  const totalRevenue = useMemo(
-    () => AI_ARCHITECTURES.reduce((s, a) => s + a.attributableRevenueM, 0),
-    [],
-  );
-
   const toggleFamily = (f: ArchFamily) => {
     setFamilyFilter((prev) => {
       const next = new Set(prev);
@@ -282,8 +270,7 @@ const FoundersArchitectures = () => {
           <div className="border-b px-4 py-3 flex flex-wrap gap-x-8 gap-y-2 items-baseline">
             {([
               { value: String(AI_ARCHITECTURES.length), label: 'architectures' },
-              { value: String(AI_REVENUE_PRODUCTS.length), label: 'products' },
-              { value: fmtMoney(totalRevenue), label: 'est. attributed revenue' },
+              { value: String(TRENDING_PAPERS.length), label: 'trending papers' },
             ] as const).map(({ value, label }) => (
               <div key={label} className="flex items-baseline gap-2">
                 <span className="font-serif text-2xl font-medium text-foreground">{value}</span>
@@ -307,11 +294,11 @@ const FoundersArchitectures = () => {
           </div>
 
           {/* Tab content */}
-          <Tabs defaultValue="map" className="p-3 sm:p-4">
+          <Tabs defaultValue="trending" className="p-3 sm:p-4">
             <TabsList className="h-auto bg-transparent border-b border-border rounded-none p-0 mb-6 w-full justify-start gap-0 flex-wrap">
+              <TabsTrigger value="trending" className={TAB_CN}>Trending Papers</TabsTrigger>
               <TabsTrigger value="map" className={TAB_CN}>Map</TabsTrigger>
               <TabsTrigger value="architectures" className={TAB_CN}>Architectures</TabsTrigger>
-              <TabsTrigger value="trending" className={TAB_CN}>Trending Papers</TabsTrigger>
             </TabsList>
 
             <TabsContent value="map" className="mt-0">

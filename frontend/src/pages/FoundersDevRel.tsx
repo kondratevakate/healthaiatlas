@@ -380,13 +380,6 @@ function AcquihiresTab() {
   return (
     <div className="max-w-3xl space-y-10">
 
-      {/* ── Provenance banner ───────────────────────────────────────────── */}
-      <div className="border border-border/60 bg-secondary/20 px-4 py-3 flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-muted-foreground">
-        <span><span className="text-foreground/70 font-medium">Source</span> — ai_acquihire_dataset_updated.xlsx · public announcements only</span>
-        <span><span className="text-foreground/70 font-medium">Verification</span> — URLs extracted from source file; not yet uploaded to Airtable</span>
-        <span><span className="text-foreground/70 font-medium">Scope</span> — team acquisitions by AI companies, {ACQUIHIRE_STATS.dateRange}</span>
-      </div>
-
       {/* ── Stat strip ──────────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-6">
         {[

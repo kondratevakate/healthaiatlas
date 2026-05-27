@@ -1,0 +1,27 @@
+# CODEOWNERS — auto-assign reviewers
+#
+# GitHub uses this file to request reviews on PRs touching specific paths.
+# Owners are also listed on the repo's "About" sidebar as maintainers.
+#
+# Reference: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default — everything else needs founder review
+* @kondratevakate
+
+# Sensitive surfaces
+/LICENSE                     @kondratevakate
+/SECURITY.md                 @kondratevakate
+/AGENTS.md                   @kondratevakate
+/.github/                    @kondratevakate
+
+# Compliance-critical: legal copy + privacy boundaries
+/frontend/src/pages/Privacy.tsx  @kondratevakate
+/frontend/src/pages/Terms.tsx    @kondratevakate
+/frontend/src/pages/Contact.tsx  @kondratevakate
+
+# Data pipeline (Zero Trust)
+/scripts/zerotrust/          @kondratevakate
+
+# Infra / deploy
+/ansible/                    @kondratevakate
+/.github/workflows/          @kondratevakate

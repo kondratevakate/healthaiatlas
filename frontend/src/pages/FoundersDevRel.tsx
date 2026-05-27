@@ -43,13 +43,6 @@ function AtlasTab() {
 
   return (
     <div>
-      {/* Provenance */}
-      <div className="border border-border/60 bg-secondary/20 px-4 py-3 flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-muted-foreground mb-6">
-        <span><span className="text-foreground/70 font-medium">Source</span> — devrel_hub.html · editorial survey, May 2026</span>
-        <span><span className="text-foreground/70 font-medium">Coverage</span> — {main.length} clusters · 29 named advocates · 14 vendors</span>
-        <span><span className="text-foreground/70 font-medium">Not automated</span> — manual content analysis, not Zero Trust pipeline</span>
-      </div>
-
       {/* cluster grid */}
       <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">
         {main.map((c) => (
@@ -391,7 +384,6 @@ function AcquihiresTab() {
         <span><span className="text-foreground/70 font-medium">Source</span> — ai_acquihire_dataset_updated.xlsx · public announcements only</span>
         <span><span className="text-foreground/70 font-medium">Verification</span> — URLs extracted from source file; not yet uploaded to Airtable</span>
         <span><span className="text-foreground/70 font-medium">Scope</span> — team acquisitions by AI companies, {ACQUIHIRE_STATS.dateRange}</span>
-        <span><span className="text-foreground/70 font-medium">Confidence</span> — shown per deal as rated in source file</span>
       </div>
 
       {/* ── Stat strip ──────────────────────────────────────────────────── */}
@@ -459,10 +451,6 @@ function AcquihiresTab() {
                             <span className="text-xs text-muted-foreground">{d.acquirer}</span>
                           </div>
                           <div className="text-xs text-muted-foreground/40">{d.date.slice(0, 7)}</div>
-                          {/* Confidence — shown as-is from source, not interpreted */}
-                          <span className="inline-block font-mono text-[9px] tracking-wide px-1.5 py-0.5 border border-border/50 text-muted-foreground/50">
-                            {d.confidence}
-                          </span>
                         </div>
 
                         {/* Right: capability + founders */}

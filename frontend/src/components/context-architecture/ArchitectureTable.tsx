@@ -47,7 +47,7 @@ export function ArchitectureTable({
   );
 
   return (
-    <div className="border rounded-md">
+    <div className="border">
       <div className="grid items-center border-b bg-secondary/40 font-mono text-[10px] uppercase tracking-widest text-muted-foreground px-3 py-2" style={{ gridTemplateColumns: '36px 1fr 110px 80px 90px' }}>
         <div>ID</div>
         <div>Architecture</div>

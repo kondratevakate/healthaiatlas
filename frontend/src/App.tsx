@@ -25,6 +25,7 @@ import FoundersDevRel from "./pages/FoundersDevRel";
 import FoundersMarkets from "./pages/FoundersMarkets";
 import FoundersArchitectures from "./pages/FoundersArchitectures";
 import Jobs from "./pages/Jobs";
+import OpenCalls from "./pages/OpenCalls";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,7 @@ const App = () => (
               <Route path="/leader" element={<PersonaPage />} />
 
               <Route path="/jobs" element={<Jobs />} />
+              <Route path="/open-calls" element={<OpenCalls />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import { Layout } from '@/components/layout';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { FounderToolkitNav } from '@/components/shared/FounderToolkitNav';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { BubbleChart, type XMode } from '@/components/context-architecture/BubbleChart';
 import { ArchitectureTable } from '@/components/context-architecture/ArchitectureTable';
 import { ArchitectureSidebar } from '@/components/context-architecture/ArchitectureSidebar';
@@ -225,13 +224,6 @@ function TrendingPapersView() {
   );
 }
 
-const TAB_CN = cn(
-  'rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 -mb-px',
-  'text-[13px] font-medium tracking-tight',
-  'text-muted-foreground hover:text-foreground transition-colors',
-  'data-[state=active]:border-foreground data-[state=active]:text-foreground',
-  'data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:shadow-none',
-);
 
 const FoundersArchitectures = () => {
   const [selectedArchId, setSelectedArchId] = useState<string | null>(null);
@@ -240,6 +232,7 @@ const FoundersArchitectures = () => {
     () => new Set(ALL_FAMILIES),
   );
   const [domainFilter, setDomainFilter] = useState<ProductDomain | 'all'>('all');
+  const [view, setView] = useState<'maps' | 'trending'>('maps');
 
   const toggleFamily = (f: ArchFamily) => {
     setFamilyFilter((prev) => {
@@ -266,99 +259,120 @@ const FoundersArchitectures = () => {
         />
 
         <div className="mt-8 border border-border bg-background">
-          {/* Stats strip */}
-          <div className="border-b px-4 py-3 flex flex-wrap gap-x-8 gap-y-2 items-baseline">
-            {([
-              { value: String(AI_ARCHITECTURES.length), label: 'architectures' },
-              { value: String(TRENDING_PAPERS.length), label: 'trending papers' },
-            ] as const).map(({ value, label }) => (
-              <div key={label} className="flex items-baseline gap-2">
-                <span className="font-serif text-2xl font-medium text-foreground">{value}</span>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Shared filter controls */}
-          <div className="border-b px-4 py-3">
-            <ArchFilters
-              xMode={xMode}
-              setXMode={setXMode}
-              familyFilter={familyFilter}
-              toggleFamily={toggleFamily}
-              domainFilter={domainFilter}
-              setDomainFilter={setDomainFilter}
-            />
-          </div>
-
-          {/* Tab content */}
-          <Tabs defaultValue="map" className="p-3 sm:p-4">
-            <TabsList className="h-auto bg-transparent border-b border-border rounded-none p-0 mb-6 w-full justify-start gap-0 flex-wrap">
-              <TabsTrigger value="map" className={TAB_CN}>Map</TabsTrigger>
-              <TabsTrigger value="architectures" className={TAB_CN}>Architectures</TabsTrigger>
-              <TabsTrigger value="trending" className={TAB_CN}>Trending Papers</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="map" className="mt-0">
-              <BubbleChart
-                xMode={xMode}
-                familyFilter={familyFilter}
-                domainFilter={domainFilter}
-                selectedArchId={selectedArchId}
-                onSelect={setSelectedArchId}
-              />
-              <div className="mt-6 border-t pt-4">
-                {selectedArchId ? (
-                  <ArchitectureSidebar
-                    selectedArchId={selectedArchId}
-                    onClose={() => setSelectedArchId(null)}
-                  />
-                ) : (
-                  <div>
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
-                      Family legend
-                    </div>
-                    <div className="flex flex-wrap gap-x-5 gap-y-1.5">
-                      {ALL_FAMILIES.map((f) => (
-                        <div key={f} className="flex items-center gap-1.5 text-xs">
-                          <span
-                            aria-hidden="true"
-                            className="inline-block w-3 h-3 rounded-full"
-                            style={{ backgroundColor: FAMILY_COLORS[f] }}
-                          />
-                          <span className="text-foreground">{f}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="architectures" className="mt-0 space-y-6">
-              <ArchitectureTable
-                familyFilter={familyFilter}
-                domainFilter={domainFilter}
-                selectedArchId={selectedArchId}
-                onSelect={setSelectedArchId}
-              />
-              {selectedArchId && (
-                <div className="border-t pt-6">
-                  <ArchitectureSidebar
-                    selectedArchId={selectedArchId}
-                    onClose={() => setSelectedArchId(null)}
-                  />
+          {/* Stats + view toggle strip */}
+          <div className="border-b px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-x-8 gap-y-2 items-baseline">
+              {([
+                { value: String(AI_ARCHITECTURES.length), label: 'architectures' },
+                { value: String(TRENDING_PAPERS.length), label: 'trending papers' },
+              ] as const).map(({ value, label }) => (
+                <div key={label} className="flex items-baseline gap-2">
+                  <span className="font-serif text-2xl font-medium text-foreground">{value}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    {label}
+                  </span>
                 </div>
-              )}
-            </TabsContent>
+              ))}
+            </div>
 
+            {/* View toggle */}
+            <div className="inline-flex border border-border">
+              {([
+                { id: 'maps', label: 'Maps' },
+                { id: 'trending', label: 'Trending Papers' },
+              ] as const).map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setView(id)}
+                  className={cn(
+                    'px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider border-r last:border-r-0 transition-colors',
+                    view === id
+                      ? 'bg-foreground text-background'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-            <TabsContent value="trending" className="mt-0">
+          {/* Filter controls — only for Maps view */}
+          {view === 'maps' && (
+            <div className="border-b px-4 py-3">
+              <ArchFilters
+                xMode={xMode}
+                setXMode={setXMode}
+                familyFilter={familyFilter}
+                toggleFamily={toggleFamily}
+                domainFilter={domainFilter}
+                setDomainFilter={setDomainFilter}
+              />
+            </div>
+          )}
+
+          {/* Content */}
+          <div className="p-3 sm:p-4">
+            {view === 'maps' ? (
+              <div className="space-y-8">
+                {/* Bubble chart */}
+                <div>
+                  <BubbleChart
+                    xMode={xMode}
+                    familyFilter={familyFilter}
+                    domainFilter={domainFilter}
+                    selectedArchId={selectedArchId}
+                    onSelect={setSelectedArchId}
+                  />
+                  <div className="mt-4 border-t pt-4">
+                    {selectedArchId ? (
+                      <ArchitectureSidebar
+                        selectedArchId={selectedArchId}
+                        onClose={() => setSelectedArchId(null)}
+                      />
+                    ) : (
+                      <div className="flex flex-wrap gap-x-5 gap-y-1.5">
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground self-center">
+                          Family
+                        </span>
+                        {ALL_FAMILIES.map((f) => (
+                          <div key={f} className="flex items-center gap-1.5 text-xs">
+                            <span
+                              aria-hidden="true"
+                              className="inline-block w-3 h-3 rounded-full"
+                              style={{ backgroundColor: FAMILY_COLORS[f] }}
+                            />
+                            <span className="text-foreground">{f}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Architecture table */}
+                <div className="border-t pt-6">
+                  <ArchitectureTable
+                    familyFilter={familyFilter}
+                    domainFilter={domainFilter}
+                    selectedArchId={selectedArchId}
+                    onSelect={setSelectedArchId}
+                  />
+                  {selectedArchId && (
+                    <div className="mt-6 border-t pt-6">
+                      <ArchitectureSidebar
+                        selectedArchId={selectedArchId}
+                        onClose={() => setSelectedArchId(null)}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
               <TrendingPapersView />
-            </TabsContent>
-          </Tabs>
+            )}
+          </div>
 
           {/* Footer bar — mirrors HubShell */}
           <div className="border-t px-3 sm:px-4 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-muted-foreground">

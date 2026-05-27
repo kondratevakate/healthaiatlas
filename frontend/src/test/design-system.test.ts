@@ -194,6 +194,7 @@ describe('design-system: typography', () => {
     'pages/FoundersMarkets.tsx',    // chart-first layout, minimal caption heading
     'pages/FoundersAcquihires.tsx', // editorial masthead with stat strip
     'pages/Jobs.tsx',               // data-density page, tight header above stat bar
+    'pages/OpenCalls.tsx',          // custom hero layout, heading-display used directly
   ]);
 
   // 1e. Heading elements must not bypass the brand type scale.
@@ -404,6 +405,7 @@ describe('design-system: spacing', () => {
     'pages/NotFound.tsx',       // full-screen vertical center
     'pages/PersonaPage.tsx',    // already uses container py-12 md:py-16 max-w-4xl
     'pages/Jobs.tsx',           // max-w-7xl data-table layout — wider than standard container
+    'pages/OpenCalls.tsx',      // custom layout without standard container shell
   ]);
 
   const CONTAINER_SHELL_RE = /\bcontainer\s+py-12\s+md:py-16\b/;

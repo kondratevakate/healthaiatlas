@@ -33,6 +33,7 @@ import {
 } from '@/data/acquihireSignal';
 
 import { DEVREL_CLUSTERS, DEVREL_PEOPLE } from '@/data/devrelSignal';
+import { AIRTABLE_PROVENANCE_URL } from '@/data/constants';
 
 
 // ─── Atlas tab ──────────────────────────────────────────────────────────────
@@ -595,7 +596,7 @@ const FoundersDevRel = () => (
       <Tabs defaultValue="acquihires" className="mt-8">
         <TabsList className="mb-6">
           <TabsTrigger value="acquihires">Acqui-hires · {ACQUIHIRE_STATS.totalDeals} deals</TabsTrigger>
-          <TabsTrigger value="atlas">DevRel Atlas · 9 clusters</TabsTrigger>
+          <TabsTrigger value="atlas">DevRel Atlas · {DEVREL_PEOPLE.length} advocates</TabsTrigger>
         </TabsList>
 
         <TabsContent value="acquihires"><AcquihiresTab /></TabsContent>
@@ -606,6 +607,17 @@ const FoundersDevRel = () => (
         <p><span className="text-muted-foreground/70 font-medium">Acqui-hires methodology</span> — public announcements only. Confidence level is as rated in the source spreadsheet. Deals where structure is disputed are marked "needs review". Secondary sources linked where available.</p>
         <p><span className="text-muted-foreground/70 font-medium">DevRel methodology</span> — 29 named advocates across 14 vendors surveyed over 12–18 months of published content. Editorial analysis, not automated. Down-weighted: quickstarts, keynotes. Up-weighted: architecture deep-dives, production deployment guides.</p>
         <p><span className="text-muted-foreground/70 font-medium">Gaps noted</span> — Databricks Mosaic AI and Meta Llama have no named advocate with public technical content despite strong platform investment.</p>
+        <p>
+          <a
+            href={AIRTABLE_PROVENANCE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+          >
+            Source data in Airtable
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </p>
       </div>
     </div>
   </Layout>

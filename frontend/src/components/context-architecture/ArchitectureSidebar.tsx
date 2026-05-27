@@ -49,7 +49,7 @@ function SourceLine({ source }: { source: AISource }) {
       href={source.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="block group rounded-sm border border-border/60 hover:border-foreground/40 p-2 transition-colors"
+      className="block group border border-border/60 hover:border-foreground/40 p-2 transition-colors"
     >
       <div className="flex items-center gap-1.5 flex-wrap mb-1">
         <ConfidenceBadge tier={source.confidence} />
@@ -171,7 +171,7 @@ function ArchDetail({ archId, onClose }: { archId: string; onClose: () => void }
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-sm border p-2">
+        <div className="border p-2">
           <div className="font-serif text-base font-semibold">
             {fmtMoney(arch.attributableRevenueM)}
           </div>
@@ -179,7 +179,7 @@ function ArchDetail({ archId, onClose }: { archId: string; onClose: () => void }
             Est. revenue
           </div>
         </div>
-        <div className="rounded-sm border p-2">
+        <div className="border p-2">
           <div className="font-serif text-base font-semibold">
             {arch.paperCountK}K
           </div>
@@ -187,7 +187,7 @@ function ArchDetail({ archId, onClose }: { archId: string; onClose: () => void }
             Papers
           </div>
         </div>
-        <div className="rounded-sm border p-2">
+        <div className="border p-2">
           <div className="font-serif text-base font-semibold">
             {products.length}
           </div>
@@ -214,7 +214,7 @@ function ArchDetail({ archId, onClose }: { archId: string; onClose: () => void }
       </a>
 
       {arch.attributableRevenueM === 0 && (
-        <div className="rounded-sm border-l-2 border-foreground/30 bg-secondary/40 p-2 text-xs text-muted-foreground leading-relaxed">
+        <div className="border-l-2 border-foreground/30 bg-secondary/40 p-2 text-xs text-muted-foreground leading-relaxed">
           Attribution = $0 reflects no public confirmation of production
           deployment. Absence-of-evidence, not evidence-of-absence.
         </div>

@@ -3,10 +3,8 @@ import { X, ExternalLink } from 'lucide-react';
 import {
   LS_BUBBLES,
   LS_CLUSTERS,
-  LS_FAMILY_LABELS,
   type LSBubble,
   type LSCluster,
-  type LSClusterFamily,
 } from '@/data/aiLifeSciences';
 import { LS_REVENUE } from '@/data/aiLifeSciencesRevenue';
 import { squarifiedTreemap } from '@/lib/squarifiedTreemap';
@@ -16,6 +14,25 @@ import { cn } from '@/lib/utils';
 const REVENUE_BY_SLUG = new Map(
   LS_REVENUE.filter((r) => r.scope === 'product').map((r) => [r.slug, r]),
 );
+
+// Revenue-proportional color: higher earnings → darker green, lower → pale mint.
+// Zero revenue → neutral placeholder. Log scale spreads a 20×+ revenue range.
+function revenueColor(raw: number, maxRaw: number): string {
+  if (raw === 0) return 'hsl(220 8% 22%)';
+  // log scale: $10M and $1B should be visibly different
+  const t = Math.log(raw + 1) / Math.log(maxRaw + 1);
+  const s = Math.round(35 + t * 40); // 35% → 75%
+  const l = Math.round(72 - t * 50); // 72% (pale) → 22% (deep)
+  return `hsl(152 ${s}% ${l}%)`;
+}
+
+// Picks readable text color over a given lightness.
+function textOn(raw: number, maxRaw: number): string {
+  if (raw === 0) return 'rgba(255,255,255,0.85)';
+  const t = Math.log(raw + 1) / Math.log(maxRaw + 1);
+  const l = 72 - t * 50;
+  return l > 50 ? 'hsl(152 60% 12%)' : 'rgba(255,255,255,0.95)';
+}
 
 function toSlug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -40,8 +57,6 @@ function formatRev(v: number): string {
   if (v >= 1) return `$${v.toFixed(0)}M`;
   return v > 0 ? '<$1M' : '—';
 }
-
-const FAMILY_ORDER: LSClusterFamily[] = ['care_delivery', 'discovery_rd', 'therapeutic', 'ai_infra', 'meta'];
 
 export function RevenueView() {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -114,14 +129,22 @@ export function RevenueView() {
   const totalProductRevenue = useMemo(() =>
     [...revenues.values()].reduce((a, b) => a + b, 0), [revenues]);
 
+  const maxRevenue = useMemo(() =>
+    Math.max(1, ...inFrame.map((c) => revenues.get(c.id) ?? 0)), [revenues, inFrame]);
+
   return (
     <div>
-      <p className="text-[11px] text-muted-foreground mb-3">
+      <p className="text-sm text-muted-foreground mb-2 leading-relaxed">
         AI-product revenue per cluster — scope excludes total-company figures (big pharma, Intuitive Surgical, Epic).
         Bottom-up sum: <span className="font-mono text-foreground">{formatRev(totalProductRevenue)}</span> across{' '}
-        {REVENUE_BY_SLUG.size} companies with disclosed revenue.
-        Click any cluster to see company breakdown.
+        {REVENUE_BY_SLUG.size} companies with disclosed revenue. Click any cluster to see company breakdown.
       </p>
+      <p className="text-xs text-muted-foreground/80 mb-5 italic leading-relaxed">
+        Caveat: for drug-discovery clusters (Insilico, Recursion, Generate, Formation Bio, Lila, Pathos…), most
+        disclosed "revenue" is pharma research-collaboration milestones and platform contracts, not subscription
+        product revenue. The numbers are real — the source of the dollars is mixed.
+      </p>
+
 
       {/* Treemap */}
       <div
@@ -142,14 +165,15 @@ export function RevenueView() {
               key={rect.id}
               type="button"
               onClick={() => setOpened(cluster.id)}
-              className="absolute overflow-hidden text-white text-left focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="absolute overflow-hidden text-left focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary"
               style={{
                 left: `${(rect.x / size.w) * 100}%`,
                 top: `${(rect.y / size.h) * 100}%`,
                 width: `${(rect.w / size.w) * 100}%`,
                 height: `${(rect.h / size.h) * 100}%`,
-                background: cluster.color,
-                opacity: isPlaceholder ? 0.45 : 1,
+                background: revenueColor(raw, maxRevenue),
+                color: textOn(raw, maxRevenue),
+                opacity: isPlaceholder ? 0.55 : 1,
                 outline: isHovered ? '2px solid hsl(var(--primary))' : '1px solid rgba(0,0,0,0.25)',
                 outlineOffset: isHovered ? '-2px' : '0',
                 transition: 'all 600ms cubic-bezier(.4,0,.2,1)',
@@ -157,20 +181,20 @@ export function RevenueView() {
               onMouseEnter={() => setHovered(cluster.id)}
               onMouseLeave={() => setHovered(null)}
             >
-              <div className={cn('p-2.5 h-full flex flex-col', tiny && 'p-1.5')}>
-                <div className={cn('font-semibold leading-tight', tiny ? 'text-[10px]' : 'text-sm')}>
+              <div className={cn('p-3 h-full flex flex-col', tiny && 'p-2')}>
+                <div className={cn('font-semibold leading-tight', tiny ? 'text-xs' : 'text-base')}>
                   {cluster.label}
                 </div>
                 {!tiny && (
-                  <div className="text-[10px] opacity-80 font-mono mt-0.5">
+                  <div className="text-xs opacity-80 font-mono mt-1">
                     {isPlaceholder ? 'no disclosed revenue' : formatRev(raw)}
                   </div>
                 )}
                 {!compact && top.length > 0 && (
-                  <ul className="text-[11px] mt-2 space-y-0.5 leading-tight opacity-95">
+                  <ul className="text-[13px] mt-2.5 space-y-1 leading-tight opacity-95">
                     {top.slice(0, 4).map((e) => (
                       <li key={e.name} className="truncate">
-                        {e.name} <span className="opacity-70 font-mono text-[10px]">{formatRev(e.rev)}</span>
+                        {e.name} <span className="opacity-70 font-mono text-[11px]">{formatRev(e.rev)}</span>
                       </li>
                     ))}
                   </ul>
@@ -183,7 +207,7 @@ export function RevenueView() {
 
       {/* Off-frame strip */}
       <div className="mt-4">
-        <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
+        <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">
           Off-frame
         </div>
         <div className="flex gap-2 border border-dashed border-border p-2">
@@ -192,28 +216,36 @@ export function RevenueView() {
             const w = offTotal > 0 ? Math.max(12, (Math.max(raw, 5) / offTotal) * 100) : 25;
             return (
               <button key={c.id} type="button" onClick={() => setOpened(c.id)}
-                className="text-white text-left p-2 overflow-hidden hover:ring-2 hover:ring-primary"
-                style={{ width: `${w}%`, background: c.color, opacity: raw === 0 ? 0.45 : 1 }}>
-                <div className="text-[11px] font-semibold">{c.label}</div>
-                <div className="text-[10px] opacity-80 font-mono">{raw > 0 ? formatRev(raw) : '—'}</div>
+                className="text-left p-2.5 overflow-hidden hover:ring-2 hover:ring-primary"
+                style={{
+                  width: `${w}%`,
+                  background: revenueColor(raw, maxRevenue),
+                  color: textOn(raw, maxRevenue),
+                  opacity: raw === 0 ? 0.55 : 1,
+                }}>
+                <div className="text-sm font-semibold leading-tight">{c.label}</div>
+                <div className="text-xs opacity-80 font-mono mt-0.5">{raw > 0 ? formatRev(raw) : '—'}</div>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Family legend */}
-      <div className="flex flex-wrap gap-3 mt-4 text-[10px] font-mono text-muted-foreground">
-        {FAMILY_ORDER.map((f) => {
-          const c = LS_CLUSTERS.find((c) => c.family === f);
-          if (!c) return null;
-          return (
-            <span key={f} className="inline-flex items-center gap-1.5">
-              <span className="inline-block w-3 h-3" style={{ background: c.color }} />
-              {LS_FAMILY_LABELS[f]}
-            </span>
-          );
-        })}
+      {/* Revenue scale legend */}
+      <div className="flex items-center gap-2 mt-4 text-xs font-mono text-muted-foreground">
+        <span>lower revenue</span>
+        {[0.05, 0.2, 0.4, 0.65, 1].map((t) => (
+          <span
+            key={t}
+            className="inline-block w-6 h-4"
+            style={{ background: `hsl(152 ${Math.round(35 + t * 40)}% ${Math.round(72 - t * 50)}%)` }}
+          />
+        ))}
+        <span>higher revenue</span>
+        <span className="ml-4 inline-flex items-center gap-1.5">
+          <span className="inline-block w-6 h-4" style={{ background: 'hsl(220 8% 22%)' }} />
+          no disclosed revenue
+        </span>
       </div>
 
       {opened && <RevenueDetail clusterId={opened} onClose={() => setOpened(null)} />}
@@ -241,9 +273,9 @@ function RevenueDetail({ clusterId, onClose }: { clusterId: string; onClose: () 
     <div className="fixed inset-0 z-50 bg-background/90 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-background border border-border max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col shadow-xl"
         onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-start gap-3 p-4 border-b border-border" style={{ background: cluster.color }}>
+        <div className="flex items-start gap-3 p-4 border-b border-border" style={{ background: 'hsl(152 55% 28%)' }}>
           <div className="flex-1 text-white">
-            <h3 className="text-lg font-semibold">{cluster.label}</h3>
+            <h3 className="heading-md">{cluster.label}</h3>
             <div className="text-[11px] opacity-90 font-mono mt-0.5">
               {formatRev(total)} disclosed · {companies.length} companies with revenue data
             </div>

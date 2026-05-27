@@ -25,7 +25,12 @@ export const LS_REVENUE: LSRevenue[] = [
   { slug: 'qventus', name: 'Qventus', year: 2024, revenue_m: 80.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'viz-ai', name: 'Viz.ai', year: 2024, revenue_m: 80.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'sophia-genetics', name: 'SOPHiA GENETICS', year: 2024, revenue_m: 65.17, unit: 'usd_m', confidence: 'high', scope: 'product' },
-  { slug: 'pathai', name: 'PathAI', year: 2024, revenue_m: 60.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
+  { slug: 'pathai', name: 'PathAI', year: 2024, revenue_m: 106.7, unit: 'usd_m', confidence: 'medium', scope: 'product' },
+  // Manually added 2026-05-27 — public-co AI diagnostics + DeepHealth/RadNet subsidiary
+  // Source: Tempus AI 10-K FY2025; Veracyte 8-K FY2024; RadNet Q4 2025 press release
+  { slug: 'tempus-ai', name: 'Tempus AI', year: 2025, revenue_m: 1272.0, unit: 'usd_m', confidence: 'high', scope: 'product' },
+  { slug: 'veracyte', name: 'Veracyte', year: 2024, revenue_m: 445.8, unit: 'usd_m', confidence: 'high', scope: 'product' },
+  { slug: 'deephealth', name: 'DeepHealth (RadNet AI)', year: 2025, revenue_m: 112.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'recursion-pharmaceuticals', name: 'Recursion Pharmaceuticals', year: 2024, revenue_m: 58.8, unit: 'usd_m', confidence: 'high', scope: 'product' },
   { slug: 'suki-ai', name: 'Suki AI', year: 2024, revenue_m: 50.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'generate-biomedicines', name: 'Generate Biomedicines', year: 2023, revenue_m: 50.0, unit: 'usd_m', confidence: 'medium', scope: 'product' },
@@ -61,13 +66,10 @@ export const LS_REVENUE: LSRevenue[] = [
   { slug: 'medra', name: 'Medra', year: 2024, revenue_m: 3.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'assort-health', name: 'Assort Health', year: 2025, revenue_m: 3.0, unit: 'arr_usd_m', confidence: 'medium', scope: 'product' },
   { slug: 'culture-biosciences', name: 'Culture Biosciences', year: 2024, revenue_m: 3.0, unit: 'usd_m', confidence: 'low', scope: 'product' },
+  // Big pharma (Roche, Lilly, Pfizer, AstraZeneca, Novartis, Takeda) removed —
+  // AI-portion of total-company revenue is not separately disclosed and cannot
+  // be honestly assigned to an AI cluster.
   { slug: 'nvidia', name: 'NVIDIA', year: 2026, revenue_m: 215900.0, unit: 'usd_m', confidence: 'medium', scope: 'company' },
-  { slug: 'roche', name: 'Roche', year: 2025, revenue_m: 67200.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
-  { slug: 'eli-lilly', name: 'Eli Lilly', year: 2025, revenue_m: 65179.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
-  { slug: 'pfizer', name: 'Pfizer', year: 2025, revenue_m: 62600.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
-  { slug: 'astrazeneca', name: 'AstraZeneca', year: 2025, revenue_m: 58700.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
-  { slug: 'novartis', name: 'Novartis', year: 2025, revenue_m: 54500.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
-  { slug: 'takeda', name: 'Takeda', year: 2024, revenue_m: 30500.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
   { slug: 'anthropic', name: 'Anthropic', year: 2026, revenue_m: 30000.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
   { slug: 'openai', name: 'OpenAI', year: 2026, revenue_m: 25000.0, unit: 'usd_m', confidence: 'high', scope: 'company' },
   { slug: 'intuitive-surgical', name: 'Intuitive Surgical', year: 2025, revenue_m: 10064.7, unit: 'usd_m', confidence: 'high', scope: 'company' },

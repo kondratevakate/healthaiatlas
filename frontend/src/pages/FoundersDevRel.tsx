@@ -34,6 +34,7 @@ import {
 
 import { DEVREL_CLUSTERS, DEVREL_PEOPLE } from '@/data/devrelSignal';
 import { SuggestActions } from '@/components/shared/SuggestActions';
+import { AIRTABLE_PROVENANCE_URL } from '@/data/constants';
 
 
 // ─── Atlas tab ──────────────────────────────────────────────────────────────
@@ -566,6 +567,19 @@ const FoundersDevRel = () => (
       </Tabs>
 
       <SuggestActions className="mt-12" />
+
+      {/* Data source link — small, unobtrusive, at the very bottom */}
+      <div className="mt-6 text-xs text-muted-foreground/50">
+        <a
+          href={AIRTABLE_PROVENANCE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 hover:text-muted-foreground transition-colors"
+        >
+          Source data in Airtable
+          <ExternalLink className="w-3 h-3" />
+        </a>
+      </div>
     </div>
   </Layout>
 );

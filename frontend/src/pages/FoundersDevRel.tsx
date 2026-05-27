@@ -378,21 +378,7 @@ function AcquihiresTab() {
   }, [included]);
 
   return (
-    <div className="max-w-3xl space-y-10">
-
-      {/* ── Stat strip ──────────────────────────────────────────────────── */}
-      <div className="flex flex-wrap gap-6">
-        {[
-          { n: ACQUIHIRE_STATS.totalDeals,    label: 'deals in dataset' },
-          { n: ACQUIHIRE_STATS.totalFounders, label: 'founders tracked' },
-          { n: '8',                           label: 'capability clusters' },
-        ].map(({ n, label }) => (
-          <div key={label}>
-            <div className="text-2xl font-bold text-foreground leading-none">{n}</div>
-            <div className="text-xs text-muted-foreground mt-0.5">{label}</div>
-          </div>
-        ))}
-      </div>
+    <div className="space-y-10">
 
       {/* ── Capability clusters — first two open by default ─────────────── */}
       <div>
@@ -430,49 +416,33 @@ function AcquihiresTab() {
                     </span>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="px-0 pb-0">
-                  <div className="divide-y divide-border/30">
+                <AccordionContent className="px-4 pb-4 pt-2">
+                  <div className="grid sm:grid-cols-2 gap-2">
                     {deals.map(d => (
-                      <div key={d.company} className="px-4 py-4 flex items-start gap-4">
-
-                        {/* Left: company + meta */}
-                        <div className="w-36 shrink-0 space-y-1">
-                          <div className="text-sm font-semibold text-foreground leading-snug">
-                            {d.company}
+                      <div key={d.company} className="bg-background border border-border p-4 flex flex-col gap-2.5">
+                        {/* Header: company + acquirer + date */}
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="space-y-0.5">
+                            <div className="text-sm font-semibold text-foreground leading-snug">{d.company}</div>
+                            <div className="flex items-center gap-1.5">
+                              <AcquirerDot name={d.acquirer} />
+                              <span className="text-xs text-muted-foreground">{d.acquirer}</span>
+                              <span className="text-xs text-muted-foreground/40">· {d.date.slice(0, 7)}</span>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <AcquirerDot name={d.acquirer} />
-                            <span className="text-xs text-muted-foreground">{d.acquirer}</span>
-                          </div>
-                          <div className="text-xs text-muted-foreground/40">{d.date.slice(0, 7)}</div>
-                        </div>
-
-                        {/* Right: capability + founders */}
-                        <div className="flex-1 min-w-0 space-y-1.5">
-                          <p className="text-sm text-foreground/90 leading-snug">
-                            {d.capability}
-                          </p>
-                          {d.founders && (
-                            <p className="text-xs text-muted-foreground/50">
-                              {d.founders}
-                            </p>
-                          )}
-                          {d.notes && (
-                            <p className="text-xs text-muted-foreground/35 italic">{d.notes}</p>
+                          {d.src && (
+                            <a href={d.src} target="_blank" rel="noopener noreferrer"
+                              className="text-muted-foreground/30 hover:text-muted-foreground transition-colors shrink-0"
+                              title="Primary source">
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
                           )}
                         </div>
-
-                        {/* Source link */}
-                        {d.src && (
-                          <a
-                            href={d.src}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground/30 hover:text-muted-foreground transition-colors shrink-0 mt-0.5"
-                            title="Primary source"
-                          >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </a>
+                        {/* Capability */}
+                        <p className="text-xs text-muted-foreground leading-relaxed">{d.capability}</p>
+                        {/* Founders */}
+                        {d.founders && (
+                          <p className="text-xs text-muted-foreground/50">{d.founders}</p>
                         )}
                       </div>
                     ))}
@@ -587,7 +557,7 @@ const FoundersDevRel = () => (
       />
 
       <Tabs defaultValue="acquihires" className="mt-8">
-        <TabsList className="mb-6">
+        <TabsList className="w-max mb-8">
           <TabsTrigger value="acquihires">Acqui-hires · {ACQUIHIRE_STATS.totalDeals} deals</TabsTrigger>
           <TabsTrigger value="atlas">DevRel Atlas · {DEVREL_PEOPLE.length} advocates</TabsTrigger>
         </TabsList>

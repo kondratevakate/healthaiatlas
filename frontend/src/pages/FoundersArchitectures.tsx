@@ -294,11 +294,11 @@ const FoundersArchitectures = () => {
           </div>
 
           {/* Tab content */}
-          <Tabs defaultValue="trending" className="p-3 sm:p-4">
+          <Tabs defaultValue="map" className="p-3 sm:p-4">
             <TabsList className="h-auto bg-transparent border-b border-border rounded-none p-0 mb-6 w-full justify-start gap-0 flex-wrap">
-              <TabsTrigger value="trending" className={TAB_CN}>Trending Papers</TabsTrigger>
               <TabsTrigger value="map" className={TAB_CN}>Map</TabsTrigger>
               <TabsTrigger value="architectures" className={TAB_CN}>Architectures</TabsTrigger>
+              <TabsTrigger value="trending" className={TAB_CN}>Trending Papers</TabsTrigger>
             </TabsList>
 
             <TabsContent value="map" className="mt-0">

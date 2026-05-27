@@ -7,7 +7,6 @@ import {
   LS_FAMILY_LABELS,
   type LSBubble,
   type LSCluster,
-  type LSClusterFamily,
 } from '@/data/aiLifeSciences';
 import { LS_CPT_CODES } from '@/data/aiLifeSciencesCPT';
 import { squarifiedTreemap } from '@/lib/squarifiedTreemap';
@@ -18,7 +17,6 @@ import { cn } from '@/lib/utils';
 // Regulatory has its own dedicated tab (RegulatoryView).
 type SignalKey =
   | 'capital_total'
-  | 'players'
   | 'vc'
   | 'ma'
   | 'pharma_deals';
@@ -35,14 +33,6 @@ interface SignalDef {
 }
 
 const SIGNALS: SignalDef[] = [
-  {
-    key: 'players',
-    label: 'Tracked companies (AI-native startups in this dataset)',
-    short: 'Tracked',
-    unit: 'count',
-    match: () => true,
-    weigh: () => 1,
-  },
   {
     key: 'capital_total',
     label: 'Total disclosed capital',
@@ -77,6 +67,20 @@ const SIGNALS: SignalDef[] = [
   },
 ];
 
+// Capital/count-proportional color. sqrt scale; blue ramp for capital, neutral for count.
+function signalColor(raw: number, maxRaw: number, unit: 'usd_m' | 'count'): string {
+  if (raw === 0) return 'hsl(220 8% 22%)';
+  const t = Math.sqrt(raw / maxRaw);
+  if (unit === 'count') {
+    const s = Math.round(20 + t * 30);
+    const l = Math.round(40 - t * 14);
+    return `hsl(220 ${s}% ${l}%)`;
+  }
+  const s = Math.round(30 + t * 40);
+  const l = Math.round(42 - t * 16);
+  return `hsl(215 ${s}% ${l}%)`;
+}
+
 function formatValue(v: number, unit: 'usd_m' | 'count'): string {
   if (unit === 'count') return v.toLocaleString();
   if (v >= 1000) return `$${(v / 1000).toFixed(1)}B`;
@@ -87,16 +91,11 @@ function formatValue(v: number, unit: 'usd_m' | 'count'): string {
 // Compute a cluster's value for the given signal.
 function computeSignal(cluster: LSCluster, sig: SignalDef): number {
   const inCluster = LS_BUBBLES.filter((b) => b.cluster === cluster.id);
-  if (sig.key === 'players') {
-    return new Set(inCluster.map((b) => b.c)).size;
-  }
   return inCluster.filter(sig.match).reduce((s, b) => s + sig.weigh(b), 0);
 }
 
-const FAMILY_ORDER: LSClusterFamily[] = ['care_delivery', 'discovery_rd', 'therapeutic', 'ai_infra', 'meta'];
-
 export function ClusterTreemapView() {
-  const [signal, setSignal] = useState<SignalKey>('players');
+  const [signal, setSignal] = useState<SignalKey>('capital_total');
   const [hovered, setHovered] = useState<string | null>(null);
   const [opened, setOpened] = useState<string | null>(null);
 
@@ -128,13 +127,6 @@ export function ClusterTreemapView() {
     const map = new Map<string, string[]>();
     for (const c of LS_CLUSTERS) {
       const inCluster = LS_BUBBLES.filter((b) => b.cluster === c.id);
-      if (signal === 'players') {
-        // distinct companies, ranked by total $ across their bubbles
-        const sums = new Map<string, number>();
-        for (const b of inCluster) sums.set(b.c, (sums.get(b.c) ?? 0) + (b.a ?? 0));
-        map.set(c.id, [...sums.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([n]) => n));
-        continue;
-      }
       const sums = new Map<string, number>();
       for (const b of inCluster.filter(sigDef.match)) {
         sums.set(b.c, (sums.get(b.c) ?? 0) + sigDef.weigh(b));
@@ -144,8 +136,10 @@ export function ClusterTreemapView() {
     return map;
   }, [signal, sigDef]);
 
-  const inFrame = useMemo(() => LS_CLUSTERS.filter((c) => !c.offFrame), []);
-  const offFrame = useMemo(() => LS_CLUSTERS.filter((c) => c.offFrame), []);
+  // Capital Flow shows ALL clusters in one treemap — off-frame distinction is
+  // Revenue-specific (where general-purpose AI lacks isolated health revenue).
+  // For capital, $11B into OpenAI is just as real as $1B into Xaira.
+  const inFrame = useMemo(() => LS_CLUSTERS, []);
 
   // Treemap weights with a hard minimum so every cluster stays clickable.
   // A cluster with zero signal for this metric still gets a small placeholder box.
@@ -170,7 +164,8 @@ export function ClusterTreemapView() {
     return m;
   }, [sized]);
 
-  const offTotal = offFrame.reduce((s, c) => s + Math.max(clusterValues.get(c.id) ?? 0, 5), 0);
+  const maxRaw = useMemo(() =>
+    Math.max(1, ...sized.map((s) => s.raw)), [sized]);
 
   useEffect(() => {
     if (!opened) return;
@@ -251,7 +246,7 @@ export function ClusterTreemapView() {
                 top: `${(rect.y / size.h) * 100}%`,
                 width: `${(rect.w / size.w) * 100}%`,
                 height: `${(rect.h / size.h) * 100}%`,
-                background: cluster.color,
+                background: signalColor(raw, maxRaw, sigDef.unit),
                 opacity: isPlaceholder ? 0.55 : 1,
                 outline: isHovered ? '2px solid hsl(var(--primary))' : '1px solid rgba(0,0,0,0.25)',
                 outlineOffset: isHovered ? '-2px' : '0',
@@ -283,51 +278,25 @@ export function ClusterTreemapView() {
         })}
       </div>
 
-      {/* Off-frame strip */}
-      <div className="mt-4">
-        <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-          Off-frame · capital not captured in the main count above
-        </div>
-        <div className="flex gap-2 border border-dashed border-border p-2">
-          {offFrame.map((c) => {
-            const raw = clusterValues.get(c.id) ?? 0;
-            const w = offTotal > 0 ? Math.max(12, (Math.max(raw, 5) / offTotal) * 100) : 25;
-            const isPlaceholder = raw === 0;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setOpened(c.id)}
-                className="text-white text-left p-2 overflow-hidden hover:ring-2 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary"
-                style={{
-                  width: `${w}%`,
-                  background: c.color,
-                  opacity: isPlaceholder ? 0.55 : 1,
-                  transition: 'all 600ms cubic-bezier(.4,0,.2,1)',
-                }}
-              >
-                <div className="text-[11px] font-semibold leading-tight">{c.label}</div>
-                <div className="text-[10px] opacity-80 font-mono mt-0.5">
-                  {isPlaceholder ? '—' : formatValue(raw, sigDef.unit)}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Family legend */}
-      <div className="flex flex-wrap gap-3 mt-4 text-[10px] font-mono text-muted-foreground">
-        {FAMILY_ORDER.map((f) => {
-          const cluster = LS_CLUSTERS.find((c) => c.family === f);
-          if (!cluster) return null;
-          return (
-            <span key={f} className="inline-flex items-center gap-1.5">
-              <span aria-hidden="true" className="inline-block w-3 h-3" style={{ background: cluster.color }} />
-              {LS_FAMILY_LABELS[f]}
-            </span>
-          );
-        })}
+      {/* Signal scale legend */}
+      <div className="flex items-center gap-2 mt-4 text-[10px] font-mono text-muted-foreground">
+        <span>lower</span>
+        {[0.05, 0.2, 0.4, 0.65, 1].map((t) => (
+          <span
+            key={t}
+            className="inline-block w-5 h-3"
+            style={{
+              background: sigDef.unit === 'count'
+                ? `hsl(220 ${Math.round(20 + t * 30)}% ${Math.round(40 - t * 14)}%)`
+                : `hsl(215 ${Math.round(30 + t * 40)}% ${Math.round(42 - t * 16)}%)`,
+            }}
+          />
+        ))}
+        <span>higher</span>
+        <span className="ml-3 inline-flex items-center gap-1.5">
+          <span className="inline-block w-5 h-3" style={{ background: 'hsl(220 8% 22%)' }} />
+          no data
+        </span>
       </div>
 
       {opened && (
@@ -376,13 +345,13 @@ function ClusterDetail({
         className="bg-background border border-border max-w-3xl w-full max-h-[85vh] overflow-hidden flex flex-col shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start gap-3 p-4 border-b border-border" style={{ background: cluster.color }}>
+        <div className="flex items-start gap-3 p-4 border-b border-border" style={{ background: signalColor(value, Math.max(1, value), sigDef.unit) }}>
           <div className="flex-1 text-white">
             <div className="text-[10px] font-mono uppercase tracking-widest opacity-80">
               {LS_FAMILY_LABELS[cluster.family]}
               {cluster.offFrame && ' · off-frame'}
             </div>
-            <h3 className="text-lg font-semibold leading-tight mt-0.5">{cluster.label}</h3>
+            <h3 className="heading-md leading-tight mt-0.5">{cluster.label}</h3>
             <div className="text-[11px] opacity-90 mt-1 font-mono">
               {sigDef.short}: <span className="font-bold">{formatValue(value, sigDef.unit)}</span>
               <span className="mx-2 opacity-60">·</span>

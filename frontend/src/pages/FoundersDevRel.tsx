@@ -32,7 +32,7 @@ import {
   ACQUIHIRE_STATS,
 } from '@/data/acquihireSignal';
 
-import { DEVREL_CLUSTERS } from '@/data/devrelSignal';
+import { DEVREL_CLUSTERS, DEVREL_PEOPLE } from '@/data/devrelSignal';
 
 
 // ─── Atlas tab ──────────────────────────────────────────────────────────────
@@ -127,15 +127,15 @@ function AtlasTab() {
         ))}
 
         {/* gap cards */}
-        {gaps.filter((c) => visible(c.cos)).length > 0 && (
+        {gaps.length > 0 && (
           <>
             <div className="col-span-full pt-6 pb-2 flex items-center gap-3">
               <span className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground/40">
-                Gaps — significant investment, no named advocate yet
+                Gaps — no named advocate identified in this survey
               </span>
               <div className="flex-1 h-px bg-border/50" />
             </div>
-            {gaps.filter((c) => visible(c.cos)).map((c) => (
+            {gaps.map((c) => (
               <div
                 key={c.id}
                 className="bg-card border border-dashed border-border/50 p-5 flex flex-col gap-3 opacity-60"
@@ -162,6 +162,50 @@ function AtlasTab() {
             ))}
           </>
         )}
+      </div>
+
+      {/* ── People — flat list, no filters ───────────────────────────────── */}
+      <div className="mt-10 border-t border-border pt-8">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/50">
+            Named advocates
+          </span>
+          <div className="flex-1 h-px bg-border/40" />
+          <span className="font-mono text-[9px] text-muted-foreground/30">{DEVREL_PEOPLE.length} people</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="border-b border-border/50">
+                {['Name', 'Company', 'Role', 'Cluster'].map(h => (
+                  <th key={h} className="text-left py-2 px-3 font-mono text-[9px] tracking-widest uppercase text-muted-foreground/40">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {DEVREL_PEOPLE.map((p) => (
+                <tr key={`${p.name}-${p.co}`} className="border-b border-border/20 hover:bg-secondary/30 transition-colors">
+                  <td className="py-2 px-3">
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                    >
+                      {p.name}
+                      <ExternalLink className="w-2.5 h-2.5 opacity-30" />
+                    </a>
+                  </td>
+                  <td className="py-2 px-3 text-xs text-muted-foreground">{p.co}</td>
+                  <td className="py-2 px-3 text-xs text-muted-foreground/70">{p.role}</td>
+                  <td className="py-2 px-3 text-xs text-muted-foreground/50">{p.cluster}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -555,9 +599,9 @@ const FoundersDevRel = () => (
       <FounderToolkitNav />
 
       <PageHeader
-        eyebrow="Founder Toolkit · Tech Signals"
-        title="AI talent movements and developer platform signals"
-        subtitle="Two datasets: team acquisitions by AI companies (public announcements, 2023–2026) and Developer Advocate activity by vendor (editorial survey, May 2026)."
+        eyebrow="Founder Toolkit · Tech"
+        title="AI talent movements and Developer Advocate activity"
+        subtitle="Two datasets: team acquisitions by AI companies (public announcements, 2023–2026) and Developer Advocate content by vendor (editorial survey, May 2026)."
       />
 
       <Tabs defaultValue="acquihires" className="mt-8">

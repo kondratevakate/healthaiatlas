@@ -393,6 +393,106 @@ describe('design-system: color palette', () => {
   });
 });
 
+// ─── 2d. BADGE / TINT CONTRAST ──────────────────────────────────────────────
+//
+// Tailwind shades 100/200/300/400 of a hue are designed as TEXT on dark
+// backgrounds or as BACKGROUND on light. Using them as text on a low-alpha
+// tint of the same hue over the site's default white `--background` drops
+// below WCAG AA (4.5:1).
+//
+// Anti-pattern caught here:
+//   bg-emerald-500/15 text-emerald-300          ← unreadable on light
+//
+// Required shape when a low-alpha tint is used as the badge fill:
+//   bg-emerald-500/15 text-emerald-700 dark:text-emerald-300
+//
+// History: 2026-05-30 the Jobs page badges (Clinical AI, Pathology AI, etc.)
+// shipped with the dark-mode-only palette and were illegible against the
+// default light background. The remote-status pills had the same bug.
+
+describe('design-system: badge contrast', () => {
+  const TAILWIND_HUES =
+    'slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose';
+
+  // Per-line scanning matches the convention of the typography rules above
+  // and works equally well for className attributes AND for class-lookup
+  // tables (e.g. CATEGORY_COLOR maps in Jobs.tsx). In this codebase Tailwind
+  // class strings live on a single source line — multi-line className via
+  // `cn(...)` still puts each string literal on its own line.
+
+  const LIGHT_TEXT_RE = new RegExp(`\\btext-(${TAILWIND_HUES})-(100|200|300|400)(?:/\\d+)?\\b`, 'g');
+  const DARK_TEXT_RE  = new RegExp(`\\btext-(${TAILWIND_HUES})-(600|700|800|900|950)(?:/\\d+)?\\b`, 'g');
+
+  // Allowlist: files where light text shades are intentional because the
+  // background is guaranteed dark (modal overlays, inverted heroes) OR the
+  // shade is used as a categorical signal accent rather than a badge fill.
+  // Add new entries with a one-line justification — bare additions revert.
+  const LIGHT_TEXT_ALLOWLIST = new Set<string>([
+    // Editorial signal-type accents (blue=tech, red=dead-valley, green=region).
+    // Already exempt from RAW_PALETTE_ALLOWLIST (§2b) for the same reason —
+    // categorical color encoding inside the editorial card surface, not a badge.
+    'pages/Founders.tsx',
+    // DevRel timeline event-type accents — categorical color encoding for
+    // hire/move/launch/content/gap on a dark card; same reason as Founders.tsx.
+    'pages/FoundersDevRel.tsx',
+    // shadcn boilerplate — the destructive variant gives the toast a dark
+    // red background, so `group-[.destructive]:text-red-300` reads against
+    // dark red, not against the site default white. Do not modify.
+    'components/ui/toast.tsx',
+  ]);
+
+  it('low-light text shades (text-X-100..400) are paired with a dark sibling on the same line', () => {
+    const offenders: string[] = [];
+    for (const f of allTsx) {
+      if (LIGHT_TEXT_ALLOWLIST.has(rel(f))) continue;
+      const src = stripCommentsOnly(readFileSync(f, 'utf8'));
+      const lines = src.split('\n');
+      lines.forEach((line, i) => {
+        // Collect every light-shade text hue used in BASE (no dark: prefix)
+        // and every dark-shade text hue present anywhere on the same line.
+        const lightHues = new Set<string>();
+        const darkHues  = new Set<string>();
+        for (const m of line.matchAll(LIGHT_TEXT_RE)) {
+          // m.index points at the start of the match; check the 6 chars before
+          // to see if it's `dark:`-prefixed (those apply only in dark mode and
+          // are fine as long as a base dark shade exists for the same hue).
+          const idx = m.index ?? 0;
+          const isDarkPrefixed = line.slice(Math.max(0, idx - 5), idx) === 'dark:';
+          if (!isDarkPrefixed) lightHues.add(m[1]);
+        }
+        if (lightHues.size === 0) return;
+        // For dark shades, ANY occurrence on the line (with or without
+        // `dark:` prefix) counts as a pair — what matters is that a dark
+        // shade is reachable in light mode. In Tailwind, an un-prefixed
+        // dark-shade token applies in BOTH modes, so it pairs with the light
+        // shade automatically.
+        for (const m of line.matchAll(DARK_TEXT_RE)) {
+          const idx = m.index ?? 0;
+          const isDarkPrefixed = line.slice(Math.max(0, idx - 5), idx) === 'dark:';
+          if (!isDarkPrefixed) darkHues.add(m[1]);
+        }
+        for (const hue of lightHues) {
+          if (!darkHues.has(hue)) {
+            offenders.push(
+              `${rel(f)}:${i + 1}  text-${hue}-{1xx..4xx} without a paired text-${hue}-{6xx..9xx} for light mode\n` +
+              `    ${line.trim().slice(0, 160)}`,
+            );
+          }
+        }
+      });
+    }
+    expect(
+      offenders,
+      `Light Tailwind text shades (1xx..4xx) are designed for dark backgrounds.\n` +
+        `On the site's default white background they fall below WCAG AA (4.5:1).\n\n` +
+        `Fix: pair the light shade with a dark sibling so light mode reads correctly.\n` +
+        `  Before: text-emerald-300\n` +
+        `  After:  text-emerald-700 dark:text-emerald-300\n\n` +
+        offenders.join('\n'),
+    ).toEqual([]);
+  });
+});
+
 // ─── 3. SPACING & SECTION SEPARATION ───────────────────────────────────────
 
 describe('design-system: spacing', () => {
@@ -673,5 +773,76 @@ describe('design-system: page headers', () => {
     const src = readFileSync(join(PAGES_DIR, 'Directory.tsx'), 'utf8');
     expect(src).not.toMatch(/Back to Directory/);
     expect(src).toMatch(/nav\.domains/);
+  });
+});
+
+// ─── 9. FILTER CHIP ↔ DATA MARK COLOR CONTRACT ──────────────────────────────
+//
+// When a component renders categorical filter chips (buttons that filter a
+// visualisation by category) AND colors those categories in the visualisation,
+// BOTH must derive their color from the SAME exported map. Duplicating colors
+// in two places (e.g. a TUMOR_EMOJI constant in the component vs ONCO_TUMOR_META
+// in the data file) causes silent drift — the chip shows one hue, the bubble
+// another.
+//
+// Rule: a TSX file that imports a categorical COLOR map from a data module
+// must NOT also declare a local Record/object whose keys overlap with that map.
+// Instead the component must derive the chip color directly from the imported map.
+//
+// Currently enforced for oncology/LandscapeView.tsx and the ONCO_TUMOR_META map.
+// Extend CHIP_COLOR_PAIRS when new domain hubs adopt the same pattern.
+
+describe('design-system: filter chip ↔ data mark color contract', () => {
+  // Each pair: { component file (relative to src/), data export that owns colors }
+  const CHIP_COLOR_PAIRS = [
+    {
+      component: 'components/oncology/LandscapeView.tsx',
+      // The canonical color map for this domain.
+      canonicalExport: 'ONCO_TUMOR_META',
+      // Local Record declarations whose keys might duplicate the canonical map.
+      // If any of these strings appear as a top-level `const XXXXXX` in the
+      // component file it means the author introduced a shadow map.
+      forbiddenLocalMaps: ['TUMOR_EMOJI', 'TUMOR_COLORS', 'TUMOR_META'],
+    },
+  ];
+
+  it('filter chip color maps are imported from the data module, not redeclared locally', () => {
+    const offenders: string[] = [];
+    for (const pair of CHIP_COLOR_PAIRS) {
+      const full = join(PROJECT_ROOT, pair.component);
+      if (!existsSync(full)) {
+        offenders.push(`${pair.component} — FILE NOT FOUND`);
+        continue;
+      }
+      const src = stripCommentsOnly(readFileSync(full, 'utf8'));
+
+      // Must import the canonical map.
+      if (!src.includes(pair.canonicalExport)) {
+        offenders.push(
+          `${pair.component} — does not import '${pair.canonicalExport}'. ` +
+            `Filter chip colors must derive from the canonical data export.`,
+        );
+      }
+
+      // Must NOT re-declare a local shadow map.
+      for (const forbidden of pair.forbiddenLocalMaps) {
+        // Match: `const FORBIDDEN` or `const FORBIDDEN:` at any indentation.
+        if (new RegExp(`\\bconst\\s+${forbidden}\\b`).test(src)) {
+          offenders.push(
+            `${pair.component} — declares local '${forbidden}'. ` +
+              `This duplicates '${pair.canonicalExport}' and will drift. ` +
+              `Remove it and read from the canonical map instead.`,
+          );
+        }
+      }
+    }
+    expect(
+      offenders,
+      `Filter chip colors must come from the same source as the data marks they filter.\n` +
+        `Redeclaring a local color/emoji map next to an imported canonical map causes\n` +
+        `silent drift (chip hue ≠ bubble hue). Fix: remove the local map and read\n` +
+        `from the canonical data export.\n\n` +
+        offenders.join('\n'),
+    ).toEqual([]);
   });
 });

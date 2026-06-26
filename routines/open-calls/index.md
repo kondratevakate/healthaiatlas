@@ -38,3 +38,4 @@
 - 2026-06-23 — 5 calls (0 UAE, 0 MENA, 4 global, 0 accelerators, 1 CFP)
 - 2026-06-24 — 5 calls (0 UAE, 0 MENA, 3 global, 1 accelerator, 1 CFP)
 - 2026-06-25 — 5 calls (0 UAE, 1 MENA, 2 global, 1 accelerator, 1 CFP)
+- 2026-06-26 — 4 calls (0 UAE, 0 MENA, 2 global, 0 accelerators, 2 CFPs)

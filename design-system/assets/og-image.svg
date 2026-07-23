@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+
+  <rect width="1200" height="630" fill="#ffffff"></rect>
+
+
+  <g transform="translate(320 315) scale(4.2)">
+    <g transform="translate(-50 -50)">
+
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#000" stroke-width="0.6" opacity="0.08"></circle>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#000" stroke-width="0.7" opacity="0.11"></circle>
+      <circle cx="50" cy="50" r="27" fill="none" stroke="#000" stroke-width="0.85" opacity="0.16"></circle>
+      <circle cx="50" cy="50" r="20" fill="none" stroke="#000" stroke-width="1.0" opacity="0.24"></circle>
+      <circle cx="50" cy="50" r="12" fill="none" stroke="#000" stroke-width="1.2" opacity="0.38"></circle>
+
+
+      <circle cx="50" cy="50" r="1.6" fill="#000"></circle>
+
+
+
+      <circle cx="32.68" cy="40" r="1.6" fill="#000"></circle>
+
+      <circle cx="54.69" cy="23.41" r="1.6" fill="#000"></circle>
+
+      <circle cx="81.95" cy="38.37" r="1.6" fill="#000"></circle>
+
+      <circle cx="63.5" cy="73.38" r="1.6" fill="#000"></circle>
+
+      <circle cx="30" cy="84.64" r="1.6" fill="#000"></circle>
+
+      <circle cx="33" cy="20.56" r="1.6" fill="#000"></circle>
+    </g>
+  </g>
+
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" fill="#000">
+
+    <text x="640" y="240" font-size="18" font-weight="500" letter-spacing="3" fill="#555">
+      RESEARCH NAVIGATOR
+    </text>
+
+
+    <text x="640" y="310" font-size="72" font-weight="600" letter-spacing="-1">
+      HealthAI Atlas
+    </text>
+
+
+    <text x="640" y="370" font-size="28" font-weight="400" fill="#444">
+      UAE Healthcare AI Navigator
+    </text>
+
+
+    <line x1="640" y1="430" x2="740" y2="430" stroke="#000" stroke-width="1.2"></line>
+    <text x="640" y="475" font-size="18" font-weight="400" fill="#666">
+      Founders · Job Seekers · Businesses · Clinicians
+    </text>
+    <text x="640" y="560" font-size="16" font-weight="500" letter-spacing="1" fill="#888">
+      healthaiatlas
+    </text>
+  </g>
+</svg>

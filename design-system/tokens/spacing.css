@@ -1,0 +1,11 @@
+:root{
+  --spacing: 0.25rem;
+  --radius: 0rem; /* system-wide: square corners, no exceptions */
+  --container-padding: 1rem;
+  --container-padding-sm: 1.5rem;
+  --container-padding-lg: 2rem;
+  --container-max: 1400px;
+}
+.container{ width: 100%; max-width: var(--container-max); margin: 0 auto; padding-left: var(--container-padding); padding-right: var(--container-padding); }
+@media (min-width: 640px){ .container{ padding-left: var(--container-padding-sm); padding-right: var(--container-padding-sm); } }
+@media (min-width: 1024px){ .container{ padding-left: var(--container-padding-lg); padding-right: var(--container-padding-lg); } }

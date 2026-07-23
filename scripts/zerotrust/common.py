@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import os
 import re
 from datetime import date
 from pathlib import Path
@@ -14,6 +15,27 @@ from .schema import (
     ENTITY_COLS, CLAIM_COLS, SOURCE_COLS, QUARANTINE_COLS,
     as_row,
 )
+
+# ─── data directory ────────────────────────────────────
+# The zerotrust CSV / JSON intermediates live OUTSIDE the repo — they are
+# working artifacts, not committed source. Historically every script hardcoded
+# the maintainer's local Windows path (C:\\Projects\\data\\aiatls\\zerotrust), so the
+# pipeline only ran on one machine. Centralize it here and let the environment
+# override it, so any contributor can point ZEROTRUST_DATA_DIR at their own dir.
+# The default preserves the legacy path, so existing maintainer runs are
+# unaffected.
+
+_DEFAULT_DATA_DIR = Path(r"C:\Projects\data\aiatls\zerotrust")
+
+
+def data_dir(*sub: str) -> Path:
+    """Canonical location of the zerotrust CSV/JSON intermediates.
+
+    Override with the ZEROTRUST_DATA_DIR environment variable. Optional
+    positional args are joined as sub-paths, e.g. data_dir('from_airtable').
+    """
+    base = Path(os.environ.get("ZEROTRUST_DATA_DIR") or _DEFAULT_DATA_DIR)
+    return base.joinpath(*sub) if sub else base
 
 # ─── slug / ID ────────────────────────────────────────────────────────────────
 

@@ -789,20 +789,25 @@ describe('design-system: page headers', () => {
 // must NOT also declare a local Record/object whose keys overlap with that map.
 // Instead the component must derive the chip color directly from the imported map.
 //
-// Currently enforced for oncology/LandscapeView.tsx and the ONCO_TUMOR_META map.
+// Enforced for the AI Life Sciences Landscape, whose filter chips and bubbles
+// both read color from LS_CLUSTERS (the canonical per-cluster color source).
 // Extend CHIP_COLOR_PAIRS when new domain hubs adopt the same pattern.
+//
+// NOTE: oncology/LandscapeView.tsx still uses a local TUMOR_EMOJI cue and has
+// NOT been migrated to a canonical color map — intentionally out of scope here.
 
 describe('design-system: filter chip ↔ data mark color contract', () => {
   // Each pair: { component file (relative to src/), data export that owns colors }
   const CHIP_COLOR_PAIRS = [
     {
-      component: 'components/oncology/LandscapeView.tsx',
-      // The canonical color map for this domain.
-      canonicalExport: 'ONCO_TUMOR_META',
+      component: 'components/ai-life-sciences/LandscapeView.tsx',
+      // The canonical color source for this domain — clusters carry `.color`,
+      // consumed by both the family chips and the swimlane bubbles.
+      canonicalExport: 'LS_CLUSTERS',
       // Local Record declarations whose keys might duplicate the canonical map.
-      // If any of these strings appear as a top-level `const XXXXXX` in the
-      // component file it means the author introduced a shadow map.
-      forbiddenLocalMaps: ['TUMOR_EMOJI', 'TUMOR_COLORS', 'TUMOR_META'],
+      // If any of these appears as a top-level `const XXXXXX`, the author
+      // introduced a shadow color/emoji map that will drift from LS_CLUSTERS.
+      forbiddenLocalMaps: ['FAMILY_COLORS', 'CLUSTER_COLORS', 'FAMILY_EMOJI'],
     },
   ];
 

@@ -75,7 +75,7 @@ Example minimal claim entry:
 3. **Make the change** following the schema above.
 4. **Run `npm run test --prefix frontend`** to verify nothing is broken.
 5. **Open a PR** linking the issue.
-6. **PR will be reviewed by the [Chief Community Officer agent](.claude/agents/chief-community-officer.md) for triage** — evidence URLs verified, schema compliance checked, region/confidence tags validated. Then a maintainer reviews substance.
+6. **CI runs automatically on your PR** — referential-integrity and source-URL honesty checks (`frontend/src/data/__tests__/*.integrity.test.ts`) verify that every `src` is either empty or a real `https://` URL and that all cross-references resolve. A maintainer then triages: evidence URLs spot-checked, schema compliance and region/confidence tags validated, substance reviewed.
 
 PRs without evidence URLs or with banned content patterns will be closed with feedback explaining why.
 

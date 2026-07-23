@@ -23,7 +23,7 @@ For positioning and the public-layer / professional-tier framing, see [`docs/str
 | Vulnerability disclosure policy (`SECURITY.md`) | ✅ Shipped |
 | Code of Conduct (Contributor Covenant 2.1) | ✅ Shipped |
 | Public methodology documentation | ⏭️ Next |
-| Three project sub-agents in `.claude/agents/` | ✅ Shipped |
+| CI data-integrity guards (referential + source-URL honesty) | ✅ Shipped |
 
 ## What's next on the public layer
 

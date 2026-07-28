@@ -206,7 +206,7 @@ const FoundersContext = () => {
           </TabsList>
 
           <TabsContent value="healthcare" className="mt-8">
-            <div className="max-w-3xl mb-8 border-l-4 border-primary/60 pl-4">
+            <div className="max-w-3xl mb-8 callout">
               <p className="text-base italic text-foreground/80">
                 {SIDES.find((s) => s.id === 'healthcare')!.oneLiner}
               </p>
@@ -294,7 +294,7 @@ const FoundersContext = () => {
           </TabsContent>
 
           <TabsContent value="ai" className="mt-8">
-            <div className="max-w-3xl mb-8 border-l-4 border-primary/60 pl-4">
+            <div className="max-w-3xl mb-8 callout">
               <p className="text-base italic text-foreground/80">
                 AI architectures plotted against the revenue actually attributed to
                 them. Bubble area = visible $ tied to the architecture; vertical

@@ -11,7 +11,7 @@ export function PersonaSection() {
     <section className="py-16 md:py-24 border-t border-border">
       <div className="container">
         <div className="mb-12">
-          <h2 className="heading-serif section-marker mb-4">{t('persona.sectionTitle')}</h2>
+          <h2 className="heading-section section-marker mb-4">{t('persona.sectionTitle')}</h2>
           <p className="text-body text-muted-foreground max-w-2xl">
             {t('persona.sectionSubtitle')}
           </p>

@@ -202,7 +202,7 @@ function ArchDetail({ archId, onClose }: { archId: string; onClose: () => void }
         target="_blank"
         rel="noopener noreferrer"
         className="block group"
-        style={{ borderLeft: `3px solid ${color}`, paddingLeft: 10 }}
+        style={{ borderLeft: `2px solid ${color}`, paddingLeft: 10 }}
       >
         <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
           Canonical paper

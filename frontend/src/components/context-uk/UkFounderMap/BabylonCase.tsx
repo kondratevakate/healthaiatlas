@@ -4,7 +4,7 @@ import { UK_BABYLON_CASE } from '@/data/ukMarketReality';
 export function BabylonCase() {
   return (
     <div className="space-y-4">
-      <div className="border-l-4 border-destructive bg-destructive/5 p-4 space-y-2">
+      <div className="border-l-2 border-destructive bg-destructive/5 p-4 space-y-2">
         <p className="text-[12px] text-foreground/90 leading-relaxed max-w-3xl">
           <strong>Babylon is the bridge case to US SPAC era — not a single-cause AI-quality story.</strong>{' '}
           The compressed chain: Rwanda contract (2016) → NHS GP at Hand London launch (Nov 2017) →

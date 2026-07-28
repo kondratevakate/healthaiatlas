@@ -163,7 +163,7 @@ const Founders = () => (
         <p className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-3">
           Founder Toolkit
         </p>
-        <h1 className="heading-serif mb-4">
+        <h1 className="heading-section mb-4">
           What every healthcare-AI founder needs to know — assembled.
         </h1>
         <p className="text-base text-muted-foreground leading-relaxed">

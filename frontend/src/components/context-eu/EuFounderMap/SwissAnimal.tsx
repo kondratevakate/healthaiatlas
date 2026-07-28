@@ -25,7 +25,7 @@ const SWISS_ACCENT = 'hsl(0 75% 45%)'; // Swiss flag red
 export function SwissAnimal() {
   return (
     <div
-      className="border-l-4 pl-5 pr-4 py-4 space-y-4"
+      className="border-l-2 pl-5 pr-4 py-4 space-y-4"
       style={{
         borderColor: SWISS_ACCENT,
         background: `linear-gradient(135deg, ${SWISS_ACCENT.replace(')', ' / 0.04)')} 0%, transparent 100%)`,

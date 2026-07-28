@@ -241,7 +241,7 @@ const FoundersAcquihires = () => {
           <p className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-3">
             Founder Toolkit · Acqui-hire Signal
           </p>
-          <h1 className="heading-serif mb-4">
+          <h1 className="heading-section mb-4">
             {ACQUIHIRE_STATS.totalDeals} deals.{' '}
             {ACQUIHIRE_STATS.topAcquirers.length} acquirers.{' '}
             What big AI couldn't build fast enough.

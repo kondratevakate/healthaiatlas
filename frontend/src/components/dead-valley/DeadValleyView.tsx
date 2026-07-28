@@ -187,7 +187,7 @@ export function DeadValleyView() {
         </Link>
       </section>
 
-      <section className="mb-8 max-w-3xl border-l-4 border-primary/60 pl-4">
+      <section className="mb-8 max-w-3xl callout">
         <h2 className="heading-lg mb-3">Read this for patterns, not nostalgia</h2>
         <p className="text-body text-foreground/90 mb-4">
           The temptation with a graveyard like this is to read it for individual stories:

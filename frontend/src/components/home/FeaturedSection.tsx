@@ -40,7 +40,7 @@ export function FeaturedSection() {
         {/* Entry Points */}
         <div>
           <div className="flex items-center justify-between mb-8">
-            <h2 className="heading-serif-sm">{t('section.entryPoints')}</h2>
+            <h2 className="heading-section-sm">{t('section.entryPoints')}</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {entryPoints.map((entry) => {
@@ -70,7 +70,7 @@ export function FeaturedSection() {
         {/* Featured Players */}
         <div>
           <div className="flex items-center justify-between mb-8">
-            <h2 className="heading-serif-sm">{t('section.featuredPlayers')}</h2>
+            <h2 className="heading-section-sm">{t('section.featuredPlayers')}</h2>
             <Link 
               to="/directory" 
               className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"

@@ -54,7 +54,7 @@ export function DiagnosticView() {
   return (
     <div className="space-y-4">
       {/* Intro / framing */}
-      <div className="border-l-4 border-primary bg-secondary/30 p-4 space-y-2">
+      <div className="border-l-2 border-primary bg-secondary/30 p-4 space-y-2">
         <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
           Self-Assessment for clinics
         </div>

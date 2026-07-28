@@ -102,7 +102,7 @@ const FoundersDeadValley = () => {
                   key={bucket.uc}
                   onClick={() => setActiveBucket(isActive ? null : bucket.uc)}
                   className={cn(
-                    'group text-left border bg-background p-5 transition-all',
+                    'group text-left border bg-background p-5 transition-colors',
                     isActive
                       ? 'border-primary shadow-md'
                       : 'border-border hover:border-foreground/40',
@@ -208,7 +208,7 @@ const FoundersDeadValley = () => {
         <section className="mb-16">
           <Link
             to="/founders/context?side=healthcare&region=uk"
-            className="block border border-primary/30 bg-primary/5 p-6 hover:border-primary hover:shadow-md transition-all group"
+            className="block border border-primary/30 bg-primary/5 p-6 hover:border-primary hover:shadow-md transition-[border-color,box-shadow] group"
           >
             <div className="text-[10px] uppercase tracking-widest font-mono text-primary mb-2">
               Deep dive · 6 sections
@@ -230,7 +230,7 @@ const FoundersDeadValley = () => {
         </section>
 
         {/* Editorial framing — what readers should take away. Brand voice. */}
-        <section className="mb-16 max-w-3xl border-l-4 border-primary/60 pl-4">
+        <section className="mb-16 max-w-3xl callout">
           <h2 className="heading-lg mb-3">Read this for patterns, not nostalgia</h2>
           <p className="text-body text-foreground/90 mb-4">
             The temptation with a graveyard like this is to read it for individual stories:

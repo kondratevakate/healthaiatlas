@@ -122,7 +122,7 @@ function EraSection({ era, events }: { era: (typeof US_ERAS)[number]; events: US
     <section className="space-y-6">
       {/* Era header — left-rail color + label + year range */}
       <header
-        className="border-l-4 pl-5 pt-4 pb-3 mt-4"
+        className="border-l-2 pl-5 pt-4 pb-3 mt-4"
         style={{ borderColor: `hsl(${accent})` }}
       >
         <div className="flex items-baseline justify-between gap-4 mb-2">
@@ -154,7 +154,7 @@ function EraSection({ era, events }: { era: (typeof US_ERAS)[number]; events: US
 function WeAreHereBanner() {
   return (
     <motion.div
-      className="border-l-4 pl-5 pr-5 py-5 mb-10 border-t border-b"
+      className="border-l-2 pl-5 pr-5 py-5 mb-10 border-t border-b"
       style={{
         borderLeftColor: 'hsl(14 90% 55%)',
         borderTopColor: 'hsl(14 90% 55% / 0.35)',

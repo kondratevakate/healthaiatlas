@@ -267,7 +267,7 @@ const About = () => {
             decision-ready data infrastructure.
           </p>
 
-          <p className="border-l-4 border-primary/60 pl-4 italic text-foreground">
+          <p className="callout italic text-foreground">
             The principle guiding HealthAI Atlas: the knowledge stays open; the tooling for professional
             use sustains the work.
           </p>

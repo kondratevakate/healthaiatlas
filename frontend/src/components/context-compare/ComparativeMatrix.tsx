@@ -45,7 +45,7 @@ export function ComparativeMatrix() {
         {REGIONS.map((r) => (
           <article
             key={r}
-            className="border-l-4 pl-4 py-3 bg-background"
+            className="border-l-2 pl-4 py-3 bg-background"
             style={{ borderColor: REGION_ACCENTS[r] }}
           >
             <div className="flex items-baseline gap-2 mb-1">

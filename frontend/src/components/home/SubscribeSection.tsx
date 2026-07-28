@@ -120,7 +120,7 @@ export function SubscribeSection() {
           </span>
         </div>
 
-        <h2 className="heading-serif-sm">
+        <h2 className="heading-section-sm">
           {t('subscribe.title')}
         </h2>
 

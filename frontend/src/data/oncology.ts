@@ -21,18 +21,33 @@ export const ONCO_STATS = [
   { n: '11', l: 'Decision Pts' },
 ];
 
-export const ONCO_TUMOR_COLORS: Record<string, string> = {
-  breast: 'hsl(340 60% 65%)',
-  lung: 'hsl(215 80% 65%)',
-  colorectal: 'hsl(25 50% 55%)',
-  colorectal_mCRC: 'hsl(25 50% 55%)',
-  colon: 'hsl(25 50% 55%)',
-  prostate: 'hsl(var(--primary))',
-  hematology: 'hsl(250 60% 70%)',
-  'pan-cancer': 'hsl(160 60% 50%)',
-  pancreatic: 'hsl(30 80% 55%)',
-  cervical: 'hsl(280 40% 70%)',
+// Single source of truth for tumor categorical encoding.
+// Filter chips, bubble fills and any legend MUST read from here — never
+// duplicate the color or substitute an OS-rendered emoji as the visual cue.
+// (Emoji colors are font-dependent and drift from the data palette.)
+export interface OncoTumorMeta {
+  label: string;
+  color: string;
+}
+
+export const ONCO_TUMOR_META: Record<string, OncoTumorMeta> = {
+  'pan-cancer':     { label: 'pan-cancer',     color: 'hsl(160 60% 50%)' },
+  lung:             { label: 'lung',           color: 'hsl(215 80% 55%)' },
+  breast:           { label: 'breast',         color: 'hsl(340 60% 60%)' },
+  prostate:         { label: 'prostate',       color: 'hsl(265 55% 55%)' },
+  colorectal:       { label: 'colorectal',     color: 'hsl(25 60% 45%)'  },
+  colorectal_mCRC:  { label: 'colorectal',     color: 'hsl(25 60% 45%)'  },
+  colon:            { label: 'colorectal',     color: 'hsl(25 60% 45%)'  },
+  hematology:       { label: 'hematology',     color: 'hsl(250 60% 65%)' },
+  pancreatic:       { label: 'pancreatic',     color: 'hsl(30 85% 50%)'  },
+  cervical:         { label: 'cervical',       color: 'hsl(290 45% 60%)' },
 };
+
+// Back-compat: existing callers still import ONCO_TUMOR_COLORS.
+// Derived from META so the two cannot drift.
+export const ONCO_TUMOR_COLORS: Record<string, string> = Object.fromEntries(
+  Object.entries(ONCO_TUMOR_META).map(([k, v]) => [k, v.color])
+);
 
 export const ONCO_DP_ORDER = [
   'drug_discovery','biomarker_scoring','molecular_profiling','diagnosis',
@@ -68,11 +83,11 @@ export const ONCO_ET_LABELS: Record<string, string> = {
 };
 
 export const ONCO_GRP_COLORS: Record<string, string> = {
-  'R&D': 'hsl(250 60% 70%)',
-  'Trials': 'hsl(45 90% 60%)',
-  'Patient': 'hsl(160 60% 50%)',
-  'Evidence': 'hsl(215 80% 65%)',
-  'Ops': 'hsl(30 80% 55%)',
+  'R&D':      'hsl(250 55% 62%)',   // muted violet
+  'Trials':   'hsl(38  75% 48%)',   // amber-brown, not garish yellow
+  'Patient':  'hsl(168 45% 40%)',   // teal-dark, legible on white
+  'Evidence': 'hsl(215 65% 55%)',   // steel blue
+  'Ops':      'hsl(28  70% 48%)',   // warm orange-brown
 };
 
 export const ONCO_BV_ORDER = [

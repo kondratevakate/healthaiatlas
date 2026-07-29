@@ -231,11 +231,15 @@ export function PharmaMatrixView() {
           onVendorClick={setVendorSelection}
         />
       ) : (
-      <div className="overflow-x-auto">
+      // max-h + overflow-y enables sticky thead inside the scroll container.
+      // overflow-x-auto handles wide tables; both axes on the same element so
+      // sticky left-0 (first column) and sticky top-0 (header) both work.
+      <div className="overflow-x-auto overflow-y-auto max-h-[72vh] border border-border">
         <table className="border-collapse w-full">
-          <thead>
+          <thead className="sticky top-0 z-20">
+            {/* Group row */}
             <tr>
-              <td className="p-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-background sticky left-0 z-10" />
+              <td className="p-1.5 bg-background sticky left-0 z-30 min-w-[112px]" />
               {groups.map((g, i) => (
                 <td
                   key={i}
@@ -250,16 +254,32 @@ export function PharmaMatrixView() {
                 </td>
               ))}
             </tr>
+            {/* Column-label row — writing-mode on the <th> itself so the
+                browser's table layout algorithm knows the cell is rotated.
+                Putting it on an inner span causes the th to stay wide. */}
             <tr>
-              <th className="text-left text-xs font-bold p-1.5 text-foreground bg-background sticky left-0 z-10 min-w-[100px]">Pharma</th>
-              {visibleBv.map((bv) => (
-                <th
-                  key={bv}
-                  className="text-center text-[10px] font-medium text-muted-foreground p-1 max-w-[80px] break-words"
-                >
-                  {ONCO_BV_LABELS[bv] ?? bv}
-                </th>
-              ))}
+              <th className="text-left text-xs font-bold p-1.5 text-foreground bg-background sticky left-0 z-30 min-w-[112px]">
+                Pharma
+              </th>
+              {visibleBv.map((bv) => {
+                const grpColor = ONCO_GRP_COLORS[ONCO_BV_GROUPS[bv]];
+                return (
+                  <th
+                    key={bv}
+                    className="bg-background p-2 text-[10px] font-medium"
+                    style={{
+                      writingMode: 'vertical-rl',
+                      transform: 'rotate(180deg)',
+                      height: '7rem',
+                      whiteSpace: 'nowrap',
+                      verticalAlign: 'bottom',
+                      color: grpColor ?? 'hsl(var(--muted-foreground))',
+                    }}
+                  >
+                    {ONCO_BV_LABELS[bv] ?? bv}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>

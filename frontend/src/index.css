@@ -83,7 +83,7 @@
     --chart-5: 27 87% 67%;
     --sidebar: 0 0% 98%;
     --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-serif: 'Lora', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
     --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     --shadow-2xs: 1px 1px 0px 0px #000000;
     --shadow-xs: 2px 2px 0px 0px #000000;
@@ -324,4 +324,33 @@
   transform-box: fill-box;
   transform-origin: center;
   animation: atlas-radar-ring 3.2s ease-out infinite;
+}
+
+/* ── Scroll reveal ──────────────────────────────────────────────────────────
+   Soft fade + rise for elements marked `data-reveal`, driven by the
+   useScrollReveal hook (src/hooks/use-scroll-reveal.tsx). The hook flips the
+   attribute to `data-reveal="shown"` when the element enters the viewport.
+   Timing/easing live here so every page shares the same motion. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+[data-reveal='shown'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Accessibility: no motion for users who ask for none. The hook also reveals
+   instantly, but this guards against any pre-hook flash of hidden content. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

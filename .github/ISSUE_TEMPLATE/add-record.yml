@@ -1,0 +1,90 @@
+name: "Add / correct a data record"
+description: "Propose a new organization, claim, or correction. Every factual record needs a primary-source URL."
+title: "[data]: <short description>"
+labels: ["data", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing to the open layer. Trust depends on every record being verifiable.
+        Fill this in and a maintainer will confirm scope before you invest in a PR. See
+        [`CONTRIBUTING.md`](../../CONTRIBUTING.md) for the full schema and banned-content rules.
+  - type: dropdown
+    id: record_type
+    attributes:
+      label: Record type
+      options:
+        - New organization / player
+        - New claim (assertion about a player)
+        - Correction to an existing record
+        - New conference / mentor / resource / launch
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: subject
+    attributes:
+      label: Subject
+      description: "The organization / player this record is about (and its id if it already exists)."
+      placeholder: "Example Clinic AE (example-clinic-ae)"
+    validations:
+      required: true
+  - type: textarea
+    id: assertion
+    attributes:
+      label: The assertion
+      description: "State the fact plainly. No marketing language ('world-leading', 'best-in-class' will be rejected)."
+      placeholder: "Deployed AI radiology triage in Q1 2026 across 3 facilities."
+    validations:
+      required: true
+  - type: input
+    id: evidence_url
+    attributes:
+      label: Evidence URL (primary source)
+      description: "A publicly accessible https:// URL backing the assertion. If you have no source, this record cannot be accepted — an empty src is honest, a guessed URL is not."
+      placeholder: "https://example.com/press-release-2026-01-15"
+    validations:
+      required: true
+  - type: dropdown
+    id: confidence
+    attributes:
+      label: Confidence
+      options:
+        - "high — primary source (company itself, regulatory filing, official health-authority record)"
+        - "medium — reputable secondary source (Reuters, Bloomberg, known industry publication)"
+        - "low — single-source rumor / contested claim (removed if not corroborated within 90 days)"
+    validations:
+      required: true
+  - type: dropdown
+    id: source_type
+    attributes:
+      label: Source type
+      options: [primary, regulatory, press, industry-report, interview, public-statement, social-media, other]
+    validations:
+      required: true
+  - type: input
+    id: source_date
+    attributes:
+      label: Source date
+      description: "When the cited source was published (YYYY-MM-DD)."
+      placeholder: "2026-01-15"
+    validations:
+      required: true
+  - type: dropdown
+    id: region
+    attributes:
+      label: Geographic region
+      options: [UAE, US, EU, MENA-other, global, not-applicable]
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Contribution rules
+      options:
+        - label: "The evidence URL is a real page I opened myself — not constructed, guessed, or pattern-matched."
+          required: true
+        - label: "This is not bulk-imported from LinkedIn / Crunchbase / PitchBook, and contains no patient-level or personal contact data."
+          required: true
+        - label: "I have read CONTRIBUTING.md and this fits the open layer (not the paid tier)."
+          required: true

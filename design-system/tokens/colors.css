@@ -1,0 +1,75 @@
+:root{
+  /* Base neutrals — warm white / true black, no tinted grays */
+  --background: 0 0% 100%; /* @kind color */
+  --foreground: 0 0% 0%; /* @kind color */
+  --card: 0 0% 100%; /* @kind color */
+  --card-foreground: 0 0% 0%; /* @kind color */
+  --popover: 0 0% 100%; /* @kind color */
+  --popover-foreground: 0 0% 0%; /* @kind color */
+
+  /* Primary = black. This system has no brand hue — monochrome by design. */
+  --primary: 0 0% 0%; /* @kind color */
+  --primary-foreground: 0 0% 100%; /* @kind color */
+  --secondary: 0 0% 96%; /* @kind color */
+  --secondary-foreground: 0 0% 0%; /* @kind color */
+  --muted: 0 0% 96%; /* @kind color */
+  --muted-foreground: 0 0% 45%; /* @kind color */
+  --accent: 0 0% 90%; /* @kind color */
+  --accent-foreground: 0 0% 0%; /* @kind color */
+  --destructive: 6 74% 52%; /* @kind color */
+  --destructive-foreground: 0 0% 98%; /* @kind color */
+
+  /* Status / semantic tokens — evidence badges, risk scores, regulatory
+     labels ONLY. Never used for category differentiation (categories are
+     monochrome + icon-differentiated). Calibrated to emerald-600 / amber-600
+     / blue-500. */
+  --success: 150 58% 40%; /* @kind color */
+  --warning: 38 85% 47%; /* @kind color */
+  --info: 211 72% 48%; /* @kind color */
+
+  --border: 0 0% 0%; /* @kind color */
+  --input: 0 0% 0%; /* @kind color */
+  --ring: 0 0% 0%; /* @kind color */
+
+  /* Footer — the one place a warm dark tone (not pure black) is used */
+  --footer: 30 20% 22%; /* @kind color */
+  --footer-foreground: 40 15% 90%; /* @kind color */
+
+  /* Monochrome grays used for category differentiation instead of hue */
+  --gray-1: 0 0% 35%; /* @kind color */
+  --gray-2: 0 0% 45%; /* @kind color */
+  --gray-3: 0 0% 55%; /* @kind color */
+  --gray-4: 0 0% 65%; /* @kind color */
+  --gray-5: 0 0% 75%; /* @kind color */
+
+  --sidebar-background: 40 20% 98%; /* @kind color */
+  --sidebar-foreground: 0 0% 0%; /* @kind color */
+  --sidebar-border: 0 0% 0%; /* @kind color */
+}
+
+.dark{
+  --background: 0 0% 0%; /* @kind color */
+  --foreground: 0 0% 100%; /* @kind color */
+  --card: 0 0% 0%; /* @kind color */
+  --card-foreground: 0 0% 100%; /* @kind color */
+  --popover: 0 0% 0%; /* @kind color */
+  --popover-foreground: 0 0% 100%; /* @kind color */
+  --primary: 0 0% 100%; /* @kind color */
+  --primary-foreground: 0 0% 0%; /* @kind color */
+  --secondary: 0 0% 15%; /* @kind color */
+  --secondary-foreground: 0 0% 100%; /* @kind color */
+  --muted: 0 0% 15%; /* @kind color */
+  --muted-foreground: 0 0% 65%; /* @kind color */
+  --accent: 0 0% 15%; /* @kind color */
+  --accent-foreground: 0 0% 100%; /* @kind color */
+  --destructive: 6 62% 45%; /* @kind color */
+  --destructive-foreground: 0 0% 100%; /* @kind color */
+  --success: 150 55% 58%; /* @kind color */
+  --warning: 38 82% 62%; /* @kind color */
+  --info: 211 78% 66%; /* @kind color */
+  --border: 0 0% 100%; /* @kind color */
+  --input: 0 0% 100%; /* @kind color */
+  --ring: 0 0% 100%; /* @kind color */
+  --footer: 0 0% 8%; /* @kind color */
+  --footer-foreground: 0 0% 90%; /* @kind color */
+}

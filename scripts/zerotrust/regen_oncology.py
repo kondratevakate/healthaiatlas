@@ -52,12 +52,15 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import re
 import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-CSV_DIR = Path(r"C:\Projects\data\aiatls\zerotrust")
+# Override with ZEROTRUST_DATA_DIR so this runs on any contributor's machine,
+# not just the maintainer's local disk. Default preserves the legacy path.
+CSV_DIR = Path(os.environ.get("ZEROTRUST_DATA_DIR") or r"C:\Projects\data\aiatls\zerotrust")
 OUT_TS = REPO_ROOT / "frontend" / "src" / "data" / "oncology.regenerated.ts"
 
 

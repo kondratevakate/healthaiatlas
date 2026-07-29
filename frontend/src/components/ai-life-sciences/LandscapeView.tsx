@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useResponsiveSvgWidth } from '@/hooks/use-responsive-svg-width';
 import {
   LS_BUBBLES,
@@ -20,9 +20,38 @@ const ORDERED_CLUSTERS = [...LS_CLUSTERS].sort((a, b) => {
   return a.id.localeCompare(b.id);
 });
 
+// ── Piecewise time scale ────────────────────────────────────────────────────
+// Event density is heavily skewed to 2019+. A linear scale wastes ~40% of the
+// width on the sparse 2014–2019 span. We give the early era a fixed slim share
+// and let the dense era breathe.
+const SCALE_MIN = 2014;
+const SCALE_BREAK = 2019;
+const SCALE_MAX = 2027;
+const EARLY_SHARE = 0.18; // 2014–2019 gets 18% of the plot width
+
+function timeToFrac(d: number): number {
+  const clamped = Math.max(SCALE_MIN, Math.min(SCALE_MAX, d));
+  if (clamped <= SCALE_BREAK) {
+    return ((clamped - SCALE_MIN) / (SCALE_BREAK - SCALE_MIN)) * EARLY_SHARE;
+  }
+  return (
+    EARLY_SHARE +
+    ((clamped - SCALE_BREAK) / (SCALE_MAX - SCALE_BREAK)) * (1 - EARLY_SHARE)
+  );
+}
+
+// Ticks: sparse in the compressed era, every year in the dense era.
+const YEAR_TICKS = [2014, 2016, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027];
+
+interface TooltipState {
+  bubbleIdx: number;
+  x: number; // viewport coords
+  y: number;
+}
+
 export function LandscapeView() {
   const [filter, setFilter] = useState<'all' | LSClusterFamily>('all');
-  const [hovered, setHovered] = useState<number | null>(null);
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null);
 
   const matchesFilter = (clusterId: string): boolean => {
     if (filter === 'all') return true;
@@ -42,14 +71,28 @@ export function LandscapeView() {
 
   const { ref: containerRef, width: containerW } = useResponsiveSvgWidth(900);
 
-  const minYear = 2014;
-  const maxYear = 2027;
-  const yearRange = maxYear - minYear;
   const rowH = 30;
   const leftW = 220;
+  const axisH = 26;
+  const padTop = 8;
   const chartW = Math.max(280, containerW - leftW - 24);
   const svgW = leftW + chartW + 20;
-  const svgH = visibleClusters.length * rowH + 50;
+  const plotH = visibleClusters.length * rowH;
+  const svgH = padTop + plotH + axisH;
+
+  const xOf = useCallback(
+    (d: number) => leftW + timeToFrac(d) * chartW,
+    [leftW, chartW],
+  );
+
+  const showTooltip = (bubbleIdx: number, e: React.MouseEvent) => {
+    setTooltip({ bubbleIdx, x: e.clientX, y: e.clientY });
+  };
+
+  const hoveredBubble = tooltip ? filtered[tooltip.bubbleIdx] : null;
+  const hoveredCluster = hoveredBubble
+    ? visibleClusters.find((c) => c.id === hoveredBubble.cluster)
+    : null;
 
   return (
     <div>
@@ -90,24 +133,26 @@ export function LandscapeView() {
       {/* Swimlane chart */}
       <div ref={containerRef} className="border border-border mb-6 overflow-x-auto">
         <svg width={svgW} height={svgH} className="block">
-          {/* Year grid */}
-          {Array.from({ length: yearRange + 1 }, (_, i) => minYear + i).map((yr) => {
-            const x = leftW + ((yr - minYear) / yearRange) * chartW;
+          {/* Year gridlines — inside plot only */}
+          {YEAR_TICKS.map((yr) => {
+            const x = xOf(yr);
             return (
-              <g key={yr}>
-                <line x1={x} y1={20} x2={x} y2={svgH} stroke="hsl(var(--border))" strokeWidth={0.5} />
-                {(yr % 2 === 0 || yr >= 2022) && (
-                  <text x={x} y={14} textAnchor="middle" className="fill-primary text-[10px] font-bold">
-                    {yr}
-                  </text>
-                )}
-              </g>
+              <line
+                key={`grid-${yr}`}
+                x1={x}
+                y1={padTop}
+                x2={x}
+                y2={padTop + plotH}
+                stroke="hsl(var(--border))"
+                strokeWidth={0.5}
+                opacity={yr <= SCALE_BREAK ? 0.35 : 0.6}
+              />
             );
           })}
 
           {/* Cluster rows */}
           {visibleClusters.map((cluster, i) => {
-            const y = i * rowH + 36;
+            const y = padTop + i * rowH + rowH / 2;
             return (
               <g key={cluster.id}>
                 {cluster.offFrame && (
@@ -129,13 +174,7 @@ export function LandscapeView() {
                   strokeWidth={0.5}
                   strokeDasharray={cluster.offFrame ? '1,3' : '2,4'}
                 />
-                <rect
-                  x={6}
-                  y={y - 6}
-                  width={8}
-                  height={12}
-                  fill={cluster.color}
-                />
+                <rect x={6} y={y - 6} width={8} height={12} fill={cluster.color} />
                 <text x={20} y={y + 4} className="fill-foreground text-[10px] font-medium">
                   {cluster.label.length > 30 ? cluster.label.substring(0, 28) + '…' : cluster.label}
                 </text>
@@ -143,85 +182,136 @@ export function LandscapeView() {
             );
           })}
 
-          {/* Bubbles */}
-          {filtered.map((b, i) => {
-            const rowIdx = visibleClusters.findIndex((c) => c.id === b.cluster);
-            if (rowIdx === -1) return null;
-            const cluster = visibleClusters[rowIdx];
-            const y = rowIdx * rowH + 36;
-            const x = leftW + ((b.d - minYear) / yearRange) * chartW;
-            if (x < leftW || x > svgW) return null;
-            const r = b.a > 0 ? Math.max(4, Math.min(22, Math.sqrt(b.a) * 0.85)) : 3.5;
-            const color = cluster.color;
-            const hasSrc = !!b.src;
-
+          {/* Year axis — below the plot */}
+          <line
+            x1={leftW}
+            y1={padTop + plotH}
+            x2={leftW + chartW}
+            y2={padTop + plotH}
+            stroke="hsl(var(--border))"
+            strokeWidth={1}
+          />
+          {YEAR_TICKS.map((yr) => {
+            const x = xOf(yr);
             return (
-              <g
-                key={i}
-                className="cursor-pointer"
-                onMouseEnter={() => setHovered(i)}
-                onMouseLeave={() => setHovered(null)}
-                onClick={() => hasSrc && window.open(b.src, '_blank')}
-              >
-                <circle
-                  cx={x}
-                  cy={y}
-                  r={r}
-                  fill={color}
-                  fillOpacity={hovered === i ? 0.75 : 0.45}
-                  stroke={color}
-                  strokeWidth={hasSrc ? 1.5 : 1}
-                  strokeDasharray={hasSrc ? undefined : '3,2'}
+              <g key={`axis-${yr}`}>
+                <line
+                  x1={x}
+                  y1={padTop + plotH}
+                  x2={x}
+                  y2={padTop + plotH + 4}
+                  stroke="hsl(var(--border))"
+                  strokeWidth={1}
                 />
-                {b.a >= 250 && (
-                  <text
-                    x={x}
-                    y={y + 3}
-                    textAnchor="middle"
-                    className="fill-white text-[7px] font-bold pointer-events-none"
-                  >
-                    ${b.a >= 1000 ? `${(b.a / 1000).toFixed(1)}B` : `${Math.round(b.a)}M`}
-                  </text>
-                )}
-                {hovered === i && (
-                  <foreignObject
-                    x={Math.min(x + r + 4, svgW - 290)}
-                    y={Math.max(0, y - 60)}
-                    width={280}
-                    height={150}
-                  >
-                    <div className="bg-background border border-border p-2 text-[10px] leading-tight shadow-lg">
-                      <div className="font-bold text-foreground">{b.c}</div>
-                      {b.p && <div className="text-primary text-[9px]">{b.p}</div>}
-                      <div className="text-muted-foreground mt-0.5 line-clamp-4">{b.desc}</div>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        <span className="text-[9px] px-1 border border-border bg-secondary">
-                          {LS_ET_LABELS[b.et] || b.et}
-                        </span>
-                        {b.a > 0 && (
-                          <span className="text-[9px] px-1 border border-primary/30 text-primary">
-                            ${b.a >= 1000 ? `${(b.a / 1000).toFixed(1)}B` : `${Math.round(b.a)}M`}
-                          </span>
-                        )}
-                        {b.geo && (
-                          <span className="text-[9px] px-1 border border-border text-muted-foreground">
-                            {b.geo}
-                          </span>
-                        )}
-                      </div>
-                      {hasSrc && (
-                        <div className="text-primary text-[9px] mt-1 font-semibold">
-                          🔗 Click to open source
-                        </div>
-                      )}
-                    </div>
-                  </foreignObject>
-                )}
+                <text
+                  x={x}
+                  y={padTop + plotH + 17}
+                  textAnchor="middle"
+                  className={cn(
+                    'text-[10px] font-mono',
+                    yr <= SCALE_BREAK ? 'fill-muted-foreground/60' : 'fill-muted-foreground',
+                  )}
+                >
+                  {yr}
+                </text>
               </g>
             );
           })}
+
+          {/* Bubbles — largest first so small ones stay clickable on top */}
+          {[...filtered]
+            .map((b, originalIdx) => ({ b, originalIdx }))
+            .sort((p, q) => q.b.a - p.b.a)
+            .map(({ b, originalIdx }) => {
+              const rowIdx = visibleClusters.findIndex((c) => c.id === b.cluster);
+              if (rowIdx === -1) return null;
+              const cluster = visibleClusters[rowIdx];
+              const y = padTop + rowIdx * rowH + rowH / 2;
+              const x = xOf(b.d);
+              const r = b.a > 0 ? Math.max(4, Math.min(22, Math.sqrt(b.a) * 0.85)) : 3.5;
+              const color = cluster.color;
+              const hasSrc = !!b.src;
+              const isHover = tooltip?.bubbleIdx === originalIdx;
+
+              return (
+                <g
+                  key={originalIdx}
+                  className="cursor-pointer"
+                  onMouseEnter={(e) => showTooltip(originalIdx, e)}
+                  onMouseMove={(e) => showTooltip(originalIdx, e)}
+                  onMouseLeave={() => setTooltip(null)}
+                  onClick={() => hasSrc && window.open(b.src, '_blank')}
+                >
+                  <circle
+                    cx={x}
+                    cy={y}
+                    r={r}
+                    fill={color}
+                    fillOpacity={isHover ? 0.75 : 0.45}
+                    stroke={color}
+                    strokeWidth={hasSrc ? 1.5 : 1}
+                    strokeDasharray={hasSrc ? undefined : '3,2'}
+                  />
+                  {b.a >= 250 && (
+                    <text
+                      x={x}
+                      y={y + 3}
+                      textAnchor="middle"
+                      className="fill-white text-[7px] font-bold pointer-events-none"
+                    >
+                      ${b.a >= 1000 ? `${(b.a / 1000).toFixed(1)}B` : `${Math.round(b.a)}M`}
+                    </text>
+                  )}
+                </g>
+              );
+            })}
         </svg>
       </div>
+
+      {/* Tooltip — HTML overlay OUTSIDE the SVG: always the topmost layer,
+          opens to the LEFT of the cursor so it never covers the bubbles
+          to the right that the user is scanning toward. */}
+      {hoveredBubble && tooltip && (
+        <div
+          className="fixed z-[300] bg-background border border-border p-2.5 text-[10px] leading-tight shadow-lg w-[280px] pointer-events-none"
+          style={{
+            left: Math.max(8, tooltip.x - 292), // open leftward
+            top: Math.min(tooltip.y + 12, window.innerHeight - 170),
+          }}
+        >
+          <div className="font-bold text-foreground text-[11px]">{hoveredBubble.c}</div>
+          {hoveredBubble.p && <div className="text-primary text-[9px]">{hoveredBubble.p}</div>}
+          <div className="text-muted-foreground mt-0.5 line-clamp-4">{hoveredBubble.desc}</div>
+          <div className="flex flex-wrap gap-1 mt-1.5">
+            <span className="text-[9px] px-1 border border-border bg-secondary">
+              {LS_ET_LABELS[hoveredBubble.et] || hoveredBubble.et}
+            </span>
+            {hoveredBubble.a > 0 && (
+              <span className="text-[9px] px-1 border border-primary/30 text-primary">
+                ${hoveredBubble.a >= 1000 ? `${(hoveredBubble.a / 1000).toFixed(1)}B` : `${Math.round(hoveredBubble.a)}M`}
+              </span>
+            )}
+            {hoveredBubble.geo && (
+              <span className="text-[9px] px-1 border border-border text-muted-foreground">
+                {hoveredBubble.geo}
+              </span>
+            )}
+            {hoveredCluster && (
+              <span
+                className="text-[9px] px-1 border"
+                style={{ borderColor: hoveredCluster.color, color: hoveredCluster.color }}
+              >
+                {hoveredCluster.label}
+              </span>
+            )}
+          </div>
+          {hoveredBubble.src && (
+            <div className="text-primary text-[9px] mt-1 font-semibold">
+              🔗 Click to open source
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

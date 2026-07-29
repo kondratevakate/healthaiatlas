@@ -19,10 +19,10 @@ HealthAI Atlas is an independent research and educational project mapping the he
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to contribute organizations, claims, and domains |
 | [`SECURITY.md`](SECURITY.md) | Vulnerability disclosure policy |
 | [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) | Contributor Covenant 2.1 |
-| [`LICENSE`](LICENSE) | TBD — license choice pending |
+| [`LICENSE`](LICENSE) | Dual: AGPL-3.0 (code) + CC BY-NC 4.0 (data & content) |
 | [`ansible/`](ansible/) | One-shot EC2 provisioning for nginx static hosting |
 | [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) | CI/CD: build and rsync to EC2 |
-| [`.claude/agents/`](.claude/agents/) | Three project sub-agents: Chief Community Officer, CMO, Lead Researcher |
+| [`.github/`](.github/) | CODEOWNERS, issue/PR templates, CI workflows |
 
 ## Persona paths on the public site
 
@@ -182,12 +182,11 @@ We welcome contributions to the public layer — corrections, additions, methodo
 
 HealthAI Atlas is owned and operated by Dr. Ekaterina Kondrateva in personal capacity. It is independent from any other professional affiliations or commercial ventures the founder is associated with. See the public-site About and Terms pages for the canonical statement.
 
-## Project agents
+## Data verification
 
-Three Claude Code sub-agents live in [`.claude/agents/`](.claude/agents/) and travel with the repo. They are invoked via the Task tool in any Claude Code session opened in this repo:
+Every factual record carries a primary-source URL (or an honest empty `src`). Two things keep that honest:
 
-- `chief-community-officer` — community design, contributor onboarding, PR triage policy
-- `cmo` — positioning, outbound copy, conferences, partnerships
-- `lead-researcher` — data sourcing pipeline, verification queue, methodology evolution
+- **The Zero Trust pipeline** ([`scripts/zerotrust/`](scripts/zerotrust/)) — raw source → validate → Airtable (canonical) → generated `frontend/src/data/*.ts`. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the record schema.
+- **CI integrity tests** ([`frontend/src/data/__tests__/`](frontend/src/data/__tests__/)) — referential integrity across claims/evidence/players, and a source-URL honesty guard that fails the build on any non-empty `src` that isn't a well-formed `https://` URL.
 
-Registered in `c:/Projects/00_agent/knowledge-vault/02_distill/agents-registry.md`.
+Maintainer automation used to source and triage data is internal and not part of this public repository.

@@ -86,21 +86,34 @@ const ROLE_FILTERS: { id: string; label: string; pattern: RegExp }[] = [
   },
 ];
 
+// Badge palette — paired light/dark text shades.
+//
+// The site default is light mode (`--background: 0 0% 100%`). The 300-shade
+// text used previously was designed for dark backgrounds; on white it
+// drops below 2:1 contrast (WCAG AA needs 4.5:1 for normal text).
+//
+// Pattern: dark text (700) over the translucent tint for light mode, paired
+// with the original 300 shade for dark mode. Border stays at /20 — translucent
+// borders read on both backgrounds.
+//
+// Enforced by design-system.test.ts › 'badges with bg-*-500/<low-alpha> use
+// dark text in light mode'. If you add a new badge palette, follow the same
+// `text-X-700 dark:text-X-300` shape.
 const CATEGORY_COLOR: Record<string, string> = {
-  'AI Research':              'bg-violet-500/15 text-violet-300 border-violet-500/20',
-  'AI Drug Discovery':        'bg-blue-500/15 text-blue-300 border-blue-500/20',
-  'Clinical AI':              'bg-emerald-500/15 text-emerald-300 border-emerald-500/20',
-  'Pharma AI':                'bg-sky-500/15 text-sky-300 border-sky-500/20',
-  'Radiology AI':             'bg-amber-500/15 text-amber-300 border-amber-500/20',
-  'Pathology AI':             'bg-orange-500/15 text-orange-300 border-orange-500/20',
-  'Surgical Robotics':        'bg-rose-500/15 text-rose-300 border-rose-500/20',
-  'Brain-Computer Interface': 'bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/20',
-  'Cardiovascular AI':        'bg-red-500/15 text-red-300 border-red-500/20',
-  'Genomic AI':               'bg-teal-500/15 text-teal-300 border-teal-500/20',
-  'Mental Health AI':         'bg-purple-500/15 text-purple-300 border-purple-500/20',
-  'Hospital Operations AI':   'bg-cyan-500/15 text-cyan-300 border-cyan-500/20',
-  'Healthcare AI Platform':   'bg-indigo-500/15 text-indigo-300 border-indigo-500/20',
-  'AI Lab Automation':        'bg-lime-500/15 text-lime-300 border-lime-500/20',
+  'AI Research':              'bg-violet-500/15 text-violet-700 dark:text-violet-300 border-violet-500/20',
+  'AI Drug Discovery':        'bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/20',
+  'Clinical AI':              'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',
+  'Pharma AI':                'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/20',
+  'Radiology AI':             'bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/20',
+  'Pathology AI':             'bg-orange-500/15 text-orange-800 dark:text-orange-300 border-orange-500/20',
+  'Surgical Robotics':        'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/20',
+  'Brain-Computer Interface': 'bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-500/20',
+  'Cardiovascular AI':        'bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/20',
+  'Genomic AI':               'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/20',
+  'Mental Health AI':         'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/20',
+  'Hospital Operations AI':   'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/20',
+  'Healthcare AI Platform':   'bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-500/20',
+  'AI Lab Automation':        'bg-lime-500/15 text-lime-700 dark:text-lime-300 border-lime-500/20',
   'Other':                    'bg-foreground/8 text-muted-foreground border-foreground/10',
 };
 
@@ -270,8 +283,8 @@ function JobCard({ job }: { job: Job }) {
         {job.remote && (
           <span className={cn(
             'flex items-center gap-1 font-medium',
-            job.remote === 'Yes' && 'text-emerald-400',
-            job.remote === 'Partial' && 'text-amber-400',
+            job.remote === 'Yes' && 'text-emerald-700 dark:text-emerald-400',
+            job.remote === 'Partial' && 'text-amber-700 dark:text-amber-400',
           )}>
             <Wifi className="w-2.5 h-2.5" />
             {job.remote === 'Yes' ? 'Remote' : job.remote === 'Partial' ? 'Hybrid' : 'On-site'}

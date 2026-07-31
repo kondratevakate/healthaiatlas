@@ -256,8 +256,8 @@ function JobCard({ job }: { job: Job }) {
         {job.remote && (
           <span className={cn(
             'flex items-center gap-1 font-medium',
-            job.remote === 'Yes' && 'text-emerald-400',
-            job.remote === 'Partial' && 'text-amber-400',
+            job.remote === 'Yes' && 'text-emerald-700 dark:text-emerald-400',
+            job.remote === 'Partial' && 'text-amber-700 dark:text-amber-400',
           )}>
             <Wifi className="w-2.5 h-2.5" />
             {job.remote === 'Yes' ? 'Remote' : job.remote === 'Partial' ? 'Hybrid' : 'On-site'}

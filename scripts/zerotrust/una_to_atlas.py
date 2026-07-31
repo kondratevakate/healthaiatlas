@@ -270,20 +270,25 @@ def _load_career_db(path: Path) -> dict:
         eid = f"{etype}:{r['id']}"
         url = src_by_entity.get(str(r["id"]), "") or attrs.get("url", "")
 
-        if etype in ("grant", "conference"):
+        if etype in ("grant", "conference", "award", "fellowship"):
             out["opportunities"].append({
                 "id": eid,
                 "title": r["name"],
                 "type": etype,
                 "deadline": attrs.get("deadline") or attrs.get("date"),
+                "deadline_status": attrs.get("deadline_status"),
                 "amount": attrs.get("amount"),
                 "currency": attrs.get("currency", ""),
                 "t_horizon": attrs.get("t_horizon"),
                 "eligibility": attrs.get("who") or attrs.get("eligibility"),
                 # url is often a "verify on X" placeholder -> _url() drops it
                 "source_url": url,
-                "source_status": "live" if _url(url) else "verify",
-                "why_fits": attrs.get("why"),
+                # attrs.source_status comes from Una's URL validator and is
+                # authoritative (verified / verified_blocked / unverified /
+                # rolling); fall back to a URL shape check.
+                "source_status": attrs.get("source_status")
+                or ("live" if _url(url) else "verify"),
+                "why_fits": attrs.get("why_fits") or attrs.get("why"),
                 "next_step": attrs.get("next_step"),
             })
         elif etype in ("person", "lab"):
@@ -296,6 +301,16 @@ def _load_career_db(path: Path) -> dict:
                 "source_url": url,
                 "last_touch": attrs.get("last_touch"),
             })
+            # laureates / trajectory orbit people are tagged with an orbit
+            if attrs.get("orbit") or attrs.get("nobel_orbit"):
+                out["nobel_map"].append({
+                    "id": eid,
+                    "laureate": attrs.get("laureate") or r["name"],
+                    "orbit": attrs.get("orbit") or attrs.get("nobel_orbit"),
+                    "venue": attrs.get("venue"),
+                    "award": attrs.get("award"),
+                    "relevance": attrs.get("why"),
+                })
         # type=domain is Una's taxonomy, not an atlas entity -> skipped
     con.close()
     return out

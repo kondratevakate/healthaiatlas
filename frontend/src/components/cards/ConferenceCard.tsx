@@ -39,7 +39,7 @@ export function ConferenceCard({ conference, className }: ConferenceCardProps) {
   };
 
   return (
-    <div className={cn("border border-border p-5 hover:border-foreground transition-colors", className)}>
+    <div className={cn("card-lift border border-border p-5 hover:border-foreground transition-colors", className)}>
       <div className="flex items-start justify-between gap-3 mb-3">
         <h3 className="font-semibold text-foreground leading-tight">
           {conference.name[language]}

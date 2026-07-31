@@ -29,21 +29,13 @@ const LS_HIRING = ALL_JOBS.filter(j =>
   j.active && (LS_CATS.has(j.category) || j.category === 'Other'),
 ).sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
 
-// Category colour dots for the board
-const CAT_DOT: Record<string, string> = {
-  'AI Research':            'bg-violet-400',
-  'AI Drug Discovery':      'bg-blue-400',
-  'Pharma AI':              'bg-sky-400',
-  'AI Lab Automation':      'bg-lime-400',
-  'Genomic AI':             'bg-teal-400',
-  'AI Biotech':             'bg-emerald-400',
-  'Brain-Computer Interface':'bg-fuchsia-400',
-  'Pathology AI':           'bg-orange-400',
-  'Radiology AI':           'bg-amber-400',
-  'Surgical Robotics':      'bg-rose-400',
-  'Cardiovascular AI':      'bg-red-400',
-  'Other':                  'bg-foreground/20',
-};
+// Category markers — monochrome (kate-ui-taste: no color for category
+// differentiation). Signal status/risk uses traffic-light tokens elsewhere.
+const CAT_DOT = 'bg-muted-foreground/40';
+
+function CatDot() {
+  return <span className={cn('inline-block w-1.5 h-1.5 rounded-full flex-shrink-0', CAT_DOT)} aria-hidden="true" />;
+}
 
 // ── Signal type taxonomy ────────────────────────────────────────────────────
 type SignalType = 'all' | 'capital' | 'research' | 'talent' | 'regulatory' | 'clinical' | 'hiring';
@@ -202,14 +194,12 @@ function HiringBoard() {
           const roles = j.roles
             ? j.roles.split(/[;,]/).map(r => r.trim()).filter(Boolean).slice(0, 3)
             : [];
-          const dot = CAT_DOT[j.category] ?? CAT_DOT['Other'];
-
           return (
             <div key={j.company}
               className="flex items-start gap-3 px-3 py-2.5 hover:bg-muted/30 transition-colors"
             >
-              {/* Category dot */}
-              <div className={cn('w-1.5 h-1.5 rounded-full mt-1.5 shrink-0', dot)} />
+              {/* Category marker (monochrome) */}
+              <CatDot />
 
               {/* Main content */}
               <div className="flex-1 min-w-0">

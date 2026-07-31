@@ -349,19 +349,10 @@ const CAPABILITY_CLUSTERS = [
   { id: 'consumer',   label: 'Consumer AI',            desc: 'Product talent, personalization, finance',       companies: ['Roi', 'Multi / Remotion', 'Global Illumination'] },
 ] as const;
 
-// Colour-code acquirers so the eye can group deals visually without reading text
-const ACQUIRER_DOT: Record<string, string> = {
-  'Anthropic':    'bg-orange-400',
-  'Google':       'bg-blue-400',
-  'Microsoft':    'bg-sky-400',
-  'OpenAI':       'bg-green-400',
-  'Meta':         'bg-blue-600',
-  'Amazon / AWS': 'bg-amber-400',
-  'Salesforce':   'bg-cyan-400',
-};
+// Acquirer marker — monochrome (kate-ui-taste: no color for category
+// differentiation; the company name already groups visually).
 function AcquirerDot({ name }: { name: string }) {
-  const cls = Object.entries(ACQUIRER_DOT).find(([k]) => name.startsWith(k))?.[1] ?? 'bg-muted-foreground/40';
-  return <span className={cn('inline-block w-1.5 h-1.5 rounded-full flex-shrink-0', cls)} />;
+  return <span className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 bg-muted-foreground/40" aria-hidden="true" />;
 }
 
 function AcquihiresTab() {

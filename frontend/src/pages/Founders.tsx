@@ -15,24 +15,25 @@ import { cn } from '@/lib/utils';
 // not three copies of the same widget.
 
 const CARD_ACCENTS = [
-  // LATEST — DevRel signal: blue
-  'border-blue-900/60 hover:border-blue-700/80',
-  // CASE — Dead Valley: red
-  'border-red-900/60 hover:border-red-700/80',
-  // REGION — Market: emerald
-  'border-emerald-900/60 hover:border-emerald-700/80',
+  // LATEST — DevRel
+  'border-border hover:border-foreground/40',
+  // CASE — Dead Valley
+  'border-border hover:border-foreground/40',
+  // REGION — Market
+  'border-border hover:border-foreground/40',
 ] as const;
 
+// Module cards are categories, not status — keep monochrome (kate-ui-taste).
 const CARD_EYEBROW_ACCENTS = [
-  'text-blue-400/80',
-  'text-red-400/80',
-  'text-emerald-400/80',
+  'text-muted-foreground',
+  'text-muted-foreground',
+  'text-muted-foreground',
 ] as const;
 
 const CARD_ARROW_ACCENTS = [
-  'group-hover:text-blue-400',
-  'group-hover:text-red-400',
-  'group-hover:text-emerald-400',
+  'group-hover:text-foreground',
+  'group-hover:text-foreground',
+  'group-hover:text-foreground',
 ] as const;
 
 function EditorialCard({ card, idx }: { card: EditorialCard; idx: number }) {
@@ -163,7 +164,7 @@ const Founders = () => (
         <p className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-3">
           Founder Toolkit
         </p>
-        <h1 className="heading-serif mb-4">
+        <h1 className="heading-section mb-4">
           What every healthcare-AI founder needs to know — assembled.
         </h1>
         <p className="text-base text-muted-foreground leading-relaxed">

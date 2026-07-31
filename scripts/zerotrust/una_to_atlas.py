@@ -208,8 +208,15 @@ def map_contact(c: dict, idx: int) -> tuple[dict, list[dict]]:
 
 
 def map_nobel(n: dict, idx: int) -> tuple[dict, list[dict]]:
+    """Map one nobel/orbit row.
+
+    When the row carries an `id` (career.db person entities do), reuse it so the
+    laureate collapses onto their existing contact entity instead of being minted
+    a second time under a name-derived id. import_una is INSERT OR REPLACE by PK,
+    so a divergent id silently doubles the person in atlas.sqlite.
+    """
     nid = _norm(n.get("laureate")) or f"una-nobel-{idx}"
-    eid = f"una:{nid}"
+    eid = f"una:{_norm(n['id'])}" if n.get("id") else f"una:{nid}"
     entity = {
         "entity_id": eid,
         "name": _norm(n.get("laureate")) or nid,
@@ -354,13 +361,19 @@ def main() -> int:
         e_out.append(e)
         c_out.extend(cs)
 
-    # dedupe by primary key — career.db and grounding can overlap
-    seen_e, ents = set(), []
+    # dedupe by primary key — career.db and grounding can overlap, and a
+    # laureate legitimately arrives twice (as a contact and as a nobel row).
+    # First write wins on scalars; domain_tags union so neither view is lost.
+    seen_e: dict[str, dict] = {}
+    ents = []
     for e in e_out:
-        if e["entity_id"] in seen_e:
+        prev = seen_e.get(e["entity_id"])
+        if prev is None:
+            seen_e[e["entity_id"]] = e
+            ents.append(e)
             continue
-        seen_e.add(e["entity_id"])
-        ents.append(e)
+        prev["domain_tags"] = ",".join(
+            dict.fromkeys(t for t in f"{prev['domain_tags']},{e['domain_tags']}".split(",") if t))
     seen_c, clms = set(), []
     for c in c_out:
         if c["claim_id"] in seen_c:

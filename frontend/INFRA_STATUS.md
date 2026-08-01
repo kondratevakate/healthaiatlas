@@ -31,10 +31,10 @@ bash start-dev.sh          # ставит deps (если vite нет) + NODE_ENV
 ### Скриншот для Марка/Артёма (on-demand «покажи /open-calls-db», 1440px desktop):
 ```bash
 bash ~/.hermes/scripts/atlas-screenshot.sh /open-calls-db
-# → /tmp/atlas-open-calls-db.png (1440px desktop), путь печатается в stdout
+# → ~/.hermes/tmp/atlas-_open-calls-db.png (1440px desktop, chmod 600), путь печатается в stdout
 ```
 Сервер должен быть поднят (KEEP_SERVER=1 из гейта, либо `bash start-dev.sh`).
-Скрипт сам делает headless-chrome --screenshot. PNG отдавать агентам/Кейт (агент не видит).
+Скрипт сам делает headless-chrome --screenshot в приватную папку. PNG отдавать агентам/Кейт (агент не видит).
 
 ---
 

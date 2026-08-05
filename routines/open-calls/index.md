@@ -78,3 +78,4 @@
 - 2026-08-02 — 2 calls (0 UAE, 0 MENA, 2 global, 0 accelerators, 0 CFPs)
 - 2026-08-03 — 2 calls (0 UAE, 0 MENA, 1 global, 0 accelerators, 1 CFP)
 - 2026-08-04 — 3 calls (0 UAE, 0 MENA, 3 global, 0 accelerators, 0 CFPs)
+- 2026-08-05 — 1 call (0 UAE, 0 MENA, 1 global, 0 accelerators, 0 CFPs)

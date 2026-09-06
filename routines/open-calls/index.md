@@ -1,5 +1,7 @@
 # Index of open-calls digests
 
+- 2026-09-06 — 4 calls (0 UAE, 0 MENA, 3 global, 1 accelerators, 0 CFPs)
+
 - 2026-09-05 — 4 calls (0 UAE, 0 MENA, 0 global, 4 accelerators, 0 CFPs)
 
 - 2026-09-04 — 1 call (0 UAE, 0 MENA, 0 global, 1 accelerators, 0 CFPs)

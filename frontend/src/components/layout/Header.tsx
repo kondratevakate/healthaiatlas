@@ -15,6 +15,7 @@ import { openCallEntries } from '@/data/openCallEntries';
 import { conferences } from '@/data/conferences';
 import { launches } from '@/data/launches';
 import { SearchModal } from '@/components/search/SearchModal';
+import { wikiArticles } from '@/lib/wiki';
 
 type NavLink = {
   key: string;
@@ -40,6 +41,7 @@ const navLinks: NavLink[] = [
   { key: 'nav.jobs', path: '/jobs', count: 116 },
   { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
   { key: 'nav.founders', path: '/founders', dropdown: true },
+  { key: 'nav.wiki', path: '/wiki', count: wikiArticles.length },
   { key: 'nav.about', path: '/about' },
 ];
 
@@ -208,15 +210,31 @@ export function Header() {
 
             // Domains dropdown — whole label + chevron as single trigger.
             if (link.dropdown && link.path === '/directory') {
-              const items = domains
-                .filter((d) => d.id !== 'overview')
-                .map((d) => ({
-                  id: d.id,
-                  to: `/directory?domain=${d.id}`,
-                  label: d.name[language],
-                  subtitle: d.subtitle?.[language],
-                  count: domainCounts[d.id],
-                }));
+              // Biosecurity is a section entry, not yet a directory hub: it has
+              // a scope note and a reading list but no verified records, so it
+              // routes to /biosecurity rather than /directory?domain=. Move it
+              // into `domains.ts` once the hub ships.
+              const items = [
+                ...domains
+                  .filter((d) => d.id !== 'overview')
+                  .map((d) => ({
+                    id: d.id,
+                    to: `/directory?domain=${d.id}`,
+                    label: d.name[language],
+                    subtitle: d.subtitle?.[language],
+                    count: domainCounts[d.id],
+                  })),
+                {
+                  id: 'biosecurity',
+                  to: '/biosecurity',
+                  label: language === 'ar' ? 'الأمن البيولوجي' : 'Biosecurity',
+                  subtitle:
+                    language === 'ar'
+                      ? 'حوكمة المخاطر البيولوجية — نطاق محدد، السجلات قيد الإعداد'
+                      : 'Biological risk governance — scope defined, records pending',
+                  count: undefined as number | undefined,
+                },
+              ];
               return (
                 <DropdownMenu key={link.path}>
                   <DropdownMenuTrigger asChild>
@@ -352,14 +370,24 @@ export function Header() {
               }
 
               if (link.dropdown && link.path === '/directory') {
-                const items = domains
-                  .filter((d) => d.id !== 'overview')
-                  .map((d) => ({
-                    id: d.id,
-                    to: `/directory?domain=${d.id}`,
-                    label: d.name[language],
-                    count: domainCounts[d.id],
-                  }));
+                // Mirrors the desktop dropdown, including the Biosecurity
+                // section entry that routes outside /directory.
+                const items = [
+                  ...domains
+                    .filter((d) => d.id !== 'overview')
+                    .map((d) => ({
+                      id: d.id,
+                      to: `/directory?domain=${d.id}`,
+                      label: d.name[language],
+                      count: domainCounts[d.id],
+                    })),
+                  {
+                    id: 'biosecurity',
+                    to: '/biosecurity',
+                    label: language === 'ar' ? 'الأمن البيولوجي' : 'Biosecurity',
+                    count: undefined as number | undefined,
+                  },
+                ];
                 return (
                   <div key={link.path} className="space-y-0.5">
                     <Link

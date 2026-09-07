@@ -9,8 +9,9 @@ import { openCallEntries, categoryLabel } from '@/data/openCallEntries';
 import { domains } from '@/data/domains';
 import { conferences } from '@/data/conferences';
 import { launches } from '@/data/launches';
+import { wikiArticles } from '@/lib/wiki';
 
-export type SearchableType = 'opencall' | 'player' | 'domain' | 'conference' | 'launch';
+export type SearchableType = 'opencall' | 'player' | 'domain' | 'conference' | 'launch' | 'wiki';
 
 export interface SearchableEntity {
   id: string;
@@ -114,6 +115,21 @@ export function buildSearchIndex(language: Lang = 'en'): SearchableEntity[] {
     });
   }
 
+  // Wiki articles are language-agnostic (English-only corpus for now) but are
+  // indexed alongside everything else so ⌘K reaches the explanatory layer, not
+  // just the records.
+  for (const a of wikiArticles) {
+    index.push({
+      id: `wiki:${a.slug}`,
+      type: 'wiki',
+      title: a.title,
+      subtitle: a.summary,
+      keywords: [...a.tags, ...a.authors],
+      url: `/wiki/${a.slug}`,
+      meta: a.updated,
+    });
+  }
+
   return index;
 }
 
@@ -123,4 +139,5 @@ export const SEARCHABLE_TYPE_LABELS: Record<SearchableType, { en: string; ar: st
   domain: { en: 'Domains', ar: 'المجالات' },
   conference: { en: 'Events', ar: 'الفعاليات' },
   launch: { en: 'Launches', ar: 'إطلاقات' },
+  wiki: { en: 'Wiki', ar: 'ويكي' },
 };

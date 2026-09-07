@@ -26,6 +26,9 @@ import FoundersMarkets from "./pages/FoundersMarkets";
 import FoundersArchitectures from "./pages/FoundersArchitectures";
 import Jobs from "./pages/Jobs";
 import OpenCalls from "./pages/OpenCalls";
+import Wiki from "./pages/Wiki";
+import WikiArticle from "./pages/WikiArticle";
+import Biosecurity from "./pages/Biosecurity";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +77,16 @@ const App = () => (
 
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/open-calls" element={<OpenCalls />} />
+
+              {/* Atlas Wiki — explanatory layer. Articles are Markdown files in
+                  src/content/wiki/; the loader picks them up at build time so a
+                  new file needs no route of its own. */}
+              <Route path="/wiki" element={<Wiki />} />
+              <Route path="/wiki/:slug" element={<WikiArticle />} />
+
+              {/* Biosecurity section entry — scope + navigation. Structured
+                  records live in the directory hub, not here. */}
+              <Route path="/biosecurity" element={<Biosecurity />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

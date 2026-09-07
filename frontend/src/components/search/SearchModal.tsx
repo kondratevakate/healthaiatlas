@@ -25,7 +25,7 @@ import {
 // Order chosen by traffic priority: Open Calls leads (largest inventory),
 // Players + Domains anchor the analytical surface, Events trail (lower
 // volume, time-bound). Same logic as Header navLinks.
-const RENDER_ORDER: SearchableType[] = ['opencall', 'domain', 'player', 'conference', 'launch'];
+const RENDER_ORDER: SearchableType[] = ['opencall', 'domain', 'wiki', 'player', 'conference', 'launch'];
 
 interface SearchModalProps {
   open: boolean;
@@ -46,6 +46,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
       domain: [],
       conference: [],
       launch: [],
+      wiki: [],
     };
     for (const item of index) out[item.type].push(item);
     return out;

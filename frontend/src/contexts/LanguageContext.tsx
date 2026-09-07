@@ -21,6 +21,7 @@ const translations: Translations = {
   'nav.founders': { en: 'Founder Toolkit', ar: 'أدوات المؤسس' },
   'nav.atlasnotes': { en: 'Atlas Notes', ar: 'مذكرات الأطلس' },
   'nav.jobs': { en: 'Jobs', ar: 'وظائف' },
+  'nav.wiki': { en: 'Wiki', ar: 'ويكي' },
   'nav.about': { en: 'About', ar: 'حول' },
 
   // Legacy nav keys — retained while older pages still reference them.

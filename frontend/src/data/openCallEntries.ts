@@ -45,6 +45,8 @@ export interface OpenCallEntry {
 }
 
 const VERIFIED_2026_05_06 = '2026-05-06';
+// Re-verified against the issuer's own domain (see per-entry notes).
+const VERIFIED_2026_09_07 = '2026-09-07';
 
 export const openCallEntries: OpenCallEntry[] = [
   // ────────────────────────────────────────────────────────────────────────
@@ -161,11 +163,11 @@ export const openCallEntries: OpenCallEntry[] = [
     url: 'https://www.xprize.org/prizes/healthspan',
     region: 'Global',
     category: 'prize',
-    countdown: { kind: 'deadline', date: new Date(Date.UTC(2026, 11, 31)) },
+    countdown: { kind: 'closed', nextExpected: 'Discretionary late registration, Aug 2026 – Jul 2027' },
     amount: '$101M total; finalists $1M each',
     audience: 'Research teams developing aging-reversal therapeutics',
-    notes: '40 teams → 10 finalists → winner. May 2025 milestone done; 2026: 10 finalists + human trials begin.',
-    verifiedAt: VERIFIED_2026_05_06,
+    notes: 'Primary registration closed December 2024; the Finals application deadline (April 22 2026) has passed and 20 finalist teams are in clinical trials. Late entry is possible only via Discretionary Late Registration (USD 100K fee, proof of existing trial data) — XPRIZE states there are currently "no open spots". Competition runs 2023–2030, finalist judging in 2026.',
+    verifiedAt: VERIFIED_2026_09_07,
   },
 
   // ────────────────────────────────────────────────────────────────────────
@@ -217,24 +219,24 @@ export const openCallEntries: OpenCallEntry[] = [
     url: 'https://publichealth.jhu.edu/',
     region: 'US',
     category: 'fellowship',
-    countdown: { kind: 'deadline', date: new Date(Date.UTC(2026, 8, 12)) },
+    countdown: { kind: 'annual', nextWindow: 'Historically mid-September' },
     amount: 'Up to $1,000 + project placement',
     audience: 'JHU Bloomberg School of Public Health students',
-    notes: '8-month fellowship. 2024–25 cycle was Sep 12; 2026 estimated.',
-    verifiedAt: VERIFIED_2026_05_06,
+    notes: '8-month fellowship. The 2024–25 cycle closed Sep 12; no 2026 date is published on the issuer domain, so this is shown as an annual window rather than a hard deadline.',
+    verifiedAt: VERIFIED_2026_09_07,
   },
   {
     id: 'nhs-clinical-ai-fellowship',
     title: 'NHS Clinical AI Fellowship (UK)',
     organizer: 'NHS England (Topol Programme)',
-    url: 'https://topol.hee.nhs.uk/',
+    url: 'https://topol.digitalacademy.nhs.uk/digital-fellowships/application-guidance',
     region: 'UK',
     category: 'fellowship',
-    countdown: { kind: 'deadline', date: new Date(Date.UTC(2026, 7, 1)) },
+    countdown: { kind: 'closed' },
     amount: '~£30–40K/yr salary, paid 2 days/wk',
     audience: 'UK registered clinicians (doctors, nurses, AHPs)',
-    notes: 'Cohort 5: Aug 2026–Aug 2027.',
-    verifiedAt: VERIFIED_2026_05_06,
+    notes: 'Applications closed — the programme states "Applications for the Topol Digital Fellowship are now closed" with no next window announced. topol.hee.nhs.uk now 301-redirects to topol.digitalacademy.nhs.uk.',
+    verifiedAt: VERIFIED_2026_09_07,
   },
   {
     id: 'aifellows-info',
@@ -352,16 +354,16 @@ export const openCallEntries: OpenCallEntry[] = [
   },
   {
     id: 'hub71-life-sciences',
-    title: 'Hub71+ Life Sciences (Cohort 20)',
+    title: 'Hub71+ Life Sciences (Cohort 21)',
     organizer: 'Hub71 (Abu Dhabi)',
-    url: 'https://hub71.com/',
+    url: 'https://hub71.com/program/hub71-plus-life-sciences',
     region: 'UAE',
     category: 'accelerator',
-    countdown: { kind: 'deadline', date: new Date(Date.UTC(2026, 7, 2)) },
-    amount: 'AED 500K–750K cash + incentives for SAFE equity',
+    countdown: { kind: 'rolling' },
+    amount: 'AED 250K in-kind incentives + AED 250K cash for SAFE equity',
     audience: 'Biotech/healthtech/medtech startups relocating to Abu Dhabi',
-    notes: 'Part of Hub71/HELM ecosystem.',
-    verifiedAt: VERIFIED_2026_05_06,
+    notes: 'Cohort 21 deadline February 2027, programme starts September 2027. Rolling: "if you apply after the mentioned deadline related to a cohort, you will be considered for the next cohort." A further AED 250K top-up is available on completion. Part of Hub71/HELM ecosystem.',
+    verifiedAt: VERIFIED_2026_09_07,
   },
   {
     id: 'mayo-clinic-platform-accelerate',

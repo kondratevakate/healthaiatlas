@@ -60,7 +60,9 @@ export default function WikiArticle() {
           Atlas Wiki
         </Link>
 
-        <PageHeader eyebrow="Atlas Wiki" title={article.title} subtitle={article.summary} />
+        {/* No eyebrow here: the back-link directly above already reads
+            "Atlas Wiki", and repeating it stacks the same label twice. */}
+        <PageHeader title={article.title} subtitle={article.summary} />
 
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-mono text-muted-foreground border-y border-border py-3 mb-10">
           <span>Updated {article.updated}</span>

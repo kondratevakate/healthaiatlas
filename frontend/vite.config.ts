@@ -40,6 +40,7 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "::",
       port: 8080,
+      strictPort: true, // fail loudly if 8080 is taken instead of silently moving to 8081 (breaks gate port-busy detection)
       hmr: {
         overlay: false,
       },

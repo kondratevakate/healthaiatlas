@@ -43,6 +43,39 @@ the routine starts checking it on the next run (no config change needed).
 - **MIT Solve — Open Challenges** — https://solve.mit.edu/challenges — annual themed challenges, health tracks
 - **Echoing Green — Fellowship** — https://www.echoinggreen.org/fellowship/ — social impact fellowship, health eligible
 
+## Tier 6 — Biosecurity: Jobs, Fellowships & Grants
+
+Covers pandemic preparedness, biodefense, AI biosecurity, and health security policy.
+Eligibility filter for this tier: researchers, early-career professionals, startups, and independent PIs — skip calls restricted to national labs or clearance-required government positions.
+
+### Global fellowships & grants
+
+- **Johns Hopkins Center for Health Security — Emerging Leaders in Biosecurity (ELBI)** — https://centerforhealthsecurity.org/our-work/center-news/fellowship — annual fellowship for early-career professionals in biosecurity; remote-eligible
+- **Nuclear Threat Initiative (NTI) — Fellowships & Opportunities** — https://www.nti.org/about/careers-fellowships/ — policy fellowships and research positions in biosecurity; remote options common
+- **Federation of American Scientists (FAS) — Opportunities** — https://fas.org/opportunities/ — Day One Project fellowships, biosecurity research grants, science policy positions
+- **CEPI — Apply for Funding** — https://cepi.net/get-involved/apply-for-funding/ — Coalition for Epidemic Preparedness Innovations; open calls for vaccine and countermeasure R&D
+- **Wellcome — Health Emergencies & Epidemic Preparedness** — https://wellcome.org/grant-funding/schemes — open grant schemes covering pandemic preparedness and health security AI
+- **Open Philanthropy — Biosecurity Grants** — https://www.openphilanthropy.org/grants/?filter=Biosecurity+and+pandemic+preparedness — tracks funded work; use for intelligence on active focus areas (aggregator — WebSearch, not WebFetch)
+- **Rockefeller Foundation — Pandemic Prevention Institute (PPI)** — https://www.rockefellerfoundation.org/initiative/pandemic-prevention-institute/ — grants and partnerships for pandemic preparedness; health AI intersection
+- **BARDA — Funding & Opportunities** — https://www.medicalcountermeasures.gov/barda/barda-broad-agency-announcement/ — US Biomedical Advanced Research and Development Authority; AI for medical countermeasures
+- **DARPA BTO — Opportunities** — https://www.darpa.mil/work-with-us/for-universities/opportunities — Biological Technologies Office; AI biosecurity, pandemic early-warning
+- **SecureBio — Research & Hiring** — https://securebio.org/about — AI-first biosecurity research org; open research collaborations and jobs (probational)
+- **Belfer Center — International Security Program Fellowships** — https://www.belfercenter.org/fellowships — Harvard Kennedy School; biosecurity and health security policy fellowships
+
+### UAE & Gulf biosecurity
+
+- **NCEMA — UAE National Emergency & Crisis Management** — https://www.ncema.gov.ae/en/services — health security, crisis preparedness calls and partnerships
+- **Abu Dhabi Public Health Centre (ADPHC)** — https://www.adphc.gov.ae/en/Pages/GrantsAndFunding.aspx — health security research grants for Abu Dhabi (probational)
+- **G42 Healthcare / Pure Health** — https://www.purehealth.ae/innovation — UAE health security innovation partnerships (probational)
+
+### AI × biosecurity
+
+- **Gryphon Scientific — Careers & Projects** — https://www.gryphonscientific.com/careers/ — biosecurity consulting and research positions; AI + bio intersection (probational)
+- **Georgetown CSET — Research Positions** — https://cset.georgetown.edu/jobs/ — Center for Security and Emerging Technology; AI policy including biotech security; remote-eligible
+- **Global Health Security Agenda (GHSA) — Opportunities** — https://ghsagenda.org — track for calls, partnerships, and working group memberships
+
+---
+
 ## Tier 4 — Accelerators with rolling intake
 
 - **Techstars — Programs Directory** — https://www.techstars.com/accelerators — list of active accelerators incl. health verticals
@@ -73,13 +106,22 @@ These index thousands of programs — search them, do not crawl them:
 
 When supplementing the seed list with WebSearch, prefer these patterns:
 
+**Health AI (existing):**
 - `"call for proposals" "AI" "health" 2026 deadline`
 - `"applications open" "health AI" 2026`
 - `"RFA" OR "RFP" AI medical imaging 2026`
 - `Hub71 OR Flat6Labs OR Antler new cohort 2026 health`
 - `"ARPA-H" OR "NIH" solicitation 2026 artificial intelligence`
 
+**Biosecurity jobs, fellowships & grants (new):**
+- `"biosecurity fellowship" 2026 deadline "now open" OR "applications open"`
+- `"biosecurity" OR "pandemic preparedness" "call for proposals" 2026 deadline`
+- `"biosecurity" OR "health security" UAE OR Gulf OR MENA grant research 2026`
+- `"CEPI" OR "BARDA" OR "DARPA BTO" solicitation 2026 AI biological`
+- `"biosecurity" "remote" fellowship OR grant 2026 "apply now"`
+
 Avoid: generic "AI health grants 2026" (returns marketing pages, not actual calls).
+Avoid for biosecurity: government jobs requiring security clearance or citizenship restrictions (filter on eligibility).
 
 ## Confidence flags for new entries
 

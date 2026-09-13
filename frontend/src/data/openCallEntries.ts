@@ -25,7 +25,12 @@ export type OpenCallCategory =
   | 'research-lab'; // Standing research labs / institutes with open application windows
 
 export type CountdownStatus =
-  | { kind: 'deadline'; date: Date }
+  // `asStated` is the issuer's deadline text verbatim (e.g. "November 2 at 8pm PT").
+  // `date` is a lossy conversion of it — timezone and cut-off hour are easy to get
+  // wrong — so keeping the original lets anyone re-check the conversion.
+  // Optional here because lib/countdown is data-agnostic; openCallEntries.integrity
+  // makes it mandatory for every real entry.
+  | { kind: 'deadline'; date: Date; asStated?: string }
   | { kind: 'rolling' }
   | { kind: 'annual'; nextWindow?: string }
   | { kind: 'closed'; nextExpected?: string };
@@ -607,7 +612,11 @@ export const openCallEntries: OpenCallEntry[] = [
     url: 'https://www.ycombinator.com/apply',
     region: 'US',
     category: 'accelerator',
-    countdown: { kind: 'deadline', date: new Date(Date.UTC(2026, 10, 3, 4, 0)) },
+    countdown: {
+      kind: 'deadline',
+      date: new Date(Date.UTC(2026, 10, 3, 4, 0)),
+      asStated: 'November 2 at 8pm PT',
+    },
     amount: 'Standard YC deal + $12M+ in partner credits',
     audience: 'Early-stage startups, any sector including healthtech',
     notes: 'Winter 2027 batch (Jan–Mar, San Francisco). On-time deadline "November 2 at 8pm PT" = 2026-11-03 04:00 UTC (PST, UTC-8, since US DST ends 2026-11-01); decisions by December 11. Late applications are still considered, but decision timing is not guaranteed. Two batches per year.',

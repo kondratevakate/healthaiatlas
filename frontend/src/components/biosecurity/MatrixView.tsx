@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { OrgDetail } from './OrgDetail';
-import { COLUMN_BY_ID, columnLabel, groupColor, shortName } from './lookup';
+import { COLUMN_BY_ID, columnLabel, groupIcon, groupLabel, shortName } from './lookup';
 
 // Organisations with only governance/technical approach tags and no concrete
 // intervention focus still belong on the map — they get their own row.
@@ -13,6 +13,7 @@ const NO_FOCUS = '__none__';
 const NO_FOCUS_LABEL = 'No specific focus';
 const MAX_CHIPS = 3;
 
+// Empty-cell hatching — same gap device as the oncology pharma matrix.
 const HATCH =
   'repeating-linear-gradient(45deg, transparent, transparent 3px, hsl(var(--foreground) / 0.035) 3px, hsl(var(--foreground) / 0.035) 6px)';
 
@@ -31,11 +32,9 @@ interface CellSelection {
 export function MatrixView() {
   const isMobile = useIsMobile();
   const [activeGroups, setActiveGroups] = useState<Set<string>>(new Set());
-  const [gcbrOnly, setGcbrOnly] = useState(false);
   const [cell, setCell] = useState<CellSelection | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
 
-  const orgs = useMemo(() => (gcbrOnly ? BIO_ORGS.filter((o) => o.gcbr) : BIO_ORGS), [gcbrOnly]);
   const columns = useMemo(
     () => (activeGroups.size ? BIO_COLUMNS.filter((c) => activeGroups.has(c.group)) : BIO_COLUMNS),
     [activeGroups],
@@ -47,14 +46,14 @@ export function MatrixView() {
       for (const col of columns) {
         map.set(
           `${row}|${col.id}`,
-          orgs.filter(
+          BIO_ORGS.filter(
             (o) => o.cols.includes(col.id) && (row === NO_FOCUS ? o.focus.length === 0 : o.focus.includes(row)),
           ),
         );
       }
     }
     return map;
-  }, [orgs, columns]);
+  }, [columns]);
 
   const counts = [...grid.values()].map((v) => v.length);
   const maxCount = Math.max(1, ...counts);
@@ -70,8 +69,13 @@ export function MatrixView() {
     return out;
   }, [columns]);
 
+  // First column of each group gets a heavier left rule so groups read as blocks.
+  const groupStarts = useMemo(
+    () => new Set(columns.filter((c, i) => i === 0 || columns[i - 1].group !== c.group).map((c) => c.id)),
+    [columns],
+  );
+
   const selectedOrg = orgId ? BIO_ORGS.find((o) => o.id === orgId) ?? null : null;
-  const filtersActive = activeGroups.size > 0 || gcbrOnly;
 
   const toggleGroup = (id: string) =>
     setActiveGroups((prev) => {
@@ -90,53 +94,42 @@ export function MatrixView() {
     <div>
       <div className="space-y-3 mb-4">
         <div className="text-[11px] text-muted-foreground font-mono flex items-center gap-3 flex-wrap">
-          <span>{orgs.length} organisations</span>
-          <span className="opacity-60">·</span>
+          <span>{BIO_ORGS.length} organisations</span>
+          <span aria-hidden>·</span>
           <span>{columns.length} categories × {BIO_FOCUS_ORDER.length} focus areas</span>
-          <span className="opacity-60">·</span>
+          <span aria-hidden>·</span>
           <span>{emptyCells} empty cells</span>
         </div>
 
-        <div className="flex flex-wrap gap-2 items-center">
+        <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2 items-center">
           {BIO_GROUPS.map((g) => {
             const active = activeGroups.has(g.id);
+            const Icon = groupIcon(g.id);
             return (
               <button
                 key={g.id}
                 type="button"
+                aria-pressed={active}
                 onClick={() => toggleGroup(g.id)}
                 className={cn(
-                  'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
+                  'px-2 py-1 min-h-[44px] sm:min-h-0 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
                   active
                     ? 'bg-foreground text-background border-foreground'
                     : 'border-border text-muted-foreground hover:text-foreground',
                 )}
               >
-                <span className="w-2.5 h-2.5 rounded-full" style={{ background: g.color }} />
+                <Icon className="h-3.5 w-3.5" aria-hidden />
                 {g.label}
               </button>
             );
           })}
-          <span className="opacity-30 mx-1">|</span>
-          <label className="inline-flex items-center gap-1.5 text-[11px] cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={gcbrOnly}
-              onChange={(e) => setGcbrOnly(e.target.checked)}
-              className="accent-primary"
-            />
-            <span className="text-muted-foreground">GCBR-focused only</span>
-          </label>
-          {filtersActive && (
+          {activeGroups.size > 0 && (
             <button
               type="button"
-              onClick={() => {
-                setActiveGroups(new Set());
-                setGcbrOnly(false);
-              }}
-              className="ml-auto text-[11px] text-primary hover:underline inline-flex items-center gap-1"
+              onClick={() => setActiveGroups(new Set())}
+              className="ml-auto min-h-[44px] sm:min-h-0 text-[11px] text-foreground underline underline-offset-2 hover:opacity-70 inline-flex items-center gap-1"
             >
-              <X className="h-3 w-3" />
+              <X className="h-3 w-3" aria-hidden />
               Clear filters
             </button>
           )}
@@ -146,37 +139,51 @@ export function MatrixView() {
       {isMobile ? (
         <MobileList grid={grid} columns={columns} onCell={setCell} />
       ) : (
-        <div className="overflow-x-auto overflow-y-auto max-h-[72vh] border border-border">
+        // Height fits the viewport below the sticky site header (4rem) and hub tabs
+        // (~3rem), so the whole table scroll box is visible once pinned.
+        <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-8rem)] border border-border">
           <table className="border-collapse w-full">
             <thead className="sticky top-0 z-20">
               <tr>
                 <td className="p-1.5 bg-background sticky left-0 z-30 min-w-[168px]" />
-                {headerGroups.map((g, i) => (
-                  <td
-                    key={`${g.id}-${i}`}
-                    colSpan={g.span}
-                    className="p-1.5 text-center text-[10px] font-bold uppercase tracking-wider bg-background"
-                    style={{ color: groupColor(g.id), borderBottom: `2px solid ${groupColor(g.id)}` }}
-                  >
-                    {BIO_GROUPS.find((x) => x.id === g.id)?.label ?? g.id}
-                  </td>
-                ))}
+                {headerGroups.map((g, i) => {
+                  const Icon = groupIcon(g.id);
+                  return (
+                    <th
+                      key={`${g.id}-${i}`}
+                      scope="colgroup"
+                      colSpan={g.span}
+                      className="p-1.5 text-center text-[10px] font-bold uppercase tracking-wider bg-background text-foreground border-b-2 border-b-foreground border-l-2 border-l-foreground"
+                    >
+                      <span className="inline-flex items-center gap-1">
+                        <Icon className="h-3 w-3" aria-hidden />
+                        {groupLabel(g.id)}
+                      </span>
+                    </th>
+                  );
+                })}
               </tr>
               <tr>
-                <th className="text-left text-xs font-bold p-1.5 text-foreground bg-background sticky left-0 z-30 align-bottom">
+                <th
+                  scope="col"
+                  className="text-left text-xs font-bold p-1.5 text-foreground bg-background sticky left-0 z-30 align-bottom"
+                >
                   Intervention focus
                 </th>
                 {columns.map((col) => (
                   <th
                     key={col.id}
-                    className="bg-background p-2 text-[10px] font-medium"
+                    scope="col"
+                    className={cn(
+                      'bg-background p-2 text-[10px] font-medium text-foreground',
+                      groupStarts.has(col.id) && 'border-l-2 border-l-foreground',
+                    )}
                     style={{
                       writingMode: 'vertical-rl',
                       transform: 'rotate(180deg)',
                       height: '9rem',
                       whiteSpace: 'nowrap',
                       verticalAlign: 'bottom',
-                      color: groupColor(col.group),
                     }}
                   >
                     {col.label}
@@ -188,6 +195,7 @@ export function MatrixView() {
               {ROWS.map((row) => (
                 <tr key={row}>
                   <th
+                    scope="row"
                     className={cn(
                       'text-left text-xs p-1.5 bg-background sticky left-0 z-10 align-top',
                       row === NO_FOCUS ? 'font-normal italic text-muted-foreground' : 'font-semibold text-foreground',
@@ -197,13 +205,14 @@ export function MatrixView() {
                   </th>
                   {columns.map((col) => {
                     const items = grid.get(`${row}|${col.id}`) ?? [];
+                    const edge = groupStarts.has(col.id) && 'border-l-2 border-l-foreground';
                     if (items.length === 0) {
                       return (
                         <td
                           key={col.id}
-                          className="p-1 border border-border/50"
+                          className={cn('p-1 border border-border/50', edge)}
                           style={{ background: HATCH }}
-                          title={`No organisation listed for ${rowLabel(row)} in ${columnLabel(col.id)}`}
+                          aria-label={`No organisation listed for ${rowLabel(row)} in ${columnLabel(col.id)}`}
                         />
                       );
                     }
@@ -211,9 +220,11 @@ export function MatrixView() {
                       <td
                         key={col.id}
                         onClick={() => setCell({ row, col: col.id, orgs: items })}
-                        className="p-1 border border-border/50 align-top cursor-pointer hover:outline hover:outline-1 hover:outline-primary/50"
+                        className={cn(
+                          'p-1 border border-border/50 align-top cursor-pointer hover:outline hover:outline-1 hover:outline-foreground',
+                          edge,
+                        )}
                         style={{ background: `hsl(var(--foreground) / ${(0.03 + (0.12 * items.length) / maxCount).toFixed(3)})` }}
-                        title={`${items.length} organisation${items.length === 1 ? '' : 's'} — click for the list`}
                       >
                         <div className="flex flex-wrap gap-0.5 min-w-[96px]">
                           {items.slice(0, MAX_CHIPS).map((o) => (
@@ -224,16 +235,25 @@ export function MatrixView() {
                                 e.stopPropagation();
                                 openOrg(o.id);
                               }}
-                              className="text-[10px] font-semibold px-1.5 py-0.5 border border-foreground/10 bg-background/70 text-foreground hover:border-primary/50 leading-tight max-w-[120px] truncate"
+                              className="text-[10px] font-semibold px-1.5 py-0.5 border border-foreground/20 bg-background text-foreground hover:border-foreground leading-tight max-w-[120px] truncate"
                               title={o.name}
+                              aria-label={o.name}
                             >
                               {shortName(o.name)}
                             </button>
                           ))}
                           {items.length > MAX_CHIPS && (
-                            <span className="text-[10px] font-mono text-muted-foreground px-1 py-0.5">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCell({ row, col: col.id, orgs: items });
+                              }}
+                              className="text-[10px] font-mono text-foreground px-1 py-0.5 underline underline-offset-2 hover:opacity-70"
+                              aria-label={`Show all ${items.length} organisations for ${rowLabel(row)} in ${columnLabel(col.id)}`}
+                            >
                               +{items.length - MAX_CHIPS}
-                            </span>
+                            </button>
                           )}
                         </div>
                       </td>
@@ -246,45 +266,10 @@ export function MatrixView() {
         </div>
       )}
 
-      {columns.length > 0 && orgs.length === 0 && (
-        <div className="border border-dashed border-border p-8 mt-3 text-center text-sm text-muted-foreground">
-          No organisations match the current filters.
-        </div>
-      )}
-
       <Sheet open={!!cell} onOpenChange={(open) => !open && setCell(null)}>
         <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
           {cell && (
-            <>
-              <SheetHeader className="text-left mb-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ background: groupColor(COLUMN_BY_ID.get(cell.col)?.group ?? '') }}
-                  />
-                  <span className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
-                    {columnLabel(cell.col)}
-                  </span>
-                </div>
-                <SheetTitle className="text-xl font-semibold">{rowLabel(cell.row)}</SheetTitle>
-                <SheetDescription className="text-sm text-muted-foreground">
-                  {cell.orgs.length} organisation{cell.orgs.length === 1 ? '' : 's'}
-                </SheetDescription>
-              </SheetHeader>
-              <div className="space-y-2">
-                {cell.orgs.map((o) => (
-                  <button
-                    key={o.id}
-                    type="button"
-                    onClick={() => openOrg(o.id)}
-                    className="w-full text-left border border-border p-3 hover:border-foreground/40 transition-colors space-y-1"
-                  >
-                    <div className="font-semibold text-sm text-foreground">{o.name}</div>
-                    <div className="text-[11px] text-muted-foreground">{o.type}</div>
-                  </button>
-                ))}
-              </div>
-            </>
+            <CellDetail cell={cell} onOrg={openOrg} />
           )}
         </SheetContent>
       </Sheet>
@@ -295,6 +280,37 @@ export function MatrixView() {
         </SheetContent>
       </Sheet>
     </div>
+  );
+}
+
+function CellDetail({ cell, onOrg }: { cell: CellSelection; onOrg: (id: string) => void }) {
+  const Icon = groupIcon(COLUMN_BY_ID.get(cell.col)?.group ?? '');
+  return (
+    <>
+      <SheetHeader className="text-left mb-4">
+        <div className="flex items-center gap-1.5 mb-1 text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
+          <Icon className="h-3 w-3" aria-hidden />
+          {columnLabel(cell.col)}
+        </div>
+        <SheetTitle className="text-xl font-semibold">{rowLabel(cell.row)}</SheetTitle>
+        <SheetDescription className="text-sm text-muted-foreground">
+          {cell.orgs.length} organisation{cell.orgs.length === 1 ? '' : 's'}
+        </SheetDescription>
+      </SheetHeader>
+      <div className="space-y-2">
+        {cell.orgs.map((o) => (
+          <button
+            key={o.id}
+            type="button"
+            onClick={() => onOrg(o.id)}
+            className="w-full text-left border border-border p-3 hover:border-foreground/50 transition-colors space-y-1"
+          >
+            <div className="font-semibold text-sm text-foreground">{o.name}</div>
+            <div className="text-[11px] text-muted-foreground">{o.type}</div>
+          </button>
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -322,20 +338,23 @@ function MobileList({ grid, columns, onCell }: MobileListProps) {
               </span>
             </div>
             <div className="divide-y divide-border">
-              {filled.map(({ col, orgs }) => (
-                <button
-                  key={col.id}
-                  type="button"
-                  onClick={() => onCell({ row, col: col.id, orgs })}
-                  className="w-full text-left flex items-center justify-between gap-2 px-3 py-2 text-xs hover:bg-secondary/30"
-                >
-                  <span className="flex items-center gap-1.5 min-w-0">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: groupColor(col.group) }} />
-                    <span className="truncate text-foreground">{columnLabel(col.id)}</span>
-                  </span>
-                  <span className="font-mono text-muted-foreground shrink-0">{orgs.length}</span>
-                </button>
-              ))}
+              {filled.map(({ col, orgs }) => {
+                const Icon = groupIcon(col.group);
+                return (
+                  <button
+                    key={col.id}
+                    type="button"
+                    onClick={() => onCell({ row, col: col.id, orgs })}
+                    className="w-full min-h-[44px] text-left flex items-center justify-between gap-2 px-3 py-2 text-xs hover:bg-secondary"
+                  >
+                    <span className="flex items-center gap-1.5 min-w-0">
+                      <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      <span className="truncate text-foreground">{columnLabel(col.id)}</span>
+                    </span>
+                    <span className="font-mono text-muted-foreground shrink-0">{orgs.length}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         );

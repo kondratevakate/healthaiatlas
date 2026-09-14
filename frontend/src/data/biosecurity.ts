@@ -3,7 +3,7 @@
 // Pipeline: extract_biosecurity -> validate --domain biosecurity -> regen_biosecurity.
 // Organisations: 168
 
-export interface BioGroup { id: string; label: string; color: string }
+export interface BioGroup { id: string; label: string }
 export interface BioColumn { id: string; label: string; group: string }
 export interface BioOrg {
   id: string;
@@ -17,8 +17,6 @@ export interface BioOrg {
   /** 'governance' | 'technical' approach tags. */
   approach: string[];
   loc: string[];
-  /** Upstream 'GCBR focus' flag. */
-  gcbr: boolean;
   /** BIO_COLUMNS ids the directory files this org under. */
   cols: string[];
   web: string;
@@ -37,23 +35,19 @@ export const BIO_SOURCE = {
 export const BIO_GROUPS: BioGroup[] = [
   {
     "id": "prevention",
-    "label": "Prevention",
-    "color": "hsl(160 45% 34%)"
+    "label": "Prevention"
   },
   {
     "id": "detection",
-    "label": "Detection",
-    "color": "hsl(35 75% 40%)"
+    "label": "Detection"
   },
   {
     "id": "response",
-    "label": "Response",
-    "color": "hsl(355 55% 46%)"
+    "label": "Response"
   },
   {
     "id": "transversal",
-    "label": "Transversal",
-    "color": "hsl(220 25% 42%)"
+    "label": "Transversal"
   }
 ];
 
@@ -170,7 +164,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Europe",
       "North America"
     ],
-    "gcbr": true,
     "cols": [
       "medical-countermeasures"
     ],
@@ -196,7 +189,6 @@ export const BIO_ORGS: BioOrg[] = [
       "London",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "information",
       "education"
@@ -225,7 +217,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "New York City"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release",
       "detection"
@@ -253,7 +244,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Cambridge MA"
     ],
-    "gcbr": true,
     "cols": [
       "medical-countermeasures"
     ],
@@ -281,7 +271,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "London"
     ],
-    "gcbr": true,
     "cols": [
       "medical-countermeasures"
     ],
@@ -312,7 +301,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "financing",
       "prevention",
@@ -342,7 +330,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "response"
     ],
@@ -372,7 +359,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Chicago IL"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "response"
@@ -409,7 +395,6 @@ export const BIO_ORGS: BioOrg[] = [
       "South Asia",
       "Singapore"
     ],
-    "gcbr": true,
     "cols": [
       "coordination",
       "response",
@@ -439,7 +424,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Boston MA",
       "Remote"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -469,7 +453,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Middle East",
       "Israel"
     ],
-    "gcbr": true,
     "cols": [
       "detection",
       "information"
@@ -500,7 +483,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "East Asia & Pacific"
     ],
-    "gcbr": true,
     "cols": [
       "coordination",
       "prevention"
@@ -536,7 +518,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "United Kingdom"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "medical-countermeasures"
@@ -567,7 +548,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Seattle WA"
     ],
-    "gcbr": false,
     "cols": [
       "financing"
     ],
@@ -603,7 +583,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Other",
       "Bengaluru"
     ],
-    "gcbr": true,
     "cols": [
       "prevention"
     ],
@@ -630,7 +609,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Europe (excl. UK)",
       "Brussels"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -665,7 +643,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Germany"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -693,7 +670,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Remote",
       "USA"
     ],
-    "gcbr": false,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -725,7 +701,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Washington DC",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -756,7 +731,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": false,
     "cols": [
       "prevention",
       "detection",
@@ -785,7 +759,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "Global"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -815,7 +788,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "coordination",
       "non-medical-countermeasures"
@@ -845,7 +817,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Cambridge MA"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures",
       "detection"
@@ -874,7 +845,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Europe (excl. UK)",
       "Brussels"
     ],
-    "gcbr": false,
     "cols": [
       "coordination"
     ],
@@ -904,7 +874,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Chicago IL"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -933,7 +902,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "Cambridge"
     ],
-    "gcbr": true,
     "cols": [
       "education",
       "prevention"
@@ -960,7 +928,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Cavendish VT"
     ],
-    "gcbr": true,
     "cols": [
       "diagnostics"
     ],
@@ -990,7 +957,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Cambridge MA"
     ],
-    "gcbr": true,
     "cols": [
       "education",
       "preventing-production-and-release",
@@ -1019,7 +985,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Germany",
       "Europe (excl. UK)"
     ],
-    "gcbr": false,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -1048,7 +1013,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": false,
     "cols": [
       "prevention",
       "response",
@@ -1081,7 +1045,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Minneapolis MN"
     ],
-    "gcbr": false,
     "cols": [
       "information",
       "response"
@@ -1113,7 +1076,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -1143,7 +1105,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Atlanta GA"
     ],
-    "gcbr": false,
     "cols": [
       "response",
       "coordination",
@@ -1178,7 +1139,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Europe",
       "Europe (excl. UK)"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release",
       "early-warning",
@@ -1210,7 +1170,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "London"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -1237,7 +1196,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "Cambridge"
     ],
-    "gcbr": true,
     "cols": [
       "prevention"
     ],
@@ -1270,7 +1228,6 @@ export const BIO_ORGS: BioOrg[] = [
       "London",
       "Washington DC"
     ],
-    "gcbr": false,
     "cols": [
       "financing",
       "coordination",
@@ -1308,7 +1265,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "San Francisco CA"
     ],
-    "gcbr": true,
     "cols": [
       "financing"
     ],
@@ -1338,7 +1294,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "USA"
     ],
-    "gcbr": true,
     "cols": [
       "response",
       "early-warning",
@@ -1365,7 +1320,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -1396,7 +1350,6 @@ export const BIO_ORGS: BioOrg[] = [
       "France",
       "Europe (excl. UK)"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "coordination"
@@ -1422,7 +1375,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "financing"
     ],
@@ -1447,7 +1399,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -1474,7 +1425,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Netherlands",
       "Amsterdam"
     ],
-    "gcbr": true,
     "cols": [
       "financing"
     ],
@@ -1503,7 +1453,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Europe (excl. UK)",
       "United Kingdom"
     ],
-    "gcbr": false,
     "cols": [
       "preventing-production-and-release",
       "coordination"
@@ -1536,7 +1485,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Sweden",
       "Stockholm"
     ],
-    "gcbr": false,
     "cols": [
       "response",
       "coordination",
@@ -1567,7 +1515,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Europe (excl. UK)",
       "Brussels"
     ],
-    "gcbr": false,
     "cols": [
       "non-medical-countermeasures"
     ],
@@ -1598,7 +1545,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Netherlands",
       "Amsterdam"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -1639,7 +1585,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Barcelona",
       "Rome"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "medical-countermeasures"
@@ -1671,7 +1616,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Switzerland",
       "Basel"
     ],
-    "gcbr": false,
     "cols": [
       "coordination"
     ],
@@ -1697,7 +1641,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "Cambridge"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -1728,7 +1671,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Chicago IL"
     ],
-    "gcbr": true,
     "cols": [
       "prevention"
     ],
@@ -1754,7 +1696,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -1782,7 +1723,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "London"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -1817,7 +1757,6 @@ export const BIO_ORGS: BioOrg[] = [
       "London",
       "Brussels"
     ],
-    "gcbr": false,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -1847,7 +1786,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Switzerland",
       "Geneva"
     ],
-    "gcbr": false,
     "cols": [
       "financing",
       "coordination"
@@ -1879,7 +1817,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Boston MA"
     ],
-    "gcbr": true,
     "cols": [
       "detection"
     ],
@@ -1906,7 +1843,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": false,
     "cols": [
       "information",
       "preventing-production-and-release"
@@ -1936,7 +1872,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "USA"
     ],
-    "gcbr": true,
     "cols": [
       "prevention"
     ],
@@ -1965,7 +1900,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Omaha NE"
     ],
-    "gcbr": false,
     "cols": [
       "non-medical-countermeasures"
     ],
@@ -1992,7 +1926,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Sweden",
       "Stockholm"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -2022,7 +1955,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "Global"
     ],
-    "gcbr": false,
     "cols": [
       "response"
     ],
@@ -2059,7 +1991,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": false,
     "cols": [
       "coordination",
       "prevention",
@@ -2089,7 +2020,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "Global"
     ],
-    "gcbr": false,
     "cols": [
       "coordination",
       "medical-countermeasures"
@@ -2121,7 +2051,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Switzerland",
       "Geneva"
     ],
-    "gcbr": false,
     "cols": [
       "coordination",
       "response"
@@ -2149,7 +2078,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Remote",
       "USA"
     ],
-    "gcbr": false,
     "cols": [
       "education",
       "information"
@@ -2184,7 +2112,6 @@ export const BIO_ORGS: BioOrg[] = [
       "North America",
       "Global"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -2222,7 +2149,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Belgium",
       "Brussels"
     ],
-    "gcbr": false,
     "cols": [
       "coordination",
       "financing",
@@ -2250,7 +2176,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Baltimore"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -2274,7 +2199,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -2298,7 +2222,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -2323,7 +2246,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "USA"
     ],
-    "gcbr": false,
     "cols": [
       "education"
     ],
@@ -2357,7 +2279,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Boston MA"
     ],
-    "gcbr": false,
     "cols": [
       "education"
     ],
@@ -2386,7 +2307,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": false,
     "cols": [
       "prevention",
       "response",
@@ -2414,7 +2334,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "Germany"
     ],
-    "gcbr": false,
     "cols": [
       "non-medical-countermeasures"
     ],
@@ -2448,7 +2367,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -2477,7 +2395,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Bethesda MD"
     ],
-    "gcbr": false,
     "cols": [
       "financing"
     ],
@@ -2511,7 +2428,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Washington DC",
       "USA"
     ],
-    "gcbr": false,
     "cols": [
       "coordination"
     ],
@@ -2539,7 +2455,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "USA"
     ],
-    "gcbr": true,
     "cols": [
       "financing"
     ],
@@ -2573,7 +2488,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Switzerland",
       "Geneva"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -2600,7 +2514,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": false,
     "cols": [
       "coordination",
       "preventing-production-and-release"
@@ -2631,7 +2544,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "Global"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release",
       "coordination"
@@ -2660,7 +2572,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Switzerland",
       "Geneva"
     ],
-    "gcbr": false,
     "cols": [
       "prevention"
     ],
@@ -2696,7 +2607,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "London"
     ],
-    "gcbr": true,
     "cols": [
       "coordination",
       "response"
@@ -2733,7 +2643,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Washington DC",
       "Vienna"
     ],
-    "gcbr": true,
     "cols": [
       "prevention",
       "education"
@@ -2776,7 +2685,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Baltimore"
     ],
-    "gcbr": true,
     "cols": [
       "coordination"
     ],
@@ -2807,7 +2715,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Livermore CA"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "response"
@@ -2835,7 +2742,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "financing"
     ],
@@ -2867,7 +2773,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Los Alamos NM"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "medical-countermeasures"
@@ -2896,7 +2801,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "San Francisco CA"
     ],
-    "gcbr": false,
     "cols": [
       "diagnostics",
       "medical-countermeasures"
@@ -2922,7 +2826,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "financing"
     ],
@@ -2951,7 +2854,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Remote",
       "Global"
     ],
-    "gcbr": true,
     "cols": [
       "financing"
     ],
@@ -2979,7 +2881,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Germany",
       "Berlin"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -3018,7 +2919,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "United Kingdom"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -3047,7 +2947,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "controlling-knowledge",
       "financing",
@@ -3081,7 +2980,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Lexington MA"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "medical-countermeasures"
@@ -3115,7 +3013,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "USA"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -3140,7 +3037,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Bethesda MD"
     ],
-    "gcbr": false,
     "cols": [
       "financing"
     ],
@@ -3168,7 +3064,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "USA"
     ],
-    "gcbr": false,
     "cols": [
       "controlling-knowledge"
     ],
@@ -3195,7 +3090,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Chicago IL"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3227,7 +3121,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3253,7 +3146,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": false,
     "cols": [
       "information",
       "preventing-production-and-release"
@@ -3284,7 +3176,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Minneapolis MN"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3310,7 +3201,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -3339,7 +3229,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Baltimore"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3364,7 +3253,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -3395,7 +3283,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3420,7 +3307,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Baltimore"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3449,7 +3335,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -3475,7 +3360,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Boulder CO"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3502,7 +3386,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "San Francisco CA"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3527,7 +3410,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3552,7 +3434,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "San Francisco CA"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3583,7 +3464,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": false,
     "cols": [
       "information"
     ],
@@ -3614,7 +3494,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Basel",
       "Remote"
     ],
-    "gcbr": false,
     "cols": [
       "early-warning"
     ],
@@ -3642,7 +3521,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -3670,7 +3548,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Europe (excl. UK)",
       "Gaithersburg MD"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -3700,7 +3577,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -3738,7 +3614,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Madrid",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "prevention",
       "detection",
@@ -3766,7 +3641,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "USA"
     ],
-    "gcbr": false,
     "cols": [
       "non-medical-countermeasures"
     ],
@@ -3794,7 +3668,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "Oxford"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -3829,7 +3702,6 @@ export const BIO_ORGS: BioOrg[] = [
       "France",
       "Paris"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "medical-countermeasures"
@@ -3867,7 +3739,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Beijing",
       "Vienna"
     ],
-    "gcbr": true,
     "cols": [
       "coordination",
       "financing"
@@ -3898,7 +3769,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Germany",
       "Frankfurt"
     ],
-    "gcbr": false,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -3936,7 +3806,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "USA"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -3965,7 +3834,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "London"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -3991,7 +3859,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -4017,7 +3884,6 @@ export const BIO_ORGS: BioOrg[] = [
       "London",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "information",
       "education"
@@ -4046,7 +3912,6 @@ export const BIO_ORGS: BioOrg[] = [
       "India",
       "Hyderabad"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -4079,7 +3944,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Brussels",
       "Belgium"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release",
       "detection",
@@ -4123,7 +3987,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Canberra",
       "Rotterdam"
     ],
-    "gcbr": true,
     "cols": [
       "prevention",
       "non-medical-countermeasures",
@@ -4154,7 +4017,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "USA"
     ],
-    "gcbr": true,
     "cols": [
       "medical-countermeasures"
     ],
@@ -4184,7 +4046,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": false,
     "cols": [
       "coordination",
       "response"
@@ -4218,7 +4079,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Germany",
       "Berlin"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "medical-countermeasures"
@@ -4258,7 +4118,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "USA"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "medical-countermeasures"
@@ -4285,7 +4144,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Remote",
       "Global"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -4313,7 +4171,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Cambridge MA"
     ],
-    "gcbr": false,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -4342,7 +4199,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Cambridge MA"
     ],
-    "gcbr": false,
     "cols": [
       "detection",
       "medical-countermeasures"
@@ -4369,7 +4225,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "Cambridge"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -4403,7 +4258,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "USA"
     ],
-    "gcbr": true,
     "cols": [
       "financing",
       "coordination"
@@ -4441,7 +4295,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Albuquerque NM",
       "Livermore CA"
     ],
-    "gcbr": false,
     "cols": [
       "preventing-production-and-release",
       "medical-countermeasures",
@@ -4471,7 +4324,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Cambridge MA"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release",
       "detection",
@@ -4506,7 +4358,6 @@ export const BIO_ORGS: BioOrg[] = [
       "North America",
       "Cambridge MA"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release",
       "detection",
@@ -4536,7 +4387,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Cambridge MA"
     ],
-    "gcbr": true,
     "cols": [
       "early-warning"
     ],
@@ -4564,7 +4414,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Switzerland",
       "Zug"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -4591,7 +4440,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Remote",
       "Global"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -4623,7 +4471,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "financing"
     ],
@@ -4649,7 +4496,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -4677,7 +4523,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Stanford CA"
     ],
-    "gcbr": true,
     "cols": [
       "education"
     ],
@@ -4707,7 +4552,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Sweden",
       "Stockholm"
     ],
-    "gcbr": false,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -4732,7 +4576,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Global",
       "Remote"
     ],
-    "gcbr": true,
     "cols": [
       "financing"
     ],
@@ -4763,7 +4606,6 @@ export const BIO_ORGS: BioOrg[] = [
       "College Station",
       "Washington DC"
     ],
-    "gcbr": true,
     "cols": [
       "financing",
       "controlling-knowledge"
@@ -4797,7 +4639,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Providence RI"
     ],
-    "gcbr": true,
     "cols": [
       "early-warning",
       "response",
@@ -4838,7 +4679,6 @@ export const BIO_ORGS: BioOrg[] = [
       "South Asia",
       "Washington DC"
     ],
-    "gcbr": false,
     "cols": [
       "financing"
     ],
@@ -4870,7 +4710,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "Liverpool"
     ],
-    "gcbr": true,
     "cols": [
       "detection",
       "response"
@@ -4896,7 +4735,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Remote",
       "Global"
     ],
-    "gcbr": true,
     "cols": [
       "information"
     ],
@@ -4926,7 +4764,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Germany",
       "Berlin"
     ],
-    "gcbr": false,
     "cols": [
       "coordination"
     ],
@@ -4954,7 +4791,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "New York City"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -4983,7 +4819,6 @@ export const BIO_ORGS: BioOrg[] = [
     "loc": [
       "Global"
     ],
-    "gcbr": false,
     "cols": [
       "response",
       "coordination"
@@ -5013,7 +4848,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Europe (excl. UK)",
       "Geneva"
     ],
-    "gcbr": true,
     "cols": [
       "preventing-production-and-release"
     ],
@@ -5046,7 +4880,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Global"
     ],
-    "gcbr": false,
     "cols": [
       "prevention",
       "coordination"
@@ -5075,7 +4908,6 @@ export const BIO_ORGS: BioOrg[] = [
       "Switzerland",
       "Europe (excl. UK)"
     ],
-    "gcbr": false,
     "cols": [
       "response",
       "coordination"
@@ -5109,7 +4941,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Washington DC"
     ],
-    "gcbr": false,
     "cols": [
       "response",
       "coordination"
@@ -5142,7 +4973,6 @@ export const BIO_ORGS: BioOrg[] = [
       "San Francisco CA",
       "New York City"
     ],
-    "gcbr": true,
     "cols": [
       "early-warning",
       "medical-countermeasures"
@@ -5171,7 +5001,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "San Francisco CA"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures"
     ],
@@ -5200,7 +5029,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "Cambridge"
     ],
-    "gcbr": false,
     "cols": [
       "detection"
     ],
@@ -5230,7 +5058,6 @@ export const BIO_ORGS: BioOrg[] = [
       "United Kingdom",
       "London"
     ],
-    "gcbr": false,
     "cols": [
       "financing"
     ],
@@ -5262,7 +5089,6 @@ export const BIO_ORGS: BioOrg[] = [
       "USA",
       "Boston MA"
     ],
-    "gcbr": false,
     "cols": [
       "medical-countermeasures",
       "detection",

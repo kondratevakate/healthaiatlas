@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { BIO_SOURCE, type BioOrg } from '@/data/biosecurity';
-import { COLUMN_BY_ID, columnLabel, groupColor } from './lookup';
+import { COLUMN_BY_ID, columnLabel, groupIcon } from './lookup';
 
 export function OrgDetail({ org }: { org: BioOrg }) {
   return (
@@ -16,9 +16,10 @@ export function OrgDetail({ org }: { org: BioOrg }) {
       <div className="space-y-4 text-xs">
         <Field label="Categories">
           {org.cols.map((c) => {
-            const color = groupColor(COLUMN_BY_ID.get(c)?.group ?? '');
+            const Icon = groupIcon(COLUMN_BY_ID.get(c)?.group ?? '');
             return (
-              <span key={c} className="px-2 py-0.5 border text-[11px]" style={{ borderColor: color, color }}>
+              <span key={c} className="px-2 py-0.5 border border-foreground text-[11px] text-foreground inline-flex items-center gap-1">
+                <Icon className="h-3 w-3" aria-hidden />
                 {columnLabel(c)}
               </span>
             );
@@ -28,21 +29,16 @@ export function OrgDetail({ org }: { org: BioOrg }) {
         {org.activity.length > 0 && <Field label="Activity">{org.activity.map(pill)}</Field>}
         {org.approach.length > 0 && <Field label="Approach">{org.approach.map(pill)}</Field>}
         {org.loc.length > 0 && <Field label="Locations">{org.loc.map(pill)}</Field>}
-        {org.gcbr && (
-          <div className="text-muted-foreground">
-            Flagged by {BIO_SOURCE.name} as focused on global catastrophic biological risks.
-          </div>
-        )}
 
-        <div className="flex flex-col gap-1.5 pt-2 border-t border-border">
+        <div className="flex flex-col gap-1.5 pt-3 border-t border-border">
           {org.web && (
-            <a href={org.web} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
-              <ExternalLink className="h-3 w-3" />
+            <a href={org.web} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-foreground underline underline-offset-2 hover:opacity-70">
+              <ExternalLink className="h-3 w-3" aria-hidden />
               Website
             </a>
           )}
-          <a href={org.src} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
-            <ExternalLink className="h-3 w-3" />
+          <a href={org.src} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-foreground underline underline-offset-2 hover:opacity-70">
+            <ExternalLink className="h-3 w-3" aria-hidden />
             Source: {BIO_SOURCE.name} directory
           </a>
         </div>

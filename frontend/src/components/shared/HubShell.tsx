@@ -42,7 +42,11 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
       {children && <div className="border-b border-border p-3 sm:p-4">{children}</div>}
 
       <Tabs value={active} onValueChange={setActive} className="p-3 sm:p-4">
-        <TabsList className="sticky top-0 z-20 h-auto bg-background/95 backdrop-blur-sm border-b border-border rounded-none p-0 pt-1 mb-6 -mx-3 px-3 sm:-mx-4 sm:px-4 w-[calc(100%+1.5rem)] sm:w-[calc(100%+2rem)] justify-start gap-0 flex-wrap">
+        {/* top-16 = the site header's h-16, so the tabs stick below it instead of
+            sliding under it; z-40 keeps them above sticky table headers inside
+            hub views but below the header (z-50). Solid background: the brand
+            forbids backdrop blur. */}
+        <TabsList className="sticky top-16 z-40 h-auto bg-background border-b border-border rounded-none p-0 pt-1 mb-6 -mx-3 px-3 sm:-mx-4 sm:px-4 w-[calc(100%+1.5rem)] sm:w-[calc(100%+2rem)] justify-start gap-0 flex-wrap">
           {views.map((v, idx) => (
             <TabsTrigger
               key={v.id}

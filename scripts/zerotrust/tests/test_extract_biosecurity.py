@@ -181,7 +181,9 @@ def test_regen_builds_columns_orgs_and_approach(written):
 
     acme = next(o for o in orgs if o["id"] == "acme-bio-lab")
     assert acme["focus"] == ["Vaccines"] and acme["approach"] == ["governance"]
-    assert acme["gcbr"] is True and acme["webAlive"] is True
+    # The upstream GCBR flag is Biosecurity World's editorial call: kept in the
+    # CSV claims for audit, deliberately not shipped to the frontend.
+    assert "gcbr" not in acme and acme["webAlive"] is True
     assert acme["src"] == canonical_url(ex.DIRECTORY_URL)
     # Both groups have orgs filed directly under them -> each gets a General column.
     assert [c["id"] for c in columns] == ["prevention", "response", "medical-countermeasures"]

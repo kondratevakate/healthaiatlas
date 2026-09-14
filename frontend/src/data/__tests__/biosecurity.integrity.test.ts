@@ -29,9 +29,15 @@ describe('biosecurity dataset integrity', () => {
     expect(offenders.map((o) => o.id)).toEqual([]);
   });
 
-  it('every column belongs to a declared group with a colour', () => {
-    const groups = new Map(BIO_GROUPS.map((g) => [g.id, g]));
-    expect(BIO_COLUMNS.filter((c) => !groups.get(c.group)?.color).map((c) => c.id)).toEqual([]);
+  it('every column belongs to a declared group', () => {
+    const groups = new Set(BIO_GROUPS.map((g) => g.id));
+    expect(BIO_COLUMNS.filter((c) => !groups.has(c.group)).map((c) => c.id)).toEqual([]);
+  });
+
+  // Brand rule: categories are differentiated by icon and label, never colour
+  // (docs/design-decisions/2026-05-palette-strategy.md).
+  it('carries no category colours', () => {
+    expect(readFileSync(DATA_FILE, 'utf8')).not.toMatch(/"color"\s*:/);
   });
 
   it('focus values are drawn from BIO_FOCUS_ORDER and exclude approach tags', () => {

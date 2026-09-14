@@ -1,19 +1,30 @@
+import { Circle, Network, Radar, ShieldCheck, Syringe, type LucideIcon } from 'lucide-react';
 import { BIO_COLUMNS, BIO_GROUPS, type BioOrg } from '@/data/biosecurity';
 
-// BIO_GROUPS is the single source of truth for group colour — chips, headers
-// and sheet pills all read from here.
+// Brand rule (docs/design-decisions/2026-05-palette-strategy.md): categories
+// are differentiated by icon and label, never by colour.
+const GROUP_ICONS: Record<string, LucideIcon> = {
+  prevention: ShieldCheck,
+  detection: Radar,
+  response: Syringe,
+  transversal: Network,
+};
+
 export const COLUMN_BY_ID = new Map(BIO_COLUMNS.map((c) => [c.id, c]));
 export const GROUP_BY_ID = new Map(BIO_GROUPS.map((g) => [g.id, g]));
 
-export function groupColor(groupId: string): string {
-  return GROUP_BY_ID.get(groupId)?.color ?? 'hsl(var(--muted-foreground))';
+export function groupIcon(groupId: string): LucideIcon {
+  return GROUP_ICONS[groupId] ?? Circle;
+}
+
+export function groupLabel(groupId: string): string {
+  return GROUP_BY_ID.get(groupId)?.label ?? groupId;
 }
 
 export function columnLabel(columnId: string): string {
   const col = COLUMN_BY_ID.get(columnId);
   if (!col) return columnId;
-  const group = GROUP_BY_ID.get(col.group)?.label ?? col.group;
-  return col.label === 'General' ? group : `${group} · ${col.label}`;
+  return col.label === 'General' ? groupLabel(col.group) : `${groupLabel(col.group)} · ${col.label}`;
 }
 
 /** Acronym from a trailing "(ABC)" when present, otherwise the full name. */

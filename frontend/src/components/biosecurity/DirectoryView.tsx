@@ -4,7 +4,7 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { OrgDetail } from './OrgDetail';
-import { groupColor, orgGroups } from './lookup';
+import { groupIcon, groupLabel, orgGroups } from './lookup';
 
 const TYPES = Array.from(
   BIO_ORGS.reduce((acc, o) => acc.set(o.type, (acc.get(o.type) ?? 0) + 1), new Map<string, number>()),
@@ -14,7 +14,6 @@ export function DirectoryView() {
   const [query, setQuery] = useState('');
   const [group, setGroup] = useState('all');
   const [type, setType] = useState('all');
-  const [gcbrOnly, setGcbrOnly] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
@@ -22,11 +21,10 @@ export function DirectoryView() {
     return BIO_ORGS.filter((o) => {
       if (group !== 'all' && !orgGroups(o).includes(group)) return false;
       if (type !== 'all' && o.type !== type) return false;
-      if (gcbrOnly && !o.gcbr) return false;
       if (!needle) return true;
       return [o.name, o.desc, ...o.focus, ...o.activity, ...o.loc].join(' ').toLowerCase().includes(needle);
     });
-  }, [query, group, type, gcbrOnly]);
+  }, [query, group, type]);
 
   const selectedOrg = orgId ? BIO_ORGS.find((o) => o.id === orgId) ?? null : null;
 
@@ -34,56 +32,50 @@ export function DirectoryView() {
     setQuery('');
     setGroup('all');
     setType('all');
-    setGcbrOnly(false);
   };
 
   const chip = (active: boolean) =>
     cn(
-      'px-2 py-1 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
+      'px-2 py-1 min-h-[44px] sm:min-h-0 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
       active ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground hover:text-foreground',
     );
 
   return (
     <div>
       <div className="space-y-2 mb-4">
-        <div className="flex flex-wrap gap-2 items-center">
+        <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2 items-center">
           <input
             type="search"
+            aria-label="Search organisations"
             placeholder="Search name, focus, location…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="bg-secondary border border-border px-3 py-1.5 text-xs w-64 max-w-full focus:outline-none focus:border-primary"
+            className="bg-background border border-border px-3 py-1.5 min-h-[44px] sm:min-h-0 text-xs w-64 max-w-full focus:outline-none focus:ring-1 focus:ring-foreground"
           />
-          <button type="button" onClick={() => setGroup('all')} className={chip(group === 'all')}>
+          <button type="button" aria-pressed={group === 'all'} onClick={() => setGroup('all')} className={chip(group === 'all')}>
             All categories
           </button>
-          {BIO_GROUPS.map((g) => (
-            <button key={g.id} type="button" onClick={() => setGroup(g.id)} className={chip(group === g.id)}>
-              <span className="w-2.5 h-2.5 rounded-full" style={{ background: g.color }} />
-              {g.label}
-            </button>
-          ))}
+          {BIO_GROUPS.map((g) => {
+            const Icon = groupIcon(g.id);
+            return (
+              <button key={g.id} type="button" aria-pressed={group === g.id} onClick={() => setGroup(g.id)} className={chip(group === g.id)}>
+                <Icon className="h-3.5 w-3.5" aria-hidden />
+                {g.label}
+              </button>
+            );
+          })}
         </div>
-        <div className="flex flex-wrap gap-1.5 items-center">
-          <button type="button" onClick={() => setType('all')} className={chip(type === 'all')}>
+        <div role="group" aria-label="Filter by organisation type" className="flex flex-wrap gap-1.5 items-center">
+          <button type="button" aria-pressed={type === 'all'} onClick={() => setType('all')} className={chip(type === 'all')}>
             All types
           </button>
           {TYPES.map(([t, n]) => (
-            <button key={t} type="button" onClick={() => setType(t)} className={chip(type === t)}>
+            <button key={t} type="button" aria-pressed={type === t} onClick={() => setType(t)} className={chip(type === t)}>
               {t} <span className="opacity-60">{n}</span>
             </button>
           ))}
-          <label className="inline-flex items-center gap-1.5 text-[11px] cursor-pointer select-none ml-1">
-            <input
-              type="checkbox"
-              checked={gcbrOnly}
-              onChange={(e) => setGcbrOnly(e.target.checked)}
-              className="accent-primary"
-            />
-            <span className="text-muted-foreground">GCBR-focused only</span>
-          </label>
         </div>
-        <div className="text-[11px] text-muted-foreground font-mono">
+        <div className="text-[11px] text-muted-foreground font-mono" aria-live="polite">
           {filtered.length} of {BIO_ORGS.length} organisations
         </div>
       </div>
@@ -102,12 +94,13 @@ export function DirectoryView() {
               key={o.id}
               type="button"
               onClick={() => setOrgId(o.id)}
-              className="text-left border border-border p-3 hover:border-foreground/40 transition-colors space-y-1.5"
+              className="text-left border border-border p-3 hover:border-foreground/50 transition-colors space-y-1.5"
             >
-              <div className="flex items-center gap-1">
-                {orgGroups(o).map((g) => (
-                  <span key={g} className="w-2 h-2 rounded-full" style={{ background: groupColor(g) }} />
-                ))}
+              <div className="flex items-center gap-1 text-foreground">
+                {orgGroups(o).map((g) => {
+                  const Icon = groupIcon(g);
+                  return <Icon key={g} className="h-3.5 w-3.5" role="img" aria-label={groupLabel(g)} />;
+                })}
                 <span className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground ml-1 truncate">
                   {o.type}
                 </span>

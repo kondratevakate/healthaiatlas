@@ -18,7 +18,7 @@ export function BiosecurityHub() {
         {
           id: 'directory',
           label: 'Organisation Directory',
-          description: 'Searchable list of every organisation, filterable by category, type and GCBR focus.',
+          description: 'Searchable list of every organisation, filterable by category and type.',
           render: () => <DirectoryView />,
         },
       ]}

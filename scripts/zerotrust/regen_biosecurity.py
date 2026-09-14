@@ -30,15 +30,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 OUT_TS = REPO_ROOT / "frontend" / "src" / "data" / "biosecurity.ts"
 DOMAIN_TAG = "biosecurity"
 
-# Editorial display colours per top-level category (structural, not factual).
-GROUP_COLORS = {
-    "prevention": "hsl(160 45% 34%)",
-    "detection": "hsl(35 75% 40%)",
-    "response": "hsl(355 55% 46%)",
-    "transversal": "hsl(220 25% 42%)",
-}
-FALLBACK_COLOR = "hsl(var(--muted-foreground))"
-
 
 def _load_csv(name: str) -> list[dict]:
     path = data_dir(name)
@@ -76,7 +67,7 @@ def build(entities: list[dict], claims: list[dict], sources: list[dict], taxonom
             org = orgs[ent["entity_id"]] = {
                 "id": ent["entity_id"], "name": ent["name"], "desc": "",
                 "type": "", "activity": [], "focus": [], "approach": [],
-                "loc": [], "gcbr": False, "cols": [],
+                "loc": [], "cols": [],
                 "web": ent.get("website", ""), "webAlive": False, "src": src_url,
             }
 
@@ -90,7 +81,6 @@ def build(entities: list[dict], claims: list[dict], sources: list[dict], taxonom
             focus = tags.get("focus", [])
             org["focus"] = [f for f in focus if not f.startswith("[")]
             org["approach"] = [f.strip("[]").lower() for f in focus if f.startswith("[")]
-            org["gcbr"] = tags.get("gcbr") == ["yes"]
             org["webAlive"] = tags.get("website") == ["alive"]
         elif c["predicate"] == "operates_in_jurisdiction":
             org["loc"] = [x for x in c["value"].split("; ") if x]
@@ -107,7 +97,7 @@ def build(entities: list[dict], claims: list[dict], sources: list[dict], taxonom
 
     focus_counts = Counter(f for o in orgs.values() for f in o["focus"])
     return {
-        "groups": [{**g, "color": GROUP_COLORS.get(g["id"], FALLBACK_COLOR)} for g in taxonomy["groups"]],
+        "groups": taxonomy["groups"],
         "columns": columns,
         "focus_order": [f for f, _ in sorted(focus_counts.items(), key=lambda kv: (-kv[1], kv[0]))],
         "orgs": sorted(orgs.values(), key=lambda o: o["name"].lower()),
@@ -124,7 +114,7 @@ def render_ts(data: dict) -> str:
         "// Pipeline: extract_biosecurity -> validate --domain biosecurity -> regen_biosecurity.",
         f"// Organisations: {len(data['orgs'])}",
         "",
-        "export interface BioGroup { id: string; label: string; color: string }",
+        "export interface BioGroup { id: string; label: string }",
         "export interface BioColumn { id: string; label: string; group: string }",
         "export interface BioOrg {",
         "  id: string;",
@@ -138,8 +128,6 @@ def render_ts(data: dict) -> str:
         "  /** 'governance' | 'technical' approach tags. */",
         "  approach: string[];",
         "  loc: string[];",
-        "  /** Upstream 'GCBR focus' flag. */",
-        "  gcbr: boolean;",
         "  /** BIO_COLUMNS ids the directory files this org under. */",
         "  cols: string[];",
         "  web: string;",

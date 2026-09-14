@@ -54,6 +54,19 @@ export const domains: ResearchDomain[] = [
     ],
     playerIds: ['cleveland-clinic-ad', 'seha', 'medcare'],
   },
+  // Biosecurity sits outside the clinical-AI scope chain above: a field map of
+  // organisations working on catastrophic pandemic risk, sourced from the
+  // Biosecurity World directory.
+  {
+    id: 'biosecurity',
+    name: { en: 'Biosecurity', ar: 'الأمن البيولوجي' },
+    subtitle: { en: 'Organisations working to prevent, detect and respond to catastrophic pandemics', ar: 'منظمات تعمل على منع الأوبئة الكارثية واكتشافها والاستجابة لها' },
+    color: '160 45% 34%',
+    stats: [
+      { label: 'Coverage', value: 'Global' },
+    ],
+    playerIds: [],
+  },
 ];
 
 export function getDomainById(id: string) {

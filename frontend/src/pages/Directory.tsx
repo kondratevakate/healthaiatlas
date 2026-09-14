@@ -15,6 +15,7 @@ import { MedicalTourismHub } from '@/components/medical-tourism';
 import { ProcessMiningHub } from '@/components/process-mining';
 import { OncologyHub } from '@/components/oncology';
 import { AiLifeSciencesHub } from '@/components/ai-life-sciences';
+import { BiosecurityHub } from '@/components/biosecurity';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
@@ -210,6 +211,9 @@ const Directory = () => {
         )}
         {activeDomainId === 'ai-life-sciences' && (
           <div className="mb-16"><AiLifeSciencesHub /></div>
+        )}
+        {activeDomainId === 'biosecurity' && (
+          <div className="mb-16"><BiosecurityHub /></div>
         )}
 
         {/* Players Grid — hidden on overview (replaced by System Map) and on custom hub tabs */}

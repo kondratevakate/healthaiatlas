@@ -15,25 +15,25 @@ Soft warnings (printed, exit 0):
 """
 from __future__ import annotations
 
+import argparse
 import csv
 import sys
 from collections import Counter, defaultdict
-from pathlib import Path
 
-from .common import canonical_url
-
-OUT_DIR = Path(r"C:\Projects\data\aiatls\zerotrust")
+from .common import canonical_url, data_dir
 
 
 def read_csv(name: str) -> list[dict]:
-    with (OUT_DIR / name).open(encoding="utf-8", newline="") as f:
+    with data_dir(name).open(encoding="utf-8", newline="") as f:
         return list(csv.DictReader(f))
 
 
-def validate() -> int:
-    entities = read_csv("entities.csv")
-    claims = read_csv("claims.csv")
-    sources = read_csv("sources.csv")
+def validate(domain: str = "") -> int:
+    """Validate the merged tables, or the per-domain `*_<domain>.csv` set."""
+    suffix = f"_{domain}" if domain else ""
+    entities = read_csv(f"entities{suffix}.csv")
+    claims = read_csv(f"claims{suffix}.csv")
+    sources = read_csv(f"sources{suffix}.csv")
 
     eids = {e["entity_id"] for e in entities}
     sids = {s["source_id"] for s in sources}
@@ -104,4 +104,6 @@ def validate() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(validate())
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--domain", default="", help="validate entities_<domain>.csv etc. instead of the merged tables")
+    sys.exit(validate(ap.parse_args().domain))

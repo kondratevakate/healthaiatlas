@@ -43,6 +43,7 @@ export const LAST_UPDATED: Record<string, string> = {
   'process-mining': '2026-04-22',
   'medical-tourism': '2026-04-22',
   'ai-life-sciences': '2026-05-08',
+  biosecurity: '2026-09-13',
 };
 
 // Fixed ordering for cross-hub navigation ("See also" strips).
@@ -51,4 +52,5 @@ export const HUB_DOMAIN_IDS = [
   'process-mining',
   'medical-tourism',
   'ai-life-sciences',
+  'biosecurity',
 ] as const;

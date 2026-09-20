@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { OrgDetail } from './OrgDetail';
-import { COLUMN_BY_ID, columnLabel, groupIcon, groupLabel, shortName } from './lookup';
+import { COLUMN_BY_ID, columnLabel, columnShortLabel, groupIcon, groupLabel, shortName } from './lookup';
 
 // Organisations with only governance/technical approach tags and no concrete
 // intervention focus still belong on the map — they get their own row.
@@ -94,8 +94,8 @@ export function MatrixView() {
 
   return (
     <div>
-      <div className="space-y-3 mb-4">
-        <div className="text-[11px] text-muted-foreground font-mono flex items-center gap-3 flex-wrap">
+      <div className="flex flex-col gap-2 mb-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-[11px] text-muted-foreground font-mono flex items-center gap-3 flex-wrap order-2 sm:order-1">
           <span>{BIO_ORGS.length} organisations</span>
           <span aria-hidden>·</span>
           <span>{columns.length} categories × {BIO_FOCUS_ORDER.length} focus areas</span>
@@ -103,7 +103,7 @@ export function MatrixView() {
           <span>{emptyCells} empty cells</span>
         </div>
 
-        <div role="group" aria-label="Filter by category" className="flex gap-2 items-center overflow-x-auto sm:flex-wrap">
+        <div role="group" aria-label="Filter by category" className="flex gap-2 items-center overflow-x-auto sm:flex-wrap order-1 sm:order-2">
           {BIO_GROUPS.map((g) => {
             const active = activeGroups.has(g.id);
             const Icon = groupIcon(g.id);
@@ -180,15 +180,16 @@ export function MatrixView() {
                       'bg-background p-2 text-[10px] font-medium text-foreground',
                       groupStarts.has(col.id) && 'border-l-2 border-l-foreground',
                     )}
+                    title={columnLabel(col.id)}
                     style={{
                       writingMode: 'vertical-rl',
                       transform: 'rotate(180deg)',
-                      height: '9rem',
+                      height: '7rem',
                       whiteSpace: 'nowrap',
                       verticalAlign: 'bottom',
                     }}
                   >
-                    {col.label}
+                    {columnShortLabel(col.id)}
                   </th>
                 ))}
               </tr>

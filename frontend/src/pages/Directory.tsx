@@ -93,21 +93,25 @@ const Directory = () => {
   return (
     <Layout>
       <div className="container py-12 md:py-16">
-        {!isOverview && (
-          <button
-            type="button"
-            onClick={() => setActiveDomainId('overview')}
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group border border-border bg-background px-3 py-1.5 hover:border-foreground/40"
-          >
-            <span className="text-base transition-transform group-hover:-translate-x-0.5">←</span>
-            <span className="font-medium">{t('action.back')} {t('nav.domains')}</span>
-          </button>
-        )}
-
-        <PageHeader
-          title={isOverview ? t('nav.domains') : activeDomain?.name[language]}
-          subtitle={isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}
-        />
+        {/* On a domain page the back control sits on the title row rather than
+            on its own line above it — that line cost ~54px above the data. */}
+        <div className="flex flex-col-reverse items-start gap-2 sm:flex-row sm:justify-between sm:gap-4">
+          <PageHeader
+            title={isOverview ? t('nav.domains') : activeDomain?.name[language]}
+            subtitle={isOverview ? t('entry.directory.desc') : activeDomain?.subtitle[language]}
+            className={isOverview ? undefined : 'mb-6'}
+          />
+          {!isOverview && (
+            <button
+              type="button"
+              onClick={() => setActiveDomainId('overview')}
+              className="shrink-0 self-start mb-2 sm:mb-0 sm:mt-2 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors group border border-border bg-background px-3 py-1.5 hover:border-foreground/40"
+            >
+              <span className="text-base transition-transform group-hover:-translate-x-0.5">←</span>
+              <span className="font-medium">{t('action.back')} {t('nav.domains')}</span>
+            </button>
+          )}
+        </div>
 
         {/* Domain entry chips — primary navigation, sits right under PageHeader */}
         {isOverview && (

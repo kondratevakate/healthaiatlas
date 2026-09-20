@@ -27,6 +27,19 @@ export function columnLabel(columnId: string): string {
   return col.label === 'General' ? groupLabel(col.group) : `${groupLabel(col.group)} · ${col.label}`;
 }
 
+// Rotated head labels are the tallest thing above the data (175px). These
+// shortenings cut that down and stop long labels colliding with the group row.
+const SHORT_COLUMN_LABELS: Record<string, string> = {
+  'preventing-production-and-release': 'Production & release',
+  'controlling-knowledge': 'Knowledge control',
+  'non-medical-countermeasures': 'Non-medical CM',
+  'medical-countermeasures': 'Medical CM',
+};
+
+export function columnShortLabel(columnId: string): string {
+  return SHORT_COLUMN_LABELS[columnId] ?? COLUMN_BY_ID.get(columnId)?.label ?? columnId;
+}
+
 /** Acronym from a trailing "(ABC)" when present, otherwise the full name. */
 export function shortName(name: string): string {
   return name.match(/\(([^)]{2,14})\)/)?.[1] ?? name;

@@ -11,6 +11,7 @@ export function BiosecurityHub() {
         {
           id: 'matrix',
           label: 'Focus × Category Matrix',
+          shortLabel: 'Matrix',
           description:
             'Which intervention focus areas are covered in each prevention, detection, response and cross-cutting category. Hatched cells have no organisation listed.',
           render: () => <MatrixView />,
@@ -18,6 +19,7 @@ export function BiosecurityHub() {
         {
           id: 'directory',
           label: 'Organisation Directory',
+          shortLabel: 'Directory',
           description: 'Searchable list of every organisation, filterable by category and type.',
           render: () => <DirectoryView />,
         },

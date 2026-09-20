@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BIO_GROUPS, BIO_ORGS } from '@/data/biosecurity';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -10,11 +10,15 @@ const TYPES = Array.from(
   BIO_ORGS.reduce((acc, o) => acc.set(o.type, (acc.get(o.type) ?? 0) + 1), new Map<string, number>()),
 ).sort((a, b) => b[1] - a[1]);
 
+// Rendering all 168 cards made the mobile page ~25k px tall; page them in.
+const PAGE_SIZE = 24;
+
 export function DirectoryView() {
   const [query, setQuery] = useState('');
   const [group, setGroup] = useState('all');
   const [type, setType] = useState('all');
   const [orgId, setOrgId] = useState<string | null>(null);
+  const [limit, setLimit] = useState(PAGE_SIZE);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -26,6 +30,9 @@ export function DirectoryView() {
     });
   }, [query, group, type]);
 
+  useEffect(() => setLimit(PAGE_SIZE), [query, group, type]);
+
+  const visible = filtered.slice(0, limit);
   const selectedOrg = orgId ? BIO_ORGS.find((o) => o.id === orgId) ?? null : null;
 
   const reset = () => {
@@ -36,22 +43,22 @@ export function DirectoryView() {
 
   const chip = (active: boolean) =>
     cn(
-      'px-2 py-1 min-h-[44px] sm:min-h-0 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
+      'px-2 py-1 min-h-[44px] sm:min-h-0 shrink-0 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
       active ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground hover:text-foreground',
     );
 
   return (
     <div>
       <div className="space-y-2 mb-4">
-        <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2 items-center">
-          <input
-            type="search"
-            aria-label="Search organisations"
-            placeholder="Search name, focus, location…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="bg-background border border-border px-3 py-1.5 min-h-[44px] sm:min-h-0 text-xs w-64 max-w-full focus:outline-none focus:ring-1 focus:ring-foreground"
-          />
+        <input
+          type="search"
+          aria-label="Search organisations"
+          placeholder="Search name, focus, location…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="bg-background border border-border px-3 py-1.5 min-h-[44px] sm:min-h-0 text-xs w-full sm:w-64 focus:outline-none focus:ring-1 focus:ring-foreground"
+        />
+        <div role="group" aria-label="Filter by category" className="flex gap-2 items-center overflow-x-auto sm:flex-wrap">
           <button type="button" aria-pressed={group === 'all'} onClick={() => setGroup('all')} className={chip(group === 'all')}>
             All categories
           </button>
@@ -65,7 +72,18 @@ export function DirectoryView() {
             );
           })}
         </div>
-        <div role="group" aria-label="Filter by organisation type" className="flex flex-wrap gap-1.5 items-center">
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          aria-label="Filter by organisation type"
+          className="sm:hidden w-full min-h-[44px] bg-background border border-border px-2 text-xs"
+        >
+          <option value="all">All types &middot; {BIO_ORGS.length}</option>
+          {TYPES.map(([t, n]) => (
+            <option key={t} value={t}>{t} &middot; {n}</option>
+          ))}
+        </select>
+        <div role="group" aria-label="Filter by organisation type" className="hidden sm:flex flex-wrap gap-1.5 items-center">
           <button type="button" aria-pressed={type === 'all'} onClick={() => setType('all')} className={chip(type === 'all')}>
             All types
           </button>
@@ -89,7 +107,7 @@ export function DirectoryView() {
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          {filtered.map((o) => (
+          {visible.map((o) => (
             <button
               key={o.id}
               type="button"
@@ -110,6 +128,16 @@ export function DirectoryView() {
             </button>
           ))}
         </div>
+      )}
+
+      {visible.length < filtered.length && (
+        <button
+          type="button"
+          onClick={() => setLimit((n) => n + PAGE_SIZE)}
+          className="mt-3 w-full min-h-[44px] border border-border text-xs font-mono text-foreground hover:border-foreground/50"
+        >
+          Show more &middot; {filtered.length - visible.length} left
+        </button>
       )}
 
       <Sheet open={!!selectedOrg} onOpenChange={(open) => !open && setOrgId(null)}>

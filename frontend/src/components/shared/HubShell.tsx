@@ -13,6 +13,8 @@ export type HubDomainId = (typeof HUB_DOMAIN_IDS)[number];
 export interface HubShellView {
   id: string;
   label: string;
+  /** Shorter label used under the sm breakpoint so the tab strip stays one row. */
+  shortLabel?: string;
   render: () => ReactNode;
   /** One-sentence description of what this view shows. Rendered above the
    *  view content as a small subtitle so users know what to expect before
@@ -59,7 +61,8 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
                 'data-[state=active]:shadow-none',
               )}
             >
-              {v.label}
+              <span className="sm:hidden">{v.shortLabel ?? v.label}</span>
+              <span className="hidden sm:inline">{v.label}</span>
             </TabsTrigger>
           ))}
         </TabsList>

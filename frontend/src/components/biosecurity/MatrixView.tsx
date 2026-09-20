@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { X } from 'lucide-react';
 import { BIO_COLUMNS, BIO_FOCUS_ORDER, BIO_GROUPS, BIO_ORGS, type BioOrg } from '@/data/biosecurity';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
@@ -27,6 +27,8 @@ interface CellSelection {
   row: string;
   col: string;
   orgs: BioOrg[];
+  /** Overrides the column label when one cell aggregates a whole group (mobile). */
+  title?: string;
 }
 
 export function MatrixView() {
@@ -101,7 +103,7 @@ export function MatrixView() {
           <span>{emptyCells} empty cells</span>
         </div>
 
-        <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2 items-center">
+        <div role="group" aria-label="Filter by category" className="flex gap-2 items-center overflow-x-auto sm:flex-wrap">
           {BIO_GROUPS.map((g) => {
             const active = activeGroups.has(g.id);
             const Icon = groupIcon(g.id);
@@ -112,7 +114,7 @@ export function MatrixView() {
                 aria-pressed={active}
                 onClick={() => toggleGroup(g.id)}
                 className={cn(
-                  'px-2 py-1 min-h-[44px] sm:min-h-0 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
+                  'px-2 py-1 min-h-[44px] sm:min-h-0 shrink-0 text-[11px] font-mono border transition-colors flex items-center gap-1.5',
                   active
                     ? 'bg-foreground text-background border-foreground'
                     : 'border-border text-muted-foreground hover:text-foreground',
@@ -285,12 +287,13 @@ export function MatrixView() {
 
 function CellDetail({ cell, onOrg }: { cell: CellSelection; onOrg: (id: string) => void }) {
   const Icon = groupIcon(COLUMN_BY_ID.get(cell.col)?.group ?? '');
+  const label = cell.title ?? columnLabel(cell.col);
   return (
     <>
       <SheetHeader className="text-left mb-4">
         <div className="flex items-center gap-1.5 mb-1 text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
           <Icon className="h-3 w-3" aria-hidden />
-          {columnLabel(cell.col)}
+          {label}
         </div>
         <SheetTitle className="text-xl font-semibold">{rowLabel(cell.row)}</SheetTitle>
         <SheetDescription className="text-sm text-muted-foreground">
@@ -321,44 +324,73 @@ interface MobileListProps {
 }
 
 function MobileList({ grid, columns, onCell }: MobileListProps) {
+  // One row per focus area, one column per top-level group: 21 x 4 counts fit a
+  // 375px screen, where the per-category card list ran to ~11k px of scrolling.
+  const groups = BIO_GROUPS.filter((g) => columns.some((c) => c.group === g.id));
+
+  const cellFor = (row: string, groupId: string) => {
+    const cols = columns.filter((c) => c.group === groupId);
+    const orgs = cols.flatMap((c) => grid.get(row + '|' + c.id) ?? []);
+    return { cols, orgs: Array.from(new Map(orgs.map((o) => [o.id, o])).values()) };
+  };
+
   return (
-    <div className="space-y-3">
-      {ROWS.map((row) => {
-        const filled = columns
-          .map((col) => ({ col, orgs: grid.get(`${row}|${col.id}`) ?? [] }))
-          .filter((x) => x.orgs.length > 0);
-        return (
-          <div key={row} className="border border-border">
-            <div className="p-3 border-b border-border flex items-baseline justify-between gap-2">
-              <span className={cn('text-sm', row === NO_FOCUS ? 'italic text-muted-foreground' : 'font-semibold text-foreground')}>
-                {rowLabel(row)}
-              </span>
-              <span className="text-[10px] font-mono text-muted-foreground">
-                {filled.length}/{columns.length} categories
-              </span>
+    <div className="border border-border">
+      <div className="grid" style={{ gridTemplateColumns: 'minmax(0,1fr) repeat(' + groups.length + ', 3rem)' }}>
+        <div className="border-b border-border px-2 py-2 text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
+          Focus
+        </div>
+        {groups.map((g) => {
+          const Icon = groupIcon(g.id);
+          return (
+            <div
+              key={g.id}
+              className="border-b border-l border-border flex items-center justify-center py-2"
+              title={g.label}
+            >
+              <Icon className="h-4 w-4" aria-hidden />
+              <span className="sr-only">{g.label}</span>
             </div>
-            <div className="divide-y divide-border">
-              {filled.map(({ col, orgs }) => {
-                const Icon = groupIcon(col.group);
-                return (
-                  <button
-                    key={col.id}
-                    type="button"
-                    onClick={() => onCell({ row, col: col.id, orgs })}
-                    className="w-full min-h-[44px] text-left flex items-center justify-between gap-2 px-3 py-2 text-xs hover:bg-secondary"
-                  >
-                    <span className="flex items-center gap-1.5 min-w-0">
-                      <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                      <span className="truncate text-foreground">{columnLabel(col.id)}</span>
-                    </span>
-                    <span className="font-mono text-muted-foreground shrink-0">{orgs.length}</span>
-                  </button>
-                );
-              })}
+          );
+        })}
+
+        {ROWS.map((row) => (
+          <Fragment key={row}>
+            <div
+              className={cn(
+                'border-b border-border px-2 py-2 text-xs flex items-center',
+                row === NO_FOCUS ? 'italic text-muted-foreground' : 'text-foreground',
+              )}
+            >
+              {rowLabel(row)}
             </div>
-          </div>
-        );
-      })}
+            {groups.map((g) => {
+              const { cols, orgs } = cellFor(row, g.id);
+              const empty = orgs.length === 0;
+              return (
+                <button
+                  key={g.id}
+                  type="button"
+                  disabled={empty}
+                  onClick={() => onCell({ row, col: cols[0].id, orgs, title: g.label })}
+                  aria-label={orgs.length + ' organisations for ' + rowLabel(row) + ' in ' + g.label}
+                  className={cn(
+                    'border-b border-l border-border min-h-[44px] text-xs font-mono flex items-center justify-center',
+                    empty ? 'text-muted-foreground/40' : 'text-foreground',
+                  )}
+                  style={
+                    empty
+                      ? undefined
+                      : { background: 'hsl(var(--foreground) / ' + (0.04 + (0.12 * Math.min(orgs.length, 20)) / 20).toFixed(3) + ')' }
+                  }
+                >
+                  {empty ? '·' : orgs.length}
+                </button>
+              );
+            })}
+          </Fragment>
+        ))}
+      </div>
     </div>
   );
 }

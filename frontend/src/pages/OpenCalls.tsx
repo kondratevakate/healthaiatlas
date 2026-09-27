@@ -14,6 +14,7 @@ import {
 } from '@/data/openCallEntries';
 import { countdownSortKey, isArchivedNow } from '@/lib/countdown';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { StaleDataNotice } from '@/components/shared/StaleDataNotice';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -132,6 +133,8 @@ export default function OpenCalls() {
           title="Open Calls 2026"
           subtitle="Grants, fellowships, accelerators, prizes. Sorted by deadline."
         />
+
+        <StaleDataNotice section="open-calls" verifyAt="the issuer's page" />
 
         {/* Stat bar */}
         <div className="grid grid-cols-2 gap-3 mb-8 max-w-xs">
@@ -273,7 +276,6 @@ export default function OpenCalls() {
 
         {/* Footer */}
         <div className="mt-10 pt-6 border-t border-border text-xs text-muted-foreground space-y-3">
-          <div className="text-foreground/40 font-medium">Updated May 2026</div>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <span>
               Grants, fellowships, and funding calls tracked by{' '}

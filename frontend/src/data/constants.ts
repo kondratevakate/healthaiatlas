@@ -44,6 +44,10 @@ export const LAST_UPDATED: Record<string, string> = {
   'medical-tourism': '2026-04-22',
   'ai-life-sciences': '2026-05-08',
   biosecurity: '2026-09-13',
+  // Last commit that changed the underlying data file — bump when the
+  // listing is re-verified, not when UI code around it changes.
+  jobs: '2026-05-26',
+  'open-calls': '2026-09-13',
 };
 
 // Fixed ordering for cross-hub navigation ("See also" strips).

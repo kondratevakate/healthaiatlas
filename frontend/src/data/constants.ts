@@ -23,16 +23,6 @@ export const ATLAS_NOTES_SUBSCRIBE_URL =
 // later published, swap this URL for the view URL.
 export const AIRTABLE_PROVENANCE_URL = 'https://airtable.com/appiYen6pEW5tSVrn';
 
-// Support via Manifund — fiscal sponsorship platform for AI-ecosystem
-// projects. Manifund's 501(c)(3) receives funds and pays out as grants, which
-// means the Atlas does NOT need its own legal entity, payment processor, or
-// US/EU tax residency. This is the structurally correct channel for a
-// solo-researcher project in a non-supported jurisdiction (UAE).
-//
-// Currently points to Manifund's project search — update to the specific
-// project URL once the Atlas project page is published on Manifund.
-export const MANIFUND_PROJECT_URL = 'https://manifund.org/';
-
 // Per-section "last updated" dates (ISO format)
 export const LAST_UPDATED: Record<string, string> = {
   directory: '2026-04-22',
@@ -44,6 +34,10 @@ export const LAST_UPDATED: Record<string, string> = {
   'medical-tourism': '2026-04-22',
   'ai-life-sciences': '2026-05-08',
   biosecurity: '2026-09-13',
+  // Last commit that changed the underlying data file — bump when the
+  // listing is re-verified, not when UI code around it changes.
+  jobs: '2026-05-26',
+  'open-calls': '2026-09-13',
 };
 
 // Fixed ordering for cross-hub navigation ("See also" strips).

@@ -1,11 +1,7 @@
 import { Link } from 'react-router-dom';
 import { format, parseISO, differenceInCalendarDays } from 'date-fns';
 import { Clock, PenLine, Users, Heart } from 'lucide-react';
-import {
-  LAST_UPDATED,
-  MANIFUND_PROJECT_URL,
-  SUGGEST_CORRECTION_URL,
-} from '@/data/constants';
+import { LAST_UPDATED, SUGGEST_CORRECTION_URL } from '@/data/constants';
 import { cn } from '@/lib/utils';
 
 // Listings older than this read as "likely outdated" (warning tone); newer
@@ -52,6 +48,10 @@ export function StaleDataNotice({ section, verifyAt, className }: StaleDataNotic
           This list is curated by hand and entries expire quietly — confirm on {verifyAt} before
           acting. Help keep it current and usable.
         </p>
+        <p className="text-sm text-muted-foreground mt-1">
+          The Atlas can't accept donations yet — it needs a legal entity. Want to co-found one with
+          me? You're very welcome.
+        </p>
       </div>
       <div className="flex flex-wrap gap-2 shrink-0">
         <a
@@ -70,15 +70,13 @@ export function StaleDataNotice({ section, verifyAt, className }: StaleDataNotic
           <Users className="h-4 w-4" aria-hidden="true" />
           Join as contributor
         </Link>
-        <a
-          href={MANIFUND_PROJECT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/contact"
           className="inline-flex items-center gap-2 border border-border px-3 py-1.5 text-sm font-medium hover:border-foreground/40 transition-colors"
         >
           <Heart className="h-4 w-4" aria-hidden="true" />
-          Support
-        </a>
+          Co-found with me
+        </Link>
       </div>
     </div>
   );

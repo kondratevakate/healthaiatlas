@@ -48,7 +48,7 @@ describe('StaleDataNotice', () => {
     renderNotice('open-calls');
     expect(screen.getByRole('link', { name: /Suggest an update/ })).toBeTruthy();
     expect(screen.getByRole('link', { name: /Join as contributor/ })).toBeTruthy();
-    expect(screen.getByRole('link', { name: /Support/ })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /Co-found with me/ })).toBeTruthy();
   });
 
   it('every page that mounts the notice has a LAST_UPDATED entry', () => {

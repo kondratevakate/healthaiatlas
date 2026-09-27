@@ -41,7 +41,7 @@ export function HubShell({ domainId, views, defaultView, children }: HubShellPro
 
   return (
     <div className="border border-border bg-background">
-      {children && <div className="border-b border-border p-3 sm:p-4">{children}</div>}
+      {children && <div className="border-b border-border px-3 py-2 sm:px-4">{children}</div>}
 
       <Tabs value={active} onValueChange={setActive} className="p-3 sm:p-4">
         {/* top-16 = the site header's h-16, so the tabs stick below it instead of

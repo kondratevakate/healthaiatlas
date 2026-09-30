@@ -4,7 +4,6 @@ import {
   SUGGEST_ENTRY_URL,
   SUGGEST_CORRECTION_URL,
   ATLAS_NOTES_SUBSCRIBE_URL,
-  MANIFUND_PROJECT_URL,
 } from '@/data/constants';
 
 export function Footer() {
@@ -129,14 +128,12 @@ export function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href={MANIFUND_PROJECT_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    to="/contact"
                     className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
                   >
-                    {language === 'en' ? 'Fund on Manifund ↗' : 'مَوِّل عبر Manifund ↗'}
-                  </a>
+                    {language === 'en' ? 'Co-found with me' : 'شاركني التأسيس'}
+                  </Link>
                 </li>
                 <li>
                   <Link

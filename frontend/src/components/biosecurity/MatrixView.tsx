@@ -1,17 +1,17 @@
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { X } from 'lucide-react';
 import { BIO_COLUMNS, BIO_FOCUS_ORDER, BIO_GROUPS, BIO_ORGS, type BioOrg } from '@/data/biosecurity';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { OrgDetail } from './OrgDetail';
-import { COLUMN_BY_ID, columnLabel, groupIcon, groupLabel, shortName } from './lookup';
+import { COLUMN_BY_ID, columnLabel, columnShortLabel, groupIcon, groupLabel, shortName } from './lookup';
 
 // Organisations with only governance/technical approach tags and no concrete
 // intervention focus still belong on the map — they get their own row.
 const NO_FOCUS = '__none__';
 const NO_FOCUS_LABEL = 'No specific focus';
-const MAX_CHIPS = 3;
+const MAX_CHIPS = 2;
 
 // Empty-cell hatching — same gap device as the oncology pharma matrix.
 const HATCH =
@@ -21,6 +21,26 @@ const ROWS = [...BIO_FOCUS_ORDER, NO_FOCUS];
 
 function rowLabel(row: string) {
   return row === NO_FOCUS ? NO_FOCUS_LABEL : row;
+}
+
+// The table head sticks to the page, which only works when no ancestor scrolls
+// sideways — so the table has to fit its container. It needs ~1100px of content
+// width; below this breakpoint the compact group grid is shown instead.
+const TABLE_MIN_VIEWPORT = 1200;
+
+function useMinWidth(px: number) {
+  const query = `(min-width: ${px}px)`;
+  const read = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia(query).matches;
+  const [ok, setOk] = useState(read);
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
+    const mql = window.matchMedia(query);
+    const onChange = () => setOk(mql.matches);
+    mql.addEventListener('change', onChange);
+    onChange();
+    return () => mql.removeEventListener('change', onChange);
+  }, [query]);
+  return ok;
 }
 
 interface CellSelection {
@@ -33,6 +53,8 @@ interface CellSelection {
 
 export function MatrixView() {
   const isMobile = useIsMobile();
+  const isWide = useMinWidth(TABLE_MIN_VIEWPORT);
+  const compact = isMobile || !isWide;
   const [activeGroups, setActiveGroups] = useState<Set<string>>(new Set());
   const [cell, setCell] = useState<CellSelection | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
@@ -94,8 +116,8 @@ export function MatrixView() {
 
   return (
     <div>
-      <div className="space-y-3 mb-4">
-        <div className="text-[11px] text-muted-foreground font-mono flex items-center gap-3 flex-wrap">
+      <div className="flex flex-col gap-2 mb-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-[11px] text-muted-foreground font-mono flex items-center gap-3 flex-wrap order-2 sm:order-1">
           <span>{BIO_ORGS.length} organisations</span>
           <span aria-hidden>·</span>
           <span>{columns.length} categories × {BIO_FOCUS_ORDER.length} focus areas</span>
@@ -103,7 +125,7 @@ export function MatrixView() {
           <span>{emptyCells} empty cells</span>
         </div>
 
-        <div role="group" aria-label="Filter by category" className="flex gap-2 items-center overflow-x-auto sm:flex-wrap">
+        <div role="group" aria-label="Filter by category" className="flex gap-2 items-center overflow-x-auto sm:flex-wrap order-1 sm:order-2">
           {BIO_GROUPS.map((g) => {
             const active = activeGroups.has(g.id);
             const Icon = groupIcon(g.id);
@@ -138,16 +160,24 @@ export function MatrixView() {
         </div>
       </div>
 
-      {isMobile ? (
+      {compact ? (
         <MobileList grid={grid} columns={columns} onCell={setCell} />
       ) : (
-        // Height fits the viewport below the sticky site header (4rem) and hub tabs
-        // (~3rem), so the whole table scroll box is visible once pinned.
-        <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-8rem)] border border-border">
-          <table className="border-collapse w-full">
-            <thead className="sticky top-0 z-20">
+        // One scroller only. The nested max-h scroll box made the head stick inside
+        // the box, so it slid under the hub tabs as the page scrolled. Now each head
+        // row sticks to the page: top-[110px] = site header (64px) + hub tabs (46px),
+        // and the column row sits under the 28px group row at top-[138px].
+        <div className="border border-border">
+          <table className="border-separate border-spacing-0 w-full table-fixed">
+            <colgroup>
+              <col className="w-[168px]" />
+              {columns.map((col) => (
+                <col key={col.id} />
+              ))}
+            </colgroup>
+            <thead>
               <tr>
-                <td className="p-1.5 bg-background sticky left-0 z-30 min-w-[168px]" />
+                <td className="h-7 p-0 bg-background sticky top-[110px] z-20 border-b-2 border-b-foreground" />
                 {headerGroups.map((g, i) => {
                   const Icon = groupIcon(g.id);
                   return (
@@ -155,7 +185,7 @@ export function MatrixView() {
                       key={`${g.id}-${i}`}
                       scope="colgroup"
                       colSpan={g.span}
-                      className="p-1.5 text-center text-[10px] font-bold uppercase tracking-wider bg-background text-foreground border-b-2 border-b-foreground border-l-2 border-l-foreground"
+                      className="h-7 px-1.5 py-0 sticky top-[110px] z-20 text-center text-[10px] font-bold uppercase tracking-wider bg-background text-foreground border-b-2 border-b-foreground border-l-2 border-l-foreground"
                     >
                       <span className="inline-flex items-center gap-1">
                         <Icon className="h-3 w-3" aria-hidden />
@@ -168,7 +198,7 @@ export function MatrixView() {
               <tr>
                 <th
                   scope="col"
-                  className="text-left text-xs font-bold p-1.5 text-foreground bg-background sticky left-0 z-30 align-bottom"
+                  className="text-left text-xs font-bold p-1.5 text-foreground bg-background sticky top-[138px] z-20 align-bottom border-b border-b-foreground"
                 >
                   Intervention focus
                 </th>
@@ -177,18 +207,13 @@ export function MatrixView() {
                     key={col.id}
                     scope="col"
                     className={cn(
-                      'bg-background p-2 text-[10px] font-medium text-foreground',
+                      'bg-background px-1.5 pt-1 pb-1.5 sticky top-[138px] z-20 text-left align-bottom',
+                      'text-[10px] font-medium leading-tight text-foreground break-words border-b border-b-foreground',
                       groupStarts.has(col.id) && 'border-l-2 border-l-foreground',
                     )}
-                    style={{
-                      writingMode: 'vertical-rl',
-                      transform: 'rotate(180deg)',
-                      height: '9rem',
-                      whiteSpace: 'nowrap',
-                      verticalAlign: 'bottom',
-                    }}
+                    title={columnLabel(col.id)}
                   >
-                    {col.label}
+                    {columnShortLabel(col.id)}
                   </th>
                 ))}
               </tr>
@@ -199,7 +224,7 @@ export function MatrixView() {
                   <th
                     scope="row"
                     className={cn(
-                      'text-left text-xs p-1.5 bg-background sticky left-0 z-10 align-top',
+                      'text-left text-xs p-1.5 bg-background align-top',
                       row === NO_FOCUS ? 'font-normal italic text-muted-foreground' : 'font-semibold text-foreground',
                     )}
                   >
@@ -228,7 +253,7 @@ export function MatrixView() {
                         )}
                         style={{ background: `hsl(var(--foreground) / ${(0.03 + (0.12 * items.length) / maxCount).toFixed(3)})` }}
                       >
-                        <div className="flex flex-wrap gap-0.5 min-w-[96px]">
+                        <div className="flex flex-wrap gap-0.5 min-w-0">
                           {items.slice(0, MAX_CHIPS).map((o) => (
                             <button
                               key={o.id}
@@ -237,7 +262,7 @@ export function MatrixView() {
                                 e.stopPropagation();
                                 openOrg(o.id);
                               }}
-                              className="text-[10px] font-semibold px-1.5 py-0.5 border border-foreground/20 bg-background text-foreground hover:border-foreground leading-tight max-w-[120px] truncate"
+                              className="text-[10px] font-semibold px-1.5 py-0.5 border border-foreground/20 bg-background text-foreground hover:border-foreground leading-tight max-w-full truncate"
                               title={o.name}
                               aria-label={o.name}
                             >

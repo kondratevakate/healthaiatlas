@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import rawJobs from '@/data/jobsData.json';
 import { AIRTABLE_PROVENANCE_URL } from '@/data/constants';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { StaleDataNotice } from '@/components/shared/StaleDataNotice';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -350,6 +351,8 @@ export default function Jobs() {
           subtitle="Open roles at companies tracked in the HealthAI Atlas."
         />
 
+        <StaleDataNotice section="jobs" verifyAt="the company's careers page" />
+
         <StatBar />
 
         {/* ── Domain filter ─────────────────────────────────────────────── */}
@@ -511,7 +514,6 @@ export default function Jobs() {
 
         {/* Footer note */}
         <div className="mt-10 pt-6 border-t border-border text-xs text-muted-foreground space-y-3">
-          <div className="text-foreground/40 font-medium">Updated May 2026</div>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <span>
               Data from Healthcare AI Jobs Tracker 2026. Role counts reflect verified snapshots — check careers pages for current openings.

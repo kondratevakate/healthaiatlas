@@ -25,13 +25,15 @@ export function BiosecurityHub() {
         },
       ]}
     >
-      <p className="text-xs text-muted-foreground">
+      <p
+        className="text-xs text-muted-foreground truncate"
+        title={`Categories and descriptions are curated by ${BIO_SOURCE.name} and not independently verified by the Atlas.`}
+      >
         Data:{' '}
-        <a href={BIO_SOURCE.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+        <a href={BIO_SOURCE.url} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-2 hover:opacity-70">
           {BIO_SOURCE.name}
         </a>{' '}
-        organisation directory · {BIO_ORGS.length} organisations · retrieved {BIO_SOURCE.retrievedAt}. Categories
-        and descriptions are curated by {BIO_SOURCE.name} and not independently verified by the Atlas.
+        · {BIO_ORGS.length} organisations · retrieved {BIO_SOURCE.retrievedAt} · curated upstream, not independently verified
       </p>
     </HubShell>
   );

@@ -39,6 +39,11 @@ const Privacy = () => {
                 (IP itself is not stored). No user profiles, no cross-site tracking, no advertising IDs.
               </li>
               <li>
+                <strong>Cookieless visit counts via Cloudflare Web Analytics</strong>: page views,
+                referrer, device/browser category and country. No cookies or local storage, no
+                fingerprinting, no individual visitors identified.
+              </li>
+              <li>
                 <strong>Local browser storage</strong> — when you complete a self-assessment and save or share
                 the result, the response is stored in your own browser&apos;s localStorage. It never leaves your device
                 unless you explicitly share the link.
@@ -97,6 +102,7 @@ const Privacy = () => {
             <h2 className="heading-lg mb-3">Third-party processors</h2>
             <ul className="list-disc pl-5 text-muted-foreground space-y-2">
               <li>Google Analytics (Google LLC) — analytics processor</li>
+              <li>Cloudflare, Inc.: cookieless analytics processor</li>
               <li>Amazon Web Services — static hosting (EU/US regions)</li>
             </ul>
           </section>

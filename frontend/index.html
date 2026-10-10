@@ -63,6 +63,25 @@
         gtag("config", gaId, { anonymize_ip: true });
       })();
     </script>
+
+    <!--
+      Cloudflare Web Analytics: cookieless, no consent needed, so it counts
+      every visit including people who decline the GA cookie banner. Tracks
+      SPA route changes on its own. Token comes from the Cloudflare dashboard
+      (Web Analytics -> Add site) via the VITE_CF_BEACON_TOKEN build secret;
+      unset means the script is not loaded.
+    -->
+    <script>
+      (function () {
+        var token = "%VITE_CF_BEACON_TOKEN%";
+        if (!token || token.indexOf("VITE_CF_BEACON_TOKEN") !== -1) return;
+        var s = document.createElement("script");
+        s.defer = true;
+        s.src = "https://static.cloudflareinsights.com/beacon.min.js";
+        s.setAttribute("data-cf-beacon", JSON.stringify({ token: token }));
+        document.head.appendChild(s);
+      })();
+    </script>
   </head>
 
   <body>

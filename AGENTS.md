@@ -42,6 +42,12 @@ Until 2026-05-03, `frontend/` was a controlled mirror of the `civic-design-compa
 - The sync script now exits non-zero with a deprecation notice. Do not revive it without coordinating — running it as written would wipe `frontend/`.
 - Lovable / civic-design-compass is no longer the upstream. All edits land directly in `frontend/`.
 
+## Git attribution
+
+- PR descriptions: no "🤖 Generated with Claude Code" footer and no claude.ai session link.
+- Commits: no `Claude-Session` trailer. Keep the `Co-Authored-By` trailer so git history shows which commits were made with AI.
+- Same as the Claude Code `attribution` setting `{ "pr": "", "sessionUrl": false }`; `.claude/settings.json` is gitignored here, so the rule lives in this file.
+
 ## Deploy
 
 Push to `dev` → staging (`/var/www/healthaiatlas-dev/`). Push to `main` → production (`/var/www/healthaiatlas/`). Both served by nginx — no systemd unit for the app itself. See `ansible/README.md` for one-shot server bootstrap.

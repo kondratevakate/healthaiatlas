@@ -1,21 +1,17 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Globe, Menu, X, ChevronDown, Search } from 'lucide-react';
+import { Globe, Menu, X, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { domains } from '@/data/domains';
 import { LAST_UPDATED } from '@/data/constants';
 import { openCallEntries } from '@/data/openCallEntries';
 import { conferences } from '@/data/conferences';
 import { launches } from '@/data/launches';
 import { SearchModal } from '@/components/search/SearchModal';
+import { NavDropdown } from './NavDropdown';
 
 type NavLink = {
   key: string;
@@ -158,9 +154,8 @@ export function Header() {
               );
             }
 
-            // Founder Toolkit dropdown — single trigger = label + chevron,
-            // so DropdownMenuContent align="start" anchors to the left edge
-            // of "Founder Toolkit", not to the chevron icon.
+            // Founder Toolkit: the label opens /founders, hover opens the
+            // sub-sections (see NavDropdown).
             if (link.dropdown && link.path === '/founders') {
               const founderItems = [
                 { to: '/founders/markets',       label: 'Markets',      sub: 'Market sizes + regulatory per country' },
@@ -169,55 +164,20 @@ export function Header() {
                 { to: '/founders/dead-valley',   label: 'Dead Valley',  sub: '$50B+ destroyed — patterns, not nostalgia' },
               ];
               return (
-                <DropdownMenu key={link.path}>
-                  <DropdownMenuTrigger asChild>
-                    {/* Whole label + chevron is the trigger so the popup
-                        left-edge aligns with "Founder Toolkit" not the icon */}
-                    <button
-                      className={cn(
-                        baseClass,
-                        'inline-flex items-center gap-1 outline-none',
-                      )}
-                      aria-label="Open Founder Toolkit sub-sections"
-                    >
-                      {renderLabel(link, active)}
-                      <ChevronDown className="h-3 w-3 opacity-60" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="start"
-                    sideOffset={4}
-                    className="min-w-[260px] rounded-none"
-                  >
-                    {/* The trigger is a button (opens the menu), so the section's
-                        overview page needs its own first item. */}
-                    <DropdownMenuItem asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
-                      <Link
-                        to="/founders"
-                        className="w-full"
-                      >
-                        <span className="text-xs font-medium">{t('nav.overview')}</span>
-                        <span className="text-[10px] text-muted-foreground line-clamp-1">{t('nav.founders.overview')}</span>
+                <NavDropdown key={link.path} to={link.path} className={baseClass} label={renderLabel(link, active)}>
+                  {founderItems.map((item) => (
+                    <DropdownMenuItem key={item.to} asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
+                      <Link to={item.to} className="w-full">
+                        <span className="text-xs font-medium">{item.label}</span>
+                        <span className="text-[10px] text-muted-foreground line-clamp-1">{item.sub}</span>
                       </Link>
                     </DropdownMenuItem>
-                    <div className="h-px bg-border mx-2 my-1" />
-                    {founderItems.map((item) => (
-                      <DropdownMenuItem key={item.to} asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
-                        <Link
-                          to={item.to}
-                          className="w-full"
-                        >
-                          <span className="text-xs font-medium">{item.label}</span>
-                          <span className="text-[10px] text-muted-foreground line-clamp-1">{item.sub}</span>
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  ))}
+                </NavDropdown>
               );
             }
 
-            // Domains dropdown — whole label + chevron as single trigger.
+            // Domains: the label opens /directory, hover opens the domain hubs.
             if (link.dropdown && link.path === '/directory') {
               const items = domainsByRecency
                 .map((d) => ({
@@ -228,34 +188,8 @@ export function Header() {
                   count: domainCounts[d.id],
                 }));
               return (
-                <DropdownMenu key={link.path}>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      className={cn(baseClass, 'inline-flex items-center gap-1 outline-none')}
-                      aria-label={`Open ${t(link.key)} sub-sections`}
-                    >
-                      {renderLabel(link, active)}
-                      <ChevronDown className="h-3 w-3 opacity-60" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="start"
-                    sideOffset={4}
-                    className="min-w-[260px] rounded-none"
-                  >
-                    {/* The trigger is a button (opens the menu), so the section's
-                        overview page needs its own first item. */}
-                    <DropdownMenuItem asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
-                      <Link
-                        to="/directory"
-                        className="w-full"
-                      >
-                        <span className="text-xs font-medium">{t('nav.overview')}</span>
-                        <span className="text-[10px] text-muted-foreground line-clamp-1">{t('entry.directory.desc')}</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <div className="h-px bg-border mx-2 my-1" />
-                    {items.map((item) => (
+                <NavDropdown key={link.path} to={link.path} className={baseClass} label={renderLabel(link, active)}>
+                  {items.map((item) => (
                       <DropdownMenuItem key={item.id} asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
                         <Link
                           to={item.to}
@@ -273,8 +207,7 @@ export function Header() {
                         </Link>
                       </DropdownMenuItem>
                     ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                </NavDropdown>
               );
             }
 

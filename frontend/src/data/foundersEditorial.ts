@@ -158,7 +158,7 @@ export function getRegionInFocusCard(date: Date = new Date()): EditorialCard {
       eyebrow: 'REGION',
       headline: 'No regions on file',
       dek: '',
-      link: { to: '/founders/regulatory', label: 'Open regions' },
+      link: { to: '/founders/markets', label: 'Open regions' },
     };
   }
   const headline = `${g.f}  ${g.n} — ${g.mkt} healthcare`;
@@ -172,7 +172,7 @@ export function getRegionInFocusCard(date: Date = new Date()): EditorialCard {
     headline,
     dek,
     asOf: 'rotating daily',
-    link: { to: '/founders/regulatory', label: 'See all regions' },
+    link: { to: '/founders/markets', label: 'See all regions' },
   };
 }
 

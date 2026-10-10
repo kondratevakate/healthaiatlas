@@ -5,13 +5,11 @@ export default {
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
+  	// Page gutters are set in src/index.css (.container), not here: Tailwind only
+  	// emits container.padding for breakpoints listed in container.screens, so
+  	// sm/lg values in this object were silently dropped (only 1rem shipped).
   	container: {
   		center: true,
-  		padding: {
-  			DEFAULT: '1rem',
-  			sm: '1.5rem',
-  			lg: '2rem'
-  		},
   		screens: {
   			'2xl': '1400px'
   		}

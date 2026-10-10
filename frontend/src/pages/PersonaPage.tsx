@@ -40,7 +40,7 @@ export default function PersonaPage() {
 
   return (
     <Layout>
-      <div className="container py-12 md:py-16 max-w-4xl">
+      <div className="container py-12 md:py-16 [&>*]:max-w-4xl">
         <Link
           to="/"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group border border-border bg-background px-3 py-1.5 hover:border-foreground/40"

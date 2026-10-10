@@ -7,7 +7,7 @@ const LAST_UPDATED = 'April 29, 2026';
 const Terms = () => {
   return (
     <Layout>
-      <div className="container py-12 md:py-16 max-w-3xl">
+      <div className="container py-12 md:py-16 [&>*]:max-w-3xl">
         <PageHeader
           eyebrow="Legal"
           title="Terms of Service"

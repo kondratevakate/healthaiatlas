@@ -62,12 +62,14 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()" always;
+    # Cloudflare Web Analytics: beacon script from static.cloudflareinsights.com,
+    # reports to cloudflareinsights.com.
     # CSP: 'unsafe-inline' on script-src is required by the GA bootstrap in index.html
     # and by Recharts CSS-in-JS (dangerouslySetInnerHTML in components/ui/chart.tsx).
     # Tighten with a nonce-based CSP after migrating those two call sites.
     # connect-src lists every LLM provider currently fanned out by EventInsights —
     # remove vendors as the Discovery Copilot moves server-side (see B3 in risk report).
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://text.pollinations.ai https://ai.hackclub.com https://router.huggingface.co https://api-inference.huggingface.co; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://cloudflareinsights.com https://text.pollinations.ai https://ai.hackclub.com https://router.huggingface.co https://api-inference.huggingface.co; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'" always;
 
     # Deny access to dotfiles
     location ~ /\. {

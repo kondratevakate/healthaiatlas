@@ -36,6 +36,7 @@ jobs:
       - name: Build
         env:
           VITE_GA_ID: ${{ secrets.VITE_GA_ID }}
+          VITE_CF_BEACON_TOKEN: ${{ secrets.VITE_CF_BEACON_TOKEN }}
         run: npm run build
 
       - name: Resolve remote path

@@ -414,7 +414,7 @@ export default function Context() {
         {/* Compare — 4-region side-by-side matrix */}
         {region === 'compare' && (
           <section className="py-8">
-            <div className="container max-w-6xl">
+            <div className="container [&>*]:max-w-6xl">
               <ComparativeMatrix />
             </div>
           </section>

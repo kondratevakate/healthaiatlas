@@ -102,7 +102,7 @@ export function SubscribeSection() {
 
   return (
     <section id="subscribe-section" className="py-20 bg-muted/30">
-      <div className="container max-w-2xl space-y-6">
+      <div className="container [&>*]:max-w-2xl space-y-6">
         <div className="flex items-center gap-2">
           <Bell className="h-5 w-5 text-muted-foreground" />
           <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">

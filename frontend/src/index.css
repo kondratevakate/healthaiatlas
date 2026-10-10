@@ -3,6 +3,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Page gutters (side padding of .container): 16px phone, 24px from 640px,
+   32px from 1024px. Lives here rather than in tailwind.config.ts because
+   Tailwind drops container.padding breakpoints that are not also listed in
+   container.screens, which is what kept the sm/lg gutters from ever shipping.
+   tests/layout-grid.spec.ts checks the rendered values. */
+@layer components {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+}
+
 /* HealthAI Atlas — Minimal Government Style
    Design System inspired by Sandbox Dubai
    Clean, minimal, warm white with coral accent

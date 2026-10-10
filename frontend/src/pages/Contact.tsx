@@ -60,7 +60,7 @@ const links: ContactLink[] = [
 const Contact = () => {
   return (
     <Layout>
-      <div className="container py-12 md:py-16 max-w-2xl">
+      <div className="container py-12 md:py-16 [&>*]:max-w-2xl">
         <PageHeader
           eyebrow="HealthAI Atlas"
           title="Contact"

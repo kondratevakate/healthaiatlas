@@ -129,3 +129,27 @@ When a candidate is added to SOURCES.md, mark its confidence:
 - No marker = verified canonical source
 - `(probational)` = added recently, watch for whether it produces real calls
 - `(low-yield)` = kept on list but rarely produces useful results; candidate for removal
+
+
+## Tier 7 — Kate added domain: Biosecurity + UQ/verification (career + methods layer)
+
+Added 2026-10-10. Kate's primary goal (health-AI product/startup) is UNCHANGED — this tier is an ADDITIVE layer covering a second domain she tracks: AI x biological risk, and uncertainty-quantification / verification / validation methods applied to models on biological and clinical data, including regulatory validation of clinical AI. Explicitly NOT wet-lab biology.
+
+Eligibility filter for this tier: individual researchers and early-career PIs (fellowships, career-transition grants, individual grants); remote / non-resident / visa-sponsoring programmes are IN SCOPE even when the host organisation is US-based (check the residency requirement); UAE-based options are first-class.
+
+### Funding / fellowships (individual)
+
+- **BlueDot Impact — Grants (AI safety + biosecurity)** — https://bluedot.org/grants — Career Transition Grants (up to $200k, rolling) and Rapid Grants (up to $20k); UK entity, remote-friendly
+- **Coefficient Giving (formerly Open Philanthropy) — Apply for funding** — https://coefficientgiving.org/apply-for-funding/ — open funds incl. Biosecurity & Pandemic Preparedness and Global Catastrophic Risks Opportunities; replaces the retired Biosecurity Scholarships
+- **AIxBio Research Fellowship (ERA, Cambridge UK)** — https://www.aixbiosecurity.com/fellowship — fully funded 10-week residential fellowship at the intersection of advanced AI and biosecurity; global applicants, visa support
+- **CBAI — AIxBiosecurity Research Fellowship** — https://cbai.ai/ — research fellowships incl. J-1 visa sponsorship for some cycles
+- **Council on Strategic Risks — Fellowship for Ending Bioweapons Programs** — https://councilonstrategicrisks.org/fellowship-for-ending-bioweapons-programs/ — fully funded, NON-RESIDENT policy research fellowship (important: does not require US presence)
+- **EMBO — Postdoctoral Fellowships** — https://www.embo.org/funding/fellowships/ — mobility fellowships relevant to computational / translational work
+- **SNSF Ambizione (Switzerland)** — https://www.snf.ch/en/N18L3oGWomTSSGkF/funding/careers/ambizione — early-independence CH funding; track call openings and deadline changes (scheme is being reformed)
+- **NVIDIA Research — Graduate Fellowships** — https://research.nvidia.com/graduate-fellowships — up to $60k for PhD students; international eligible; includes health-AI research focus
+
+### Evaluation / assurance / UQ methods angle
+
+- **UK AI Safety Institute (AISI)** — https://www.aisi.gov.uk/ — AI evaluations, assurance and safety-methods publications; source of calls, workshops and evaluation-benchmark opportunities relevant to verification/UQ
+- **Grand Challenges (Gates Foundation partner network)** — https://gcgh.grandchallenges.org/challenges — open global-health challenges incl. data/AI tracks
+

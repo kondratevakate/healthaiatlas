@@ -21,7 +21,7 @@ describe('AuthContext mock-auth production guard', () => {
 
   async function loadModuleWithProdMode(prod: boolean) {
     vi.resetModules();
-    vi.stubEnv('PROD', prod ? 'true' : '');
+    vi.stubEnv('PROD', prod);
     const mod = await import('./AuthContext');
     AuthProvider = mod.AuthProvider;
     useAuth = mod.useAuth;

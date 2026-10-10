@@ -192,7 +192,6 @@ describe('design-system: typography', () => {
     'pages/Index.tsx',     // home hero, custom layout
     'pages/Founders.tsx',           // tight editorial masthead replaces PageHeader intentionally
     'pages/FoundersMarkets.tsx',    // chart-first layout, minimal caption heading
-    'pages/FoundersAcquihires.tsx', // editorial masthead with stat strip
     'pages/Jobs.tsx',               // data-density page, tight header above stat bar
     'pages/OpenCalls.tsx',          // custom hero layout, heading-display used directly
   ]);
@@ -266,7 +265,6 @@ describe('design-system: color palette', () => {
   const HEX_ALLOWLIST = new Set<string>([
     'components/ui/chart.tsx',                            // shadcn boilerplate
     'components/auth/SignInModal.tsx',                    // Google brand SVG colors
-    'components/ai-life-sciences/ModalityMatrixView.tsx', // data-viz fallback color
     'components/context-architecture/BubbleChart.tsx',    // SVG stroke/fill defaults
     'components/context-architecture/ProductTable.tsx',   // chart family fallback
   ]);

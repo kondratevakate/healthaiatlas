@@ -4,7 +4,7 @@ import { ClusterTreemapView } from './ClusterTreemapView';
 import { RevenueView } from './RevenueView';
 import { RegulatoryView } from './RegulatoryView';
 import { RecentSignalsView } from './RecentSignalsView';
-// ModalityMatrixView archived 2026-05-26 — pipeline-stage taxonomy underdeveloped.
+// ModalityMatrixView was archived 2026-05-26 (pipeline-stage taxonomy underdeveloped) and removed 2026-10-10; recover it from git history if needed.
 
 export function AiLifeSciencesHub() {
   return (

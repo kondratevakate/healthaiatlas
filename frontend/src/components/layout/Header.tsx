@@ -180,13 +180,15 @@ export function Header() {
                     sideOffset={4}
                     className="min-w-[260px] rounded-none"
                   >
-                    {/* First item navigates to the home page */}
+                    {/* The trigger is a button (opens the menu), so the section's
+                        overview page needs its own first item. */}
                     <DropdownMenuItem asChild className="rounded-none">
                       <Link
                         to="/founders"
-                        className="cursor-pointer w-full flex items-center text-left py-1.5 text-xs text-muted-foreground"
+                        className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
                       >
-                        All sections →
+                        <span className="text-xs font-medium">{t('nav.overview')}</span>
+                        <span className="text-[10px] text-muted-foreground line-clamp-1">{t('nav.founders.overview')}</span>
                       </Link>
                     </DropdownMenuItem>
                     <div className="h-px bg-border mx-2 my-1" />
@@ -233,6 +235,18 @@ export function Header() {
                     sideOffset={4}
                     className="min-w-[260px] rounded-none"
                   >
+                    {/* The trigger is a button (opens the menu), so the section's
+                        overview page needs its own first item. */}
+                    <DropdownMenuItem asChild className="rounded-none">
+                      <Link
+                        to="/directory"
+                        className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                      >
+                        <span className="text-xs font-medium">{t('nav.overview')}</span>
+                        <span className="text-[10px] text-muted-foreground line-clamp-1">{t('entry.directory.desc')}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <div className="h-px bg-border mx-2 my-1" />
                     {items.map((item) => (
                       <DropdownMenuItem key={item.id} asChild className="rounded-none">
                         <Link

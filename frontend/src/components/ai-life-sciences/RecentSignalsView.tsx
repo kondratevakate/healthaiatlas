@@ -38,7 +38,7 @@ function CatDot() {
 }
 
 // ── Signal type taxonomy ────────────────────────────────────────────────────
-type SignalType = 'all' | 'capital' | 'research' | 'talent' | 'regulatory' | 'clinical' | 'hiring';
+type SignalType = 'all' | 'capital' | 'research' | 'talent' | 'clinical' | 'hiring';
 
 interface SignalTypeDef {
   key: SignalType;
@@ -50,9 +50,8 @@ interface SignalTypeDef {
 const SIGNAL_TYPES: SignalTypeDef[] = [
   { key: 'all',        label: 'All',        icon: '', actions: [] },
   { key: 'capital',   label: 'Capital',    icon: '', actions: ['acquisition', 'investment', 'pharma_deal', 'partnership', 'ipo', 'mega_raise', 'pre_seed'] },
-  { key: 'research',  label: 'Research',   icon: '', actions: ['open_source', 'product_launch', 'stealth_launch', 'publication'] as RSAction[] },
+  { key: 'research',  label: 'Research',   icon: '', actions: ['open_source', 'product_launch', 'stealth_launch'] },
   { key: 'talent',    label: 'Talent',     icon: '', actions: ['strategic_hire', 'cohort'] },
-  { key: 'regulatory',label: 'Regulatory', icon: '', actions: ['regulatory'] as RSAction[] },
   { key: 'clinical',  label: 'Clinical',   icon: '', actions: ['clinical_validation'] },
   { key: 'hiring',   label: 'Hiring',     icon: '', actions: [] },
 ];

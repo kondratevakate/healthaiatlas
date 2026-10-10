@@ -24,9 +24,6 @@ const TYPES_TS = join(SRC, 'types', 'index.ts');
 
 // Known offenders. Each entry needs a reason; shrink this list, don't grow it.
 const ALLOWLIST: Record<string, string> = {
-  // Unused components (nothing imports components/resources). Delete them.
-  'components/resources/ResourceCard.tsx: /resources/${resource.id}': 'dead code',
-  'components/resources/CompactResourceCard.tsx: /resources/${resource.id}': 'dead code',
   // Dynamic on UserPersona; the "persona routes" test below covers every value.
   'components/home/PersonaCard.tsx: /${persona}': 'checked per persona',
 };

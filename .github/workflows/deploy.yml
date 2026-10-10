@@ -65,3 +65,23 @@ jobs:
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_SSH_KEY }}
           remote_port: ${{ secrets.DEPLOY_PORT }}
+
+      # Checks the live server, not the repo: catches nginx config that was
+      # never applied (e.g. the Ansible playbook not re-run after a template
+      # change). A red run here means production is serving slowly.
+      - name: Production smoke check
+        if: github.ref_name == 'main'
+        env:
+          SITE_URL: ${{ vars.PROD_URL || 'https://healthaiatlas.com' }}
+        run: |
+          set -euo pipefail
+          html=$(curl -fsS "$SITE_URL/")
+          js=$(printf '%s' "$html" | grep -oE '/assets/index-[A-Za-z0-9_-]+\.js' | head -1)
+          test -n "$js" || { echo "::error::no entry script in $SITE_URL/"; exit 1; }
+          enc=$(curl -fsS -o /dev/null -D - -H 'Accept-Encoding: gzip' "$SITE_URL$js" | tr -d '\r' | awk -F': ' 'tolower($1)=="content-encoding"{print $2}')
+          if [ "$enc" != "gzip" ]; then
+            echo "::error::$SITE_URL$js is served without gzip (Content-Encoding: '${enc:-none}'). Re-run the Ansible playbook."
+            exit 1
+          fi
+          curl -fsS -o /dev/null "$SITE_URL/landing"
+          echo "OK: $js gzipped, /landing serves the app"

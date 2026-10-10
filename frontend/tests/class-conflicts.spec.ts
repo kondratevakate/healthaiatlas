@@ -84,9 +84,9 @@ test('no element carries a Tailwind class that another class on it overrides', a
 
   // States that only exist after interaction: header dropdowns and the mobile menu.
   await page.goto(`${BASE_URL}/about`, { waitUntil: 'networkidle' });
-  for (const name of [/Open Domains sub-sections/, /Open Founder Toolkit sub-sections/]) {
-    await page.locator('header nav').getByRole('button', { name }).click();
-    await page.getByRole('menu').waitFor();
+  for (const name of [/^Domains/, /^Founder Toolkit/]) {
+    await page.locator('header nav').getByRole('link', { name }).hover();
+    await expect(page.getByRole('menu')).toHaveCount(1);
     conflicts.push(...(await collect(page, `/about + ${name.source}`)));
     await page.keyboard.press('Escape');
   }

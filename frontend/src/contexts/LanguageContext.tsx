@@ -22,9 +22,6 @@ const translations: Translations = {
   'nav.atlasnotes': { en: 'Atlas Notes', ar: 'مذكرات الأطلس' },
   'nav.jobs': { en: 'Jobs', ar: 'وظائف' },
   'nav.about': { en: 'About', ar: 'حول' },
-  // First item of the Domains / Founder Toolkit dropdowns: the section's overview page.
-  'nav.overview': { en: 'Overview', ar: 'نظرة عامة' },
-  'nav.founders.overview': { en: 'What every healthcare-AI founder needs to know, all modules', ar: 'كل ما يحتاجه مؤسسو شركات الذكاء الاصطناعي الصحي، بجميع الأقسام' },
 
   // Legacy nav keys — retained while older pages still reference them.
   // Remove once Directory / Discovery / Context routes are fully renamed.

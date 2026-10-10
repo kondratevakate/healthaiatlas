@@ -123,6 +123,12 @@ anchored to the chevron, not the label — visually misaligned.
 Use `asChild` on a `<button>` that contains both. `align="start"` then anchors to the
 left edge of the full button, not to a small icon.
 
+Header section entries (Domains, Founder Toolkit) use `NavDropdown`
+(`frontend/src/components/layout/NavDropdown.tsx`): the trigger is a `<Link>`
+wrapping label + chevron. Click / Enter opens the section's overview page; hover or
+Space / ArrowDown opens the menu. Do not add an "Overview" item to these menus;
+the label is the way to the overview (owner's call, Oct 2026).
+
 ---
 
 ### 5. Data pages show data — not introductions to data

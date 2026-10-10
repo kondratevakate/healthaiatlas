@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { domains } from '@/data/domains';
+import { LAST_UPDATED } from '@/data/constants';
 import { openCallEntries } from '@/data/openCallEntries';
 import { conferences } from '@/data/conferences';
 import { launches } from '@/data/launches';
@@ -47,6 +48,14 @@ const navLinks: NavLink[] = [
 const domainCounts: Record<string, number> = Object.fromEntries(
   domains.filter((d) => d.id !== 'overview').map((d) => [d.id, d.playerIds.length]),
 );
+
+// Domain hubs in the nav, most recently updated first (LAST_UPDATED holds the
+// date the hub's data was last re-verified; ties keep the domains.ts order).
+const domainsByRecency = domains
+  .filter((d) => d.id !== 'overview')
+  .map((d, i) => ({ d, i }))
+  .sort((a, b) => (LAST_UPDATED[b.d.id] ?? '').localeCompare(LAST_UPDATED[a.d.id] ?? '') || a.i - b.i)
+  .map(({ d }) => d);
 
 // Resolves whether a nav link is currently active. Open Calls and Events both
 // live on /discovery and are distinguished by the `section` query param; this
@@ -180,21 +189,23 @@ export function Header() {
                     sideOffset={4}
                     className="min-w-[260px] rounded-none"
                   >
-                    {/* First item navigates to the home page */}
-                    <DropdownMenuItem asChild className="rounded-none">
+                    {/* The trigger is a button (opens the menu), so the section's
+                        overview page needs its own first item. */}
+                    <DropdownMenuItem asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
                       <Link
                         to="/founders"
-                        className="cursor-pointer w-full flex items-center text-left py-1.5 text-xs text-muted-foreground"
+                        className="w-full"
                       >
-                        All sections →
+                        <span className="text-xs font-medium">{t('nav.overview')}</span>
+                        <span className="text-[10px] text-muted-foreground line-clamp-1">{t('nav.founders.overview')}</span>
                       </Link>
                     </DropdownMenuItem>
                     <div className="h-px bg-border mx-2 my-1" />
                     {founderItems.map((item) => (
-                      <DropdownMenuItem key={item.to} asChild className="rounded-none">
+                      <DropdownMenuItem key={item.to} asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
                         <Link
                           to={item.to}
-                          className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                          className="w-full"
                         >
                           <span className="text-xs font-medium">{item.label}</span>
                           <span className="text-[10px] text-muted-foreground line-clamp-1">{item.sub}</span>
@@ -208,8 +219,7 @@ export function Header() {
 
             // Domains dropdown — whole label + chevron as single trigger.
             if (link.dropdown && link.path === '/directory') {
-              const items = domains
-                .filter((d) => d.id !== 'overview')
+              const items = domainsByRecency
                 .map((d) => ({
                   id: d.id,
                   to: `/directory?domain=${d.id}`,
@@ -233,11 +243,23 @@ export function Header() {
                     sideOffset={4}
                     className="min-w-[260px] rounded-none"
                   >
+                    {/* The trigger is a button (opens the menu), so the section's
+                        overview page needs its own first item. */}
+                    <DropdownMenuItem asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
+                      <Link
+                        to="/directory"
+                        className="w-full"
+                      >
+                        <span className="text-xs font-medium">{t('nav.overview')}</span>
+                        <span className="text-[10px] text-muted-foreground line-clamp-1">{t('entry.directory.desc')}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <div className="h-px bg-border mx-2 my-1" />
                     {items.map((item) => (
-                      <DropdownMenuItem key={item.id} asChild className="rounded-none">
+                      <DropdownMenuItem key={item.id} asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
                         <Link
                           to={item.to}
-                          className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                          className="w-full"
                         >
                           <span className="text-xs font-medium text-left inline-flex items-baseline gap-1.5">
                             {item.label}
@@ -352,8 +374,7 @@ export function Header() {
               }
 
               if (link.dropdown && link.path === '/directory') {
-                const items = domains
-                  .filter((d) => d.id !== 'overview')
+                const items = domainsByRecency
                   .map((d) => ({
                     id: d.id,
                     to: `/directory?domain=${d.id}`,

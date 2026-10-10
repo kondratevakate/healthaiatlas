@@ -41,3 +41,18 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Landing JS size budget
+        run: npm run check:bundle
+
+      # Real-browser check of what a phone sees while the site opens: throttled
+      # network, budgets for first paint and landing content, no third-party
+      # fonts. See tests/first-load.spec.ts.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: First-load test (throttled mobile)
+        run: |
+          npx vite preview --host 127.0.0.1 --port 4173 --strictPort &
+          npx --yes wait-on@8 -t 30000 http://127.0.0.1:4173
+          BASE_URL=http://127.0.0.1:4173 npx playwright test tests/first-load.spec.ts

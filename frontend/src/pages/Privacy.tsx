@@ -35,6 +35,7 @@ const Privacy = () => {
             <ul className="list-disc pl-5 text-muted-foreground space-y-2">
               <li>
                 <strong>Anonymous analytics via Google Analytics 4</strong> — page views, referrer,
+                clicks on contact, newsletter and feedback-form links (which link and from which page),
                 device/browser category, and country-level geolocation derived from IP
                 (IP itself is not stored). No user profiles, no cross-site tracking, no advertising IDs.
               </li>

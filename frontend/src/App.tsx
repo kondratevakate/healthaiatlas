@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/components/auth";
 
@@ -29,6 +29,13 @@ import OpenCalls from "./pages/OpenCalls";
 
 const queryClient = new QueryClient();
 
+// Legacy / externally shared URLs that should land on the home page.
+// Keeps the query string and hash so UTM tags survive the redirect.
+const RedirectHome = () => {
+  const { search, hash } = useLocation();
+  return <Navigate to={{ pathname: "/", search, hash }} replace />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <LanguageProvider>
@@ -39,6 +46,8 @@ const App = () => (
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <Routes>
               <Route path="/" element={<Index />} />
+              {/* /landing was shared externally (LinkedIn) but never existed */}
+              <Route path="/landing" element={<RedirectHome />} />
               <Route path="/directory" element={<Directory />} />
               <Route path="/directory/:id" element={<Directory />} />
               <Route path="/context" element={<Context />} />

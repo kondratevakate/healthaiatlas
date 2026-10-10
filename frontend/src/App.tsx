@@ -1,31 +1,35 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/components/auth";
+import { RouteFallback } from "@/components/layout/RouteFallback";
+import { useHideBootLoader } from "@/lib/bootLoader";
 
-// Pages
+// Pages. Index is the landing page and ships in the main bundle; every other
+// page is its own chunk, loaded on first visit, so the first load stays small.
 import Index from "./pages/Index";
-import Directory from "./pages/Directory";
-import Context from "./pages/Context";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Privacy from "./pages/Privacy";
-import Terms from "./pages/Terms";
-import NotFound from "./pages/NotFound";
-import Discovery from "./pages/Discovery";
-import Share from "./pages/Share";
-import PersonaPage from "./pages/PersonaPage";
-import Founders from "./pages/Founders";
-import FoundersContext from "./pages/FoundersContext";
-import FoundersDeadValley from "./pages/FoundersDeadValley";
-import FoundersDevRel from "./pages/FoundersDevRel";
-import FoundersMarkets from "./pages/FoundersMarkets";
-import FoundersArchitectures from "./pages/FoundersArchitectures";
-import Jobs from "./pages/Jobs";
-import OpenCalls from "./pages/OpenCalls";
+const Directory = lazy(() => import("./pages/Directory"));
+const Context = lazy(() => import("./pages/Context"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Discovery = lazy(() => import("./pages/Discovery"));
+const Share = lazy(() => import("./pages/Share"));
+const PersonaPage = lazy(() => import("./pages/PersonaPage"));
+const Founders = lazy(() => import("./pages/Founders"));
+const FoundersContext = lazy(() => import("./pages/FoundersContext"));
+const FoundersDeadValley = lazy(() => import("./pages/FoundersDeadValley"));
+const FoundersDevRel = lazy(() => import("./pages/FoundersDevRel"));
+const FoundersMarkets = lazy(() => import("./pages/FoundersMarkets"));
+const FoundersArchitectures = lazy(() => import("./pages/FoundersArchitectures"));
+const Jobs = lazy(() => import("./pages/Jobs"));
+const OpenCalls = lazy(() => import("./pages/OpenCalls"));
 
 const queryClient = new QueryClient();
 
@@ -36,14 +40,21 @@ const RedirectHome = () => {
   return <Navigate to={{ pathname: "/", search, hash }} replace />;
 };
 
+const BootLoaderDone = () => {
+  useHideBootLoader();
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <BootLoaderDone />
     <LanguageProvider>
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<Index />} />
               {/* /landing was shared externally (LinkedIn) but never existed */}
@@ -87,6 +98,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </Suspense>
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>

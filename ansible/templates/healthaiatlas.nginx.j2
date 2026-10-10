@@ -38,6 +38,17 @@ server {
     root {{ doc_root }};
     index index.html;
 
+    # Compress text assets. Ubuntu's stock nginx.conf only gzips text/html, so
+    # without this the ~2 MB JS bundle went over the wire uncompressed (~12 s
+    # to first content on a mid-range mobile connection instead of ~4 s).
+    gzip on;
+    gzip_vary on;
+    gzip_comp_level 6;
+    gzip_min_length 1024;
+    gzip_proxied any;
+    gzip_types text/css application/javascript text/javascript application/json
+               image/svg+xml text/plain text/xml application/xml font/ttf font/otf;
+
     # SPA fallback: any unknown path returns index.html so react-router handles it.
     location / {
         try_files $uri $uri/ /index.html;

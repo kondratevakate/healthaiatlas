@@ -191,10 +191,10 @@ export function Header() {
                   >
                     {/* The trigger is a button (opens the menu), so the section's
                         overview page needs its own first item. */}
-                    <DropdownMenuItem asChild className="rounded-none flex-col items-start text-left">
+                    <DropdownMenuItem asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
                       <Link
                         to="/founders"
-                        className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                        className="w-full"
                       >
                         <span className="text-xs font-medium">{t('nav.overview')}</span>
                         <span className="text-[10px] text-muted-foreground line-clamp-1">{t('nav.founders.overview')}</span>
@@ -202,10 +202,10 @@ export function Header() {
                     </DropdownMenuItem>
                     <div className="h-px bg-border mx-2 my-1" />
                     {founderItems.map((item) => (
-                      <DropdownMenuItem key={item.to} asChild className="rounded-none flex-col items-start text-left">
+                      <DropdownMenuItem key={item.to} asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
                         <Link
                           to={item.to}
-                          className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                          className="w-full"
                         >
                           <span className="text-xs font-medium">{item.label}</span>
                           <span className="text-[10px] text-muted-foreground line-clamp-1">{item.sub}</span>
@@ -245,10 +245,10 @@ export function Header() {
                   >
                     {/* The trigger is a button (opens the menu), so the section's
                         overview page needs its own first item. */}
-                    <DropdownMenuItem asChild className="rounded-none flex-col items-start text-left">
+                    <DropdownMenuItem asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
                       <Link
                         to="/directory"
-                        className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                        className="w-full"
                       >
                         <span className="text-xs font-medium">{t('nav.overview')}</span>
                         <span className="text-[10px] text-muted-foreground line-clamp-1">{t('entry.directory.desc')}</span>
@@ -256,10 +256,10 @@ export function Header() {
                     </DropdownMenuItem>
                     <div className="h-px bg-border mx-2 my-1" />
                     {items.map((item) => (
-                      <DropdownMenuItem key={item.id} asChild className="rounded-none flex-col items-start text-left">
+                      <DropdownMenuItem key={item.id} asChild className="rounded-none flex-col items-start gap-0.5 text-left cursor-pointer">
                         <Link
                           to={item.to}
-                          className="cursor-pointer w-full flex flex-col items-start text-left gap-0.5 py-1.5"
+                          className="w-full"
                         >
                           <span className="text-xs font-medium text-left inline-flex items-baseline gap-1.5">
                             {item.label}

@@ -9,6 +9,11 @@ Monorepo with two top-level packages:
 
 Server provisioning lives in `ansible/`. Deployment workflow is `.github/workflows/deploy.yml`.
 
+## Roadmap
+
+`ROADMAP.md` is the single plan for the site (Now / Next / Later, timeline, owners).
+Read it before starting work; when an item changes state, update it in the same PR.
+
 ## Stack facts for agents
 
 - **Not Next.js.** The frontend is a plain Vite SPA — no App Router, no server components, no `'use client'` pragma, no `next/*` imports. Routing is `react-router-dom` v6 (`BrowserRouter` in `frontend/src/App.tsx`).
@@ -103,8 +108,8 @@ must go through the Zero Trust pipeline:
 raw data (xlsx/csv)
   → scripts/zerotrust/<extract_X>.py  (parse + validate)
   → scripts/zerotrust/zerotrust/       (CSV: entities / claims / sources)
-  → Airtable (canonical store, human-verifiable)
-  → scripts/zerotrust/from_airtable.py
+  → db/atlas.sqlite (canonical store on the server; Airtable was closed in October 2026)
+  → generator script
   → frontend/src/data/<X>.ts           (generated, never hand-edited)
 ```
 

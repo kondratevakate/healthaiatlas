@@ -2,8 +2,6 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { Layout } from '@/components/layout';
 import { OpenCallCard } from '@/components/cards';
 import { cn } from '@/lib/utils';
-import { AIRTABLE_PROVENANCE_URL } from '@/data/constants';
-import { ExternalLink } from 'lucide-react';
 import {
   openCallEntries,
   OPEN_CALL_REGIONS,
@@ -282,15 +280,6 @@ export default function OpenCalls() {
               <a href="/about" className="underline underline-offset-2 hover:text-foreground">HealthAI Atlas</a>.
               Deadlines verified against issuer pages — confirm before applying.
             </span>
-            <a
-              href={AIRTABLE_PROVENANCE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 underline underline-offset-2 hover:text-foreground transition-colors whitespace-nowrap"
-            >
-              <ExternalLink className="w-3 h-3" />
-              Zero Trust data provenance
-            </a>
           </div>
         </div>
       </div>

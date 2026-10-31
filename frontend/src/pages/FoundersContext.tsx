@@ -24,7 +24,6 @@ import { FounderToolkitNav } from '@/components/shared/FounderToolkitNav';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LastUpdated } from '@/components/shared/LastUpdated';
-import { AIRTABLE_PROVENANCE_URL } from '@/data/constants';
 
 import { FounderMatrix, UsTimeline, UsSidebar } from '@/components/context-us';
 import { MarketReality } from '@/components/context-uae';
@@ -261,11 +260,9 @@ const FoundersContext = () => {
               ))}
             </Tabs>
 
-            {/* Provenance footer — Airtable canonical store. Every row
-                on the country tabs above is derived from this base via
-                scripts/zerotrust/from_airtable.py. Sources are linked
-                inline on each row's `src` URL; this is the primary
-                channel for readers who want the raw verified dataset. */}
+            {/* Provenance footer — every row on the country tabs above is
+                generated from the Zero-Trust database (db/atlas.sqlite).
+                Sources are linked inline on each row's `src` URL. */}
             <div className="mt-12 border border-border/60 bg-secondary/30 p-5 max-w-3xl">
               <div className="flex items-start gap-3">
                 <Database className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
@@ -273,21 +270,12 @@ const FoundersContext = () => {
                   <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground mb-1">
                     Primary sources
                   </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Every country row above is held in a Zero-Trust Airtable base — each entry
+                  <p className="text-sm text-muted-foreground">
+                    Every country row above is held in a Zero-Trust database — each entry
                     carries a primary <code className="text-xs font-mono">src</code> URL on the
                     issuer's domain plus a <code className="text-xs font-mono">verifiedAt</code> stamp.
                     The frontend data is regenerated from the base; the base is canonical.
                   </p>
-                  <a
-                    href={AIRTABLE_PROVENANCE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
-                  >
-                    Open the canonical Airtable base
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
                 </div>
               </div>
             </div>

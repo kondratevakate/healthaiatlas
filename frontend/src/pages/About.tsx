@@ -2,12 +2,9 @@ import { Layout } from '@/components/layout';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { BookOpen, Heart, Mail, ExternalLink } from 'lucide-react';
+import { BookOpen, Heart, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
-import {
-  ATLAS_NOTES_SUBSCRIBE_URL,
-  SUGGEST_ENTRY_URL,
-} from '@/data/constants';
+import { ATLAS_NOTES_SUBSCRIBE_URL, CONTACT_LINKEDIN_URL } from '@/data/constants';
 
 const LinkedInMark = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
@@ -164,22 +161,13 @@ const About = () => {
             <CardContent className="pt-6 space-y-5">
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="https://linkedin.com/in/kondratevakate"
+                  href={CONTACT_LINKEDIN_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
                 >
                   <LinkedInMark className="w-4 h-4" />
                   LinkedIn
-                </a>
-                <a
-                  href={SUGGEST_ENTRY_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border hover:border-foreground/60 transition-colors"
-                >
-                  <Mail className="w-4 h-4" />
-                  Get in touch
                 </a>
               </div>
 

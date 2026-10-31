@@ -1,5 +1,5 @@
 // Lead tracking: one delegated click listener that reports every outbound
-// "lead" link (newsletter, LinkedIn, Airtable form, email) to GA4 as a
+// "lead" link (newsletter, LinkedIn, email) to GA4 as a
 // `generate_lead` event. Lives in one place so new CTAs anywhere on the site
 // are tracked without per-component wiring.
 //
@@ -11,7 +11,7 @@
 // Consent: gtag is called the same way regardless of the cookie choice.
 // Consent Mode v2 (index.html) decides whether cookies are used.
 
-export type LeadMethod = 'newsletter' | 'linkedin' | 'airtable_form' | 'email';
+export type LeadMethod = 'newsletter' | 'linkedin' | 'email';
 
 type Gtag = (...args: unknown[]) => void;
 
@@ -27,7 +27,6 @@ export function classifyLeadHref(href: string): LeadMethod | null {
   if (host === 'linkedin.com') {
     return url.pathname.startsWith('/build-relation/newsletter-follow') ? 'newsletter' : 'linkedin';
   }
-  if (host === 'airtable.com' && url.pathname.startsWith('/shr')) return 'airtable_form';
   return null;
 }
 

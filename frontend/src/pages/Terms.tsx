@@ -2,7 +2,7 @@ import { Layout } from '@/components/layout';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '@/components/shared/PageHeader';
 
-const LAST_UPDATED = 'April 29, 2026';
+const LAST_UPDATED = 'October 31, 2026';
 
 const Terms = () => {
   return (
@@ -75,9 +75,9 @@ const Terms = () => {
             <h2 className="heading-lg mb-3">Contact and Corrections</h2>
             <p className="text-muted-foreground">
               HealthAI Atlas welcomes corrections, additions, and feedback from the community.
-              Contact:{' '}
-              <a href="https://airtable.com/shrkedcsqRIdT60o3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                the project contact form
+              Contact: message Kate on{' '}
+              <a href="https://www.linkedin.com/in/kondratevakate/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                LinkedIn
               </a>
               . The project commits to transparent error correction and methodology evolution based
               on community input.

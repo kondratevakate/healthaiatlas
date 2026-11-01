@@ -16,7 +16,10 @@ concurrency:
 jobs:
   frontend:
     name: Frontend test + build
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest moved to 26.04 on 2026-11-01 and Playwright 1.59
+    # cannot install Chromium there. Unpin only together with a Playwright
+    # upgrade that supports the new image (frontend/src/test/ci-workflow.test.ts).
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: frontend

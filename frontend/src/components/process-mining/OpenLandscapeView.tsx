@@ -15,23 +15,19 @@ const ACCESS_LABELS: Record<string, string> = {
 
 export function OpenLandscapeView() {
   const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [search, setSearch] = useState('');
 
   const types = ['all', 'tool', 'data', 'model', 'paper', 'roi', 'dead'];
 
   const filtered = useMemo(() => {
-    const q = search.toLowerCase();
     return PM_OPEN_LANDSCAPE.map(sec => {
       const items = sec.items.filter(item => {
         if (typeFilter !== 'all' && typeFilter !== item.type) return false;
-        if (!q) return true;
-        return (item.name + ' ' + item.desc + ' ' + (item.meta || []).join(' ') +
-          (item.cats || []).join(' ') + (item.highlight || '')).toLowerCase().includes(q);
+        return true;
       });
       if (!items.length) return null;
       return { ...sec, items };
     }).filter(Boolean) as typeof PM_OPEN_LANDSCAPE;
-  }, [typeFilter, search]);
+  }, [typeFilter]);
 
   return (
     <div>
@@ -46,13 +42,6 @@ export function OpenLandscapeView() {
 
       {/* Filters */}
       <div className="flex flex-wrap gap-1 mb-4 items-center">
-        <input
-          type="text"
-          placeholder="Search resources…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="bg-secondary border border-border px-3 py-1.5 text-xs w-56 max-w-full focus:outline-none focus:border-primary"
-        />
         {types.map(t => (
           <button
             key={t}

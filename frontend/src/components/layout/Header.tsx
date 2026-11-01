@@ -1,7 +1,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Globe, Menu, X, Search } from 'lucide-react';
+import { Menu, X, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -79,7 +79,7 @@ function CountBadge({ count }: { count?: number }) {
 }
 
 export function Header() {
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -103,10 +103,6 @@ export function Header() {
 
   const isActive = (link: NavLink) =>
     matchesActive(link, location.pathname, searchParams);
-
-  const toggleLanguage = () => {
-    setLanguage(language === 'en' ? 'ar' : 'en');
-  };
 
   const renderLabel = (link: NavLink, active: boolean) => (
     <span className="relative inline-flex items-baseline gap-1.5">
@@ -229,16 +225,6 @@ export function Header() {
             title="Search (⌘K)"
           >
             <Search className="h-4 w-4" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleLanguage}
-            className="text-muted-foreground hover:text-foreground"
-            aria-label="Toggle language"
-          >
-            <Globe className="h-4 w-4" />
           </Button>
 
           <Button

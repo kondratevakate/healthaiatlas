@@ -129,6 +129,9 @@ const Directory = () => {
                     {d.name[language]}
                   </span>
                   <span className="text-[11px] text-muted-foreground font-mono">
+                    {d.playerIds?.length ?? 0}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground font-mono">
                     →
                   </span>
                 </button>

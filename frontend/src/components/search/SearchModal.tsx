@@ -87,7 +87,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
                     className="rounded-none flex flex-col items-start gap-0.5 cursor-pointer aria-selected:bg-secondary"
                   >
                     <div className="flex items-baseline justify-between w-full gap-2">
-                      <span className="text-sm font-medium truncate">{item.title}</span>
+                      <span className="text-sm font-medium truncate min-w-0 flex-1">{item.title}</span>
                       {item.meta && (
                         <span className="text-[10px] text-muted-foreground font-mono shrink-0 uppercase tracking-wider">
                           {item.meta}

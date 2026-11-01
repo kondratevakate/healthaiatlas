@@ -31,6 +31,7 @@ const FoundersArchitectures = lazy(() => import("./pages/FoundersArchitectures")
 const Jobs = lazy(() => import("./pages/Jobs"));
 const OpenCalls = lazy(() => import("./pages/OpenCalls"));
 const Events = lazy(() => import("./pages/Events"));
+const News = lazy(() => import("./pages/News"));
 
 const queryClient = new QueryClient();
 
@@ -96,6 +97,7 @@ const App = () => (
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/open-calls" element={<OpenCalls />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/news" element={<News />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

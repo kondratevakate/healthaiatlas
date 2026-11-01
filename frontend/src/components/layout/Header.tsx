@@ -11,6 +11,7 @@ import { openCallEntries } from '@/data/openCallEntries';
 import { conferences } from '@/data/conferences';
 import jobsSeed from '@/data/jobsData.json';
 import { externalJobs_80000hours } from '@/data/jobsExternal.80000hours';
+import { newsItems } from '@/data/newsFeed';
 import { SearchModal } from '@/components/search/SearchModal';
 import { NavDropdown } from './NavDropdown';
 
@@ -43,6 +44,7 @@ const navLinks: NavLink[] = [
   { key: 'nav.opencalls', path: '/open-calls', count: openCallEntries.length },
   { key: 'nav.jobs', path: '/jobs', count: JOBS_COUNT },
   { key: 'nav.events', path: '/events', count: conferences.length },
+  { key: 'nav.news', path: '/news', count: newsItems.length },
   { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
   { key: 'nav.founders', path: '/founders', dropdown: true },
   { key: 'nav.about', path: '/about' },

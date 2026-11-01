@@ -15,13 +15,16 @@ import { Layout } from '@/components/layout';
 import { QuickRealityTest } from '@/components/research';
 import { EcosystemCard } from '@/components/research/EcosystemCard';
 import { HeroDiagram } from '@/components/home/HeroDiagram';
+import { NewsCard } from '@/components/shared/NewsCard';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { RiskAssessment } from '@/types/research';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Compass, CalendarDays, Rocket, MapPin } from 'lucide-react';
+import { ArrowRight, Compass, CalendarDays, Rocket, MapPin, Newspaper } from 'lucide-react';
 
 import { conferences } from '@/data/conferences';
 import { launches } from '@/data/launches';
+import { newsItems } from '@/data/newsFeed';
 
 // Pick a handful of the most-relevant items at module-load. Conferences
 // are sorted by upcoming-date (future first); launches are sorted by
@@ -36,8 +39,15 @@ const RECENT_LAUNCHES = [...launches]
   .sort((a, b) => (b.launchDate?.getTime() ?? 0) - (a.launchDate?.getTime() ?? 0))
   .slice(0, 3);
 
+// Home "What is happening" block (roadmap item E): the freshest news items,
+// already sorted newest-first in newsFeed.ts. No data is invented here — if
+// the ingested feed is empty the block simply does not render.
+const HOME_NEWS_COUNT = 3;
+const TOP_NEWS = newsItems.slice(0, HOME_NEWS_COUNT);
+
 export default function Index() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [showTest, setShowTest] = useState(false);
   const [assessment, setAssessment] = useState<RiskAssessment | null>(null);
 
@@ -109,6 +119,32 @@ export default function Index() {
                 market signals coming next.
               </p>
             </div>
+
+            {/* News — dated items from the ingested feed (roadmap item E).
+                Renders only when the feed actually has items; nothing here is
+                invented, so an empty feed means no block. */}
+            {TOP_NEWS.length > 0 && (
+              <div className="mb-8">
+                <div className="flex items-baseline justify-between mb-4 gap-3">
+                  <h3 className="text-sm font-semibold inline-flex items-center gap-2">
+                    <Newspaper className="h-4 w-4" />
+                    {t('news.home.title')}
+                  </h3>
+                  <Link
+                    to="/news"
+                    className="text-xs text-primary hover:underline inline-flex items-center gap-1 shrink-0"
+                  >
+                    {t('news.viewAll')}
+                    <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+                <div className="grid md:grid-cols-3 gap-3">
+                  {TOP_NEWS.map((item) => (
+                    <NewsCard key={item.id} item={item} compact />
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="grid md:grid-cols-2 gap-10">
               {/* Upcoming events */}

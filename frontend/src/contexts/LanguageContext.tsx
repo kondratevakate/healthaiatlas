@@ -21,6 +21,7 @@ const translations: Translations = {
   'nav.founders': { en: 'Founder Toolkit', ar: 'أدوات المؤسس' },
   'nav.atlasnotes': { en: 'Atlas Notes', ar: 'مذكرات الأطلس' },
   'nav.jobs': { en: 'Jobs', ar: 'وظائف' },
+  'nav.news': { en: 'News', ar: 'أخبار' },
   'nav.about': { en: 'About', ar: 'حول' },
 
   // Legacy nav keys — retained while older pages still reference them.
@@ -60,6 +61,62 @@ const translations: Translations = {
   'events.sponsors.none': { en: 'Sponsors not yet mapped', ar: 'الرعاة غير محدّدين بعد' },
   'events.register': { en: 'Register', ar: 'التسجيل' },
   'events.website': { en: 'Website', ar: 'الموقع' },
+
+  // News / posts feed (E) — dated, already-happened items (never opportunities).
+  // Source: Una's curated feed, ingested by scripts/ingest/unaNews.cjs.
+  'news.title': { en: 'News', ar: 'أخبار' },
+  'news.subtitle': {
+    en: 'Dated, already-happened items — model releases, funding rounds, papers, policy steps. Every row links to the source it came from.',
+    ar: 'أحداث مؤرّخة وقعت بالفعل — إصدارات نماذج، جولات تمويل، أوراق بحثية، خطوات تنظيمية. كل صف يرتبط بالمصدر الذي أُخذ منه.',
+  },
+  'news.filter.topic': { en: 'Topic', ar: 'الموضوع' },
+  'news.filter.kind': { en: 'Kind', ar: 'النوع' },
+  'news.filter.all': { en: 'All', ar: 'الكل' },
+  'news.search': { en: 'Search news', ar: 'ابحث في الأخبار' },
+  'news.count': { en: 'items', ar: 'عنصر' },
+  'news.empty': { en: 'No news items match these filters.', ar: 'لا أخبار مطابقة لهذه المرشحات.' },
+  'news.empty.reset': { en: 'Clear filters', ar: 'إزالة المرشحات' },
+  'news.updated': { en: 'Updated', ar: 'آخر تحديث' },
+  'news.window': { en: 'last 120 days', ar: 'آخر 120 يوماً' },
+  'news.read': { en: 'Read at source', ar: 'اقرأ من المصدر' },
+  'news.whyMatters': { en: 'Why it matters', ar: 'لماذا يهم' },
+  'news.primary': { en: 'Primary source', ar: 'مصدر أساسي' },
+  'news.secondary': { en: 'Secondary source', ar: 'مصدر ثانوي' },
+  'news.scoutedBy': { en: 'Scouted by Una', ar: 'جمعتها يونا' },
+  'news.verified': { en: 'Verified', ar: 'تم التحقق' },
+  'news.viewAll': { en: 'View all news', ar: 'عرض كل الأخبار' },
+
+  // Home — "What is happening" block (E): the freshest few news items.
+  'news.home.title': { en: 'Latest news', ar: 'آخر الأخبار' },
+  'news.home.subtitle': {
+    en: 'What just happened in health AI — dated items, each linked to its source.',
+    ar: 'ما حدث للتو في الذكاء الاصطناعي الصحي — أحداث مؤرّخة، كل منها مرتبط بمصدره.',
+  },
+
+  // News topic vocabulary (controlled list from the Una news schema).
+  'news.topic.drug-discovery': { en: 'Drug Discovery', ar: 'اكتشاف الأدوية' },
+  'news.topic.diagnostics-imaging': { en: 'Diagnostics & Imaging', ar: 'التشخيص والتصوير' },
+  'news.topic.oncology': { en: 'Oncology', ar: 'الأورام' },
+  'news.topic.genomics': { en: 'Genomics', ar: 'الجينوميات' },
+  'news.topic.health-data-ehr': { en: 'Health Records & EHR', ar: 'السجلات الصحية' },
+  'news.topic.telemedicine': { en: 'Telemedicine', ar: 'الطب عن بُعد' },
+  'news.topic.trials': { en: 'Clinical Trials', ar: 'التجارب السريرية' },
+  'news.topic.policy-regulation': { en: 'Policy & Regulation', ar: 'السياسات والتنظيم' },
+  'news.topic.funding': { en: 'Funding', ar: 'التمويل' },
+  'news.topic.model-release': { en: 'Model & Product Releases', ar: 'إصدارات النماذج والمنتجات' },
+  'news.topic.papers': { en: 'Papers', ar: 'أوراق بحثية' },
+  'news.topic.biosecurity': { en: 'Biosecurity', ar: 'الأمن الحيوي' },
+
+  // News kind vocabulary (controlled list from the Una news schema).
+  'news.kind.funding': { en: 'Funding', ar: 'تمويل' },
+  'news.kind.launch': { en: 'Launch', ar: 'إطلاق' },
+  'news.kind.model-release': { en: 'Model release', ar: 'إصدار نموذج' },
+  'news.kind.paper': { en: 'Paper', ar: 'ورقة بحثية' },
+  'news.kind.policy': { en: 'Policy', ar: 'سياسة' },
+  'news.kind.dataset': { en: 'Dataset', ar: 'مجموعة بيانات' },
+  'news.kind.acquisition': { en: 'Acquisition', ar: 'استحواذ' },
+  'news.kind.partnership': { en: 'Partnership', ar: 'شراكة' },
+  'news.kind.regulatory-clearance': { en: 'Regulatory clearance', ar: 'موافقة تنظيمية' },
 
   // Hero
   'hero.subtitle': {

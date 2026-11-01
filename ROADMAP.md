@@ -1,7 +1,7 @@
 # HealthAI Atlas — Roadmap
 
 Owner: Kate. Maintained by agents (Claude on the workstation, Hermes / Una on the server).
-Last updated: 2026-10-31.
+Last updated: 2026-11-01.
 
 This file is the single plan for the site. Every agent working on this repo or on the
 Atlas data reads it before starting and updates it when an item changes state. The public
@@ -34,7 +34,6 @@ version (Now / Next / Later, timeline, freshness) will be rendered on `/about` f
 
 | # | Item | Owner | Done when |
 |---|---|---|---|
-| 1 | **Dead Airtable links.** Every "Suggest entry / correction / Get in touch" CTA and the provenance links pointed at the closed Airtable form and base. Replaced with LinkedIn; static test `airtable-links.test.ts` blocks new ones | Claude | Branch `fix/dead-airtable-ctas` merged and deployed |
 | 2 | **Stale surfaces.** Events shows past events (18 May, 10 Jun 2026) under "Upcoming"; Home "Recent launches" are all from Feb 2026 and promise "Tweets and market signals coming next"; About promises data exports and an API that do not exist | Claude | Past events filtered out; Home shows only data newer than 90 days (or "Open calls closing soon" instead); About lists only what exists, the rest moves to Later |
 | 3 | **Roadmap and freshness on `/about`.** Render this plan from `frontend/src/data/roadmap.ts`: timeline, Now / Next / Later, and a freshness table computed from `LAST_UPDATED` (stale after 90 days) | Claude | `/about` shows the three blocks; no hand-maintained dates outside `roadmap.ts` and `constants.ts` |
 
@@ -64,5 +63,6 @@ version (Now / Next / Later, timeline, freshness) will be rendered on `/about` f
 
 | Date | Item |
 |---|---|
+| 2026-11-01 | Dead Airtable links (was Now #1): every "Suggest entry / correction / Get in touch" CTA and provenance link now points at LinkedIn or is removed; `airtable-links.test.ts` blocks new ones. [PR #75](https://github.com/kondratevakate/healthaiatlas/pull/75), deployed to production and checked on the live bundle |
 | 2026-09-27 | Support section: Manifund dropped, co-founder invitation added |
 | 2026-09-27 | Freshness notice with update / join / support CTAs on Jobs and Open Calls |

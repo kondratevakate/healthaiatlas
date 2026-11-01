@@ -114,6 +114,22 @@ const translations: Translations = {
   'about.methodology': { en: 'Methodology', ar: 'المنهجية' },
   'about.contact': { en: 'Contact Us', ar: 'اتصل بنا' },
 
+  // About — project timeline widget (G): the Atlas's own change log.
+  'about.timeline.title': { en: 'Project timeline', ar: 'الجدول الزمني للمشروع' },
+  'about.timeline.subtitle': {
+    en: 'What changed in the Atlas itself — every row below comes from a commit in the repository.',
+    ar: 'ما تغيّر في الأطلس نفسه — كل صف أدناه مأخوذ من التزام في المستودع.',
+  },
+  'about.timeline.entries': { en: 'entries', ar: 'مدخل' },
+  'about.timeline.showAll': { en: 'Show all', ar: 'عرض الكل' },
+  'about.timeline.showLess': { en: 'Show less', ar: 'عرض أقل' },
+  'about.timeline.commit': { en: 'Commit', ar: 'التزام' },
+  'about.timeline.kind.feature': { en: 'Feature', ar: 'ميزة' },
+  'about.timeline.kind.data': { en: 'Data', ar: 'بيانات' },
+  'about.timeline.kind.design': { en: 'Design', ar: 'تصميم' },
+  'about.timeline.kind.fix': { en: 'Fix', ar: 'إصلاح' },
+  'about.timeline.kind.infra': { en: 'Infra', ar: 'بنية تحتية' },
+
   // Footer
   'footer.rights': { en: 'All rights reserved', ar: 'جميع الحقوق محفوظة' },
   'footer.tagline': { en: 'A Knowledge Bank for AI in Healthcare', ar: 'بنك معرفي للذكاء الاصطناعي في الرعاية الصحية' },

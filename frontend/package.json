@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
+    "sync:jobs": "node scripts/ingest/jobsExternal.cjs",
     "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
     "test:watch": "vitest",
     "test:mobile": "playwright test",

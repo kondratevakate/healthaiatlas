@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { BookOpen, Heart, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { ProjectTimeline } from '@/components/shared/ProjectTimeline';
 import { ATLAS_NOTES_SUBSCRIBE_URL, CONTACT_LINKEDIN_URL } from '@/data/constants';
 
 const LinkedInMark = (props: React.SVGProps<SVGSVGElement>) => (
@@ -265,6 +266,12 @@ const About = () => {
             <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
           </p>
         </section>
+
+        {/* 5. Project timeline — the Atlas's own change log (newest first).
+            Sourced from src/data/projectTimeline.ts, which is derived from the
+            repository's git history (date + commit per milestone), NOT from the
+            UAE-ecosystem timeline in src/data/timeline.ts. */}
+        <ProjectTimeline />
 
         {/* Friends of the project */}
         <section className="mb-8 max-w-2xl">

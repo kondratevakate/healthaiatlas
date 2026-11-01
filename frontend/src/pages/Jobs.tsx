@@ -12,7 +12,6 @@ import { ExternalLink, MapPin, Wifi, GraduationCap } from 'lucide-react';
 import { Layout } from '@/components/layout';
 import { cn } from '@/lib/utils';
 import rawJobs from '@/data/jobsData.json';
-import { AIRTABLE_PROVENANCE_URL } from '@/data/constants';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { StaleDataNotice } from '@/components/shared/StaleDataNotice';
 
@@ -519,15 +518,6 @@ export default function Jobs() {
               Data from Healthcare AI Jobs Tracker 2026. Role counts reflect verified snapshots — check careers pages for current openings.
               Compiled by <a href="/about" className="underline underline-offset-2 hover:text-foreground">HealthAI Atlas</a>.
             </span>
-            <a
-              href={AIRTABLE_PROVENANCE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 underline underline-offset-2 hover:text-foreground transition-colors whitespace-nowrap"
-            >
-              <ExternalLink className="w-3 h-3" />
-              Zero Trust data provenance
-            </a>
           </div>
         </div>
       </div>

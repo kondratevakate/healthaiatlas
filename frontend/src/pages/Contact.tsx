@@ -1,7 +1,7 @@
 import { ComponentType, SVGProps } from 'react';
 import { Layout } from '@/components/layout';
 import { Link } from 'react-router-dom';
-import { Mail, Globe } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
 
 type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
@@ -28,14 +28,7 @@ interface ContactLink {
 
 const links: ContactLink[] = [
   {
-    label: 'Suggest an entry or correction',
-    value: 'Open the Airtable form',
-    href: 'https://airtable.com/shrkedcsqRIdT60o3',
-    role: 'contribute',
-    icon: Mail,
-  },
-  {
-    label: 'LinkedIn',
+    label: 'LinkedIn — suggest an entry or correction',
     value: 'linkedin.com/in/kondratevakate',
     href: 'https://linkedin.com/in/kondratevakate',
     role: 'personal',

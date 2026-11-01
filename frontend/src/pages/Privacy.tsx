@@ -2,7 +2,7 @@ import { Layout } from '@/components/layout';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '@/components/shared/PageHeader';
 
-const LAST_UPDATED = 'April 22, 2026';
+const LAST_UPDATED = 'October 31, 2026';
 
 const Privacy = () => {
   return (
@@ -21,9 +21,9 @@ const Privacy = () => {
               HealthAI Atlas is an independent research and educational project owned and operated
               by Dr. Ekaterina Kondrateva in personal capacity. The project is not affiliated with,
               owned by, or operated under the authority of any other organisation, employer, or
-              commercial entity. Contact for any data or privacy inquiry:{' '}
-              <a href="https://airtable.com/shrkedcsqRIdT60o3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                the project contact form
+              commercial entity. Contact for any data or privacy inquiry: message Kate on{' '}
+              <a href="https://www.linkedin.com/in/kondratevakate/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                LinkedIn
               </a>
               . See also <Link to="/about" className="text-primary hover:underline">About</Link> and{' '}
               <Link to="/terms" className="text-primary hover:underline">Terms</Link>.
@@ -91,9 +91,9 @@ const Privacy = () => {
               ).
             </p>
             <p className="text-muted-foreground">
-              For any other request, email {' '}
-              <a href="https://airtable.com/shrkedcsqRIdT60o3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                the project contact form
+              For any other request, message Kate on{' '}
+              <a href="https://www.linkedin.com/in/kondratevakate/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                LinkedIn
               </a>{' '}
               and we will respond within 30 days.
             </p>
@@ -137,8 +137,8 @@ const Privacy = () => {
             <h2 className="heading-lg mb-3">Contact</h2>
             <p className="text-muted-foreground">
               Kate Kondrateva · {' '}
-              <a href="https://airtable.com/shrkedcsqRIdT60o3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                the project contact form
+              <a href="https://www.linkedin.com/in/kondratevakate/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                LinkedIn
               </a>{' '}
               · See also <Link to="/contact" className="text-primary hover:underline">Contact</Link>.
             </p>

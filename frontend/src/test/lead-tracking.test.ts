@@ -13,7 +13,7 @@ import { SUGGEST_ENTRY_URL, ATLAS_NOTES_SUBSCRIBE_URL } from '@/data/constants';
 describe('classifyLeadHref', () => {
   it.each([
     [ATLAS_NOTES_SUBSCRIBE_URL, 'newsletter'],
-    [SUGGEST_ENTRY_URL, 'airtable_form'],
+    [SUGGEST_ENTRY_URL, 'linkedin'],
     ['https://linkedin.com/in/kondratevakate', 'linkedin'],
     ['https://www.linkedin.com/in/kondratevakate', 'linkedin'],
     ['mailto:hello@example.com', 'email'],
@@ -27,6 +27,7 @@ describe('classifyLeadHref', () => {
     'https://github.com/kondratevakate',
     'https://www.pathai.com/resources',
     'https://airtable.com/app123/tbl456',
+    'https://airtable.com/shrkedcsqRIdT60o3',
     'https://notlinkedin.com/in/x',
     'not a url',
   ])('%s is not a lead', (href) => {

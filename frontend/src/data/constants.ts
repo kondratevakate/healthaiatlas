@@ -1,10 +1,11 @@
 // Global constants for the Verifiable Claims Directory
 
-// Public Airtable form — used for all "suggest entry / correction" CTAs.
-// Avoids exposing a personal mailto: in HTML hrefs and keeps submissions in
-// one place. Same form covers entries and corrections; submitter picks intent.
-export const SUGGEST_ENTRY_URL = 'https://airtable.com/shrkedcsqRIdT60o3';
-export const SUGGEST_CORRECTION_URL = 'https://airtable.com/shrkedcsqRIdT60o3';
+// Primary contact channel. Every "suggest entry / correction / get in touch"
+// CTA points here. The Airtable form that used to collect submissions was
+// closed in October 2026; airtable-links.test.ts keeps dead links out.
+export const CONTACT_LINKEDIN_URL = 'https://www.linkedin.com/in/kondratevakate/';
+export const SUGGEST_ENTRY_URL = CONTACT_LINKEDIN_URL;
+export const SUGGEST_CORRECTION_URL = CONTACT_LINKEDIN_URL;
 
 // Atlas Notes — editorial companion newsletter on LinkedIn.
 // The directory (this site) holds structured, cited records.
@@ -12,16 +13,6 @@ export const SUGGEST_CORRECTION_URL = 'https://airtable.com/shrkedcsqRIdT60o3';
 export const ATLAS_NOTES_SUBSCRIBE_URL =
   'https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7451945270583390208';
 
-// Zero-Trust canonical store — the Airtable base where every player /
-// claim / source row is verified and held. The frontend TS data files
-// are derived from this base via scripts/zerotrust/from_airtable.py.
-// Linking out from country / domain pages gives readers direct access
-// to the primary-evidence provenance layer (every row carries a `src`
-// URL on the issuer's domain plus a `verifiedAt` stamp).
-//
-// Currently points to the base homepage; if a public shared view is
-// later published, swap this URL for the view URL.
-export const AIRTABLE_PROVENANCE_URL = 'https://airtable.com/appiYen6pEW5tSVrn';
 
 // Per-section "last updated" dates (ISO format)
 export const LAST_UPDATED: Record<string, string> = {

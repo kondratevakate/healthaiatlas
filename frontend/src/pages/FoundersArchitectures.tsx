@@ -218,7 +218,7 @@ function TrendingPapersView() {
         <a href={TRENDING_PAPERS_SOURCE} target="_blank" rel="noopener noreferrer" className="underline">
           emergentmind.com
         </a>
-        {' '}· snapshot refreshed via Airtable Zero Trust pipeline
+        {' '}· snapshot refreshed via the Zero Trust pipeline
       </p>
     </div>
   );

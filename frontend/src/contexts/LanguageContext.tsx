@@ -29,6 +29,38 @@ const translations: Translations = {
   'nav.discovery': { en: 'Discovery', ar: 'اكتشاف' },
   'nav.context': { en: 'Context', ar: 'السياق' },
 
+  // Founder Toolkit — landing "what's inside" index (C).
+  'founders.toc.title': { en: "What's inside", ar: 'ما في الداخل' },
+  'founders.toc.subtitle': { en: 'Six modules. Read top-to-bottom or jump to the one you need.', ar: 'ستة وحدات. اقرأها بالترتيب أو انتقل إلى ما تحتاجه.' },
+  'founders.toc.markets': { en: 'Markets & Regulatory', ar: 'الأسواق والتنظيم' },
+  'founders.toc.markets.desc': { en: 'Healthcare spend and the regulator stack per country — UAE / EU / UK / US / CN / CH.', ar: 'الإنفاق الصحي ومنظومة الجهات التنظيمية لكل دولة — الإمارات / الاتحاد الأوروبي / المملكة المتحدة / الولايات المتحدة / الصين / سويسرا.' },
+  'founders.toc.architectures': { en: 'SOTA Architectures', ar: 'أحدث البنى' },
+  'founders.toc.architectures.desc': { en: 'The five revenue architectures — which are making money in healthcare AI, and which killed their companies.', ar: 'بنى الإيرادات الخمس — أيها يحقق أرباحاً في الذكاء الاصطناعي الصحي، وأيها قضى على شركاتها.' },
+  'founders.toc.tech': { en: 'Tech Signals', ar: 'إشارات التقنية' },
+  'founders.toc.tech.desc': { en: 'Developer-advocate moves and vendor demand signals. Talent moves lead product pushes by 6–12 months.', ar: 'تحركات مطوري العلاقات وإشارات طلب الموردين. تحركات المواهد تسبق إطلاق المنتجات بـ6–12 شهراً.' },
+  'founders.toc.acquihires': { en: 'Acqui-hires', ar: 'الاستحواذ على الفرق' },
+  'founders.toc.acquihires.desc': { en: 'Every deal is a confession — the acquirer needed this and could not build it at market speed.', ar: 'كل صفقة اعتراف — المشتري احتاج هذا ولم يستطع بناءه بسرعة السوق.' },
+  'founders.toc.deadvalley': { en: 'Dead Valley', ar: 'الوادي الميت' },
+  'founders.toc.deadvalley.desc': { en: '$50B+ destroyed — Babylon, Forward, 23andMe, Pear, Cerebral. Four classes of death.', ar: 'أكثر من 50 مليار دولار دُمّرت — بابل، فوروورد، 23andMe، بير، سيريبرال. أربعة أنواع من الموت.' },
+  'founders.toc.context': { en: 'Context', ar: 'السياق' },
+  'founders.toc.context.desc': { en: 'The reference layer behind every module — definitions, sources, and how the Atlas counts.', ar: 'طبقة المرجع خلف كل وحدة — التعريفات والمصادر وكيف يحسب الأطلس.' },
+
+  // Events page (D) — conferences / workshops / demo days.
+  'events.title': { en: 'Events', ar: 'الفعاليات' },
+  'events.subtitle': { en: 'Conferences, workshops and demo days where the healthcare-AI ecosystem actually meets. Upcoming first.', ar: 'المؤتمرات وورش العمل وأيام العروض حيث تلتقي منظومة الذكاء الاصطناعي الصحي فعلياً. الأقرب أولاً.' },
+  'events.filter.type': { en: 'Type', ar: 'النوع' },
+  'events.filter.all': { en: 'All', ar: 'الكل' },
+  'events.filter.upcoming': { en: 'Upcoming', ar: 'القادمة' },
+  'events.filter.past': { en: 'Past', ar: 'السابقة' },
+  'events.search': { en: 'Search events', ar: 'ابحث في الفعاليات' },
+  'events.count': { en: 'events', ar: 'فعالية' },
+  'events.empty': { en: 'No events match these filters.', ar: 'لا فعاليات مطابقة لهذه المرشحات.' },
+  'events.empty.reset': { en: 'Clear filters', ar: 'إزالة المرشحات' },
+  'events.sponsors': { en: 'Sponsors', ar: 'الرعاة' },
+  'events.sponsors.none': { en: 'Sponsors not yet mapped', ar: 'الرعاة غير محدّدين بعد' },
+  'events.register': { en: 'Register', ar: 'التسجيل' },
+  'events.website': { en: 'Website', ar: 'الموقع' },
+
   // Hero
   'hero.subtitle': {
     en: 'A knowledge bank exploring the ecosystem of AI in healthcare—mapping players, analyzing systems, and understanding the structures shaping the future of medicine.',

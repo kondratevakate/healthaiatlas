@@ -9,7 +9,6 @@ import { domains } from '@/data/domains';
 import { LAST_UPDATED } from '@/data/constants';
 import { openCallEntries } from '@/data/openCallEntries';
 import { conferences } from '@/data/conferences';
-import { launches } from '@/data/launches';
 import { SearchModal } from '@/components/search/SearchModal';
 import { NavDropdown } from './NavDropdown';
 
@@ -32,9 +31,10 @@ type NavLink = {
 // Notes pointer (Atlas Notes is no longer a top-level item — it lives
 // contextually inside About).
 const navLinks: NavLink[] = [
-  { key: 'nav.home', path: '/', count: conferences.length + launches.length },
-  { key: 'nav.opencalls', path: '/discovery?section=opencalls', count: openCallEntries.length },
+  { key: 'nav.home', path: '/' },
+  { key: 'nav.opencalls', path: '/open-calls', count: openCallEntries.length },
   { key: 'nav.jobs', path: '/jobs', count: 116 },
+  { key: 'nav.events', path: '/events', count: conferences.length },
   { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
   { key: 'nav.founders', path: '/founders', dropdown: true },
   { key: 'nav.about', path: '/about' },

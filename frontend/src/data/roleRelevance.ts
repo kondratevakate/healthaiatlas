@@ -8,9 +8,10 @@ export type RoleSet = PathRole[];
 
 export const conferenceRoles: Record<string, RoleSet> = {
   'gitex-global-2026': ['founder', 'business', 'jobseeker'],
-  'ai-medicine-summit-2026': ['founder', 'student'],
-  'digital-health-workshop-2026': ['business', 'student'],
-  'hub71-demo-day-2026': ['founder', 'jobseeker'],
+  'whx-dubai-2027': ['business', 'jobseeker'],
+  'whx-tech-2027': ['founder', 'business'],
+  'ai-everything-abu-dhabi-2027': ['founder', 'student'],
+  'future-health-summit-2026': ['founder', 'business', 'student'],
 };
 
 export const launchRoles: Record<string, RoleSet> = {

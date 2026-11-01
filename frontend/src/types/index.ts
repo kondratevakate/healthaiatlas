@@ -87,6 +87,23 @@ export type TimelineEventType =
 // Conference/Event types
 export type ConferenceType = 'conference' | 'meetup' | 'workshop' | 'demo-day';
 
+// Who pays for an event. Pharma/tech/academic/government/investor/media/other.
+// Sponsors are only recorded when they can be sourced — an event with no
+// confirmed sponsor list stays `undefined`, never a guess.
+export type SponsorKind =
+  | 'pharma'
+  | 'tech'
+  | 'academic'
+  | 'government'
+  | 'investor'
+  | 'media'
+  | 'other';
+
+export interface EventSponsor {
+  name: string;
+  kind: SponsorKind;
+}
+
 // Grant categories
 export type GrantCategory = 'research' | 'innovation' | 'startup' | 'clinical' | 'partnership';
 
@@ -163,6 +180,11 @@ export interface Conference {
   website?: string;
   registrationUrl?: string;
   description?: LocalizedString;
+  // Public source proving the event exists (organiser page, venue listing).
+  // Required by the data-integrity rule in data/conferences.ts.
+  sourceUrl?: string;
+  // Confirmed sponsors/partners only. Undefined = not yet mapped, not "none".
+  sponsors?: EventSponsor[];
 }
 
 // Grant/Funding Opportunity

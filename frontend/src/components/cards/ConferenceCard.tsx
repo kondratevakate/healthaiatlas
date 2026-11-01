@@ -20,7 +20,7 @@ const typeBadgeClass: Record<Conference['type'], string> = {
 };
 
 export function ConferenceCard({ conference, className }: ConferenceCardProps) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   const formatDate = (dateStr: string, endDateStr?: string) => {
     const date = new Date(dateStr);
@@ -73,6 +73,26 @@ export function ConferenceCard({ conference, className }: ConferenceCardProps) {
           </Badge>
         ))}
       </div>
+
+      {conference.sponsors && conference.sponsors.length > 0 && (
+        <div className="mb-4">
+          <div className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground/40 mb-1.5">
+            {t('events.sponsors')}
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {conference.sponsors.map((s) => (
+              <Badge key={s.name} variant="outline" className="text-xs rounded-none">
+                {s.name}
+                {s.kind === 'pharma' && (
+                  <span className="ms-1 font-mono text-[9px] uppercase text-muted-foreground/60">
+                    pharma
+                  </span>
+                )}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
 
       {(conference.website || conference.registrationUrl) && (
         <div className="flex gap-2">

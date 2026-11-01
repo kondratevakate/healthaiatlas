@@ -97,7 +97,7 @@ export function buildSearchIndex(language: Lang = 'en'): SearchableEntity[] {
         c.name.ar,
         ...(c.topics ?? []),
       ],
-      url: `/discovery#${c.id}`,
+      url: `/events#${c.id}`,
       meta: c.date?.slice(0, 4),
     });
   }

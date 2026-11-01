@@ -6,6 +6,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, TrendingDown } from 'lucide-react';
 import { Layout } from '@/components/layout';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { FOUNDERS_EDITORIAL_CARDS, type EditorialCard } from '@/data/foundersEditorial';
 import { cn } from '@/lib/utils';
@@ -70,6 +71,58 @@ function EditorialCard({ card, idx }: { card: EditorialCard; idx: number }) {
         {card.link.label} <ArrowRight className="w-3 h-3" />
       </span>
     </Link>
+  );
+}
+
+// ── Landing TOC — "what's inside" (C) ───────────────────────────────────────
+// Compact numbered index of every module in the Toolkit. Monochrome, RTL-safe
+// (the index numeral flips to the inline-end side automatically via flex order
+// in RTL). Pure presentational — no new route.
+
+type TocEntry = { to: string; titleKey: string; descKey: string };
+
+const TOC: TocEntry[] = [
+  { to: '/founders/markets',       titleKey: 'founders.toc.markets',       descKey: 'founders.toc.markets.desc' },
+  { to: '/founders/architectures', titleKey: 'founders.toc.architectures', descKey: 'founders.toc.architectures.desc' },
+  { to: '/founders/tech',          titleKey: 'founders.toc.tech',          descKey: 'founders.toc.tech.desc' },
+  { to: '/founders/acquihires',    titleKey: 'founders.toc.acquihires',    descKey: 'founders.toc.acquihires.desc' },
+  { to: '/founders/dead-valley',   titleKey: 'founders.toc.deadvalley',    descKey: 'founders.toc.deadvalley.desc' },
+  { to: '/founders/context',       titleKey: 'founders.toc.context',       descKey: 'founders.toc.context.desc' },
+];
+
+function ToolkitToc() {
+  const { t } = useLanguage();
+  return (
+    <section className="mb-14 md:mb-16">
+      <div className="flex items-baseline justify-between gap-3 mb-2">
+        <h2 className="text-sm font-semibold tracking-tight">{t('founders.toc.title')}</h2>
+        <span className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground/40 shrink-0">
+          {TOC.length} modules
+        </span>
+      </div>
+      <p className="text-sm text-muted-foreground mb-4">{t('founders.toc.subtitle')}</p>
+
+      <div className="border-t border-border">
+        {TOC.map((entry, i) => (
+          <Link
+            key={entry.to}
+            to={entry.to}
+            className="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 border-b border-border py-3 transition-colors hover:bg-muted/40"
+          >
+            <span className="font-mono text-[10px] text-muted-foreground/40 sm:w-6 shrink-0 tabular-nums">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span className="text-sm font-medium sm:w-52 shrink-0 group-hover:text-foreground">
+              {t(entry.titleKey)}
+            </span>
+            <span className="flex-1 min-w-0 text-xs text-muted-foreground leading-relaxed line-clamp-2">
+              {t(entry.descKey)}
+            </span>
+            <ArrowRight className="hidden sm:block w-3.5 h-3.5 text-muted-foreground/30 group-hover:text-foreground shrink-0 transition-colors rtl:rotate-180" />
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -172,6 +225,9 @@ const Founders = () => (
           record of $50B+ destroyed. Read top-to-bottom or jump to the module you need.
         </p>
       </div>
+
+      {/* WHAT'S INSIDE — compact index of all six modules (C) */}
+      <ToolkitToc />
 
       {/* FRONT PAGE — 3 editorial cards, auto-pulled daily */}
       <section className="mb-14 md:mb-20">

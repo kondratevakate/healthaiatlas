@@ -103,6 +103,11 @@ export function OpenCallCard({ entry, className }: OpenCallCardProps) {
         <Badge variant="secondary" className="rounded-none text-[10px] capitalize">
           {categoryLabel[entry.category]}
         </Badge>
+        {entry.provenance === 'una' && (
+          <Badge variant="outline" className="rounded-none text-[9px] uppercase text-muted-foreground/70">
+            Una
+          </Badge>
+        )}
         {entry.amount && (
           <span className="text-[10px] font-mono text-muted-foreground line-clamp-1">
             {entry.amount}

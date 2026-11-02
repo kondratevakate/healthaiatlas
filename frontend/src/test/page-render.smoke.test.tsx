@@ -74,8 +74,9 @@ const PAGES_DIR = join(__dirname, '..', 'pages');
  *  here, or pages that require live auth/network we don't want to mock. */
 const SKIP = new Set<string>([
   // Examples — adjust to your project:
-  'Share.tsx',        // needs :id param to be meaningful
-  'PersonaPage.tsx',  // dispatches on route — handled by its parents
+  // RETIRED 2026-11-02: Share.tsx (/share/:id assessment card) and
+  // PersonaPage.tsx (/patient · /doctor · /business · /startup · /leader) were
+  // deleted with the 5-question quiz — entry points are intent blocks now.
   'NotFound.tsx',     // trivially renders, not worth a test slot
 ]);
 

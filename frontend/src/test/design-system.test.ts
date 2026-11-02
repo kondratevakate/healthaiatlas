@@ -188,7 +188,6 @@ describe('design-system: typography', () => {
   // instead of going through PageHeader / HeroSection.
   const RAW_H1_ALLOWLIST = new Set<string>([
     'pages/NotFound.tsx',  // 404 numeral, intentionally bespoke
-    'pages/Share.tsx',     // assessment-summary page, custom hero
     'pages/Index.tsx',     // home hero, custom layout
     'pages/Founders.tsx',           // tight editorial masthead replaces PageHeader intentionally
     'pages/FoundersMarkets.tsx',    // chart-first layout, minimal caption heading
@@ -206,7 +205,6 @@ describe('design-system: typography', () => {
   // codebase so single-line matching is sufficient.
   const RAW_HEADING_SIZE_ALLOWLIST = new Set<string>([
     'pages/NotFound.tsx',       // intentionally bespoke 404 numeral
-    'pages/Share.tsx',          // assessment-summary custom hero
     'pages/Index.tsx',          // home hero — uses heading-display elsewhere but has inline overrides
     'components/ui/card.tsx',   // shadcn CardTitle boilerplate — do not modify
   ]);
@@ -499,9 +497,7 @@ describe('design-system: spacing', () => {
   const CONTAINER_SHELL_EXEMPT = new Set<string>([
     'pages/Index.tsx',          // custom multi-section hero
     'pages/Discovery.tsx',      // sticky filter bar + tabs, custom shell
-    'pages/Share.tsx',          // assessment summary, custom centering
     'pages/NotFound.tsx',       // full-screen vertical center
-    'pages/PersonaPage.tsx',    // already uses container py-12 md:py-16 max-w-4xl
     'pages/Jobs.tsx',           // max-w-7xl data-table layout — wider than standard container
     'pages/OpenCalls.tsx',      // custom layout without standard container shell
   ]);
@@ -734,7 +730,6 @@ describe('design-system: page headers', () => {
   //     visitor. Pages without subtitle are exempt if they have a deliberate
   //     reason (dynamic content assembled from data, not static strings).
   const SUBTITLE_EXEMPT = new Set<string>([
-    'pages/Share.tsx',         // assessment result — content is dynamic, no static subtitle
     'pages/NotFound.tsx',      // 404 page — no PageHeader
     'pages/Index.tsx',         // custom hero — no PageHeader
     'pages/FoundersDevRel.tsx',// title is self-explanatory; tabs immediately show the two datasets

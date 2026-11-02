@@ -19,8 +19,6 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Discovery = lazy(() => import("./pages/Discovery"));
-const Share = lazy(() => import("./pages/Share"));
-const PersonaPage = lazy(() => import("./pages/PersonaPage"));
 const Founders = lazy(() => import("./pages/Founders"));
 // CANONICAL Context page (roadmap H, P1a): Context lives INSIDE the Founder
 // Toolkit. FoundersContext is the real page — it carries every region panel
@@ -35,6 +33,7 @@ const Jobs = lazy(() => import("./pages/Jobs"));
 const OpenCalls = lazy(() => import("./pages/OpenCalls"));
 const Events = lazy(() => import("./pages/Events"));
 const News = lazy(() => import("./pages/News"));
+const DataDownloads = lazy(() => import("./pages/DataDownloads"));
 
 const queryClient = new QueryClient();
 
@@ -140,19 +139,19 @@ const App = () => (
                   compare · uae · eu · ch · uk · us · cn · dead-valley — so
                   ?region=cn and ?region=ch are valid again. */}
               <Route path="/founders/context" element={<FoundersContext />} />
-              <Route path="/share/:id" element={<Share />} />
 
-              {/* Persona landing pages — single PersonaPage dispatches on :id */}
-              <Route path="/patient" element={<PersonaPage />} />
-              <Route path="/doctor" element={<PersonaPage />} />
-              <Route path="/business" element={<PersonaPage />} />
-              <Route path="/startup" element={<PersonaPage />} />
-              <Route path="/leader" element={<PersonaPage />} />
+              {/* RETIRED persona + assessment URLs (2026-11-02). The 5-question
+                  quiz was removed and entry points are now jobs-to-be-done
+                  (intent blocks on the home page), so /patient · /doctor ·
+                  /business · /startup · /leader and the /share/:id assessment
+                  card have no generator and no inbound link. No redirect is
+                  registered: they fall through to the catch-all NotFound. */}
 
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/open-calls" element={<OpenCalls />} />
               <Route path="/events" element={<Events />} />
               <Route path="/news" element={<News />} />
+              <Route path="/data" element={<DataDownloads />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

@@ -561,7 +561,7 @@ describe('design-system: navigation', () => {
     const appSrc = readFileSync(APP_TSX, 'utf8');
 
     // Capture all path values from the navLinks array literal in Header.tsx.
-    // Form: `path: '/discovery?section=opencalls'` — we want just `/discovery`.
+    // Form: `path: '/directory?domain=x'` — we want just `/directory`.
     const navPaths = new Set<string>();
     for (const m of headerSrc.matchAll(/\bpath:\s*['"]([^'"]+)['"]/g)) {
       const [base] = m[1].split('?');

@@ -125,6 +125,129 @@ const translations: Translations = {
   },
   'hero.exploreDirectory': { en: 'Explore Directory', ar: 'استكشف الدليل' },
 
+  // Home — promise-led hero + one block per intent (aisafety.com IA, 2026-11-02).
+  // h1 is a promise, not a brand; the sub-line is one plain sentence of scope.
+  'home.hero.title': {
+    en: 'Find your place in the healthcare-AI ecosystem',
+    ar: 'اعثر على مكانك في منظومة الذكاء الاصطناعي الصحي',
+  },
+  'home.hero.subtitle': {
+    en: 'Curated lists of open calls, jobs, events, organisations and market briefings — every record links to the source it came from.',
+    ar: 'قوائم مُنتقاة من الدعوات المفتوحة والوظائف والفعاليات والمنظمات وموجزات السوق — كل سجل يرتبط بالمصدر الذي أُخذ منه.',
+  },
+
+  // Shared block furniture.
+  'home.viewAll': { en: 'View all', ar: 'عرض الكل' },
+  'home.updated': { en: 'Updated', ar: 'آخر تحديث' },
+  'home.next': { en: 'Next', ar: 'التالي' },
+  'home.roles': { en: 'roles', ar: 'وظيفة' },
+
+  // Intent blocks — verb heading + one line of what you actually get.
+  'home.block.funding.title': { en: 'Find funding', ar: 'اعثر على تمويل' },
+  'home.block.funding.desc': {
+    en: 'Grants, fellowships, prizes and accelerators with an open application window — the issuer and the deadline as stated on every row.',
+    ar: 'منح وزمالات وجوائز ومسرّعات ذات نافذة تقديم مفتوحة — الجهة المانحة والموعد النهائي كما هو مذكور في كل صف.',
+  },
+  'home.block.jobs.title': { en: 'Find a job', ar: 'اعثر على وظيفة' },
+  'home.block.jobs.desc': {
+    en: 'Open roles at companies building health AI — role counts and locations as reported by each company board.',
+    ar: 'وظائف مفتوحة لدى شركات تبني الذكاء الاصطناعي الصحي — عدد الوظائف والمواقع كما توردها لوحة كل شركة.',
+  },
+  'home.block.events.title': { en: 'Attend an event', ar: 'احضر فعالية' },
+  'home.block.events.desc': {
+    en: 'Conferences, workshops and demo days where the ecosystem meets — dates and venues as published by the organiser.',
+    ar: 'مؤتمرات وورش عمل وأيام عروض تلتقي فيها المنظومة — التواريخ والأماكن كما ينشرها المنظّم.',
+  },
+  'home.block.ecosystem.title': { en: 'Explore the ecosystem', ar: 'استكشف المنظومة' },
+  'home.block.ecosystem.desc': {
+    en: 'Mapped areas of healthcare AI, from life sciences to biosecurity — each with the organisations and sources behind it.',
+    ar: 'مجالات مرسومة في الذكاء الاصطناعي الصحي، من علوم الحياة إلى الأمن الحيوي — لكل منها منظماته ومصادره.',
+  },
+  'home.block.context.title': { en: 'Read the market context', ar: 'اقرأ سياق السوق' },
+  'home.block.context.desc': {
+    en: 'Standing briefings built from the Atlas datasets — talent signals, failure cases, and a rotating regional read.',
+    ar: 'موجزات دائمة مبنية من بيانات الأطلس — إشارات المواهب، حالات الفشل، وقراءة إقليمية متناوبة.',
+  },
+  'home.block.news.title': { en: 'Stay informed', ar: 'ابقَ على اطلاع' },
+  'home.block.news.desc': {
+    en: 'Dated, already-happened items — model releases, funding rounds, papers, policy steps — each linked to the source it came from.',
+    ar: 'أحداث مؤرّخة وقعت بالفعل — إصدارات نماذج، جولات تمويل، أوراق بحثية، خطوات تنظيمية — كل منها مرتبط بمصدره.',
+  },
+
+  // Closing band — who maintains this, and the one contribution channel.
+  'home.maintained': {
+    en: 'Maintained by Kate Kondrateva as an independent project. Every record carries the source it came from.',
+    ar: 'يصونه مشروع مستقل بإدارة كيت كوندراتيفا. كل سجل يحمل المصدر الذي أُخذ منه.',
+  },
+  'home.contribute.title': { en: 'Add or correct a record', ar: 'أضف سجلًا أو صحّحه' },
+  'home.contribute.desc': {
+    en: 'Spotted a gap or a wrong entry? Open an issue — the form asks for the record and its source.',
+    ar: 'لاحظت نقصًا أو سجلًا خاطئًا؟ افتح طلبًا — النموذج يطلب السجل ومصدره.',
+  },
+  'home.contribute.cta': { en: 'Suggest a record', ar: 'اقترح سجلًا' },
+
+  // Una chat intake (roadmap F0) — home page. One idea per screen, no marketing.
+  // The reply comes from a Cloudflare Worker; the visitor's text is sent with
+  // the request and is never stored or logged by the client.
+  'una.title': { en: 'Describe your work', ar: 'صف عملك' },
+  'una.desc': {
+    en: 'Say what you do, in a few sentences. Una reads it and replies with where you might fit and what to read next.',
+    ar: 'اكتب ما تعمل عليه في بضع جمل. تقرأه أونا وترد عليك بأين قد تكون مكانك وما الذي تقرأه بعد ذلك.',
+  },
+  'una.label': { en: 'What do you work on?', ar: 'على ماذا تعمل؟' },
+  'una.placeholder': {
+    en: 'I am a clinician working on triage tools in a Dubai hospital…',
+    ar: 'أنا طبيب أعمل على أدوات الفرز في مستشفى بدبي…',
+  },
+  'una.send': { en: 'Send', ar: 'إرسال' },
+  'una.sending': { en: 'Reading…', ar: 'جارٍ القراءة…' },
+  'una.hint': {
+    en: 'Enter sends · Shift+Enter starts a new line',
+    ar: 'Enter للإرسال · Shift+Enter لسطر جديد',
+  },
+  'una.counter': { en: '{n} / 1,500', ar: '{n} / ١٬٥٠٠' },
+  'una.overLimit': {
+    en: 'You have reached the 1,500-character limit.',
+    ar: 'وصلت إلى حد ١٬٥٠٠ حرف.',
+  },
+  'una.empty': {
+    en: 'Write a sentence or two first.',
+    ar: 'اكتب جملة أو جملتين أولًا.',
+  },
+  'una.turn': { en: '{n} of 6 turns used', ar: 'استُخدمت {n} من ٦ جولات' },
+  'una.closed': {
+    en: 'That is the six turns for this conversation. Reload the page to start a new one.',
+    ar: 'هذه هي الجولات الست لهذه المحادثة. أعد تحميل الصفحة لبدء محادثة جديدة.',
+  },
+  'una.rateLimit': {
+    en: 'Too many conversations from this network right now. Try again in {n} minutes.',
+    ar: 'محادثات كثيرة من هذه الشبكة الآن. أعد المحاولة بعد {n} دقيقة.',
+  },
+  'una.rateLimitSeconds': {
+    en: 'Too many conversations from this network right now. Try again in {n} seconds.',
+    ar: 'محادثات كثيرة من هذه الشبكة الآن. أعد المحاولة بعد {n} ثانية.',
+  },
+  'una.degraded': {
+    en: 'Una is not taking questions right now.',
+    ar: 'أونا لا تستقبل أسئلة في الوقت الحالي.',
+  },
+  'una.degraded.action': { en: 'Write to Kate instead', ar: 'راسل كيت بدلًا من ذلك' },
+  'una.error': {
+    en: 'That did not go through. Try again in a moment.',
+    ar: 'لم تتم العملية. أعد المحاولة بعد قليل.',
+  },
+  'una.blocked': {
+    en: 'This page is not allowed to reach Una.',
+    ar: 'هذه الصفحة غير مسموح لها بالوصول إلى أونا.',
+  },
+  'una.caution': {
+    en: 'Not medical advice. Please do not paste personal health data.',
+    ar: 'ليس استشارة طبية. يُرجى عدم لصق بيانات صحية شخصية.',
+  },
+  'una.you': { en: 'You', ar: 'أنت' },
+  'una.reply': { en: 'Una', ar: 'أونا' },
+  'una.next': { en: 'Read next', ar: 'اقرأ بعد ذلك' },
+
   // Persona Section
   'persona.sectionTitle': { en: 'How can we help you?', ar: 'كيف يمكننا مساعدتك؟' },
   'persona.sectionSubtitle': {

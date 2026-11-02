@@ -45,6 +45,8 @@ const navLinks: NavLink[] = [
   { key: 'nav.jobs', path: '/jobs', count: JOBS_COUNT },
   { key: 'nav.events', path: '/events', count: conferences.length },
   { key: 'nav.news', path: '/news', count: newsItems.length },
+  // Context is NOT a top-level item (P1a): it lives INSIDE the Founder Toolkit
+  // dropdown / mobile submenu, so the nav surfaces exactly one Context entry.
   { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
   { key: 'nav.founders', path: '/founders', dropdown: true },
   { key: 'nav.about', path: '/about' },
@@ -168,6 +170,9 @@ export function Header() {
                 { to: '/founders/architectures', label: 'SOTA',         sub: 'State of the art in revenue architectures' },
                 { to: '/founders/tech',          label: 'Tech Signals', sub: '29 DevRel · 21 acqui-hire deals · talent signals' },
                 { to: '/founders/dead-valley',   label: 'Dead Valley',  sub: '$50B+ destroyed — patterns, not nostalgia' },
+                // Context is the 5th toolkit module (P1a) — canonical page at
+                // /founders/context; it is never a top-level nav item.
+                { to: '/founders/context',       label: 'Context',      sub: 'US · EU + CH · UK · UAE · China — regulators, payers, exits' },
               ];
               return (
                 <NavDropdown key={link.path} to={link.path} className={baseClass} label={renderLabel(link, active)}>
@@ -280,6 +285,8 @@ export function Header() {
                   { to: '/founders/architectures', label: 'SOTA' },
                   { to: '/founders/tech',          label: 'Tech Signals' },
                   { to: '/founders/dead-valley',   label: 'Dead Valley' },
+                  // Context is the 5th toolkit module (P1a).
+                  { to: '/founders/context',       label: 'Context' },
                 ];
                 return (
                   <div key={link.path} className="space-y-0.5">

@@ -74,6 +74,46 @@ describe('internal links resolve to a route', () => {
     expect(internalLinks.length).toBeGreaterThan(20);
   });
 
+  // Canonical pages (roadmap H, P0/P1a): Open Calls is /open-calls only and
+  // Context is /founders/context only — Context lives INSIDE the Founder
+  // Toolkit. The retired URLs still exist as redirects in App.tsx so
+  // externally shared links survive, but nothing in src/ may *link* to them —
+  // App.tsx is excluded because declaring the redirect route is the point.
+  it('no source link points at a retired Open Calls / Context URL', () => {
+    const retired = ['/discovery?section=opencalls', '/context'];
+    const offenders = internalLinks
+      .filter((l) => l.file !== 'App.tsx')
+      .filter((l) =>
+        retired.some(
+          (r) => l.raw === r || l.raw.startsWith(`${r}?`) || l.raw.startsWith(`${r}#`),
+        ),
+      )
+      .map((l) => `${l.file}: ${l.raw}`);
+    expect(offenders).toEqual([]);
+  });
+
+  it('App.tsx declares both Context URLs — /founders/context canonical, /context redirecting into it', () => {
+    const appSrc = readFileSync(APP_TSX, 'utf8');
+    // Direction 1 (canonical): /founders/context renders the Context page.
+    expect(routePatterns).toContain('/founders/context');
+    expect(appSrc).toMatch(/path="\/founders\/context"\s+element=\{<FoundersContext\s*\/>\}/);
+    // Direction 2 (retired URL): /context is still a Route, but it renders the
+    // redirect element into the toolkit page, so old shared links never 404.
+    expect(routePatterns).toContain('/context');
+    expect(appSrc).toMatch(/RedirectToFoundersContext/);
+    // /discovery?section=opencalls is caught inside the /discovery route.
+    expect(appSrc).toMatch(/RedirectOpenCalls/);
+  });
+
+  it('App.tsx keeps a redirect for every retired URL', () => {
+    const appSrc = readFileSync(APP_TSX, 'utf8');
+    // /context is a declared Route that renders a redirect element.
+    expect(routePatterns).toContain('/context');
+    expect(appSrc).toMatch(/RedirectToFoundersContext/);
+    // /discovery?section=opencalls is caught inside the /discovery route.
+    expect(appSrc).toMatch(/RedirectOpenCalls/);
+  });
+
   it('every internal link in src/ matches a <Route> in App.tsx', () => {
     const broken = internalLinks
       .filter((l) => !resolvesToRoute(l.pathname))

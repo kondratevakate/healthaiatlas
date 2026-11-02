@@ -87,7 +87,10 @@ const TOC: TocEntry[] = [
   { to: '/founders/tech',          titleKey: 'founders.toc.tech',          descKey: 'founders.toc.tech.desc' },
   { to: '/founders/acquihires',    titleKey: 'founders.toc.acquihires',    descKey: 'founders.toc.acquihires.desc' },
   { to: '/founders/dead-valley',   titleKey: 'founders.toc.deadvalley',    descKey: 'founders.toc.deadvalley.desc' },
-  { to: '/founders/context',       titleKey: 'founders.toc.context',       descKey: 'founders.toc.context.desc' },
+  // Context is a Founder Toolkit module (P1a) — the toolkit index points at
+  // its canonical URL, /founders/context. The old top-level /context redirects
+  // there, so nothing in src/ links at the retired URL.
+  { to: '/founders/context',      titleKey: 'founders.toc.context',       descKey: 'founders.toc.context.desc' },
 ];
 
 function ToolkitToc() {

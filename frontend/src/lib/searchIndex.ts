@@ -48,7 +48,8 @@ export function buildSearchIndex(language: Lang = 'en'): SearchableEntity[] {
         ...(e.audience ? [e.audience] : []),
         ...(e.notes ? [e.notes] : []),
       ],
-      url: `/discovery?section=opencalls#${e.id}`,
+      // Canonical Open Calls page — was /discovery?section=opencalls.
+      url: `/open-calls#${e.id}`,
       meta: `${categoryLabel[e.category]} · ${e.region}`,
     });
   }

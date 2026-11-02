@@ -1,3 +1,10 @@
+// RETIRED PAGE (roadmap H, P1a) ───────────────────────────────────────────────
+// Context now lives INSIDE the Founder Toolkit: the canonical page is
+// FoundersContext at /founders/context (see App.tsx). The top-level /context
+// route renders RedirectToFoundersContext, so this component is no longer
+// routed — it is kept only as the migration source for anything not yet
+// ported into FoundersContext. Do not re-route it; port from it instead.
+// -----------------------------------------------------------------------------
 import { Layout } from '@/components/layout';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { timelineEvents, stageConfig } from '@/data/timeline';
@@ -325,6 +332,11 @@ const REGION_SUBTITLES: Record<ContextRegion, { en: string; ar: string }> = {
 export default function Context() {
   const { language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
+  // P1a: the region-validation guard added in the P0 pass is reverted — it
+  // existed only to stop ?region=cn|ch deep links from the old
+  // /founders/context page blanking this page. /founders/context is canonical
+  // again (FoundersContext has the China + Switzerland panels), so cn/ch are
+  // valid values once more and this page is retired anyway.
   const region = (searchParams.get('region') as ContextRegion) ?? 'us';
   const setRegion = (r: ContextRegion) => {
     if (r === 'us') setSearchParams({});

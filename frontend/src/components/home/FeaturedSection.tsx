@@ -22,7 +22,8 @@ const entryPoints = [
   },
   {
     key: 'context',
-    path: '/context',
+    // Context lives inside the Founder Toolkit (P1a).
+    path: '/founders/context',
     icon: Calendar,
     color: 'text-sage',
     bgColor: 'bg-sage/10',

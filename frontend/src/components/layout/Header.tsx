@@ -45,6 +45,9 @@ const navLinks: NavLink[] = [
   { key: 'nav.jobs', path: '/jobs', count: JOBS_COUNT },
   { key: 'nav.events', path: '/events', count: conferences.length },
   { key: 'nav.news', path: '/news', count: newsItems.length },
+  // Context — one canonical entry. /founders/context (the old duplicate) now
+  // redirects here, so the nav must never surface both.
+  { key: 'nav.context', path: '/context' },
   { key: 'nav.domains', path: '/directory', dropdown: true, count: domains.filter((d) => d.id !== 'overview').length },
   { key: 'nav.founders', path: '/founders', dropdown: true },
   { key: 'nav.about', path: '/about' },

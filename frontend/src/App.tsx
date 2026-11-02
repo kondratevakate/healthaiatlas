@@ -23,7 +23,9 @@ const Discovery = lazy(() => import("./pages/Discovery"));
 const Share = lazy(() => import("./pages/Share"));
 const PersonaPage = lazy(() => import("./pages/PersonaPage"));
 const Founders = lazy(() => import("./pages/Founders"));
-const FoundersContext = lazy(() => import("./pages/FoundersContext"));
+// FoundersContext is no longer routed — /founders/context redirects to /context.
+// The file is kept on disk (its China / Switzerland panels are not on /context
+// yet); delete it only once those panels are migrated or explicitly retired.
 const FoundersDeadValley = lazy(() => import("./pages/FoundersDeadValley"));
 const FoundersDevRel = lazy(() => import("./pages/FoundersDevRel"));
 const FoundersMarkets = lazy(() => import("./pages/FoundersMarkets"));
@@ -40,6 +42,49 @@ const queryClient = new QueryClient();
 const RedirectHome = () => {
   const { search, hash } = useLocation();
   return <Navigate to={{ pathname: "/", search, hash }} replace />;
+};
+
+// ── Canonical-page redirects (roadmap H, P0) ─────────────────────────────────
+// Both pages below used to be duplicated: Open Calls lived at /open-calls AND
+// /discovery?section=opencalls; Context lived at /context AND /founders/context.
+// One canonical page each now, with the old URL kept alive as a redirect so
+// links already shared outside the site (and search-index / footer deep links)
+// keep landing on real content.
+
+// /discovery?section=opencalls → /open-calls
+// Drops only the now-meaningless `section` param; every other query param (utm
+// tags, ...) and the hash (#<entry-id>, used by the search index) survive.
+const RedirectOpenCalls = () => {
+  const { search, hash } = useLocation();
+  const params = new URLSearchParams(search);
+  params.delete("section");
+  const query = params.toString();
+  return (
+    <Navigate to={{ pathname: "/open-calls", search: query ? `?${query}` : "", hash }} replace />
+  );
+};
+
+// /founders/context → /context. `side` was the old page's AI/healthcare split
+// and has no meaning on the canonical page, so it is dropped; every other param
+// (`region`, utm tags, ...) and the hash survive.
+const RedirectContext = () => {
+  const { search, hash } = useLocation();
+  const params = new URLSearchParams(search);
+  params.delete("side");
+  const query = params.toString();
+  return (
+    <Navigate to={{ pathname: "/context", search: query ? `?${query}` : "", hash }} replace />
+  );
+};
+
+// /discovery still hosts the newsfeed (events / launches / leaders / prompts).
+// The legacy Open Calls section of that page redirects to the canonical page.
+const DiscoveryRoute = () => {
+  const { search } = useLocation();
+  if (new URLSearchParams(search).get("section") === "opencalls") {
+    return <RedirectOpenCalls />;
+  }
+  return <Discovery />;
 };
 
 const BootLoaderDone = () => {
@@ -68,11 +113,13 @@ const App = () => (
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
-              <Route path="/discovery" element={<Discovery />} />
+              {/* /discovery?section=opencalls redirects to /open-calls (see
+                  DiscoveryRoute); the newsfeed itself stays here. */}
+              <Route path="/discovery" element={<DiscoveryRoute />} />
               {/* Founder Toolkit — editorial home + 4 context modules.
                   /founders renders the magazine cover; deep pages live under
-                  /founders/<module>. /founders/context is deprecated and
-                  redirects to the new home. */}
+                  /founders/<module>. Context is no longer a toolkit module:
+                  its canonical home is the top-level /context page. */}
               <Route path="/founders" element={<Founders />} />
               <Route path="/founders/markets" element={<FoundersMarkets />} />
               {/* Regulatory merged into Markets — same page, one click */}
@@ -83,8 +130,9 @@ const App = () => (
               <Route path="/founders/acquihires" element={<Navigate to="/founders/tech" replace />} />
               <Route path="/founders/devrel" element={<Navigate to="/founders/tech" replace />} />
               <Route path="/founders/dead-valley" element={<FoundersDeadValley />} />
-              {/* Legacy deep page — kept until contents migrate to new modules. */}
-              <Route path="/founders/context" element={<FoundersContext />} />
+              {/* Legacy deep page — canonical Context lives at /context; the old
+                  URL redirects so shared links and deep links do not 404. */}
+              <Route path="/founders/context" element={<RedirectContext />} />
               <Route path="/share/:id" element={<Share />} />
 
               {/* Persona landing pages — single PersonaPage dispatches on :id */}

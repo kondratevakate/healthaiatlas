@@ -74,6 +74,32 @@ describe('internal links resolve to a route', () => {
     expect(internalLinks.length).toBeGreaterThan(20);
   });
 
+  // Canonical pages (roadmap H, P0): Open Calls is /open-calls only and Context
+  // is /context only. The retired URLs still exist as redirects in App.tsx so
+  // externally shared links survive, but nothing in src/ may *link* to them —
+  // App.tsx is excluded because declaring the redirect route is the point.
+  it('no source link points at a retired Open Calls / Context URL', () => {
+    const retired = ['/discovery?section=opencalls', '/founders/context'];
+    const offenders = internalLinks
+      .filter((l) => l.file !== 'App.tsx')
+      .filter((l) =>
+        retired.some(
+          (r) => l.raw === r || l.raw.startsWith(`${r}?`) || l.raw.startsWith(`${r}#`),
+        ),
+      )
+      .map((l) => `${l.file}: ${l.raw}`);
+    expect(offenders).toEqual([]);
+  });
+
+  it('App.tsx keeps a redirect for every retired URL', () => {
+    const appSrc = readFileSync(APP_TSX, 'utf8');
+    // /founders/context is a declared Route that renders a redirect element.
+    expect(routePatterns).toContain('/founders/context');
+    expect(appSrc).toMatch(/RedirectContext/);
+    // /discovery?section=opencalls is caught inside the /discovery route.
+    expect(appSrc).toMatch(/RedirectOpenCalls/);
+  });
+
   it('every internal link in src/ matches a <Route> in App.tsx', () => {
     const broken = internalLinks
       .filter((l) => !resolvesToRoute(l.pathname))

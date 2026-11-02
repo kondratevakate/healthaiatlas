@@ -287,7 +287,7 @@ export default function Index() {
         <section className="py-12 md:py-16">
           <div className="container">
             <div className="flex flex-wrap gap-3">
-              <Button variant="outline" onClick={() => navigate('/discovery?section=opencalls')}>
+              <Button variant="outline" onClick={() => navigate('/open-calls')}>
                 Open Calls
               </Button>
               <Button variant="outline" onClick={() => navigate('/directory')}>

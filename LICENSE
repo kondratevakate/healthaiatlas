@@ -1,46 +1,20 @@
-# LICENSE — HealthAI Atlas
+# LICENSE — HealthAI Atlas (dual licence)
 
-HealthAI Atlas uses **dual licensing**:
+This repository is dual licensed. The two full licence texts ship as separate machine-readable files:
 
-| What | License | Why |
-|---|---|---|
-| **Source code** (everything in `frontend/`, `backend/`, `ansible/`, `scripts/`, `.github/`, build configs) | **GNU Affero General Public License v3.0 (AGPL-3.0)** | Anyone may use, modify, and self-host the code, but any modified or hosted version must release its source code under AGPL-3.0. Prevents commercial forking without contribution back. |
-| **Data and editorial content** (everything in `frontend/src/data/*.ts`, `docs/`, generated reports, methodology documents) | **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** | Free for non-commercial use (clinicians, students, researchers, founders, journalists, educators) with attribution. Commercial use requires a separate paid commercial license — see the professional tier. |
+- Code: `LICENSE-CODE` — GNU AFFERO GENERAL PUBLIC LICENSE v3.0 (SPDX: `AGPL-3.0-only`)
+- Data: `LICENSE-DATA` — Creative Commons Attribution-NonCommercial 4.0 International (SPDX: `CC-BY-NC-4.0`)
 
-This combination matches the project's stated intent: open knowledge exchange for clinicians, students, researchers, and founders; commercial use sustains the work through the professional tier.
+Which licence applies to what:
 
-## Code license — AGPL-3.0
+- `AGPL-3.0-only` covers the source code: `frontend/` (excluding `frontend/src/data/`), `backend/`, `ansible/`, `scripts/`, `.github/`, `design-system/`, and all build/CI configuration.
+- `CC-BY-NC-4.0` covers the datasets and editorial content under `frontend/src/data/` (plus the matching methodology/editorial docs): free to copy, redistribute and adapt for non-commercial purposes with attribution; commercial use requires a separate paid licence.
+- Records in `frontend/src/data/` carry their own source URLs. Those third-party sources stay attributable in their own right — nothing here removes that attribution, and every record must keep pointing at the source it came from.
 
-Full text: https://www.gnu.org/licenses/agpl-3.0.html
+Attribution for data/content: "Data from HealthAI Atlas (https://healthaiatlas.com), CC BY-NC 4.0."
 
-Key implications:
-- You may run, modify, and distribute the code freely.
-- If you host a modified version of this code as a network service, you must make the modified source code available to users of that service under AGPL-3.0.
-- You cannot embed this code into a closed-source proprietary product.
+Contributions follow the same split: code under AGPL-3.0, data/content under CC BY-NC 4.0 — see `CONTRIBUTING.md`.
 
-## Data and content license — CC BY-NC 4.0
+For commercial use of either code or data, contact the project owner (see the public site's About page, or `SECURITY.md`).
 
-Full text: https://creativecommons.org/licenses/by-nc/4.0/legalcode
-
-Key implications:
-- You may copy, redistribute, and adapt the data and content for non-commercial purposes with attribution to HealthAI Atlas.
-- Commercial use — including but not limited to: redistribution within a commercial product, integration into paid consulting deliverables, training of commercial AI models, systematic extraction for resale — is **not permitted** under CC BY-NC 4.0.
-- For commercial use, see the professional tier — a paid license at the seat or organization level grants commercial use rights with structured-data access.
-
-## Attribution
-
-When using public-layer data or content under CC BY-NC 4.0, attribute as:
-
-> "Data from HealthAI Atlas (https://healthaiatlas.com), CC BY-NC 4.0."
-
-## Contributions
-
-By contributing to this repo, you agree your contribution to source code is licensed under AGPL-3.0 and your contribution to data/content is licensed under CC BY-NC 4.0. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the contribution schema.
-
-## Commercial license
-
-For commercial use of either code or data, contact the project owner via the email listed on the public site About page. The professional tier provides structured data access and commercial-use rights as part of its subscription terms.
-
----
-
-Decision recorded 2026-04-29. This dual-licensing choice resolves open decision #7 in `c:/Projects/00_agent/knowledge-vault/04_projects/healthaiatlas.md`.
+Decision recorded 2026-04-29.

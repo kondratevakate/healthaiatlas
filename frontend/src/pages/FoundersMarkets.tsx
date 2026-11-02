@@ -26,48 +26,51 @@ type Region = {
   deepLink: string;
 };
 
+// Deep links point at the canonical /context page (was /founders/context, which
+// now redirects). /context supports us · eu (+CH) · uk · uae · compare · arch —
+// China has no panel there yet, so it lands on the cross-market Compare view.
 const REGIONS: Region[] = [
   {
     flag: '🇺🇸', name: 'United States',
     market: '$4.9T healthcare', aiSlice: '$18B medical AI',
     stack: 'FDA SaMD · 510(k) / De Novo · CMS reimbursement · HIPAA',
     reality: 'Largest TAM. Four-spoke decision matrix — regulatory, reimbursement, sales motion, exit — decides which one kills you.',
-    deepLink: '/founders/context?side=healthcare&region=us',
+    deepLink: '/context?region=us',
   },
   {
     flag: '🇨🇳', name: 'China',
     market: '$1.6T healthcare', aiSlice: '$2B medical AI',
     stack: 'NMPA AI track (2019) · provincial reimbursement · BAT gravity',
     reality: '92 NMPA-approved AI devices. Strong tailwinds; restricted access for non-resident founders.',
-    deepLink: '/founders/context?side=healthcare&region=cn',
+    deepLink: '/context?region=compare',
   },
   {
     flag: '🇪🇺', name: 'EU',
     market: '$1.5T healthcare', aiSlice: '$6.5B medical AI',
     stack: 'MDR (2017/745) · notified bodies · EMA · CE mark',
     reality: 'CEE = cheaper evidence. Switzerland = expensive credibility. CE mark opens 27 markets at once.',
-    deepLink: '/founders/context?side=healthcare&region=eu',
+    deepLink: '/context?region=eu',
   },
   {
     flag: '🇬🇧', name: 'UK',
     market: '$260B healthcare', aiSlice: '$3B medical AI',
     stack: 'MHRA · UKCA mark · NICE HTA · NHS DTAC',
     reality: 'NHS gravity well — one payer, slow procurement, brutal exit ramp. Babylon-class death is real here.',
-    deepLink: '/founders/context?side=healthcare&region=uk',
+    deepLink: '/context?region=uk',
   },
   {
     flag: '🇨🇭', name: 'Switzerland',
     market: '$100B healthcare', aiSlice: '$300M medical AI',
     stack: 'Swissmedic · MedDO · CH-MDR (post-2026)',
     reality: 'Institutionally outside the EU. Use for regulatory-passport plays, not scaling.',
-    deepLink: '/founders/context?side=healthcare&region=ch',
+    deepLink: '/context?region=eu',
   },
   {
     flag: '🇦🇪', name: 'UAE',
     market: '$35B healthcare', aiSlice: '$28M medical AI',
     stack: 'DHA (Dubai) · DoH (Abu Dhabi) · MOHAP federal',
     reality: 'Pre-market approval per emirate. Fast-moving; market floor too low for venture scale.',
-    deepLink: '/founders/context?side=healthcare&region=uae',
+    deepLink: '/context?region=uae',
   },
 ];
 

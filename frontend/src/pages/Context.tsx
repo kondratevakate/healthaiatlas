@@ -325,7 +325,12 @@ const REGION_SUBTITLES: Record<ContextRegion, { en: string; ar: string }> = {
 export default function Context() {
   const { language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
-  const region = (searchParams.get('region') as ContextRegion) ?? 'us';
+  // Validate `?region=` — deep links from the old /founders/context page carry
+  // values this page does not have a panel for (cn, ch), and an unknown value
+  // used to render an empty page. Unknown → default US view.
+  const regionParam = searchParams.get('region') as ContextRegion | null;
+  const region: ContextRegion =
+    regionParam && REGION_OPTIONS.some((o) => o.id === regionParam) ? regionParam : 'us';
   const setRegion = (r: ContextRegion) => {
     if (r === 'us') setSearchParams({});
     else setSearchParams({ region: r });

@@ -87,7 +87,9 @@ const TOC: TocEntry[] = [
   { to: '/founders/tech',          titleKey: 'founders.toc.tech',          descKey: 'founders.toc.tech.desc' },
   { to: '/founders/acquihires',    titleKey: 'founders.toc.acquihires',    descKey: 'founders.toc.acquihires.desc' },
   { to: '/founders/dead-valley',   titleKey: 'founders.toc.deadvalley',    descKey: 'founders.toc.deadvalley.desc' },
-  { to: '/founders/context',       titleKey: 'founders.toc.context',       descKey: 'founders.toc.context.desc' },
+  // Context is now a top-level page (/context); /founders/context redirects to
+  // it, so the toolkit index points straight at the canonical URL.
+  { to: '/context',               titleKey: 'founders.toc.context',       descKey: 'founders.toc.context.desc' },
 ];
 
 function ToolkitToc() {

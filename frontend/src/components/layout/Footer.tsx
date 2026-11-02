@@ -41,7 +41,7 @@ export function Footer() {
               <ul className="space-y-3">
                 <li>
                   <Link
-                    to="/discovery?section=opencalls"
+                    to="/open-calls"
                     className="text-sm text-[hsl(var(--footer-foreground))]/80 hover:text-[hsl(var(--footer-foreground))] transition-colors"
                   >
                     {t('nav.opencalls')}

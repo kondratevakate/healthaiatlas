@@ -51,7 +51,8 @@ const Privacy = () => {
               <li>
                 <strong>Google Analytics 4</strong> — loaded only if it is configured for the build.
                 It records page views, referrer, device/browser category and country-level location
-                derived from IP (IP is not stored). It runs in Consent Mode v2: all storage starts
+                derived from IP (Google derives the country from your IP and does not retain the IP
+                itself). It runs in Consent Mode v2: all storage starts
                 denied, and analytics storage is enabled only after you accept in the cookie banner.
                 Advertising storage, ad user data and ad personalisation are denied.
               </li>
@@ -101,6 +102,13 @@ const Privacy = () => {
                 We ask for no name, email or phone number in the chat, and the chat never receives
                 anything from the founder&apos;s private research databases — those never reach the
                 browser or the model.
+              </li>
+              <li>
+                To hold back abuse we keep <strong>a salted, rotating hash of your IP, kept for 48
+                hours or less</strong>, purely to enforce rate limits. Your IP itself is never
+                stored and never written to a log, and it is never sent to the model provider; the
+                hash is made with a secret salt that we rotate, so it cannot be reversed or looked
+                up.
               </li>
             </ul>
           </section>
@@ -153,6 +161,7 @@ const Privacy = () => {
             <h2 className="heading-lg mb-3">Retention</h2>
             <ul className="list-disc pl-5 text-muted-foreground space-y-2">
               <li>Chat text: not stored as a transcript.</li>
+              <li>Rate-limit IP hash: a salted, rotating hash, deleted within 48 hours.</li>
               <li>Chat operational logs (token counts, error codes): at most 72 hours.</li>
               <li>Subscriber address: until you unsubscribe, plus 30 days.</li>
               <li>

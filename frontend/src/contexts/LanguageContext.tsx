@@ -125,6 +125,67 @@ const translations: Translations = {
   },
   'hero.exploreDirectory': { en: 'Explore Directory', ar: 'استكشف الدليل' },
 
+  // Home — promise-led hero + one block per intent (aisafety.com IA, 2026-11-02).
+  // h1 is a promise, not a brand; the sub-line is one plain sentence of scope.
+  'home.hero.title': {
+    en: 'Find your place in the healthcare-AI ecosystem',
+    ar: 'اعثر على مكانك في منظومة الذكاء الاصطناعي الصحي',
+  },
+  'home.hero.subtitle': {
+    en: 'Curated lists of open calls, jobs, events, organisations and market briefings — every record links to the source it came from.',
+    ar: 'قوائم مُنتقاة من الدعوات المفتوحة والوظائف والفعاليات والمنظمات وموجزات السوق — كل سجل يرتبط بالمصدر الذي أُخذ منه.',
+  },
+
+  // Shared block furniture.
+  'home.viewAll': { en: 'View all', ar: 'عرض الكل' },
+  'home.updated': { en: 'Updated', ar: 'آخر تحديث' },
+  'home.next': { en: 'Next', ar: 'التالي' },
+  'home.roles': { en: 'roles', ar: 'وظيفة' },
+
+  // Intent blocks — verb heading + one line of what you actually get.
+  'home.block.funding.title': { en: 'Find funding', ar: 'اعثر على تمويل' },
+  'home.block.funding.desc': {
+    en: 'Grants, fellowships, prizes and accelerators with an open application window — the issuer and the deadline as stated on every row.',
+    ar: 'منح وزمالات وجوائز ومسرّعات ذات نافذة تقديم مفتوحة — الجهة المانحة والموعد النهائي كما هو مذكور في كل صف.',
+  },
+  'home.block.jobs.title': { en: 'Find a job', ar: 'اعثر على وظيفة' },
+  'home.block.jobs.desc': {
+    en: 'Open roles at companies building health AI — role counts and locations as reported by each company board.',
+    ar: 'وظائف مفتوحة لدى شركات تبني الذكاء الاصطناعي الصحي — عدد الوظائف والمواقع كما توردها لوحة كل شركة.',
+  },
+  'home.block.events.title': { en: 'Attend an event', ar: 'احضر فعالية' },
+  'home.block.events.desc': {
+    en: 'Conferences, workshops and demo days where the ecosystem meets — dates and venues as published by the organiser.',
+    ar: 'مؤتمرات وورش عمل وأيام عروض تلتقي فيها المنظومة — التواريخ والأماكن كما ينشرها المنظّم.',
+  },
+  'home.block.ecosystem.title': { en: 'Explore the ecosystem', ar: 'استكشف المنظومة' },
+  'home.block.ecosystem.desc': {
+    en: 'Mapped areas of healthcare AI, from life sciences to biosecurity — each with the organisations and sources behind it.',
+    ar: 'مجالات مرسومة في الذكاء الاصطناعي الصحي، من علوم الحياة إلى الأمن الحيوي — لكل منها منظماته ومصادره.',
+  },
+  'home.block.context.title': { en: 'Read the market context', ar: 'اقرأ سياق السوق' },
+  'home.block.context.desc': {
+    en: 'Standing briefings built from the Atlas datasets — talent signals, failure cases, and a rotating regional read.',
+    ar: 'موجزات دائمة مبنية من بيانات الأطلس — إشارات المواهب، حالات الفشل، وقراءة إقليمية متناوبة.',
+  },
+  'home.block.news.title': { en: 'Stay informed', ar: 'ابقَ على اطلاع' },
+  'home.block.news.desc': {
+    en: 'Dated, already-happened items — model releases, funding rounds, papers, policy steps — each linked to the source it came from.',
+    ar: 'أحداث مؤرّخة وقعت بالفعل — إصدارات نماذج، جولات تمويل، أوراق بحثية، خطوات تنظيمية — كل منها مرتبط بمصدره.',
+  },
+
+  // Closing band — who maintains this, and the one contribution channel.
+  'home.maintained': {
+    en: 'Maintained by Kate Kondrateva as an independent project. Every record carries the source it came from.',
+    ar: 'يصونه مشروع مستقل بإدارة كيت كوندراتيفا. كل سجل يحمل المصدر الذي أُخذ منه.',
+  },
+  'home.contribute.title': { en: 'Add or correct a record', ar: 'أضف سجلًا أو صحّحه' },
+  'home.contribute.desc': {
+    en: 'Spotted a gap or a wrong entry? Open an issue — the form asks for the record and its source.',
+    ar: 'لاحظت نقصًا أو سجلًا خاطئًا؟ افتح طلبًا — النموذج يطلب السجل ومصدره.',
+  },
+  'home.contribute.cta': { en: 'Suggest a record', ar: 'اقترح سجلًا' },
+
   // Persona Section
   'persona.sectionTitle': { en: 'How can we help you?', ar: 'كيف يمكننا مساعدتك؟' },
   'persona.sectionSubtitle': {

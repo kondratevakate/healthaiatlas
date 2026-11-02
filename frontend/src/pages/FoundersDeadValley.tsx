@@ -204,10 +204,11 @@ const FoundersDeadValley = () => {
         </section>
 
         {/* Deep dive callout — Babylon case study lives in ukMarketReality
-            (Context > Healthcare > UK). We link there rather than duplicate. */}
+            (Founder Toolkit > Context > Healthcare > UK). We link there rather
+            than duplicate. */}
         <section className="mb-16">
           <Link
-            to="/context?region=uk"
+            to="/founders/context?region=uk"
             className="block border border-primary/30 bg-primary/5 p-6 hover:border-primary hover:shadow-md transition-all group"
           >
             <div className="text-[10px] uppercase tracking-widest font-mono text-primary mb-2">

@@ -58,6 +58,14 @@ function esc(s) {
     .trim();
 }
 const isHttps = (u) => typeof u === 'string' && /^https:\/\/\S+$/.test(u);
+
+// The Airtable share forms behind the old "suggest entry / correction" CTAs were
+// closed in Oct 2026; src/test/airtable-links.test.ts is a HARD gate that fails
+// the build if any airtable.com URL reaches app source. Some upstream job boards
+// (incl. 80,000 Hours) link their application forms at airtable.com, so those
+// URLs must never be emitted — see docs/TODO.md (Airtable CTAs retired).
+const isBlockedHost = (u) => /^https?:\/\/(?:www\.)?airtable\.com\//i.test(String(u));
+const isUsableUrl = (u) => isHttps(u) && !isBlockedHost(u);
 function uniq(list, cap) {
   const seen = new Set();
   const out = [];
@@ -128,10 +136,10 @@ function transformEightyK(rows, areas) {
   for (const [company, roles] of byCompany) {
     const url = [roles[0].company && roles[0].company.career_page_url,
       roles[0].company && roles[0].company.url,
-      ...roles.map((r) => r.url_external)].find(isHttps);
+      ...roles.map((r) => r.url_external)].find(isUsableUrl);
     if (!url) {
       // Zero-Trust: shipping an http:// or missing link is worse than no entry.
-      skipped.push(`${company} (no https URL)`);
+      skipped.push(`${company} (no usable https URL)`);
       continue;
     }
     const areaTally = new Map();
@@ -191,8 +199,8 @@ function transformBluedot(rows) {
   const entries = [];
   const skipped = [];
   for (const [company, roles] of byCompany) {
-    const url = roles.map((r) => r.url).find(isHttps);
-    if (!url) { skipped.push(`${company} (no https URL)`); continue; }
+    const url = roles.map((r) => r.url).find(isUsableUrl);
+    if (!url) { skipped.push(`${company} (no usable https URL)`); continue; }
     const titles = uniq(roles.map((r) => r.title || r.role), 6);
     const locations = uniq(roles.map((r) => r.location), 5);
     entries.push({

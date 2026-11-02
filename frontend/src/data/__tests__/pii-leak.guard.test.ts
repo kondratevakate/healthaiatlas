@@ -31,6 +31,10 @@ const EXEMPT: Record<string, string> = {};
 function* walk(dir: string): Generator<string> {
   for (const entry of readdirSync(dir)) {
     if (entry === 'node_modules' || entry.startsWith('.')) continue;
+    // Test fixtures are not shipped data. They legitimately contain fake
+    // addresses (e.g. openDataExport.test.ts uses careers@a.test to prove the
+    // export refuses PII) — scanning them made this guard fail on its own sibling.
+    if (entry === '__tests__' || entry === 'test' || entry === 'tests') continue;
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) yield* walk(full);
     else if (/\.(ts|tsx|json)$/.test(entry)) yield full;

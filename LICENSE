@@ -659,19 +659,3 @@ specific requirements.
 if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
-
--------------------------------------------------------------------------------
-
-HealthAI Atlas is dual-licensed.
-
-The GNU Affero General Public License v3.0 above (SPDX: AGPL-3.0-only) applies to
-the CODE — everything in this repository except the datasets described below.
-It is mirrored in LICENSE-CODE.
-
-The DATA — the datasets under frontend/src/data (open calls, jobs, events, news,
-domains/directory, project timeline) and the methodology docs — is licensed under
-Creative Commons Attribution-NonCommercial 4.0 International
-(SPDX: CC-BY-NC-4.0). Its full legal code is in LICENSE-DATA.
-
-Every published data record carries the source URL it came from; attribution
-travels with the data. "Not medical advice" applies to the dataset as published.

@@ -1,0 +1,175 @@
+{
+  "$comment": "Committed field allowlist for the public open-data download. Rule: if a field is not rendered on a public page today, it is not in the download. Source is always the committed TS/JSON data modules in src/data — never a database, never a live fetch, never a file generated on EC2.",
+  "version": 1,
+  "updated": "2026-11-02",
+  "principle": "rendered-on-a-public-page => eligible; everything else is denied even if it exists in the source module",
+  "globalDeny": {
+    "description": "Fields, values and rows that must never reach a download file, regardless of dataset.",
+    "deniedCategories": [
+      "emails",
+      "phone numbers",
+      "personal handles (@user)",
+      "natural-person names",
+      "free-text notes",
+      "editorial prose",
+      "rows with an empty / missing source URL",
+      "rows whose only provenance is LinkedIn, Crunchbase or PitchBook"
+    ],
+    "deniedValuePatterns": {
+      "email": "[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}",
+      "phone": "a `+`-prefixed run of digits/spaces/./()/- holding >=9 digits and not a percentage (so \"+15.5-18.1%\" stays a statistic, \"+971 50 123 4567\" is denied)",
+      "longDigitRun": "[0-9]{11,}",
+      "personalHandle": "(?<![A-Za-z0-9._%+-])@[A-Za-z0-9_]{4,}\\b"
+    },
+    "deniedSourceHosts": ["linkedin.com", "crunchbase.com", "pitchbook.com", "airtable.com"],
+    "notes": "Natural-person names are excluded structurally: no allowlisted dataset contains a person field. Editorial prose is excluded by omitting the rendered `detail` (project timeline) and `whyItMatters` (news) fields. Free-text `notes` (open calls) is excluded."
+  },
+  "datasets": {
+    "open-calls": {
+      "label": { "en": "Open Calls", "ar": "الدعوات المفتوحة" },
+      "renderedOn": "https://healthaiatlas.com/open-calls",
+      "source": { "module": "src/data/openCallEntries.ts", "export": "openCallEntries" },
+      "sourceUrlField": "url",
+      "fields": [
+        "id",
+        "title",
+        "organizer",
+        "url",
+        "region",
+        "category",
+        "deadline_kind",
+        "deadline_date",
+        "deadline_as_stated",
+        "amount",
+        "audience",
+        "verified_at",
+        "provenance"
+      ],
+      "excludedRenderedFields": {
+        "notes": "free-text notes — global deny (free-text notes)"
+      },
+      "excludedSourceFields": {
+        "countdown.nextWindow / countdown.nextExpected": "not rendered as a field; folded into deadline_*"
+      }
+    },
+    "jobs": {
+      "label": { "en": "Jobs", "ar": "الوظائف" },
+      "renderedOn": "https://healthaiatlas.com/jobs",
+      "source": {
+        "module": "src/data/jobsData.json + src/data/jobsExternal.80000hours.ts",
+        "export": "jobsData + externalJobs_80000hours"
+      },
+      "sourceUrlField": "url",
+      "fields": [
+        "company",
+        "category",
+        "count",
+        "count_raw",
+        "roles",
+        "location",
+        "remote",
+        "url",
+        "status",
+        "active",
+        "uae",
+        "provenance",
+        "verified_at"
+      ],
+      "excludedRenderedFields": {},
+      "excludedSourceFields": {}
+    },
+    "events": {
+      "label": { "en": "Events", "ar": "الفعاليات" },
+      "renderedOn": "https://healthaiatlas.com/events",
+      "source": { "module": "src/data/conferences.ts", "export": "conferences" },
+      "sourceUrlField": "source_url",
+      "sourceUrlFrom": ["sourceUrl", "website"],
+      "fields": [
+        "id",
+        "name_en",
+        "name_ar",
+        "date",
+        "end_date",
+        "location",
+        "type",
+        "topics",
+        "website",
+        "description_en",
+        "description_ar",
+        "source_url"
+      ],
+      "excludedRenderedFields": {
+        "sponsors": "third-party sponsor/partner lists — not part of the open-data grant; excluded to keep corporate attributions out of a redistributable file"
+      },
+      "excludedSourceFields": {
+        "registrationUrl": "not emitted (source_url already carries provenance)"
+      }
+    },
+    "news": {
+      "label": { "en": "News", "ar": "الأخبار" },
+      "renderedOn": "https://healthaiatlas.com/news",
+      "source": { "module": "src/data/newsFeed.ts", "export": "newsItems" },
+      "sourceUrlField": "url",
+      "fields": [
+        "id",
+        "title",
+        "url",
+        "source",
+        "source_kind",
+        "date",
+        "date_precision",
+        "kind",
+        "topics",
+        "domain",
+        "summary"
+      ],
+      "excludedRenderedFields": {
+        "whyItMatters": "editorial prose — global deny (editorial prose)"
+      },
+      "excludedSourceFields": {}
+    },
+    "domains": {
+      "label": { "en": "Domains", "ar": "المجالات" },
+      "renderedOn": "https://healthaiatlas.com/directory",
+      "source": { "module": "src/data/domains.ts", "export": "domains" },
+      "sourceUrlField": "source_url",
+      "sourceUrlSynthetic": {
+        "pattern": "https://healthaiatlas.com/directory/{id}",
+        "reason": "A domain is the Atlas's own taxonomy row, not a third-party record. Its only honest public provenance is the directory page that renders it — no external URL is invented."
+      },
+      "fields": [
+        "id",
+        "name_en",
+        "name_ar",
+        "subtitle_en",
+        "subtitle_ar",
+        "player_count",
+        "source_url"
+      ],
+      "excludedRenderedFields": {},
+      "excludedSourceFields": {
+        "playerIds": "internal join keys, not rendered — only the rendered count is emitted as player_count",
+        "color": "presentation only",
+        "stats": "presentation only"
+      }
+    },
+    "project-timeline": {
+      "label": { "en": "Project timeline", "ar": "الجدول الزمني للمشروع" },
+      "renderedOn": "https://healthaiatlas.com/about",
+      "source": { "module": "src/data/projectTimeline.ts", "export": "projectMilestones" },
+      "sourceUrlField": "source_url",
+      "sourceUrlSynthetic": {
+        "pattern": "https://github.com/kondratevakate/healthaiatlas/commit/{commit}",
+        "reason": "Every milestone row is derived from a real commit in this repository (the same repo Terms of Service links to), so the commit URL is the row's real provenance."
+      },
+      "fields": ["id", "date", "commit", "kind", "title_en", "title_ar", "source_url"],
+      "excludedRenderedFields": {
+        "detail": "editorial prose — global deny (editorial prose)"
+      },
+      "excludedSourceFields": {}
+    }
+  },
+  "excludedDatasets": {
+    "note": "Anything not rendered on a public page today is out: internal/analytical modules (claims, evidence, players, devrelSignal, market-reality panels, personas, systemNodes, from_airtable/*) and every local database are never read by this export."
+  }
+}

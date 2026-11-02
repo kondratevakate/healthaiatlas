@@ -5,7 +5,7 @@ const SECTIONS = [
   { to: "/", label: "Home" },
   { to: "/discovery", label: "Discovery" },
   { to: "/directory", label: "Directory" },
-  { to: "/context", label: "Context" },
+  { to: "/founders/context", label: "Context" },
   { to: "/about", label: "About" },
 ];
 

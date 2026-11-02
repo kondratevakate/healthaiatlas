@@ -382,6 +382,7 @@ const FoundersArchitectures = () => {
                 { to: '/founders/markets', label: 'Markets' },
                 { to: '/founders/dead-valley', label: 'Dead Valley' },
                 { to: '/founders/tech', label: 'Tech Signals' },
+                { to: '/founders/context', label: 'Context' },
               ].map(({ to, label }, i) => (
                 <span key={to} className="inline-flex items-center gap-3">
                   {i > 0 && <span className="text-border">·</span>}

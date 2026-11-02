@@ -13,7 +13,6 @@ import { useHideBootLoader } from "@/lib/bootLoader";
 // page is its own chunk, loaded on first visit, so the first load stays small.
 import Index from "./pages/Index";
 const Directory = lazy(() => import("./pages/Directory"));
-const Context = lazy(() => import("./pages/Context"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -23,9 +22,11 @@ const Discovery = lazy(() => import("./pages/Discovery"));
 const Share = lazy(() => import("./pages/Share"));
 const PersonaPage = lazy(() => import("./pages/PersonaPage"));
 const Founders = lazy(() => import("./pages/Founders"));
-// FoundersContext is no longer routed — /founders/context redirects to /context.
-// The file is kept on disk (its China / Switzerland panels are not on /context
-// yet); delete it only once those panels are migrated or explicitly retired.
+// CANONICAL Context page (roadmap H, P1a): Context lives INSIDE the Founder
+// Toolkit. FoundersContext is the real page — it carries every region panel
+// (compare · uae · eu · ch · uk · us · cn · dead-valley) plus the AI/Healthcare
+// split; the top-level /context URL redirects here.
+const FoundersContext = lazy(() => import("./pages/FoundersContext"));
 const FoundersDeadValley = lazy(() => import("./pages/FoundersDeadValley"));
 const FoundersDevRel = lazy(() => import("./pages/FoundersDevRel"));
 const FoundersMarkets = lazy(() => import("./pages/FoundersMarkets"));
@@ -44,12 +45,16 @@ const RedirectHome = () => {
   return <Navigate to={{ pathname: "/", search, hash }} replace />;
 };
 
-// ── Canonical-page redirects (roadmap H, P0) ─────────────────────────────────
+// ── Canonical-page redirects (roadmap H, P0/P1a) ─────────────────────────────
 // Both pages below used to be duplicated: Open Calls lived at /open-calls AND
 // /discovery?section=opencalls; Context lived at /context AND /founders/context.
 // One canonical page each now, with the old URL kept alive as a redirect so
 // links already shared outside the site (and search-index / footer deep links)
 // keep landing on real content.
+//
+// P1a inverted the Context direction: Kate's ruling is that Context lives
+// INSIDE the Founder Toolkit, so /founders/context is canonical and /context
+// redirects into it.
 
 // /discovery?section=opencalls → /open-calls
 // Drops only the now-meaningless `section` param; every other query param (utm
@@ -64,16 +69,13 @@ const RedirectOpenCalls = () => {
   );
 };
 
-// /founders/context → /context. `side` was the old page's AI/healthcare split
-// and has no meaning on the canonical page, so it is dropped; every other param
-// (`region`, utm tags, ...) and the hash survive.
-const RedirectContext = () => {
+// /context → /founders/context (P1a). Every query param (`region`, utm tags,
+// ...) and the hash survive, so old shared links such as
+// /context?region=uk#top land on the same panel inside the toolkit.
+const RedirectToFoundersContext = () => {
   const { search, hash } = useLocation();
-  const params = new URLSearchParams(search);
-  params.delete("side");
-  const query = params.toString();
   return (
-    <Navigate to={{ pathname: "/context", search: query ? `?${query}` : "", hash }} replace />
+    <Navigate to={{ pathname: "/founders/context", search, hash }} replace />
   );
 };
 
@@ -108,7 +110,11 @@ const App = () => (
               <Route path="/landing" element={<RedirectHome />} />
               <Route path="/directory" element={<Directory />} />
               <Route path="/directory/:id" element={<Directory />} />
-              <Route path="/context" element={<Context />} />
+              {/* RETIRED top-level URL (P1a): Context moved inside the Founder
+                  Toolkit. /context still resolves so links already shared
+                  outside the site never 404 — it redirects to the canonical
+                  /founders/context, keeping query string and hash. */}
+              <Route path="/context" element={<RedirectToFoundersContext />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacy" element={<Privacy />} />
@@ -116,10 +122,10 @@ const App = () => (
               {/* /discovery?section=opencalls redirects to /open-calls (see
                   DiscoveryRoute); the newsfeed itself stays here. */}
               <Route path="/discovery" element={<DiscoveryRoute />} />
-              {/* Founder Toolkit — editorial home + 4 context modules.
+              {/* Founder Toolkit — editorial home + 5 modules.
                   /founders renders the magazine cover; deep pages live under
-                  /founders/<module>. Context is no longer a toolkit module:
-                  its canonical home is the top-level /context page. */}
+                  /founders/<module>. Context IS a toolkit module (P1a): its
+                  canonical home is /founders/context. */}
               <Route path="/founders" element={<Founders />} />
               <Route path="/founders/markets" element={<FoundersMarkets />} />
               {/* Regulatory merged into Markets — same page, one click */}
@@ -130,9 +136,10 @@ const App = () => (
               <Route path="/founders/acquihires" element={<Navigate to="/founders/tech" replace />} />
               <Route path="/founders/devrel" element={<Navigate to="/founders/tech" replace />} />
               <Route path="/founders/dead-valley" element={<FoundersDeadValley />} />
-              {/* Legacy deep page — canonical Context lives at /context; the old
-                  URL redirects so shared links and deep links do not 404. */}
-              <Route path="/founders/context" element={<RedirectContext />} />
+              {/* CANONICAL Context page (P1a). Carries every region panel —
+                  compare · uae · eu · ch · uk · us · cn · dead-valley — so
+                  ?region=cn and ?region=ch are valid again. */}
+              <Route path="/founders/context" element={<FoundersContext />} />
               <Route path="/share/:id" element={<Share />} />
 
               {/* Persona landing pages — single PersonaPage dispatches on :id */}

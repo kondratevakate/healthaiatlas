@@ -1,0 +1,46 @@
+# Dependabot: dependency security updates for healthaiatlas.
+#
+# NOTE: Dependabot *alerts* are currently disabled on this repository
+# (Settings -> Code security and analysis). Until they are switched on, this
+# config only produces version-update PRs; it does not create security alerts.
+# Turn alerts on so vulnerable deps are surfaced, not just silently bumped.
+#
+# The npm manifest lives in frontend/, so directory must be "/frontend" —
+# pointing at "/" makes Dependabot report "no manifest found" and open nothing.
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+    groups:
+      # One PR for the long tail of @radix-ui/* / react patch bumps instead of
+      # dozens of separate ones.
+      ui-patch-updates:
+        patterns:
+          - "@radix-ui/*"
+          - "react"
+          - "react-dom"
+        update-types:
+          - "patch"
+          - "minor"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"

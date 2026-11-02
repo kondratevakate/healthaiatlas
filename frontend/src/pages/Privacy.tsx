@@ -75,9 +75,9 @@ const Privacy = () => {
           </section>
 
           <section>
-            <h2 className="heading-lg mb-3">Coming soon: the &ldquo;Una&rdquo; chat</h2>
+            <h2 className="heading-lg mb-3">The &ldquo;Una&rdquo; chat</h2>
             <p className="text-muted-foreground mb-2">
-              Not live yet. When it launches it will be optional: you type free text about yourself
+              Live. It is optional: you type free text about yourself
               and it returns an assessment. Here is exactly what will happen to that text:
             </p>
             <ul className="list-disc pl-5 text-muted-foreground space-y-2">

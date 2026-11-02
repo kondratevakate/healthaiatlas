@@ -186,6 +186,68 @@ const translations: Translations = {
   },
   'home.contribute.cta': { en: 'Suggest a record', ar: 'اقترح سجلًا' },
 
+  // Una chat intake (roadmap F0) — home page. One idea per screen, no marketing.
+  // The reply comes from a Cloudflare Worker; the visitor's text is sent with
+  // the request and is never stored or logged by the client.
+  'una.title': { en: 'Describe your work', ar: 'صف عملك' },
+  'una.desc': {
+    en: 'Say what you do, in a few sentences. Una reads it and replies with where you might fit and what to read next.',
+    ar: 'اكتب ما تعمل عليه في بضع جمل. تقرأه أونا وترد عليك بأين قد تكون مكانك وما الذي تقرأه بعد ذلك.',
+  },
+  'una.label': { en: 'What do you work on?', ar: 'على ماذا تعمل؟' },
+  'una.placeholder': {
+    en: 'I am a clinician working on triage tools in a Dubai hospital…',
+    ar: 'أنا طبيب أعمل على أدوات الفرز في مستشفى بدبي…',
+  },
+  'una.send': { en: 'Send', ar: 'إرسال' },
+  'una.sending': { en: 'Reading…', ar: 'جارٍ القراءة…' },
+  'una.hint': {
+    en: 'Enter sends · Shift+Enter starts a new line',
+    ar: 'Enter للإرسال · Shift+Enter لسطر جديد',
+  },
+  'una.counter': { en: '{n} / 1,500', ar: '{n} / ١٬٥٠٠' },
+  'una.overLimit': {
+    en: 'You have reached the 1,500-character limit.',
+    ar: 'وصلت إلى حد ١٬٥٠٠ حرف.',
+  },
+  'una.empty': {
+    en: 'Write a sentence or two first.',
+    ar: 'اكتب جملة أو جملتين أولًا.',
+  },
+  'una.turn': { en: '{n} of 6 turns used', ar: 'استُخدمت {n} من ٦ جولات' },
+  'una.closed': {
+    en: 'That is the six turns for this conversation. Reload the page to start a new one.',
+    ar: 'هذه هي الجولات الست لهذه المحادثة. أعد تحميل الصفحة لبدء محادثة جديدة.',
+  },
+  'una.rateLimit': {
+    en: 'Too many conversations from this network right now. Try again in {n} minutes.',
+    ar: 'محادثات كثيرة من هذه الشبكة الآن. أعد المحاولة بعد {n} دقيقة.',
+  },
+  'una.rateLimitSeconds': {
+    en: 'Too many conversations from this network right now. Try again in {n} seconds.',
+    ar: 'محادثات كثيرة من هذه الشبكة الآن. أعد المحاولة بعد {n} ثانية.',
+  },
+  'una.degraded': {
+    en: 'Una is not taking questions right now.',
+    ar: 'أونا لا تستقبل أسئلة في الوقت الحالي.',
+  },
+  'una.degraded.action': { en: 'Write to Kate instead', ar: 'راسل كيت بدلًا من ذلك' },
+  'una.error': {
+    en: 'That did not go through. Try again in a moment.',
+    ar: 'لم تتم العملية. أعد المحاولة بعد قليل.',
+  },
+  'una.blocked': {
+    en: 'This page is not allowed to reach Una.',
+    ar: 'هذه الصفحة غير مسموح لها بالوصول إلى أونا.',
+  },
+  'una.caution': {
+    en: 'Not medical advice. Please do not paste personal health data.',
+    ar: 'ليس استشارة طبية. يُرجى عدم لصق بيانات صحية شخصية.',
+  },
+  'una.you': { en: 'You', ar: 'أنت' },
+  'una.reply': { en: 'Una', ar: 'أونا' },
+  'una.next': { en: 'Read next', ar: 'اقرأ بعد ذلك' },
+
   // Persona Section
   'persona.sectionTitle': { en: 'How can we help you?', ar: 'كيف يمكننا مساعدتك؟' },
   'persona.sectionSubtitle': {

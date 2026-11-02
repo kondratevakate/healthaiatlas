@@ -20,13 +20,11 @@ import { join, relative } from 'node:path';
 const SRC = join(__dirname, '..');
 const APP_TSX = join(SRC, 'App.tsx');
 const SITEMAP = join(SRC, '..', 'public', 'sitemap.xml');
-const TYPES_TS = join(SRC, 'types', 'index.ts');
 
 // Known offenders. Each entry needs a reason; shrink this list, don't grow it.
-const ALLOWLIST: Record<string, string> = {
-  // Dynamic on UserPersona; the "persona routes" test below covers every value.
-  'components/home/PersonaCard.tsx: /${persona}': 'checked per persona',
-};
+// Emptied 2026-11-02: the only entry was the persona card's `/${persona}`
+// link, and the persona pages it pointed at were retired (see below).
+const ALLOWLIST: Record<string, string> = {};
 
 // ── Route table ────────────────────────────────────────────────────────────
 
@@ -130,12 +128,31 @@ describe('internal links resolve to a route', () => {
     expect(locs.filter((p) => !resolvesToRoute(p))).toEqual([]);
   });
 
-  it('every UserPersona has a /<persona> route (PersonaCard links there)', () => {
-    const union = readFileSync(TYPES_TS, 'utf8').match(/type UserPersona\s*=([^;]+);/);
-    expect(union).not.toBeNull();
-    const personas = [...union![1].matchAll(/'([^']+)'/g)].map((m) => m[1]);
-    expect(personas.length).toBeGreaterThan(0);
-    expect(personas.filter((p) => !resolvesToRoute(`/${p}`))).toEqual([]);
+  // Personas were retired on 2026-11-02 in favour of INTENT-BASED navigation:
+  // the home page now leads with jobs-to-be-done blocks instead of a
+  // "I am a patient / doctor / founder" taxonomy. The 5-question quiz that
+  // produced the persona result (and its /share/:id assessment card) is gone,
+  // so these URLs are deliberately NOT routes any more — they must fall
+  // through to the catch-all NotFound, and nothing in src/ may link at them.
+  it('retired persona URLs are not routes — they fall through to the catch-all', () => {
+    const retiredPersonas = ['/patient', '/doctor', '/business', '/startup', '/leader'];
+    const stillRouted = retiredPersonas.filter((p) => resolvesToRoute(p));
+    expect(stillRouted, `still declared in App.tsx: ${stillRouted.join(', ')}`).toEqual([]);
+
+    // The catch-all that receives them is still there, so the URL 404s into
+    // NotFound rather than rendering a blank page.
+    expect(readFileSync(APP_TSX, 'utf8')).toMatch(/<Route\s+path="\*"/);
+
+    // No redirect back into the persona flow either — these are retired, not
+    // moved, so a redirect would resurrect a taxonomy the site dropped.
+    expect(readFileSync(APP_TSX, 'utf8')).not.toMatch(/PersonaPage/);
+
+    // And nothing links at them any more (PersonaCard / PersonaSection, the
+    // only producers of those links, were removed with the pages).
+    const offenders = internalLinks
+      .filter((l) => retiredPersonas.includes(l.pathname))
+      .map((l) => `${l.file}: ${l.raw}`);
+    expect(offenders).toEqual([]);
   });
 });
 

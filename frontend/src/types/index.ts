@@ -6,8 +6,10 @@ export type LocalizedString = {
   ar: string;
 };
 
-// User Personas
-export type UserPersona = 'patient' | 'doctor' | 'business' | 'startup' | 'leader';
+// RETIRED 2026-11-02: `UserPersona` ('patient' | 'doctor' | 'business' |
+// 'startup' | 'leader') was the type behind the 5-question quiz result pages.
+// Navigation is now intent-based (jobs-to-be-done), so the persona union has
+// no consumers and was removed with its pages and data.
 
 // AI application areas
 export type AIArea = 

@@ -153,6 +153,12 @@ export function Footer() {
           <p>© {currentYear} HealthAI Atlas. {t('footer.rights')}.</p>
           <div className="flex gap-6">
             <Link
+              to="/data"
+              className="hover:text-[hsl(var(--footer-foreground))] transition-colors"
+            >
+              {t('footer.data')}
+            </Link>
+            <Link
               to="/privacy"
               className="hover:text-[hsl(var(--footer-foreground))] transition-colors"
             >

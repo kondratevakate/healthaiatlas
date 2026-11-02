@@ -22,6 +22,7 @@ import { useMemo, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/layout';
 import { HeroDiagram } from '@/components/home/HeroDiagram';
+import UnaChat from '@/components/home/UnaChat';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 import { openCallEntries } from '@/data/openCallEntries';
@@ -218,6 +219,9 @@ export default function Index() {
             </div>
           </div>
         </section>
+
+        {/* 0 — Not sure where to start: describe yourself, Una replies. */}
+        <UnaChat />
 
         {/* 1 — Find funding */}
         <IntentBlock

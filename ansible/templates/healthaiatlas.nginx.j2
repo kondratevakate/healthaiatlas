@@ -80,7 +80,7 @@ server {
     # Tighten with a nonce-based CSP after migrating those two call sites.
     # connect-src lists every LLM provider currently fanned out by EventInsights —
     # remove vendors as the Discovery Copilot moves server-side (see B3 in risk report).
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://cloudflareinsights.com https://text.pollinations.ai https://ai.hackclub.com https://router.huggingface.co https://api-inference.huggingface.co; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://cloudflareinsights.com https://text.pollinations.ai https://ai.hackclub.com https://router.huggingface.co https://api-inference.huggingface.co https://insights-proxy.kondratevakate.workers.dev; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'" always;
 
     # Deny access to dotfiles
     location ~ /\. {

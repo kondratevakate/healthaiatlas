@@ -1,26 +1,27 @@
 // Atlas homepage. Three stacked sections, in scan-priority order:
 //
 //   1. Hero            — brand, one-line value prop, animated system diagram
-//   2. Newsfeed        — what's happening this month (conferences + launches).
+//   2. Newsfeed        — what's happening this month (conferences + launches + news).
 //                        Anchored as #events so the Events nav can land here.
-//   3. Find Yourself   — the 5-question persona quiz (secondary entry point)
+//
+// The 5-question "Find Yourself" persona quiz was removed on 2026-11-02 (Kate:
+// noisy, and the personas/use cases it produced were never defined). It is
+// replaced later by the Una chat intake (roadmap F0); until then the home page
+// carries no assessment widget.
 //
 // Aisafety.com pattern: home is the place where category previews live, not
 // a deep page. Visitor lands → sees what's fresh → drills into Open Calls /
 // Domains / Founder Toolkit from there.
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Layout } from '@/components/layout';
-import { QuickRealityTest } from '@/components/research';
-import { EcosystemCard } from '@/components/research/EcosystemCard';
 import { HeroDiagram } from '@/components/home/HeroDiagram';
 import { NewsCard } from '@/components/shared/NewsCard';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { RiskAssessment } from '@/types/research';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Compass, CalendarDays, Rocket, MapPin, Newspaper } from 'lucide-react';
+import { ArrowRight, CalendarDays, Rocket, MapPin, Newspaper } from 'lucide-react';
 
 import { conferences } from '@/data/conferences';
 import { launches } from '@/data/launches';
@@ -48,8 +49,6 @@ const TOP_NEWS = newsItems.slice(0, HOME_NEWS_COUNT);
 export default function Index() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [showTest, setShowTest] = useState(false);
-  const [assessment, setAssessment] = useState<RiskAssessment | null>(null);
 
   // If we don't have any upcoming conferences, fall back to the most
   // recent past ones — the page should never look empty.
@@ -57,20 +56,6 @@ export default function Index() {
     if (UPCOMING_CONFERENCES.length > 0) return UPCOMING_CONFERENCES;
     return [...conferences].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
   }, []);
-
-  const handleTestComplete = (result: RiskAssessment) => {
-    setAssessment(result);
-    const assessments = JSON.parse(localStorage.getItem('assessments') || '{}');
-    assessments[result.shareId] = result;
-    localStorage.setItem('assessments', JSON.stringify(assessments));
-  };
-
-  const handleShare = async () => {
-    if (assessment) {
-      const url = `${window.location.origin}/share/${assessment.shareId}`;
-      await navigator.clipboard.writeText(url);
-    }
-  };
 
   return (
     <Layout>
@@ -230,54 +215,6 @@ export default function Index() {
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Find Yourself Test or Results */}
-        <section className="py-12 md:py-16 border-b border-border bg-secondary/30">
-          <div className="container">
-            {assessment ? (
-              <div className="flex flex-col items-center">
-                <EcosystemCard
-                  assessment={assessment}
-                  onShare={handleShare}
-                />
-                <Button
-                  variant="ghost"
-                  className="mt-4"
-                  onClick={() => {
-                    setAssessment(null);
-                    setShowTest(true);
-                  }}
-                >
-                  Take the test again
-                </Button>
-              </div>
-            ) : showTest ? (
-              <div>
-                <QuickRealityTest onComplete={handleTestComplete} />
-              </div>
-            ) : (
-              <div className="max-w-2xl">
-                <div className="flex items-center gap-2 mb-2">
-                  <Compass className="h-5 w-5 text-primary" />
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                    Find Yourself
-                  </p>
-                </div>
-                <div className="h-0.5 w-12 bg-primary mb-4" />
-                <h2 className="text-2xl md:text-3xl font-semibold mb-4">
-                  Answer 5 questions to find your place in the ecosystem
-                </h2>
-                <p className="text-muted-foreground mb-6">
-                  Discover who you are, who's around you, and your best connections.
-                </p>
-                <Button size="lg" onClick={() => setShowTest(true)}>
-                  Find My Place
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </div>
-            )}
           </div>
         </section>
 

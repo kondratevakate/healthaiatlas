@@ -1,7 +1,7 @@
 # HealthAI Atlas — Roadmap
 
 Owner: Kate. Maintained by agents (Claude on the workstation, Hermes / Una on the server).
-Last updated: 2026-11-01.
+Last updated: 2026-11-03.
 
 This file is the single plan for the site. Every agent working on this repo or on the
 Atlas data reads it before starting and updates it when an item changes state. The public
@@ -63,6 +63,7 @@ version (Now / Next / Later, timeline, freshness) will be rendered on `/about` f
 
 | Date | Item |
 |---|---|
+| 2026-11-03 | Repair pre-existing CI failures exposed by Dependabot: remove conflicting landing-row display classes; replace the retired `/patient` route in the grid check with Events, News and Data, and assert the header is visible before measuring. [PR #80](https://github.com/kondratevakate/healthaiatlas/pull/80) |
 | 2026-11-01 | Dead Airtable links (was Now #1): every "Suggest entry / correction / Get in touch" CTA and provenance link now points at LinkedIn or is removed; `airtable-links.test.ts` blocks new ones. [PR #75](https://github.com/kondratevakate/healthaiatlas/pull/75), deployed to production and checked on the live bundle |
 | 2026-09-27 | Support section: Manifund dropped, co-founder invitation added |
 | 2026-09-27 | Freshness notice with update / join / support CTAs on Jobs and Open Calls |

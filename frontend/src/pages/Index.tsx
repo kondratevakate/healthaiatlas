@@ -108,7 +108,7 @@ function RowLink({ to, title, meta, sub }: RowProps & { to: string }) {
           ) : null}
         </span>
         {sub ? (
-          <span className="mt-1 block text-xs leading-relaxed text-muted-foreground line-clamp-2">
+          <span className="mt-1 text-xs leading-relaxed text-muted-foreground line-clamp-2">
             {sub}
           </span>
         ) : null}
@@ -138,7 +138,7 @@ function RowExternal({
           ) : null}
         </span>
         {sub ? (
-          <span className="mt-1 block text-xs leading-relaxed text-muted-foreground line-clamp-2">
+          <span className="mt-1 text-xs leading-relaxed text-muted-foreground line-clamp-2">
             {sub}
           </span>
         ) : null}

@@ -19,8 +19,11 @@ const BASE_URL = process.env.BASE_URL ?? 'http://localhost:4173';
 const ROUTES = [
   '/', '/directory', '/directory?domain=oncology', '/directory?domain=biosecurity', '/discovery',
   '/context', '/about', '/contact', '/privacy', '/terms', '/jobs', '/open-calls', '/founders',
-  '/founders/markets', '/founders/architectures', '/founders/tech', '/founders/dead-valley', '/patient',
+  '/founders/markets', '/founders/architectures', '/founders/tech', '/founders/dead-valley',
+  '/events', '/news', '/data',
 ];
+// Retired persona URLs (including /patient) render the standalone 404 page,
+// which intentionally has no header or shared page grid.
 
 // Viewport width → expected .container side padding (src/index.css).
 const WIDTHS: [number, number][] = [
@@ -39,6 +42,7 @@ for (const [width, gutter] of WIDTHS) {
 
     for (const route of ROUTES) {
       await page.goto(`${BASE_URL}${route}`, { waitUntil: 'networkidle' });
+      await expect(page.locator('header a').first(), `${route}: header logo`).toBeVisible();
       const m = await page.evaluate(() => {
         const containers = [...document.querySelectorAll<HTMLElement>('.container')].map((el) => {
           const cs = getComputedStyle(el);

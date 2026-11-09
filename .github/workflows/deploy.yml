@@ -56,7 +56,7 @@ jobs:
           fi
 
       - name: Deploy dist/ via rsync
-        uses: burnett01/rsync-deployments@7.0.1
+        uses: burnett01/rsync-deployments@9.0.3
         with:
           switches: -avz --delete
           path: frontend/dist/

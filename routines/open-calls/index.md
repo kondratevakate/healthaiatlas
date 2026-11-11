@@ -1,8 +1,10 @@
 # Index of open-calls digests
 
+- 2026-11-11 — 5 calls (0 UAE, 0 MENA, 4 global, 1 accelerators, 0 CFPs)
 - 2026-11-10 — 5 calls (1 UAE, 0 MENA, 4 global, 0 accelerators, 0 CFPs)
 - 2026-11-09 — 5 calls (0 UAE, 0 MENA, 2 global, 0 accelerators, 3 CFPs)
 - 2026-11-08 — 8 calls (0 UAE, 0 MENA, 4 global, 3 accelerators, 1 CFPs)
+- 2026-11-05 — 3 calls (2 UAE, 0 MENA, 1 global, 0 accelerators, 0 CFPs)
 - 2026-11-04 — 3 calls (0 UAE, 0 MENA, 1 global, 2 accelerators, 0 CFPs)
 - 2026-11-03 — 2 calls (0 UAE, 0 MENA, 1 global, 0 accelerators, 1 CFPs)
 - 2026-11-02 — 4 calls (1 UAE, 0 MENA, 2 global, 0 accelerators, 1 CFPs)
@@ -46,4 +48,3 @@
 - 2026-09-14 — 5 calls (0 UAE, 0 MENA, 2 global, 3 accelerators, 0 CFPs)
 - 2026-09-13 — 5 calls (0 UAE, 0 MENA, 3 global, 2 accelerators, 0 CFPs)
 - 2026-09-10 — 7 calls (0 UAE, 0 MENA, 5 global, 0 accelerators, 2 CFPs)
-- 2026-11-05 — 3 calls (2 UAE, 0 MENA, 1 global, 0 accelerators, 0 CFPs)

@@ -63,6 +63,15 @@ THEME_COLORS = ["hsl(215 60% 45%)", "hsl(8 60% 42%)", "hsl(165 65% 32%)", "hsl(4
                 "hsl(320 38% 48%)", "hsl(85 45% 35%)", "hsl(265 38% 52%)"]
 
 
+# A company claim needs the explicit marker "(company claim" / "(company claims" in the source;
+# any other mention of "company" (a company page, a /company/ URL) stays unconfirmed.
+COMPANY_CLAIM_RE = re.compile(r"\(company claims?\b", re.IGNORECASE)
+# Name particles that are also ordinary words; never treated as a name on their own.
+NAME_STOPWORDS = {"van", "von", "de", "der", "den", "di", "da", "du", "dos", "del", "la", "le", "el", "al", "bin", "ten"}
+# Fields that hold organisation names or URLs: kept verbatim by redact().
+VERBATIM_KEYS = ("src", "name", "institution", "organisation")
+
+
 class PublicationError(RuntimeError):
     pass
 
@@ -72,7 +81,7 @@ def evidence_map(con: sqlite3.Connection) -> dict[str, dict]:
     for eid, verified, source in con.execute("SELECT evidence_id, verified, source FROM evidence"):
         if verified:
             status = "confirmed"
-        elif "company" in source.lower():
+        elif COMPANY_CLAIM_RE.search(source):
             status = "company claim"
         else:
             status = "unconfirmed"
@@ -163,13 +172,18 @@ def org_map(con) -> list[dict]:
     return sorted(out, key=lambda r: r["name"].lower())
 
 
-def person_names(con) -> set[str]:
+def _people(con) -> set[str]:
     names = {r[0] for r in con.execute("SELECT DISTINCT canonical FROM mentions WHERE type='person'")}
     names |= {r[0] for r in con.execute("SELECT DISTINCT speaker FROM use_cases WHERE speaker IS NOT NULL")}
+    return {n.strip() for n in names if n and n.strip()}
+
+
+def person_names(con) -> set[str]:
+    """Every name part of 2+ letters (initials and particles excluded), for redaction and the guard."""
     tokens = set()
-    for n in names:
+    for n in _people(con):
         for part in re.split(r"[\s,/()]+", n):
-            if len(part) >= 4 and part[0].isupper():
+            if len(part) >= 2 and not part.endswith(".") and part.lower() not in NAME_STOPWORDS:
                 tokens.add(part)
     return tokens
 
@@ -179,34 +193,59 @@ INITIAL_NAME_RE = re.compile(r"\b(?:[A-Z]\.\s?){1,2}[A-Z][a-z]+(?:-[A-Z][a-z]+)?
 
 
 def full_person_names(con) -> list[str]:
-    names = {r[0] for r in con.execute("SELECT DISTINCT canonical FROM mentions WHERE type='person'")}
-    names |= {r[0] for r in con.execute("SELECT DISTINCT speaker FROM use_cases WHERE speaker IS NOT NULL")}
-    return sorted((n for n in names if len(n.split()) >= 2), key=len, reverse=True)
+    """Known person names as whole strings (one-word names included), longest first."""
+    return sorted(_people(con), key=len, reverse=True)
 
 
 def redact(value, names: list[str], surnames: set[str]):
-    """Replace natural-person names in emitted text: known full names, 'First Surname' for known
-    surnames, and 'J. Surname' forms."""
+    """Replace natural-person names in emitted text: known full names, '(First) Part' for every known
+    name part, and 'J. Surname' forms. Organisation-name and URL fields stay verbatim."""
     if isinstance(value, str):
         for n in names:
-            value = value.replace(n, WITHHELD)
+            value = re.sub(r"\b" + re.escape(n) + r"\b", WITHHELD, value)
         for t in surnames:
             value = re.sub(r"\b(?:[A-Z][\w-]+\s)?" + re.escape(t) + r"\b", WITHHELD, value)
         return INITIAL_NAME_RE.sub(WITHHELD, value)
     if isinstance(value, list):
         return [redact(v, names, surnames) for v in value]
     if isinstance(value, dict):
-        # URLs and organisation names stay verbatim.
-        return {k: (v if k in ("src", "name", "institution", "organisation") else redact(v, names, surnames))
-                for k, v in value.items()}
+        return {k: (v if k in VERBATIM_KEYS else redact(v, names, surnames)) for k, v in value.items()}
     return value
 
 
-def guard_people(payload: dict, tokens: set[str], allow: set[str]) -> None:
-    text = json.dumps(payload, ensure_ascii=False)
-    hits = sorted(t for t in tokens - allow if re.search(rf"\b{re.escape(t)}\b", text))
+def _strings(value, key=None):
+    """(key, string) pairs of every string in the payload."""
+    if isinstance(value, str):
+        yield key, value
+    elif isinstance(value, list):
+        for v in value:
+            yield from _strings(v, key)
+    elif isinstance(value, dict):
+        for k, v in value.items():
+            yield from _strings(v, k)
+
+
+def guard_people(payload: dict, tokens: set[str], names: list[str] = ()) -> list[str]:
+    """Fail on any person name (whole name, or a capitalised name part) in free-text fields.
+
+    Organisation-name fields are exempt only for themselves: a surname inside an organisation's name
+    (e.g. a foundation) does not exempt that surname anywhere else. URL fields cannot be redacted
+    (they are copied verbatim), so hits there are returned as warnings instead of failing.
+    """
+    # Whole names match in any case; single name parts match as written (capitalised), so ordinary
+    # words ("young", "per") and acronyms (the NELSON trial) are not mistaken for people.
+    needles = [(t, 0) for t in tokens] + [(n, re.IGNORECASE) for n in names]
+    hits, warnings = set(), set()
+    for key, text in _strings(payload):
+        for t, flags in needles:
+            if re.search(r"\b" + re.escape(t) + r"\b", text, flags):
+                if key == "src":
+                    warnings.add(f"{t} in URL {text}")
+                elif key not in VERBATIM_KEYS:
+                    hits.add(t)
     if hits:
-        raise PublicationError(f"person names in public output: {hits}")
+        raise PublicationError(f"person names in public output: {sorted(hits)}")
+    return sorted(warnings)
 
 
 def build(db: Path) -> dict:
@@ -247,11 +286,10 @@ def build(db: Path) -> dict:
                       ("does", "limits")),
         "orgMap": org_map(con),
     }
-    # Organisation names that contain a person's surname (e.g. a foundation) are not persons.
-    tokens = person_names(con)
-    allow = {t for t in tokens for o in payload["orgMap"] if t in o["name"]}
-    payload = redact(payload, full_person_names(con), tokens - allow)
-    guard_people(payload, tokens, allow)
+    tokens, names = person_names(con), full_person_names(con)
+    payload = redact(payload, names, tokens)
+    for w in guard_people(payload, tokens, names):
+        print(f"warning: {w}", file=sys.stderr)
     payload["_dropped"] = dropped
     return payload
 

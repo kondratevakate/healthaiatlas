@@ -56,3 +56,56 @@ def test_redact_then_guard_removes_people():
     assert out["rows"][0]["src"] == ["https://x.org/Doerling"]  # URLs stay verbatim
     with pytest.raises(r.PublicationError):
         r.guard_people(payload, tokens, set())
+
+
+def test_company_claim_needs_explicit_marker():
+    con = _con()
+    con.executescript(
+        """
+        INSERT INTO evidence VALUES
+          ('E5', 'c', 'https://vendor.example/ (company page, subagent check)', 0, 'd'),
+          ('E6', 'c', 'https://casestudies.example/company/vendor/', 0, 'd'),
+          ('E7', 'c', 'https://vendor.example/ (company claims, subagent check)', 0, 'd');
+        """
+    )
+    ev = r.evidence_map(con)
+    assert ev["E5"]["status"] == "unconfirmed"
+    assert ev["E6"]["status"] == "unconfirmed"
+    assert ev["E7"]["status"] == "company claim"
+
+
+def test_short_and_one_word_names_are_caught():
+    con = _con()
+    con.executescript("INSERT INTO mentions VALUES ('Li Wu', 'person'), ('Cher', 'person');")
+    tokens, names = r.person_names(con), r.full_person_names(con)
+    assert {"Li", "Wu", "Cher"} <= tokens
+    out = r.redact({"desc": "Interview with Cher and Dr Li Wu."}, names, tokens)
+    assert "Cher" not in out["desc"] and "Wu" not in out["desc"]
+    with pytest.raises(r.PublicationError):
+        r.guard_people({"desc": "Interview with Cher."}, tokens, names)
+
+
+def test_surname_in_org_name_is_exempt_only_in_that_field():
+    con = _con()
+    tokens, names = r.person_names(con), r.full_person_names(con)
+    payload = {"orgMap": [{"name": "Doerling Foundation", "desc": "Started by Mr Doerling."}]}
+    out = r.redact(payload, names, tokens)
+    assert out["orgMap"][0]["name"] == "Doerling Foundation"
+    assert "Doerling" not in out["orgMap"][0]["desc"]
+    r.guard_people(out, tokens, names)  # passes: the name field alone is exempt
+    with pytest.raises(r.PublicationError):
+        r.guard_people(payload, tokens, names)  # unredacted desc still fails
+
+
+def test_ordinary_words_and_acronyms_are_not_names():
+    con = _con()
+    con.executescript("INSERT INTO mentions VALUES ('Per Young', 'person');")
+    tokens, names = r.person_names(con), r.full_person_names(con)
+    r.guard_people({"desc": "young people; cost per patient; the NELSON trial"}, tokens | {"Nelson"}, names)
+
+
+def test_url_hits_are_warnings_not_redactions():
+    con = _con()
+    tokens, names = r.person_names(con), r.full_person_names(con)
+    warnings = r.guard_people({"src": ["https://x.org/people/Doerling"]}, tokens, names)
+    assert warnings and "Doerling" in warnings[0]

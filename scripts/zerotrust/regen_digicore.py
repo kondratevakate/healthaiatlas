@@ -225,30 +225,36 @@ def _strings(value, key=None):
             yield from _strings(v, k)
 
 
-def guard_people(payload: dict, tokens: set[str], names: list[str] = ()) -> list[str]:
-    """Fail on any person name (whole name, or a capitalised name part) in free-text fields.
+def guard_people(payload: dict, tokens: set[str], names: list[str] = (), strict: bool = True) -> list[str]:
+    """Fail on person names in the public payload.
 
-    Organisation-name fields are exempt only for themselves: a surname inside an organisation's name
-    (e.g. a foundation) does not exempt that surname anywhere else. URL fields cannot be redacted
-    (they are copied verbatim), so hits there are returned as warnings instead of failing.
+    - Free-text fields: any whole name (any case) or capitalised name part fails.
+    - Organisation-name fields: a lone name part is allowed (a surname inside an organisation's
+      name, e.g. a foundation, is exempt only in that field), but a person's whole name fails.
+    - URL fields are copied verbatim and cannot be redacted: any name hit fails when `strict`
+      (every --write run); a dry run returns the hits as warnings.
     """
     # Whole names match in any case; single name parts match as written (capitalised), so ordinary
     # words ("young", "per") and acronyms (the NELSON trial) are not mistaken for people.
-    needles = [(t, 0) for t in tokens] + [(n, re.IGNORECASE) for n in names]
-    hits, warnings = set(), set()
+    parts = [(t, 0) for t in tokens]
+    wholes = [(n, re.IGNORECASE) for n in names if " " in n or len(n) >= 4]
+    hits, url_hits = set(), set()
     for key, text in _strings(payload):
+        if key == "src":
+            needles = parts + wholes
+        elif key in VERBATIM_KEYS:
+            needles = wholes
+        else:
+            needles = parts + wholes
         for t, flags in needles:
             if re.search(r"\b" + re.escape(t) + r"\b", text, flags):
-                if key == "src":
-                    warnings.add(f"{t} in URL {text}")
-                elif key not in VERBATIM_KEYS:
-                    hits.add(t)
-    if hits:
-        raise PublicationError(f"person names in public output: {sorted(hits)}")
-    return sorted(warnings)
+                (url_hits if key == "src" else hits).add(f"{t} in {key}: {text[:80]}")
+    if hits or (strict and url_hits):
+        raise PublicationError(f"person names in public output: {sorted(hits | (url_hits if strict else set()))}")
+    return sorted(url_hits)
 
 
-def build(db: Path) -> dict:
+def build(db: Path, strict: bool = True) -> dict:
     con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
     ev = evidence_map(con)
     dropped: dict[str, int] = {}
@@ -288,7 +294,7 @@ def build(db: Path) -> dict:
     }
     tokens, names = person_names(con), full_person_names(con)
     payload = redact(payload, names, tokens)
-    for w in guard_people(payload, tokens, names):
+    for w in guard_people(payload, tokens, names, strict=strict):
         print(f"warning: {w}", file=sys.stderr)
     payload["_dropped"] = dropped
     return payload
@@ -364,7 +370,8 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if not a.db.exists():
         raise SystemExit(f"{a.db} not found")
-    payload = build(a.db)
+    # A dry run reports names found in URLs; a --write run refuses to emit them.
+    payload = build(a.db, strict=a.write)
     counts = {k: len(v) for k, v in payload.items() if isinstance(v, list)}
     ts = render(payload, a.db)
     print(f"counts: {counts}", file=sys.stderr)

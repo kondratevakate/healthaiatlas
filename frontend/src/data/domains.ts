@@ -54,6 +54,18 @@ export const domains: ResearchDomain[] = [
     ],
     playerIds: ['cleveland-clinic-ad', 'seha', 'medcare'],
   },
+  // DIGICORE: decision board for an imaging + clinical-data study inside a
+  // federated European oncology network (real-world cancer data).
+  {
+    id: 'digicore',
+    name: { en: 'Beating Cancer in the EU', ar: 'التغلب على السرطان في الاتحاد الأوروبي' },
+    subtitle: { en: 'One problem, many players: which imaging plus clinical-data study the DIGICORE federated oncology network can run', ar: 'مشكلة واحدة ولاعبون كثيرون: أي دراسة تجمع التصوير والبيانات السريرية يمكن لشبكة ديجيكور الاتحادية للأورام تنفيذها' },
+    color: '212 67% 50%',
+    stats: [
+      { label: 'Coverage', value: 'Europe' },
+    ],
+    playerIds: [],
+  },
   // Biosecurity sits outside the clinical-AI scope chain above: a field map of
   // organisations working on catastrophic pandemic risk, sourced from the
   // Biosecurity World directory.

@@ -623,6 +623,7 @@ describe('design-system: hub tabs', () => {
     'medical-tourism/MedicalTourismHub.tsx',
     'process-mining/ProcessMiningHub.tsx',
     'biosecurity/BiosecurityHub.tsx',
+    'digicore/DigicoreHub.tsx',
   ];
 
   // Extracts id: '...' or id: "..." values from a TSX source.

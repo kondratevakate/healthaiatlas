@@ -16,6 +16,7 @@ import { ProcessMiningHub } from '@/components/process-mining';
 import { OncologyHub } from '@/components/oncology';
 import { AiLifeSciencesHub } from '@/components/ai-life-sciences';
 import { BiosecurityHub } from '@/components/biosecurity';
+import { DigicoreHub } from '@/components/digicore';
 import { SuggestActions } from '@/components/shared/SuggestActions';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
@@ -221,6 +222,9 @@ const Directory = () => {
         )}
         {activeDomainId === 'biosecurity' && (
           <div className="mb-16"><BiosecurityHub /></div>
+        )}
+        {activeDomainId === 'digicore' && (
+          <div className="mb-16"><DigicoreHub /></div>
         )}
 
         {/* Players Grid — hidden on overview (replaced by System Map) and on custom hub tabs */}

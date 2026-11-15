@@ -1,0 +1,1 @@
+export { DigicoreHub } from './DigicoreHub';

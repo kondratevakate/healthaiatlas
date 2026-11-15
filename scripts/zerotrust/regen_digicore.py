@@ -16,6 +16,8 @@ Publication rules applied here (the page is public, the repo is public):
     names are NOT emitted because they carry speaker names.
   - No natural persons: speaker columns are dropped, and a guard fails the run if any
     person named in the workshop material appears in the emitted text.
+  - The candidate-study decision matrix (candidates / filters / verdicts) is the owner's private
+    decision tool and is never emitted.
   - The map embeds organisations and companies only (never people), from the workshop
     decks only (the ESMO paper's COI / affiliation lists are excluded).
 
@@ -264,17 +266,7 @@ def build(db: Path, strict: bool = True) -> dict:
         dropped[name] = d
         return out
 
-    filters = rows(con, "SELECT filter_id AS id, label, meaning FROM filters ORDER BY filter_id")
-    candidates = rows(con, "SELECT candidate_id AS id, setting, cohort FROM candidates ORDER BY candidate_id")
-    verdicts = {}
-    for v in rows(con, "SELECT candidate_id, filter_id, verdict, evidence_ids FROM verdicts"):
-        meta = row_meta(ev, v["evidence_ids"])
-        verdicts[f"{v['candidate_id']}|{v['filter_id']}"] = (
-            {"verdict": v["verdict"], **meta} if meta else {"verdict": "unconfirmed", "status": "unconfirmed",
-                                                             "src": [], "slides": False})
     payload = {
-        "filters": filters,
-        "candidates": [{**c, "cells": [verdicts[f"{c['id']}|{f['id']}"] for f in filters]} for c in candidates],
         "centres": take("centres", "SELECT institution, country, digicore, digione_pilot, atomcat, imaging, genomics, "
                         "federated_omop, rare_cancer, evidence_ids FROM centres ORDER BY id",
                         ("imaging", "genomics", "federated_omop", "rare_cancer")),
@@ -316,10 +308,6 @@ export interface Sourced {{
   /** Also evidenced by a workshop slide (not public). */
   slides: boolean;
 }}
-export interface DcFilter {{ id: string; label: string; meaning: string }}
-export type DcCell = (Sourced & {{ verdict: 'pass' | 'fail' | 'unknown' }}) |
-  {{ verdict: 'unconfirmed'; status: 'unconfirmed'; src: string[]; slides: boolean }};
-export interface DcCandidate {{ id: string; setting: string; cohort: string; cells: DcCell[] }}
 export interface DcCentre extends Sourced {{
   institution: string; country: string; digicore: string; digione_pilot: string; atomcat: string;
   imaging: string; genomics: string; federated_omop: string; rare_cancer: string;
@@ -349,8 +337,6 @@ export const DC_SOURCE = {{
 export const DC_TSNE = {j({**TSNE, "features": "TF-IDF of each organisation's public description and relevance text",
                               "types": list(MAP_TYPES), "excluded": "people; ESMO paper COI and affiliation lists; organisations without a public description"})} as const;
 
-export const DC_FILTERS: DcFilter[] = {j(p['filters'])};
-export const DC_CANDIDATES: DcCandidate[] = {j(p['candidates'])};
 export const DC_CENTRES: DcCentre[] = {j(p['centres'])};
 export const DC_USE_CASES: DcUseCase[] = {j(p['useCases'])};
 export const DC_CLINICAL: DcClinical[] = {j(p['clinical'])};

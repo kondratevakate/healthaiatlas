@@ -104,8 +104,21 @@ def test_ordinary_words_and_acronyms_are_not_names():
     r.guard_people({"desc": "young people; cost per patient; the NELSON trial"}, tokens | {"Nelson"}, names)
 
 
-def test_url_hits_are_warnings_not_redactions():
+def test_url_hits_fail_on_write_and_warn_on_dry_run():
     con = _con()
     tokens, names = r.person_names(con), r.full_person_names(con)
-    warnings = r.guard_people({"src": ["https://x.org/people/Doerling"]}, tokens, names)
+    payload = {"src": ["https://x.org/people/Doerling"]}
+    with pytest.raises(r.PublicationError):
+        r.guard_people(payload, tokens, names)  # strict is the default (every --write run)
+    warnings = r.guard_people(payload, tokens, names, strict=False)
     assert warnings and "Doerling" in warnings[0]
+
+
+def test_whole_person_name_in_an_org_field_fails():
+    con = _con()
+    tokens, names = r.person_names(con), r.full_person_names(con)
+    with pytest.raises(r.PublicationError):
+        r.guard_people({"useCases": [{"organisation": "Jane Doerling"}]}, tokens, names)
+    with pytest.raises(r.PublicationError):
+        r.guard_people({"orgMap": [{"name": "Jane Doerling Consulting"}]}, tokens, names)
+    r.guard_people({"orgMap": [{"name": "Doerling Foundation"}]}, tokens, names)  # surname alone is fine

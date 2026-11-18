@@ -35,6 +35,12 @@ export function BiosecurityHub() {
         </a>{' '}
         · {BIO_ORGS.length} organisations · retrieved {BIO_SOURCE.retrievedAt} · curated upstream, not independently verified
       </p>
+      <p className="text-xs text-muted-foreground">
+        Source code:{' '}
+        <a href="https://github.com/biosecurity-world/biosecurity.world" target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-2 hover:opacity-70">
+          github.com/biosecurity-world/biosecurity.world
+        </a>
+      </p>
     </HubShell>
   );
 }
